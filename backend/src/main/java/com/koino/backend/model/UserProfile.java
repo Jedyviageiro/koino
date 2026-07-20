@@ -15,9 +15,10 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long profileId;
 
-    private String faithLevel;
-    private String readingRhythm;
-    private String workPace;
-    private Integer dailyCapacityMinutes;
+    private String journeyDescription; // Screen 1: User's faith journey
+    private String preferredStartingPoint; // Screen 2: Where they want to begin
+    private String dailyRhythm; // Screen 3: Time of day for peace
+    private String workPace; // Screen 4A: Typical work pace
+    private Integer dailyCapacityMinutes; // Screen 4B: Time set aside for reading
     
 }

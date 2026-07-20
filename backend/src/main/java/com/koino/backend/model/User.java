@@ -20,6 +20,7 @@ public class User {
     private Long userId;
 
     private String email;
-    private String passwordHash;
+    private String password;
+    private String fullname;
     private LocalDateTime createdAt;
 }
