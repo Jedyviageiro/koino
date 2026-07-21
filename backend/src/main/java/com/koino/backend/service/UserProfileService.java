@@ -16,7 +16,7 @@ public class UserProfileService {
     }
 
     public void saveOnboardingPreference(Long userId, OnboardingRequest request){
-        if(userProfileRepository.existsById(userId)){
+        if(userProfileRepository.existsByUserUserId(userId)){
             throw new IllegalArgumentException("The user has already set his preference");
         }
 

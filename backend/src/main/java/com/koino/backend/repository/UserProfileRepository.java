@@ -9,5 +9,5 @@ import com.koino.backend.model.UserProfile;
 @Repository
 public interface  UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
-    
+    boolean existsByUserUserId(Long userId);
 }

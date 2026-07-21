@@ -15,13 +15,13 @@ services:
       - postgres_data:/var/lib/postgresql/data
     
   backend:
-    build: .
+    build: ./backend
     container_name: koino_backend
     restart: always
     ports:
       - "8080:8080"
     environment:
-      # Notice we use the service name 'postgres' instead of 'localhost' so Docker containers can talk to each other
+      # Docker containers can talk to each other
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/koino_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=secretpassword
