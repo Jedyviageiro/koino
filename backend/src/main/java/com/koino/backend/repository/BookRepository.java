@@ -5,5 +5,5 @@ import com.koino.backend.model.Book;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
-    
+    Book findByTitle(String title);
 }

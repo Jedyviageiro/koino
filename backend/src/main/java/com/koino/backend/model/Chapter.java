@@ -14,15 +14,16 @@ import lombok.Data;
 @Data
 @Table(name = "chapters")
 public class Chapter {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chapterId;
 
-    @ManyToOne @JoinColumn(name = "book_id")
+    @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
-    
-    @Column(nullable = false, unique = true)
-    private Integer chapterNumber;
-    
-    private Integer verseCount;
+
+    @Column(nullable = false)
+    private Integer chapterNumber; // e.g., 5
+
+    private Integer verseCount; // e.g., 48 (helpful for tracking length)
 }

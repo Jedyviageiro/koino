@@ -33,22 +33,6 @@ public class PlanService {
             .collect(Collectors.toList());
     }
 
-    public void generateUserPlan(Long userId, Long planTemplateId) {
-        
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-
-        PlanTemplate template = planTemplateRepository.findById(planTemplateId)
-                .orElseThrow(() -> new IllegalArgumentException("Plan template not found with ID: " + planTemplateId));
-
-        boolean hasExistingPlan = userPlanRepository.existsByUserId(userId);
-        if (hasExistingPlan) {
-            throw new IllegalStateException("You already have an active reading plan!");
-        }
-
-        // 4. >>> YOUR PLAN GENERATION ALGORITHM GOES HERE <<<
-        // Now that you have the valid 'user' and 'template', you can write 
-        // the math/logic to split total chapters across target dates!
-    }
+    
 }
 
