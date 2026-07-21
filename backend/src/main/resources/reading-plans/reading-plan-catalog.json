@@ -1,0 +1,858 @@
+{
+  "schemaVersion": "1.0.0",
+  "rules": {
+    "progressionMode": "SEQUENTIAL",
+    "difficultyProgression": [
+      "BEGINNER",
+      "INTERMEDIATE",
+      "ADVANCED"
+    ],
+    "capacityRules": {
+      "10": {
+        "code": "LIGHT",
+        "targetMinutesPerDay": 10,
+        "description": "The same biblical plan divided into shorter daily readings."
+      },
+      "20": {
+        "code": "STANDARD",
+        "targetMinutesPerDay": 20,
+        "description": "The standard daily reading pace."
+      },
+      "30": {
+        "code": "DEEP",
+        "targetMinutesPerDay": 30,
+        "description": "The same biblical plan completed through longer daily readings."
+      }
+    },
+    "workPaceRules": {
+      "STEADY_NINE_TO_FIVE": {
+        "scheduleType": "DAILY",
+        "readingDaysPerWeek": 7
+      },
+      "FLEXIBLE": {
+        "scheduleType": "WEEKLY_TARGET",
+        "readingDaysPerWeek": 6,
+        "catchUpDaysPerWeek": 1
+      }
+    }
+  },
+  "plans": [
+    {
+      "id": "P01",
+      "name": "Meeting Jesus",
+      "description": "Encounter the identity, teachings, ministry, death, and resurrection of Jesus through Mark and John.",
+      "difficulty": "BEGINNER",
+      "totalChapters": 37,
+      "bookNames": [
+        "Mark",
+        "John"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 74,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 37,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 25,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P02",
+      "name": "The Teachings of Jesus",
+      "description": "Study selected teachings of Jesus about the kingdom of God, prayer, faith, love, character, and discipleship.",
+      "difficulty": "BEGINNER",
+      "totalChapters": 12,
+      "bookNames": [
+        "Matthew",
+        "Luke",
+        "John"
+      ],
+      "scopeNote": "A curated selection of twelve chapters, including Matthew 5–7.",
+      "paceVariants": {
+        "10": {
+          "durationDays": 30,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 18,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 12,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P03",
+      "name": "The Four Gospels",
+      "description": "Read the complete accounts of the life and ministry of Jesus through Matthew, Mark, Luke, and John.",
+      "difficulty": "BEGINNER",
+      "totalChapters": 89,
+      "bookNames": [
+        "Matthew",
+        "Mark",
+        "Luke",
+        "John"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 178,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 90,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 60,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P04",
+      "name": "Jesus, the Spirit, and the Church",
+      "description": "Continue from the ministry of Jesus into the work of the Holy Spirit, the growth of the Church, and practical Christian living.",
+      "difficulty": "INTERMEDIATE",
+      "totalChapters": 43,
+      "bookNames": [
+        "Acts",
+        "James",
+        "1 Peter",
+        "1 John"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 86,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 43,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 29,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P05",
+      "name": "Luke and Acts",
+      "description": "Follow the story of Jesus and the beginning of the Church through the two-volume account of Luke and Acts.",
+      "difficulty": "BEGINNER",
+      "totalChapters": 52,
+      "bookNames": [
+        "Luke",
+        "Acts"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 104,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 52,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 35,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P06",
+      "name": "Foundations of Christian Faith",
+      "description": "Learn about salvation, grace, spiritual growth, Christian character, the Church, and faithful living.",
+      "difficulty": "BEGINNER",
+      "totalChapters": 24,
+      "bookNames": [
+        "Ephesians",
+        "Philippians",
+        "Colossians",
+        "James",
+        "1 Peter"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 48,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 24,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 16,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P07",
+      "name": "The Gospels and Acts",
+      "description": "Read the complete Gospel accounts followed by the mission and expansion of the early Church.",
+      "difficulty": "INTERMEDIATE",
+      "totalChapters": 117,
+      "bookNames": [
+        "Matthew",
+        "Mark",
+        "Luke",
+        "John",
+        "Acts"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 234,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 117,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 78,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P08",
+      "name": "Letters of Paul",
+      "description": "Study Paul's letters to understand grace, salvation, the Church, holiness, relationships, service, and spiritual growth.",
+      "difficulty": "INTERMEDIATE",
+      "totalChapters": 87,
+      "bookNames": [
+        "Romans",
+        "1 Corinthians",
+        "2 Corinthians",
+        "Galatians",
+        "Ephesians",
+        "Philippians",
+        "Colossians",
+        "1 Thessalonians",
+        "2 Thessalonians",
+        "1 Timothy",
+        "2 Timothy",
+        "Titus",
+        "Philemon"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 174,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 87,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 58,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P09",
+      "name": "Complete New Testament",
+      "description": "Read all twenty-seven books of the New Testament from Matthew through Revelation.",
+      "difficulty": "INTERMEDIATE",
+      "totalChapters": 260,
+      "bookNames": [
+        "All New Testament Books"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 365,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 260,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 174,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P10",
+      "name": "The Beginning of the Story",
+      "description": "Discover creation, humanity, sin, covenant, faith, worship, and trust through Genesis and selected Psalms.",
+      "difficulty": "BEGINNER",
+      "totalChapters": 60,
+      "bookNames": [
+        "Genesis",
+        "Psalms"
+      ],
+      "scopeNote": "Includes all fifty chapters of Genesis and ten selected Psalms.",
+      "paceVariants": {
+        "10": {
+          "durationDays": 120,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 60,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 40,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P11",
+      "name": "Covenant and Deliverance",
+      "description": "Study God's covenant promises and His deliverance of Israel through Genesis and Exodus.",
+      "difficulty": "BEGINNER",
+      "totalChapters": 90,
+      "bookNames": [
+        "Genesis",
+        "Exodus"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 180,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 90,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 60,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P12",
+      "name": "The Torah",
+      "description": "Read the five books of Moses to understand creation, covenant, deliverance, worship, holiness, and Israel's calling.",
+      "difficulty": "INTERMEDIATE",
+      "totalChapters": 187,
+      "bookNames": [
+        "Genesis",
+        "Exodus",
+        "Leviticus",
+        "Numbers",
+        "Deuteronomy"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 374,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 187,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 125,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P13",
+      "name": "The Story of Israel",
+      "description": "Follow Israel's history from the entrance into the promised land through the monarchy, exile, and return.",
+      "difficulty": "INTERMEDIATE",
+      "totalChapters": 249,
+      "bookNames": [
+        "Joshua",
+        "Judges",
+        "Ruth",
+        "1 Samuel",
+        "2 Samuel",
+        "1 Kings",
+        "2 Kings",
+        "1 Chronicles",
+        "2 Chronicles",
+        "Ezra",
+        "Nehemiah",
+        "Esther"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 498,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 249,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 166,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P14",
+      "name": "Wisdom and Worship",
+      "description": "Explore worship, suffering, practical wisdom, work, relationships, meaning, love, and reverence for God.",
+      "difficulty": "INTERMEDIATE",
+      "totalChapters": 243,
+      "bookNames": [
+        "Job",
+        "Psalms",
+        "Proverbs",
+        "Ecclesiastes",
+        "Song of Songs"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 486,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 243,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 162,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P15",
+      "name": "The Prophets",
+      "description": "Read the major and minor prophets to study covenant faithfulness, judgment, hope, repentance, restoration, and the promised Messiah.",
+      "difficulty": "ADVANCED",
+      "totalChapters": 250,
+      "bookNames": [
+        "Isaiah",
+        "Jeremiah",
+        "Lamentations",
+        "Ezekiel",
+        "Daniel",
+        "Hosea",
+        "Joel",
+        "Amos",
+        "Obadiah",
+        "Jonah",
+        "Micah",
+        "Nahum",
+        "Habakkuk",
+        "Zephaniah",
+        "Haggai",
+        "Zechariah",
+        "Malachi"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 500,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 250,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 167,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P16",
+      "name": "Complete Old Testament",
+      "description": "Read all thirty-nine books of the Old Testament from Genesis through Malachi.",
+      "difficulty": "ADVANCED",
+      "totalChapters": 929,
+      "bookNames": [
+        "All Old Testament Books"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 730,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 465,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 365,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P17",
+      "name": "The Whole Bible",
+      "description": "Read all sixty-six books of the Bible in canonical order from Genesis through Revelation.",
+      "difficulty": "ADVANCED",
+      "totalChapters": 1189,
+      "bookNames": [
+        "All 66 Books"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 730,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 520,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 365,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    },
+    {
+      "id": "P18",
+      "name": "Chronological Bible Journey",
+      "description": "Read the whole Bible through a reviewed approximate historical sequence.",
+      "difficulty": "ADVANCED",
+      "totalChapters": 1189,
+      "bookNames": [
+        "All 66 Books"
+      ],
+      "paceVariants": {
+        "10": {
+          "durationDays": 730,
+          "estimatedMinutesPerDay": 10
+        },
+        "20": {
+          "durationDays": 520,
+          "estimatedMinutesPerDay": 20
+        },
+        "30": {
+          "durationDays": 365,
+          "estimatedMinutesPerDay": 30
+        }
+      }
+    }
+  ],
+  "scenarioRoutes": [
+    {
+      "journeyDescription": "NEW_TO_FAITH",
+      "preferredStartingPoint": "GOSPELS",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P01"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P02"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P03"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P04"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P09"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P17"
+        },
+        {
+          "sequenceNumber": 7,
+          "planId": "P18"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "NEW_TO_FAITH",
+      "preferredStartingPoint": "NEW_TESTAMENT",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P05"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P06"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P07"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P08"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P09"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P17"
+        },
+        {
+          "sequenceNumber": 7,
+          "planId": "P18"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "NEW_TO_FAITH",
+      "preferredStartingPoint": "OLD_TESTAMENT",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P10"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P11"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P01"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P12"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P13"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P14"
+        },
+        {
+          "sequenceNumber": 7,
+          "planId": "P15"
+        },
+        {
+          "sequenceNumber": 8,
+          "planId": "P16"
+        },
+        {
+          "sequenceNumber": 9,
+          "planId": "P17"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "BUILD_READING_HABIT",
+      "preferredStartingPoint": "GOSPELS",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P02"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P01"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P03"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P04"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P09"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P17"
+        },
+        {
+          "sequenceNumber": 7,
+          "planId": "P18"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "BUILD_READING_HABIT",
+      "preferredStartingPoint": "NEW_TESTAMENT",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P06"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P05"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P07"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P08"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P09"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P17"
+        },
+        {
+          "sequenceNumber": 7,
+          "planId": "P18"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "BUILD_READING_HABIT",
+      "preferredStartingPoint": "OLD_TESTAMENT",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P10"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P11"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P14"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P12"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P13"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P15"
+        },
+        {
+          "sequenceNumber": 7,
+          "planId": "P16"
+        },
+        {
+          "sequenceNumber": 8,
+          "planId": "P17"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "DEEPEN_UNDERSTANDING",
+      "preferredStartingPoint": "GOSPELS",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P03"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P04"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P08"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P09"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P17"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P18"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "DEEPEN_UNDERSTANDING",
+      "preferredStartingPoint": "NEW_TESTAMENT",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P07"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P08"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P09"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P14"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P17"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P18"
+        }
+      ]
+    },
+    {
+      "journeyDescription": "DEEPEN_UNDERSTANDING",
+      "preferredStartingPoint": "OLD_TESTAMENT",
+      "route": [
+        {
+          "sequenceNumber": 1,
+          "planId": "P12"
+        },
+        {
+          "sequenceNumber": 2,
+          "planId": "P13"
+        },
+        {
+          "sequenceNumber": 3,
+          "planId": "P14"
+        },
+        {
+          "sequenceNumber": 4,
+          "planId": "P15"
+        },
+        {
+          "sequenceNumber": 5,
+          "planId": "P16"
+        },
+        {
+          "sequenceNumber": 6,
+          "planId": "P09"
+        },
+        {
+          "sequenceNumber": 7,
+          "planId": "P17"
+        },
+        {
+          "sequenceNumber": 8,
+          "planId": "P18"
+        }
+      ]
+    }
+  ]
+}
