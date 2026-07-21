@@ -1,28 +1,32 @@
 package com.koino.backend.model;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "chapters")
-public class Chapter {
-    @Id 
+@Table(name = "password_reset_tokens")
+public class ResetPasswordToken {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chapterId;
+    private Long id;
 
-    @ManyToOne @JoinColumn(name = "book_id")
-    private Book book;
-    
     @Column(nullable = false, unique = true)
-    private Integer chapterNumber;
-    
-    private Integer verseCount;
+    private String token;
+
+    @Column(nullable = false)
+    private Instant expiresAt;
+
+    @Column(nullable = false)
+    private boolean used;
+
+    @Column(nullable = false)
+    private Long userId;
 }

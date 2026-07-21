@@ -1,8 +1,12 @@
 package com.koino.backend.dto.plan;
 
 public record PlanTemplateDTO(
-    Long id,
+    Long planTemplateId,
     String name,
     String description,
-    Integer totalChapters
+    String difficulty,
+    Integer durationDays,
+    Integer totalChapters,
+    String bookNames,
+    Integer estimatedMinutesPerDay
 ) {}

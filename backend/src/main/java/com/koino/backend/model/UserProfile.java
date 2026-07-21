@@ -20,5 +20,7 @@ public class UserProfile {
     private String dailyRhythm; // Screen 3: Time of day for peace
     private String workPace; // Screen 4A: Typical work pace
     private Integer dailyCapacityMinutes; // Screen 4B: Time set aside for reading
+
+    private User user; 
     
 }

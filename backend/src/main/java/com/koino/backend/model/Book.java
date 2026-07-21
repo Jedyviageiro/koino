@@ -1,6 +1,7 @@
 package com.koino.backend.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,7 +16,11 @@ import lombok.Data;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer bookId;
+    private Integer bookId; 
+
+    @Column(nullable = false, unique = true)
     private String title;
+    
+    @Column(nullable = false, unique = true)
     private Integer orderIndex;
 }
