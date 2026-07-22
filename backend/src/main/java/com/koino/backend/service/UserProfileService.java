@@ -1,6 +1,7 @@
 package com.koino.backend.service;
 
 import com.koino.backend.dto.user.OnboardingRequest;
+import com.koino.backend.dto.user.UserProfileUpdateResponse;
 import com.koino.backend.model.User;
 import com.koino.backend.model.UserProfile;
 import com.koino.backend.repository.UserProfileRepository;
@@ -25,7 +26,10 @@ public class UserProfileService {
     }
 
     @Transactional
-    public void saveOnboardingPreference(Long userId, OnboardingRequest request){
+    public UserProfileUpdateResponse saveOnboardingPreference(
+        Long userId,
+        OnboardingRequest request
+    ) {
         if(userProfileRepository.existsByUserUserId(userId)){
             throw new IllegalArgumentException("The user has already set his preference");
         }
@@ -50,13 +54,25 @@ public class UserProfileService {
             request.dailyCapacityMinutes(),
             request.workPace()
         );
+        return toResponse(userProfile);
     }
 
-       public String getProfile( Long userId){       
-            User user = userRepository.findById(userId)
-            .orElseThrow(()-> new IllegalArgumentException("User not found with Id" + userId));
-
-            return user.getFullname();
+    @Transactional(readOnly = true)
+    public UserProfileUpdateResponse getProfile(Long userId) {
+        UserProfile profile = userProfileRepository.findByUserUserId(userId)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "The user has not completed onboarding"
+            ));
+        return toResponse(profile);
     }
 
+    private UserProfileUpdateResponse toResponse(UserProfile profile) {
+        return new UserProfileUpdateResponse(
+            profile.getJourneyDescription(),
+            profile.getPreferredStartingPoint(),
+            profile.getDailyRhythm(),
+            profile.getWorkPace(),
+            profile.getDailyCapacityMinutes()
+        );
+    }
 }

@@ -11,4 +11,9 @@ import com.koino.backend.model.UserPlanTask;
 public interface UserPlanTaskRepository extends JpaRepository<UserPlanTask, Long> {
 
     List<UserPlanTask> findByActivePlanActivePlanIdOrderByDayNumber(Long activePlanId);
+
+    List<UserPlanTask> findByActivePlanActivePlanIdAndActivePlanUserUserIdOrderByDayNumber(
+        Long activePlanId,
+        Long userId
+    );
 }

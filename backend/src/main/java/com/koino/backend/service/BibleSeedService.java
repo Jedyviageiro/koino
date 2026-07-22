@@ -12,7 +12,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URL;
+import java.io.InputStream;
+import java.net.URI;
 
 @Service
 public class BibleSeedService implements CommandLineRunner {
@@ -38,7 +39,10 @@ public class BibleSeedService implements CommandLineRunner {
             String jsonUrl = "https://raw.githubusercontent.com/thiagobodruk/bible/master/json/en_kjv.json";
             
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootArray = mapper.readTree(new URL(jsonUrl));
+            JsonNode rootArray;
+            try (InputStream input = URI.create(jsonUrl).toURL().openStream()) {
+                rootArray = mapper.readTree(input);
+            }
 
             int bookOrder = 1;
             for (JsonNode bookNode : rootArray) {
@@ -67,7 +71,7 @@ public class BibleSeedService implements CommandLineRunner {
                         Verse verse = new Verse();
                         verse.setChapter(chapter);
                         verse.setVerseNumber(verseNum++);
-                        verse.setText(verseNode.asText());
+                        verse.setText(BibleTextCleaner.clean(verseNode.asText()));
                         
                         verseRepository.save(verse);
                     }

@@ -1,5 +1,6 @@
 package com.koino.backend.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,6 @@ public interface UserActivePlanRepositor extends JpaRepository<UserActivePlan, L
         Long userId,
         String planCode
     );
+
+    List<UserActivePlan> findByUserUserIdOrderByPlanSequenceNumberAsc(Long userId);
 }

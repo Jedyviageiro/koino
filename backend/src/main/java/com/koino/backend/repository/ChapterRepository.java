@@ -2,6 +2,7 @@ package com.koino.backend.repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,13 @@ import com.koino.backend.model.Chapter;
 
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter, Long>  {
+
+    List<Chapter> findByBookBookIdOrderByChapterNumber(Integer bookId);
+
+    Optional<Chapter> findByBookTitleIgnoreCaseAndChapterNumber(
+        String bookTitle,
+        Integer chapterNumber
+    );
 
     @Query("""
         select c from Chapter c join fetch c.book b
