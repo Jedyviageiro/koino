@@ -106,22 +106,6 @@ class UserServiceTests {
         assertThat(user.getLongestStreak()).isEqualTo(12);
     }
 
-    @Test
-    void updatesAndNormalizesProfilePictureUrl() {
-        UserRepository repository = mock(UserRepository.class);
-        User user = user(42L, true);
-        when(repository.findById(42L)).thenReturn(Optional.of(user));
-
-        String result = service(repository).updateProfilePicture(
-            42L,
-            "  https://cdn.koino.local/profile.jpg  "
-        );
-
-        assertThat(result).isEqualTo("https://cdn.koino.local/profile.jpg");
-        assertThat(user.getProfilePictureUrl()).isEqualTo(result);
-        verify(repository).save(user);
-    }
-
     private UserService service(UserRepository repository) {
         return new UserService(mock(PasswordEncoder.class), repository);
     }

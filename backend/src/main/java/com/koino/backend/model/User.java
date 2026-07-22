@@ -51,6 +51,8 @@ public class User {
     @Column(length = 2048)
     private String profilePictureUrl;
 
+    private String profilePicturePublicId;
+
     @Column(nullable = false)
     @ColumnDefault("0")
     private int currentStreak;

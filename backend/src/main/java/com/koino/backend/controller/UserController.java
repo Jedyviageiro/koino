@@ -1,6 +1,7 @@
 package com.koino.backend.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.koino.backend.dto.auth.LoginRequest;
 import com.koino.backend.dto.auth.LoginResponse;
@@ -19,7 +22,6 @@ import com.koino.backend.dto.auth.RegisterResponse;
 import com.koino.backend.dto.auth.ResetPasswordTokenRequest;
 import com.koino.backend.dto.auth.ResetPasswordTokenResponse;
 import com.koino.backend.dto.user.NotificationResponse;
-import com.koino.backend.dto.user.ProfilePictureRequest;
 import com.koino.backend.dto.user.ProfilePictureResponse;
 import com.koino.backend.dto.user.UserStreakResponse;
 import com.koino.backend.dto.user.VerseBookmarkResponse;
@@ -27,6 +29,7 @@ import com.koino.backend.model.ResetPasswordToken;
 import com.koino.backend.model.User;
 import com.koino.backend.service.JwtService;
 import com.koino.backend.service.NotificationService;
+import com.koino.backend.service.ProfilePictureService;
 import com.koino.backend.service.ResetPasswordTokenService;
 import com.koino.backend.service.UserService;
 import com.koino.backend.service.VerseBookmarkService;
@@ -42,19 +45,22 @@ public class UserController {
     private final ResetPasswordTokenService resetPasswordTokenService;
     private final NotificationService notificationService;
     private final VerseBookmarkService bookmarkService;
+    private final ProfilePictureService profilePictureService;
 
     public UserController(
         UserService userService,
         JwtService jwtService,
         ResetPasswordTokenService resetPasswordTokenService,
         NotificationService notificationService,
-        VerseBookmarkService bookmarkService
+        VerseBookmarkService bookmarkService,
+        ProfilePictureService profilePictureService
     ) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.resetPasswordTokenService = resetPasswordTokenService;
         this.notificationService = notificationService;
         this.bookmarkService = bookmarkService;
+        this.profilePictureService = profilePictureService;
     }
 
     @PostMapping("/login")
@@ -107,20 +113,20 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/me/profile-picture")
+    @PutMapping(
+        value = "/me/profile-picture",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     public ProfilePictureResponse updateProfilePicture(
         @AuthenticationPrincipal User user,
-        @RequestBody ProfilePictureRequest request
+        @RequestPart("file") MultipartFile file
     ) {
-        return new ProfilePictureResponse(userService.updateProfilePicture(
-            user.getUserId(),
-            request.profilePictureUrl()
-        ));
+        return profilePictureService.upload(user.getUserId(), file);
     }
 
     @DeleteMapping("/me/profile-picture")
     public ResponseEntity<Void> removeProfilePicture(@AuthenticationPrincipal User user) {
-        userService.updateProfilePicture(user.getUserId(), null);
+        profilePictureService.remove(user.getUserId());
         return ResponseEntity.noContent().build();
     }
 
@@ -157,4 +163,3 @@ public class UserController {
     }
 
 }
-

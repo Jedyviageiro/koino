@@ -56,16 +56,6 @@ public class UserService {
         return user;
     }
 
-    @Transactional
-    public String updateProfilePicture(Long userId, String profilePictureUrl) {
-        User user = findUser(userId);
-        String normalizedUrl = normalizeProfilePictureUrl(profilePictureUrl);
-        user.setProfilePictureUrl(normalizedUrl);
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-        return normalizedUrl;
-    }
-
     public UserStreakResponse getStreak(Long userId) {
         User user = findUser(userId);
         return new UserStreakResponse(
@@ -111,14 +101,4 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private String normalizeProfilePictureUrl(String profilePictureUrl) {
-        if (profilePictureUrl == null || profilePictureUrl.isBlank()) {
-            return null;
-        }
-        String normalizedUrl = profilePictureUrl.trim();
-        if (normalizedUrl.length() > 2048) {
-            throw new IllegalArgumentException("Profile picture URL is too long");
-        }
-        return normalizedUrl;
-    }
 }
