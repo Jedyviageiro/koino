@@ -2,8 +2,12 @@ package com.koino.backend.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,11 +18,20 @@ import com.koino.backend.dto.auth.RegisterRequest;
 import com.koino.backend.dto.auth.RegisterResponse;
 import com.koino.backend.dto.auth.ResetPasswordTokenRequest;
 import com.koino.backend.dto.auth.ResetPasswordTokenResponse;
+import com.koino.backend.dto.user.NotificationResponse;
+import com.koino.backend.dto.user.ProfilePictureRequest;
+import com.koino.backend.dto.user.ProfilePictureResponse;
+import com.koino.backend.dto.user.UserStreakResponse;
+import com.koino.backend.dto.user.VerseBookmarkResponse;
 import com.koino.backend.model.ResetPasswordToken;
 import com.koino.backend.model.User;
 import com.koino.backend.service.JwtService;
+import com.koino.backend.service.NotificationService;
 import com.koino.backend.service.ResetPasswordTokenService;
 import com.koino.backend.service.UserService;
+import com.koino.backend.service.VerseBookmarkService;
+
+import java.util.List;
 
 @RequestMapping("/api/users")
 @RestController
@@ -27,15 +40,21 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
     private final ResetPasswordTokenService resetPasswordTokenService;
+    private final NotificationService notificationService;
+    private final VerseBookmarkService bookmarkService;
 
     public UserController(
         UserService userService,
         JwtService jwtService,
-        ResetPasswordTokenService resetPasswordTokenService
+        ResetPasswordTokenService resetPasswordTokenService,
+        NotificationService notificationService,
+        VerseBookmarkService bookmarkService
     ) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.resetPasswordTokenService = resetPasswordTokenService;
+        this.notificationService = notificationService;
+        this.bookmarkService = bookmarkService;
     }
 
     @PostMapping("/login")
@@ -88,6 +107,54 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-}
+    @PutMapping("/me/profile-picture")
+    public ProfilePictureResponse updateProfilePicture(
+        @AuthenticationPrincipal User user,
+        @RequestBody ProfilePictureRequest request
+    ) {
+        return new ProfilePictureResponse(userService.updateProfilePicture(
+            user.getUserId(),
+            request.profilePictureUrl()
+        ));
+    }
 
+    @DeleteMapping("/me/profile-picture")
+    public ResponseEntity<Void> removeProfilePicture(@AuthenticationPrincipal User user) {
+        userService.updateProfilePicture(user.getUserId(), null);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me/streak")
+    public UserStreakResponse getStreak(@AuthenticationPrincipal User user) {
+        return userService.getStreak(user.getUserId());
+    }
+
+    @GetMapping("/me/notifications")
+    public List<NotificationResponse> getNotifications(@AuthenticationPrincipal User user) {
+        return notificationService.getNotifications(user.getUserId());
+    }
+
+    @PutMapping("/me/bookmarks/{verseId}")
+    public VerseBookmarkResponse addBookmark(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long verseId
+    ) {
+        return bookmarkService.addBookmark(user.getUserId(), verseId);
+    }
+
+    @GetMapping("/me/bookmarks")
+    public List<VerseBookmarkResponse> getBookmarks(@AuthenticationPrincipal User user) {
+        return bookmarkService.getBookmarks(user.getUserId());
+    }
+
+    @DeleteMapping("/me/bookmarks/{verseId}")
+    public ResponseEntity<Void> removeBookmark(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long verseId
+    ) {
+        bookmarkService.removeBookmark(user.getUserId(), verseId);
+        return ResponseEntity.noContent().build();
+    }
+
+}
 

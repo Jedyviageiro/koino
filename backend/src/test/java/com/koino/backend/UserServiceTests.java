@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,6 +64,62 @@ class UserServiceTests {
         assertThatThrownBy(() -> service(repository).deactivateUser(404L))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("No user found");
+    }
+
+    @Test
+    void incrementsStreakOnlyAfterSuccessfulLoginOnANewDay() {
+        UserRepository repository = mock(UserRepository.class);
+        PasswordEncoder encoder = mock(PasswordEncoder.class);
+        User user = user(42L, true);
+        user.setEmail("reader@koino.local");
+        user.setPassword("encoded");
+        user.setCurrentStreak(4);
+        user.setLongestStreak(8);
+        user.setLastLoginDate(LocalDate.now().minusDays(1));
+        when(repository.findByEmail(user.getEmail())).thenReturn(user);
+        when(encoder.matches("password", "encoded")).thenReturn(true);
+
+        new UserService(encoder, repository).loginUser(user.getEmail(), "password");
+
+        assertThat(user.getCurrentStreak()).isEqualTo(5);
+        assertThat(user.getLongestStreak()).isEqualTo(8);
+        assertThat(user.getLastLoginDate()).isEqualTo(LocalDate.now());
+        verify(repository).save(user);
+    }
+
+    @Test
+    void resetsStreakAfterMissingADay() {
+        UserRepository repository = mock(UserRepository.class);
+        PasswordEncoder encoder = mock(PasswordEncoder.class);
+        User user = user(42L, true);
+        user.setEmail("reader@koino.local");
+        user.setPassword("encoded");
+        user.setCurrentStreak(12);
+        user.setLongestStreak(12);
+        user.setLastLoginDate(LocalDate.now().minusDays(2));
+        when(repository.findByEmail(user.getEmail())).thenReturn(user);
+        when(encoder.matches("password", "encoded")).thenReturn(true);
+
+        new UserService(encoder, repository).loginUser(user.getEmail(), "password");
+
+        assertThat(user.getCurrentStreak()).isEqualTo(1);
+        assertThat(user.getLongestStreak()).isEqualTo(12);
+    }
+
+    @Test
+    void updatesAndNormalizesProfilePictureUrl() {
+        UserRepository repository = mock(UserRepository.class);
+        User user = user(42L, true);
+        when(repository.findById(42L)).thenReturn(Optional.of(user));
+
+        String result = service(repository).updateProfilePicture(
+            42L,
+            "  https://cdn.koino.local/profile.jpg  "
+        );
+
+        assertThat(result).isEqualTo("https://cdn.koino.local/profile.jpg");
+        assertThat(user.getProfilePictureUrl()).isEqualTo(result);
+        verify(repository).save(user);
     }
 
     private UserService service(UserRepository repository) {

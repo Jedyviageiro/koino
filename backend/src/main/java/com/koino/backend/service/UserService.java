@@ -1,5 +1,6 @@
 package com.koino.backend.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.koino.backend.model.User;
+import com.koino.backend.dto.user.UserStreakResponse;
 import com.koino.backend.repository.UserRepository;
 
 
@@ -38,6 +40,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public User loginUser(String email, String password){
         User user = userRepository.findByEmail(email);
 
@@ -49,13 +52,32 @@ public class UserService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
+        recordLogin(user, LocalDate.now());
         return user;
     }
 
     @Transactional
+    public String updateProfilePicture(Long userId, String profilePictureUrl) {
+        User user = findUser(userId);
+        String normalizedUrl = normalizeProfilePictureUrl(profilePictureUrl);
+        user.setProfilePictureUrl(normalizedUrl);
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+        return normalizedUrl;
+    }
+
+    public UserStreakResponse getStreak(Long userId) {
+        User user = findUser(userId);
+        return new UserStreakResponse(
+            user.getCurrentStreak(),
+            user.getLongestStreak(),
+            user.getLastLoginDate()
+        );
+    }
+
+    @Transactional
     public void deactivateUser(Long userId){
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("No user found"));
+        User user = findUser(userId);
 
         if (!user.isActive()) {
             return;
@@ -66,5 +88,37 @@ public class UserService {
         user.setDeactivatedAt(now);
         user.setUpdatedAt(now);
         userRepository.save(user);
+    }
+
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("No user found"));
+    }
+
+    private void recordLogin(User user, LocalDate today) {
+        LocalDate previousLogin = user.getLastLoginDate();
+        if (today.equals(previousLogin)) {
+            return;
+        }
+
+        int currentStreak = previousLogin != null && previousLogin.equals(today.minusDays(1))
+            ? user.getCurrentStreak() + 1
+            : 1;
+        user.setCurrentStreak(currentStreak);
+        user.setLongestStreak(Math.max(user.getLongestStreak(), currentStreak));
+        user.setLastLoginDate(today);
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    private String normalizeProfilePictureUrl(String profilePictureUrl) {
+        if (profilePictureUrl == null || profilePictureUrl.isBlank()) {
+            return null;
+        }
+        String normalizedUrl = profilePictureUrl.trim();
+        if (normalizedUrl.length() > 2048) {
+            throw new IllegalArgumentException("Profile picture URL is too long");
+        }
+        return normalizedUrl;
     }
 }

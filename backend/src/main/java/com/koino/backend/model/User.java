@@ -2,6 +2,7 @@ package com.koino.backend.model;
 
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -46,4 +47,17 @@ public class User {
     private boolean active = true;
 
     private LocalDateTime deactivatedAt;
+
+    @Column(length = 2048)
+    private String profilePictureUrl;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int currentStreak;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int longestStreak;
+
+    private LocalDate lastLoginDate;
 }
