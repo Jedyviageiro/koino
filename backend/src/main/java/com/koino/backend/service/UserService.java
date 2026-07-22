@@ -1,5 +1,7 @@
 package com.koino.backend.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void createUser(String fullname, String email, String password){
+    public User createUser(String fullname, String email, String password){
         if(userRepository.existsByEmail(email)){
             throw new IllegalArgumentException("Email already exists");
         } else{
@@ -28,9 +30,11 @@ public class UserService {
 
             String hashedPassword = passwordEncoder.encode(password);
             user.setPassword(hashedPassword);
-            userRepository.save(user);
+            LocalDateTime now = LocalDateTime.now();
+            user.setCreatedAt(now);
+            user.setUpdatedAt(now);
+            return userRepository.save(user);
         }
-
     }
 
     public User loginUser(String email, String password){

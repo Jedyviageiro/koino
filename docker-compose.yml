@@ -26,6 +26,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=secretpassword
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET=${JWT_SECRET:-a29pbm8tZGV2ZWxvcG1lbnQtand0LXNlY3JldC1jaGFuZ2UtbWUtMjAyNg==}
     depends_on:
       - postgres
 
