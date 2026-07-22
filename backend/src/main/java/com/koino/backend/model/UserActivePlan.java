@@ -15,12 +15,20 @@ import lombok.Data;
 @Data
 @Table(name = "user_active_plans")
 public class UserActivePlan {
-    @Id 
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long activePlanId;
-    @ManyToOne @JoinColumn(name = "user_id")
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @ManyToOne @JoinColumn(name = "plan_id")
+
+    @ManyToOne
+    @JoinColumn(name = "plan_id", nullable = false)
     private PlanTemplate planTemplate;
+
+    private Integer planSequenceNumber;
     private LocalDate startDate;
+    private boolean isCompleted = false; // Tracks if the whole plan is finished
 }

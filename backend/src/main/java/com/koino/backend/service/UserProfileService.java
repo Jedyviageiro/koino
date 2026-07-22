@@ -5,16 +5,26 @@ import com.koino.backend.model.User;
 import com.koino.backend.model.UserProfile;
 import com.koino.backend.repository.UserProfileRepository;
 import com.koino.backend.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final UserRepository userRepository;
+    private final PlanGenerationService planGenerationService;
 
-    public UserProfileService(UserProfileRepository userProfileRepository,UserRepository userRepository){
+    public UserProfileService(
+        UserProfileRepository userProfileRepository,
+        UserRepository userRepository,
+        PlanGenerationService planGenerationService
+    ) {
         this.userProfileRepository = userProfileRepository;
         this.userRepository = userRepository;
+        this.planGenerationService = planGenerationService;
     }
 
+    @Transactional
     public void saveOnboardingPreference(Long userId, OnboardingRequest request){
         if(userProfileRepository.existsByUserUserId(userId)){
             throw new IllegalArgumentException("The user has already set his preference");
@@ -32,8 +42,14 @@ public class UserProfileService {
         userProfile.setWorkPace(request.workPace());
         userProfile.setDailyCapacityMinutes(request.dailyCapacityMinutes());
 
-        userProfileRepository.save( userProfile);
-        
+        userProfileRepository.save(userProfile);
+        planGenerationService.generateInitialPlan(
+            userId,
+            request.journeyDescription(),
+            request.preferredStartingPoint(),
+            request.dailyCapacityMinutes(),
+            request.workPace()
+        );
     }
 
        public String getProfile( Long userId){       

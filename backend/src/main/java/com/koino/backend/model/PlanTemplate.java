@@ -16,6 +16,9 @@ public class PlanTemplate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long planTemplateId;
 
+    @Column(unique = true, length = 3)
+    private String planCode;
+
     @Column(nullable = false, unique = true)
     private String name;
 
@@ -36,5 +39,5 @@ public class PlanTemplate {
     @Column(nullable = false)
     private Integer estimatedMinutesPerDay;
     
-    private String targeTag; 
+    private String targetTag;
 }

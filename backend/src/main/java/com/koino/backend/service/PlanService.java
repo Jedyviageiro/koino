@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.koino.backend.dto.plan.PlanTemplateDTO;
-import com.koino.backend.model.PlanTemplate;
-import com.koino.backend.model.User;
+
 import com.koino.backend.repository.PlanTemplateRepository;
-import com.koino.backend.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class PlanService {
     private final PlanTemplateRepository planTemplateRepository;
 
@@ -22,6 +21,7 @@ public class PlanService {
         return planTemplateRepository.findAll().stream()
             .map(plan -> new PlanTemplateDTO(
                 plan.getPlanTemplateId(),
+                plan.getPlanCode(),
                 plan.getName(),
                 plan.getDescription(),
                 plan.getDifficulty(),

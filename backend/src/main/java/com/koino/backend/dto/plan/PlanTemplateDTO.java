@@ -2,6 +2,7 @@ package com.koino.backend.dto.plan;
 
 public record PlanTemplateDTO(
     Long planTemplateId,
+    String planCode,
     String name,
     String description,
     String difficulty,

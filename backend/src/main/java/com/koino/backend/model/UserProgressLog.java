@@ -13,17 +13,17 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "user_active_plans")
+@Table(name = "user_progress_logs")
 public class UserProgressLog {
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long activePlanId;
 
-    @ManyToOne @JoinColumn(name = "user_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long logId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne @JoinColumn(name = "plan_id")
-    private PlanTemplate planTemplate;
-    
-    private LocalDate startDate;
+    private String milestoneTitle; // e.g., "Completed First Plan"
+    private LocalDate achievementDate;
 }
