@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.koino.backend.model.User;
-import com.koino.backend.repository.*;
+import com.koino.backend.repository.UserRepository;
 
 
 
@@ -40,7 +41,7 @@ public class UserService {
     public User loginUser(String email, String password){
         User user = userRepository.findByEmail(email);
 
-        if(user == null){
+        if(user == null || !user.isActive()){
             throw new IllegalArgumentException("Invalid email or password");
         }
 
@@ -49,5 +50,21 @@ public class UserService {
         }
 
         return user;
+    }
+
+    @Transactional
+    public void deactivateUser(Long userId){
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("No user found"));
+
+        if (!user.isActive()) {
+            return;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        user.setActive(false);
+        user.setDeactivatedAt(now);
+        user.setUpdatedAt(now);
+        userRepository.save(user);
     }
 }

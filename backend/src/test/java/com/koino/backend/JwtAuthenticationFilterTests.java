@@ -67,6 +67,29 @@ class JwtAuthenticationFilterTests {
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 
+    @Test
+    void leavesDeactivatedUserUnauthenticated() throws Exception {
+        JwtService jwtService = mock(JwtService.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        User user = new User();
+        user.setEmail("reader@koino.local");
+        user.setActive(false);
+
+        when(jwtService.extractEmail("valid-token")).thenReturn(user.getEmail());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer valid-token");
+
+        filter(jwtService, userRepository).doFilter(
+            request,
+            new MockHttpServletResponse(),
+            new MockFilterChain()
+        );
+
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+    }
+
     private JwtAuthenticationFilter filter(
         JwtService jwtService,
         UserRepository userRepository

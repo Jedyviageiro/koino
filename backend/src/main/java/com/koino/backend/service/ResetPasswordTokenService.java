@@ -35,7 +35,7 @@ public class ResetPasswordTokenService {
     @Transactional
     public ResetPasswordToken generateToken(String email) {
         User user = userRepository.findByEmail(email);
-        if (user == null) {
+        if (user == null || !user.isActive()) {
             throw new IllegalArgumentException("No user was found with that email");
         }
 
@@ -57,6 +57,11 @@ public class ResetPasswordTokenService {
             .orElseThrow(() -> new IllegalArgumentException("Invalid password reset token"));
         if (resetToken.isUsed() || !resetToken.getExpiresAt().isAfter(Instant.now())) {
             throw new IllegalArgumentException("Password reset token is expired or already used");
+        }
+        User user = userRepository.findById(resetToken.getUserId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid password reset token"));
+        if (!user.isActive()) {
+            throw new IllegalArgumentException("Invalid password reset token");
         }
         return resetToken;
     }

@@ -1,6 +1,8 @@
 package com.koino.backend.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,6 +80,12 @@ public class UserController {
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
+    }
+
+    @PatchMapping("/me/deactivate")
+    public ResponseEntity<Void> deactivateUser(@AuthenticationPrincipal User user) {
+        userService.deactivateUser(user.getUserId());
+        return ResponseEntity.noContent().build();
     }
 
 }
