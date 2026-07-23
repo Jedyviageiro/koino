@@ -30,5 +30,6 @@ public class UserActivePlan {
 
     private Integer planSequenceNumber;
     private LocalDate startDate;
+    private Integer estimatedMinutesPerDay;
     private boolean isCompleted = false; // Tracks if the whole plan is finished
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.koino.backend.dto.plan.PlanTemplateDTO;
 import com.koino.backend.dto.plan.UserActivePlanResponse;
+import com.koino.backend.dto.plan.UserPlanProgressResponse;
 import com.koino.backend.dto.plan.UserPlanTaskResponse;
 import com.koino.backend.model.User;
 import com.koino.backend.service.PlanService;
@@ -40,6 +41,22 @@ public class PlanController {
         @AuthenticationPrincipal User user
     ) {
         return ResponseEntity.of(planService.getCurrentPlan(user.getUserId()));
+    }
+
+    @GetMapping("/me/today")
+    public ResponseEntity<UserPlanTaskResponse> getTodayTask(
+        @AuthenticationPrincipal User user
+    ) {
+        return planService.getTodayTask(user.getUserId())
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/me/current/progress")
+    public ResponseEntity<UserPlanProgressResponse> getCurrentProgress(
+        @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.of(planService.getCurrentProgress(user.getUserId()));
     }
 
     @GetMapping("/me/{activePlanId}/tasks")

@@ -2,15 +2,13 @@ package com.koino.backend.dto.plan;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
 
-public record UserPlanTaskResponse(
+public record UserPlanProgressPointResponse(
     Long taskId,
     Integer dayNumber,
     LocalDate scheduledDate,
-    String readingAssignment,
-    Integer estimatedMinutes,
     boolean completed,
     Instant completedAt,
-    List<ReadingPassageResponse> passages
+    int cumulativeCompletedDays,
+    double completionPercentage
 ) {}

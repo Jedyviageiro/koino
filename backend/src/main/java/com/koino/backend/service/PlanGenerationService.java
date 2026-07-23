@@ -24,6 +24,7 @@ import com.koino.backend.model.Chapter;
 import com.koino.backend.model.PlanTemplate;
 import com.koino.backend.model.User;
 import com.koino.backend.model.UserActivePlan;
+import com.koino.backend.model.UserPlanPassage;
 import com.koino.backend.model.UserPlanTask;
 import com.koino.backend.repository.ChapterRepository;
 import com.koino.backend.repository.PlanTemplateRepository;
@@ -176,20 +177,38 @@ public class PlanGenerationService implements CommandLineRunner {
         activePlan.setPlanTemplate(template);
         activePlan.setPlanSequenceNumber(planSequenceNumber);
         activePlan.setStartDate(normalizeScheduleDate(startingDate, workPace));
+        activePlan.setEstimatedMinutesPerDay(pace.estimatedMinutesPerDay());
         activePlan.setCompleted(false);
         activePlan = activePlanRepository.save(activePlan);
 
-        List<String> assignments = createReadingAssignments(chapters, pace.durationDays());
+        List<ReadingAssignment> assignments = createReadingAssignments(
+            chapters,
+            pace.durationDays()
+        );
         List<UserPlanTask> tasks = new ArrayList<>(assignments.size());
         LocalDate scheduledDate = activePlan.getStartDate();
 
         for (int index = 0; index < assignments.size(); index++) {
+            ReadingAssignment assignment = assignments.get(index);
             UserPlanTask task = new UserPlanTask();
             task.setActivePlan(activePlan);
             task.setDayNumber(index + 1);
             task.setScheduledDate(scheduledDate);
-            task.setReadingAssignment(assignments.get(index));
+            task.setReadingAssignment(assignment.displayText());
+            task.setEstimatedMinutes(pace.estimatedMinutesPerDay());
             task.setCompleted(false);
+
+            for (int passageIndex = 0; passageIndex < assignment.segments().size(); passageIndex++) {
+                ReadingSegment segment = assignment.segments().get(passageIndex);
+                UserPlanPassage passage = new UserPlanPassage();
+                passage.setTask(task);
+                passage.setChapter(segment.chapter());
+                passage.setFirstVerse(segment.firstVerse());
+                passage.setLastVerse(segment.lastVerse());
+                passage.setPassageOrder(passageIndex + 1);
+                task.getPassages().add(passage);
+            }
+
             tasks.add(task);
             scheduledDate = getNextScheduleDate(scheduledDate, workPace);
         }
@@ -254,7 +273,10 @@ public class PlanGenerationService implements CommandLineRunner {
         return chapters;
     }
 
-    private List<String> createReadingAssignments(List<Chapter> chapters, int durationDays) {
+    private List<ReadingAssignment> createReadingAssignments(
+        List<Chapter> chapters,
+        int durationDays
+    ) {
         int totalVerses = chapters.stream()
             .mapToInt(chapter -> chapter.getVerseCount() == null ? 0 : chapter.getVerseCount())
             .sum();
@@ -267,7 +289,7 @@ public class PlanGenerationService implements CommandLineRunner {
         int baseVersesPerTask = totalVerses / taskCount;
         int remainder = totalVerses % taskCount;
         ReadingCursor cursor = new ReadingCursor();
-        List<String> assignments = new ArrayList<>(taskCount);
+        List<ReadingAssignment> assignments = new ArrayList<>(taskCount);
 
         for (int day = 0; day < taskCount; day++) {
             int versesForDay = baseVersesPerTask + (day < remainder ? 1 : 0);
@@ -277,12 +299,13 @@ public class PlanGenerationService implements CommandLineRunner {
         return assignments;
     }
 
-    private String readVerses(
+    private ReadingAssignment readVerses(
         List<Chapter> chapters,
         ReadingCursor cursor,
         int requestedVerses
     ) {
         Map<String, List<String>> segmentsByBook = new LinkedHashMap<>();
+        List<ReadingSegment> segments = new ArrayList<>();
         int remaining = requestedVerses;
 
         while (remaining > 0 && cursor.chapterIndex < chapters.size()) {
@@ -296,6 +319,7 @@ public class PlanGenerationService implements CommandLineRunner {
 
             segmentsByBook.computeIfAbsent(bookTitle, ignored -> new ArrayList<>())
                 .add(formatChapterSegment(chapter, firstVerse, lastVerse));
+            segments.add(new ReadingSegment(chapter, firstVerse, lastVerse));
 
             remaining -= take;
             cursor.verseNumber = lastVerse + 1;
@@ -305,9 +329,10 @@ public class PlanGenerationService implements CommandLineRunner {
             }
         }
 
-        return segmentsByBook.entrySet().stream()
+        String displayText = segmentsByBook.entrySet().stream()
             .map(entry -> entry.getKey() + " " + String.join("; ", entry.getValue()))
             .collect(Collectors.joining("; "));
+        return new ReadingAssignment(displayText, List.copyOf(segments));
     }
 
     private String formatChapterSegment(Chapter chapter, int firstVerse, int lastVerse) {
@@ -435,6 +460,17 @@ public class PlanGenerationService implements CommandLineRunner {
     private record PaceVariant(
         int durationDays,
         int estimatedMinutesPerDay
+    ) {}
+
+    private record ReadingAssignment(
+        String displayText,
+        List<ReadingSegment> segments
+    ) {}
+
+    private record ReadingSegment(
+        Chapter chapter,
+        int firstVerse,
+        int lastVerse
     ) {}
 
     private record ScenarioRoute(

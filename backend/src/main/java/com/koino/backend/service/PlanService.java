@@ -1,12 +1,18 @@
 package com.koino.backend.service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import com.koino.backend.dto.plan.PlanTemplateDTO;
+import com.koino.backend.dto.plan.ReadingPassageResponse;
 import com.koino.backend.dto.plan.UserActivePlanResponse;
+import com.koino.backend.dto.plan.UserPlanProgressPointResponse;
+import com.koino.backend.dto.plan.UserPlanProgressResponse;
 import com.koino.backend.dto.plan.UserPlanTaskResponse;
 import com.koino.backend.model.UserActivePlan;
+import com.koino.backend.model.UserPlanPassage;
 import com.koino.backend.model.UserPlanTask;
 import com.koino.backend.model.UserProfile;
 
@@ -65,11 +71,50 @@ public class PlanService {
 
     @Transactional(readOnly = true)
     public Optional<UserActivePlanResponse> getCurrentPlan(Long userId) {
-        return activePlanRepository.findByUserUserIdOrderByPlanSequenceNumberAsc(userId)
-            .stream()
-            .filter(plan -> !plan.isCompleted())
-            .findFirst()
-            .map(this::toActivePlanResponse);
+        return findCurrentPlan(userId).map(this::toActivePlanResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserPlanTaskResponse> getTodayTask(Long userId) {
+        return findCurrentPlan(userId)
+            .flatMap(plan -> firstIncompleteTask(plan.getActivePlanId()))
+            .filter(task -> !task.getScheduledDate().isAfter(LocalDate.now()))
+            .map(this::toTaskResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserPlanProgressResponse> getCurrentProgress(Long userId) {
+        return findCurrentPlan(userId).map(plan -> {
+            List<UserPlanTask> tasks = taskRepository
+                .findByActivePlanActivePlanIdOrderByDayNumber(plan.getActivePlanId());
+            int totalDays = tasks.size();
+            int cumulativeCompleted = 0;
+            List<UserPlanProgressPointResponse> dailyProgress =
+                new java.util.ArrayList<>(totalDays);
+
+            for (UserPlanTask task : tasks) {
+                if (task.isCompleted()) {
+                    cumulativeCompleted++;
+                }
+                double percentage = totalDays == 0
+                    ? 0
+                    : cumulativeCompleted * 100.0 / totalDays;
+                dailyProgress.add(new UserPlanProgressPointResponse(
+                    task.getTaskId(),
+                    task.getDayNumber(),
+                    task.getScheduledDate(),
+                    task.isCompleted(),
+                    task.getCompletedAt(),
+                    cumulativeCompleted,
+                    percentage
+                ));
+            }
+
+            return new UserPlanProgressResponse(
+                toActivePlanResponse(plan, tasks),
+                List.copyOf(dailyProgress)
+            );
+        });
     }
 
     @Transactional(readOnly = true)
@@ -95,18 +140,26 @@ public class PlanService {
 
         UserActivePlan activePlan = task.getActivePlan();
 
-        UserActivePlan currentPlan = activePlanRepository
-            .findByUserUserIdOrderByPlanSequenceNumberAsc(userId)
-            .stream()
-            .filter(plan -> !plan.isCompleted())
-            .findFirst()
+        UserActivePlan currentPlan = findCurrentPlan(userId)
             .orElseThrow(() -> new IllegalStateException("The user has no active plan"));
 
         if (!currentPlan.getActivePlanId().equals(activePlan.getActivePlanId())) {
             throw new IllegalStateException("Only tasks from the current plan can be completed");
         }
 
+        UserPlanTask nextTask = firstIncompleteTask(activePlan.getActivePlanId())
+            .orElseThrow(() -> new IllegalStateException("The plan has no incomplete reading"));
+        if (!nextTask.getTaskId().equals(task.getTaskId())) {
+            throw new IllegalStateException("Readings must be completed in order");
+        }
+        if (task.getScheduledDate().isAfter(LocalDate.now())) {
+            throw new IllegalStateException(
+                "This reading is locked until " + task.getScheduledDate()
+            );
+        }
+
         task.setCompleted(true);
+        task.setCompletedAt(Instant.now());
         task = taskRepository.save(task);
 
         if (!taskRepository.existsByActivePlanActivePlanIdAndIsCompletedFalse(
@@ -135,6 +188,13 @@ public class PlanService {
     private UserActivePlanResponse toActivePlanResponse(UserActivePlan activePlan) {
         List<UserPlanTask> tasks = taskRepository
             .findByActivePlanActivePlanIdOrderByDayNumber(activePlan.getActivePlanId());
+        return toActivePlanResponse(activePlan, tasks);
+    }
+
+    private UserActivePlanResponse toActivePlanResponse(
+        UserActivePlan activePlan,
+        List<UserPlanTask> tasks
+    ) {
         int completedDays = (int) tasks.stream().filter(UserPlanTask::isCompleted).count();
         int totalDays = tasks.size();
         double percentage = totalDays == 0 ? 0 : completedDays * 100.0 / totalDays;
@@ -146,7 +206,7 @@ public class PlanService {
             activePlan.getPlanSequenceNumber(),
             activePlan.getStartDate(),
             tasks.isEmpty() ? activePlan.getStartDate() : tasks.getLast().getScheduledDate(),
-            activePlan.getPlanTemplate().getEstimatedMinutesPerDay(),
+            activePlan.getEstimatedMinutesPerDay(),
             completedDays,
             totalDays,
             percentage,
@@ -160,8 +220,37 @@ public class PlanService {
             task.getDayNumber(),
             task.getScheduledDate(),
             task.getReadingAssignment(),
-            task.isCompleted()
+            task.getEstimatedMinutes(),
+            task.isCompleted(),
+            task.getCompletedAt(),
+            task.getPassages().stream().map(this::toPassageResponse).toList()
         );
+    }
+
+    private ReadingPassageResponse toPassageResponse(UserPlanPassage passage) {
+        return new ReadingPassageResponse(
+            passage.getPassageId(),
+            passage.getChapter().getChapterId(),
+            passage.getChapter().getBook().getBookId(),
+            passage.getChapter().getBook().getTitle(),
+            passage.getChapter().getChapterNumber(),
+            passage.getFirstVerse(),
+            passage.getLastVerse()
+        );
+    }
+
+    private Optional<UserActivePlan> findCurrentPlan(Long userId) {
+        return activePlanRepository.findByUserUserIdOrderByPlanSequenceNumberAsc(userId)
+            .stream()
+            .filter(plan -> !plan.isCompleted())
+            .findFirst();
+    }
+
+    private Optional<UserPlanTask> firstIncompleteTask(Long activePlanId) {
+        return taskRepository.findByActivePlanActivePlanIdOrderByDayNumber(activePlanId)
+            .stream()
+            .filter(task -> !task.isCompleted())
+            .findFirst();
     }
 }
 
