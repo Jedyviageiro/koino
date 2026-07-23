@@ -11,6 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d koino_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     
   backend:
     build: ./backend
@@ -29,7 +34,27 @@ services:
       - JWT_SECRET=${JWT_SECRET:-a29pbm8tZGV2ZWxvcG1lbnQtand0LXNlY3JldC1jaGFuZ2UtbWUtMjAyNg==}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173}
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8080/api/bible/books"]
+      interval: 10s
+      timeout: 5s
+      start_period: 45s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+    container_name: koino_frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data:
