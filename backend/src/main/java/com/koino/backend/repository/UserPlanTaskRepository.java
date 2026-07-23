@@ -1,6 +1,7 @@
 package com.koino.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,4 +17,8 @@ public interface UserPlanTaskRepository extends JpaRepository<UserPlanTask, Long
         Long activePlanId,
         Long userId
     );
+
+    Optional<UserPlanTask> findByTaskIdAndActivePlanUserUserId(Long taskId, Long userId);
+
+    boolean existsByActivePlanActivePlanIdAndIsCompletedFalse(Long activePlanId);
 }

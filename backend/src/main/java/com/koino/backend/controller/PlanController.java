@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,5 +48,13 @@ public class PlanController {
         @PathVariable Long activePlanId
     ) {
         return planService.getPlanTasks(user.getUserId(), activePlanId);
+    }
+
+    @PatchMapping("/me/tasks/{taskId}/complete")
+    public UserPlanTaskResponse completeTask(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long taskId
+    ) {
+        return planService.completeTask(user.getUserId(), taskId);
     }
 }

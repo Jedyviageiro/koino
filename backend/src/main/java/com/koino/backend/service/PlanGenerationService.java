@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ import com.koino.backend.repository.UserPlanTaskRepository;
 import com.koino.backend.repository.UserRepository;
 
 @Service
-public class PlanGenerationService {
+public class PlanGenerationService implements CommandLineRunner {
 
     private static final String CATALOG_PATH = "reading-plans/reading-plan-catalog.json";
     private static final Set<String> TEACHING_PLAN_CHAPTERS = Set.of(
@@ -71,6 +72,14 @@ public class PlanGenerationService {
             Function.identity()
         ));
         this.scenarioRoutes = List.copyOf(catalog.scenarioRoutes());
+    }
+
+    @Override
+    @Transactional
+    public void run(String... args) {
+        plansById.values().stream()
+            .sorted((left, right) -> left.id().compareTo(right.id()))
+            .forEach(this::getOrCreateTemplate);
     }
 
     @Transactional

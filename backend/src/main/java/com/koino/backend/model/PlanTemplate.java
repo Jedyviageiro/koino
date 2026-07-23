@@ -22,7 +22,7 @@ public class PlanTemplate {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String description;
 
     private String difficulty;
@@ -33,7 +33,7 @@ public class PlanTemplate {
     @Column(nullable = false)
     private Integer totalChapters;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String bookNames;
 
     @Column(nullable = false)
