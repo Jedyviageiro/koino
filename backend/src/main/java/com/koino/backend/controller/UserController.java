@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.koino.backend.dto.auth.LoginRequest;
@@ -21,6 +22,7 @@ import com.koino.backend.dto.auth.RegisterRequest;
 import com.koino.backend.dto.auth.RegisterResponse;
 import com.koino.backend.dto.auth.ResetPasswordTokenRequest;
 import com.koino.backend.dto.auth.ResetPasswordTokenResponse;
+import com.koino.backend.dto.auth.SaveNewPasswordRequest;
 import com.koino.backend.dto.user.NotificationResponse;
 import com.koino.backend.dto.user.ProfilePictureResponse;
 import com.koino.backend.dto.user.UserStreakResponse;
@@ -105,6 +107,18 @@ public class UserController {
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
+    }
+
+    @PostMapping("/resetPassword/confirm")
+    public ResponseEntity<Void> saveNewPassword(
+        @Valid @RequestBody SaveNewPasswordRequest request
+    ) {
+        resetPasswordTokenService.saveNewPassword(
+            request.newPassword(),
+            request.confirmPassword(),
+            request.token()
+        );
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/me/deactivate")

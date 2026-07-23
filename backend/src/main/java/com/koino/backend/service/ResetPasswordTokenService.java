@@ -3,11 +3,13 @@ package com.koino.backend.service;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.koino.backend.model.ResetPasswordToken;
 import com.koino.backend.model.User;
@@ -20,15 +22,18 @@ public class ResetPasswordTokenService {
 
     private final ResetPasswordTokenRepository resetPasswordTokenRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final Duration expiration;
 
     public ResetPasswordTokenService(
         ResetPasswordTokenRepository resetPasswordTokenRepository,
         UserRepository userRepository,
+        PasswordEncoder passwordEncoder,
         @Value("${security.password-reset.expiration}") Duration expiration
     ) {
         this.resetPasswordTokenRepository = resetPasswordTokenRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.expiration = expiration;
     }
 
@@ -64,5 +69,44 @@ public class ResetPasswordTokenService {
             throw new IllegalArgumentException("Invalid password reset token");
         }
         return resetToken;
+    }
+
+    @Transactional
+    public void saveNewPassword(
+        String newPassword,
+        String confirmPassword,
+        String token
+    ) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("The new passwords do not match");
+        }
+
+        ResetPasswordToken resetToken = resetPasswordTokenRepository
+            .findByTokenForUpdate(token)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Invalid password reset token"
+            ));
+        validateUsableToken(resetToken);
+
+        User user = userRepository.findById(resetToken.getUserId())
+            .filter(User::isActive)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Invalid password reset token"
+            ));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        resetToken.setUsed(true);
+        resetPasswordTokenRepository.save(resetToken);
+    }
+
+    private void validateUsableToken(ResetPasswordToken resetToken) {
+        if (resetToken.isUsed() || !resetToken.getExpiresAt().isAfter(Instant.now())) {
+            throw new IllegalArgumentException(
+                "Password reset token is expired or already used"
+            );
+        }
     }
 }

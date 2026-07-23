@@ -70,7 +70,8 @@ public class SecurityConfig {
                     "/api/bible/**",
                     "/api/users/login",
                     "/api/users/register",
-                    "/api/users/resetPassword"
+                    "/api/users/resetPassword",
+                    "/api/users/resetPassword/confirm"
                 ).permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(
