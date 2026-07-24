@@ -67,6 +67,17 @@ class UserServiceTests {
     }
 
     @Test
+    void checksEmailExistenceUsingNormalizedInput() {
+        UserRepository repository = mock(UserRepository.class);
+        when(repository.existsByEmail("reader@koino.local")).thenReturn(true);
+
+        boolean exists = service(repository).emailExists("  READER@KOINO.LOCAL ");
+
+        assertThat(exists).isTrue();
+        verify(repository).existsByEmail("reader@koino.local");
+    }
+
+    @Test
     void incrementsStreakOnlyAfterSuccessfulLoginOnANewDay() {
         UserRepository repository = mock(UserRepository.class);
         PasswordEncoder encoder = mock(PasswordEncoder.class);

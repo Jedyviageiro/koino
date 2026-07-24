@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
                     "/api/bible/**",
+                    "/api/users/email-exists",
                     "/api/users/login",
                     "/api/users/register",
                     "/api/users/resetPassword",

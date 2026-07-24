@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.koino.backend.dto.auth.LoginRequest;
 import com.koino.backend.dto.auth.LoginResponse;
+import com.koino.backend.dto.auth.EmailExistsResponse;
 import com.koino.backend.dto.auth.RegisterRequest;
 import com.koino.backend.dto.auth.RegisterResponse;
 import com.koino.backend.dto.auth.ResetPasswordTokenRequest;
@@ -93,6 +95,11 @@ public class UserController {
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/email-exists")
+    public EmailExistsResponse emailExists(@RequestParam String email) {
+        return new EmailExistsResponse(userService.emailExists(email));
     }
 
     @PostMapping("/resetPassword")

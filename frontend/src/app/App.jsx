@@ -1,8 +1,38 @@
+import { useEffect, useState } from 'react'
+import LoginPage from '@/pages/auth/login/LoginPage.jsx'
+import RegisterPage from '@/pages/auth/register/RegisterPage.jsx'
+
 function App() {
-  return (
-    <main className="flex min-h-svh items-center justify-center bg-canvas p-6 text-ink">
-      <h1 className="text-4xl font-semibold">Koino</h1>
-    </main>
+  const [path, setPath] = useState(window.location.pathname)
+
+  useEffect(() => {
+    function handlePopState() {
+      setPath(window.location.pathname)
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  function navigate(nextPath) {
+    if (nextPath === path) return
+
+    function updateRoute() {
+      window.history.pushState({}, '', nextPath)
+      setPath(nextPath)
+    }
+
+    if (document.startViewTransition) {
+      document.startViewTransition(updateRoute)
+    } else {
+      updateRoute()
+    }
+  }
+
+  return path === '/register' ? (
+    <RegisterPage onNavigate={navigate} />
+  ) : (
+    <LoginPage onNavigate={navigate} />
   )
 }
 

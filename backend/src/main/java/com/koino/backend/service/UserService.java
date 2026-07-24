@@ -2,6 +2,7 @@ package com.koino.backend.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,13 @@ public class UserService {
     }
 
     public User createUser(String fullname, String email, String password){
-        if(userRepository.existsByEmail(email)){
+        String normalizedEmail = normalizeEmail(email);
+        if(userRepository.existsByEmail(normalizedEmail)){
             throw new IllegalArgumentException("Email already exists");
         } else{
             User user = new User();
             user.setFullname(fullname);
-            user.setEmail(email);
+            user.setEmail(normalizedEmail);
 
             String hashedPassword = passwordEncoder.encode(password);
             user.setPassword(hashedPassword);
@@ -42,7 +44,7 @@ public class UserService {
 
     @Transactional
     public User loginUser(String email, String password){
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(normalizeEmail(email));
 
         if(user == null || !user.isActive()){
             throw new IllegalArgumentException("Invalid email or password");
@@ -63,6 +65,10 @@ public class UserService {
             user.getLongestStreak(),
             user.getLastLoginDate()
         );
+    }
+
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(normalizeEmail(email));
     }
 
     @Transactional
@@ -99,6 +105,13 @@ public class UserService {
         user.setLastLoginDate(today);
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+    private String normalizeEmail(String email) {
+        if (email == null || email.isBlank()) {
+            return "";
+        }
+        return email.trim().toLowerCase(Locale.ROOT);
     }
 
 }
