@@ -7,7 +7,6 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   Check,
-  CheckCircle2,
   Clock3,
   Compass,
   Feather,
@@ -21,6 +20,7 @@ import {
   Sunrise,
   TrendingUp,
 } from 'lucide-react'
+import CreatingPlanModal from '@/components/onboarding/CreatingPlanModal.jsx'
 import { completeOnboarding } from '@/features/onboarding/onboardingService.js'
 
 const steps = [
@@ -247,7 +247,7 @@ function OnboardingFlow({ onFailure }) {
   const [stepIndex, setStepIndex] = useState(0)
   const [answers, setAnswers] = useState(initialAnswers)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isComplete, setIsComplete] = useState(false)
+  const [planModalPhase, setPlanModalPhase] = useState(null)
 
   const step = steps[stepIndex]
   const StepIcon = step.icon
@@ -259,11 +259,16 @@ function OnboardingFlow({ onFailure }) {
 
   async function finishOnboarding() {
     setIsSubmitting(true)
+    setPlanModalPhase('creating')
 
     try {
-      await completeOnboarding(answers)
-      setIsComplete(true)
+      await Promise.all([
+        completeOnboarding(answers),
+        new Promise((resolve) => window.setTimeout(resolve, 1800)),
+      ])
+      setPlanModalPhase('ready')
     } catch (error) {
+      setPlanModalPhase(null)
       onFailure(
         error.message || 'Unable to save your preferences. Please try again.',
       )
@@ -280,28 +285,9 @@ function OnboardingFlow({ onFailure }) {
     }
   }
 
-  if (isComplete) {
-    return (
-      <div className="flex min-h-[570px] animate-[auth-panel-in_320ms_ease-out] flex-col items-center justify-center text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#e9f8f2] text-[#22a978]">
-          <CheckCircle2 className="h-8 w-8" strokeWidth={1.8} aria-hidden="true" />
-        </div>
-        <p className="mt-6 text-[11px] font-semibold uppercase text-[#727780]">
-          You&apos;re all set
-        </p>
-        <h2 className="mt-3 text-[28px] font-semibold text-[#111114]">
-          Your reading plan is ready.
-        </h2>
-        <p className="mt-3 max-w-[390px] text-[13px] leading-6 text-[#7b7f87]">
-          Koino created your first progressive plan around the rhythm and
-          starting point you chose.
-        </p>
-      </div>
-    )
-  }
-
   return (
-    <div className="flex min-h-[576px] w-full flex-col">
+    <>
+      <div className="flex min-h-[576px] w-full flex-col">
       <header className="flex items-center">
         <button
           type="button"
@@ -391,7 +377,10 @@ function OnboardingFlow({ onFailure }) {
           ))}
         </div>
       </section>
-    </div>
+      </div>
+
+      {planModalPhase && <CreatingPlanModal phase={planModalPhase} />}
+    </>
   )
 }
 
