@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import LoginPage from '@/pages/auth/login/LoginPage.jsx'
 import RegisterPage from '@/pages/auth/register/RegisterPage.jsx'
+import OnboardingPage from '@/pages/onboarding/OnboardingPage.jsx'
 
 function App() {
   const [path, setPath] = useState(window.location.pathname)
@@ -27,6 +28,10 @@ function App() {
     } else {
       updateRoute()
     }
+  }
+
+  if (path === '/onboarding') {
+    return <OnboardingPage onNavigate={navigate} />
   }
 
   return path === '/register' ? (

@@ -2,6 +2,38 @@ import { Zap } from 'lucide-react'
 import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
 import formImage from '@/assets/images/Form-img.png'
 
+function OnboardingSkeleton({ overlay = false }) {
+  return (
+    <div
+      className={`w-full ${
+        overlay
+          ? 'pointer-events-none absolute inset-0 z-10 bg-white animate-[onboarding-skeleton-exit_1100ms_ease-in-out_forwards]'
+          : ''
+      }`}
+      role="status"
+      aria-label="Loading onboarding"
+    >
+      <div className="auth-skeleton h-7 w-28 rounded-md" />
+      <div className="mt-12 auth-skeleton h-8 w-3/5 rounded-md" />
+      <div className="mt-3 auth-skeleton h-4 w-2/5 rounded" />
+      <div className="mt-10 grid grid-cols-2 gap-4">
+        <div className="auth-skeleton h-24 rounded-[12px]" />
+        <div className="auth-skeleton h-24 rounded-[12px]" />
+      </div>
+      <div className="mt-5 auth-skeleton h-14 w-full rounded-[12px]" />
+      <div className="mt-3 auth-skeleton h-14 w-full rounded-[12px]" />
+      <div className="mt-8 flex items-center gap-3">
+        <div className="auth-skeleton h-11 w-11 rounded-full" />
+        <div className="min-w-0 flex-1">
+          <div className="auth-skeleton h-3 w-2/5 rounded" />
+          <div className="mt-2 auth-skeleton h-3 w-3/5 rounded" />
+        </div>
+      </div>
+      <span className="sr-only">Preparing onboarding</span>
+    </div>
+  )
+}
+
 function AuthSwitcher({ mode, onNavigate }) {
   function goTo(event, path) {
     event.preventDefault()
@@ -48,39 +80,35 @@ function AuthLayout({
   subtitle,
   onNavigate,
   onboardingLoading = false,
+  onboardingContent = null,
   children,
 }) {
+  const onboardingActive = onboardingLoading || Boolean(onboardingContent)
+
   return (
     <main className="min-h-svh bg-white px-7 py-6 font-sans text-[#111114] sm:px-9 sm:py-7">
       <div className="mx-auto grid min-h-[650px] w-full max-w-[1380px] lg:grid-cols-[minmax(370px,0.79fr)_minmax(0,1.21fr)] lg:gap-6 xl:min-h-[700px]">
         <section
           className={`flex justify-center px-6 py-12 sm:px-9 lg:px-10 lg:pt-16 ${
-            onboardingLoading ? 'lg:order-2' : 'lg:order-1'
+            onboardingActive ? 'lg:order-2' : 'lg:order-1'
           }`}
         >
-          {onboardingLoading ? (
-            <div
-              className="w-full max-w-[620px] animate-[skeleton-panel-in_480ms_ease-out]"
-              role="status"
-              aria-label="Loading onboarding"
-            >
-              <div className="auth-skeleton h-7 w-28 rounded-md" />
-              <div className="mt-12 auth-skeleton h-8 w-3/5 rounded-md" />
-              <div className="mt-3 auth-skeleton h-4 w-2/5 rounded" />
-              <div className="mt-10 grid grid-cols-2 gap-4">
-                <div className="auth-skeleton h-24 rounded-[12px]" />
-                <div className="auth-skeleton h-24 rounded-[12px]" />
+          {onboardingContent ? (
+            <div className="relative w-full max-w-[620px]">
+              <div
+                className={
+                  onboardingLoading
+                    ? 'animate-[onboarding-content-reveal_1100ms_ease-out_forwards]'
+                    : 'animate-[auth-panel-in_320ms_ease-out]'
+                }
+              >
+                {onboardingContent}
               </div>
-              <div className="mt-5 auth-skeleton h-14 w-full rounded-[12px]" />
-              <div className="mt-3 auth-skeleton h-14 w-full rounded-[12px]" />
-              <div className="mt-8 flex items-center gap-3">
-                <div className="auth-skeleton h-11 w-11 rounded-full" />
-                <div className="min-w-0 flex-1">
-                  <div className="auth-skeleton h-3 w-2/5 rounded" />
-                  <div className="mt-2 auth-skeleton h-3 w-3/5 rounded" />
-                </div>
-              </div>
-              <span className="sr-only">Preparing onboarding</span>
+              {onboardingLoading && <OnboardingSkeleton overlay />}
+            </div>
+          ) : onboardingLoading ? (
+            <div className="w-full max-w-[620px] animate-[skeleton-panel-in_480ms_ease-out]">
+              <OnboardingSkeleton />
             </div>
           ) : (
             <div className="w-full max-w-[336px]">
@@ -115,7 +143,7 @@ function AuthLayout({
 
         <section
           className={`relative hidden min-h-[650px] overflow-hidden rounded-[24px] lg:block xl:min-h-[700px] ${
-            onboardingLoading ? 'lg:order-1' : 'lg:order-2'
+            onboardingActive ? 'lg:order-1' : 'lg:order-2'
           }`}
           style={{ viewTransitionName: 'auth-visual' }}
         >

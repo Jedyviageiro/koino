@@ -15,6 +15,11 @@
   box-sizing: border-box;
 }
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 html,
 body,
 #root {
@@ -85,6 +90,32 @@ body,
 @keyframes skeleton-shimmer {
   to {
     background-position-x: -200%;
+  }
+}
+
+@keyframes onboarding-skeleton-exit {
+  0%,
+  58% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes onboarding-content-reveal {
+  0%,
+  55% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

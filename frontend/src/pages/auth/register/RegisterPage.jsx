@@ -1,26 +1,15 @@
 import { useCallback, useState } from 'react'
-import { flushSync } from 'react-dom'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import RegisterForm from '@/components/auth/register/RegisterForm.jsx'
 
 function RegisterPage({ onNavigate }) {
-  const [onboardingLoading, setOnboardingLoading] = useState(false)
   const [status, setStatus] = useState(null)
 
   const beginOnboarding = useCallback(() => {
     setStatus(null)
-
-    function updateLayout() {
-      flushSync(() => setOnboardingLoading(true))
-    }
-
-    if (document.startViewTransition) {
-      document.startViewTransition(updateLayout)
-    } else {
-      updateLayout()
-    }
-  }, [])
+    onNavigate('/onboarding')
+  }, [onNavigate])
 
   const closeStatus = useCallback(() => {
     if (status?.type === 'success') {
@@ -53,7 +42,6 @@ function RegisterPage({ onNavigate }) {
         title="Create your account."
         subtitle="Start your journey of faith with Koino."
         onNavigate={onNavigate}
-        onboardingLoading={onboardingLoading}
       >
         <RegisterForm
           onNavigate={onNavigate}

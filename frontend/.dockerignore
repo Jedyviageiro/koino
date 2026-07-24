@@ -8,3 +8,7 @@ dist
 !.env.example
 Dockerfile*
 README.md
+.edge-cdp-profile
+*-check.png
+registration-*-modal.png
+onboarding-transition-result.png
