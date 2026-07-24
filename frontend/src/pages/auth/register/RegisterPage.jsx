@@ -1,14 +1,23 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import RegisterForm from '@/components/auth/register/RegisterForm.jsx'
 
 function RegisterPage({ onNavigate }) {
   const [status, setStatus] = useState(null)
+  const onboardingTimerRef = useRef(null)
+
+  useEffect(
+    () => () => window.clearTimeout(onboardingTimerRef.current),
+    [],
+  )
 
   const beginOnboarding = useCallback(() => {
     setStatus(null)
-    onNavigate('/onboarding')
+    onboardingTimerRef.current = window.setTimeout(
+      () => onNavigate('/onboarding'),
+      160,
+    )
   }, [onNavigate])
 
   const closeStatus = useCallback(() => {

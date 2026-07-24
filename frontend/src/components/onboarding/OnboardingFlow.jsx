@@ -4,15 +4,18 @@ import {
   ArrowRight,
   BookMarked,
   BookOpen,
+  BriefcaseBusiness,
   CalendarDays,
   Check,
   CheckCircle2,
   Clock3,
+  Compass,
   Feather,
   Gauge,
   Library,
   LoaderCircle,
   Moon,
+  RefreshCw,
   Sparkles,
   Sun,
   Sunrise,
@@ -22,115 +25,133 @@ import { completeOnboarding } from '@/features/onboarding/onboardingService.js'
 
 const steps = [
   {
-    eyebrow: 'Getting started',
+    eyebrow: 'Your journey',
     title: 'Welcome to Koino.',
-    subtitle:
-      "To build a reading plan that fits your life, let's start with a little background.",
+    subtitle: 'Tell us where you are today so your first plan meets you there.',
     field: 'journeyDescription',
+    icon: Compass,
     options: [
       {
         value: 'NEW_TO_FAITH',
         title: 'Just starting out',
-        description: 'New to reading the Bible and ready to learn',
+        description: 'New to the Bible and ready to learn',
         icon: Clock3,
       },
       {
         value: 'DEEPEN_UNDERSTANDING',
-        title: 'Deepening my understanding',
-        description: "I've read some parts and want to grow further",
+        title: 'Deepen my understanding',
+        description: 'Build on what I already know',
         icon: TrendingUp,
       },
       {
         value: 'BUILD_READING_HABIT',
-        title: 'Building a daily habit',
-        description: 'I want a consistent, structured plan to follow',
+        title: 'Build a daily habit',
+        description: 'Create a consistent reading rhythm',
         icon: CalendarDays,
       },
     ],
   },
   {
-    eyebrow: 'Choose your path',
+    eyebrow: 'Starting point',
     title: 'Where would you like to begin?',
-    subtitle:
-      'Your starting point shapes the first plan while keeping the whole Bible ahead of you.',
+    subtitle: 'Choose the part of Scripture that will open your first plan.',
     field: 'preferredStartingPoint',
+    icon: BookMarked,
     options: [
       {
         value: 'GOSPELS',
         title: 'The Gospels',
-        description: 'Begin with the life and teachings of Jesus',
+        description: 'Life and teachings of Jesus',
+        detail: 'Begin with the story at the heart of the Christian faith.',
         icon: BookOpen,
-      },
-      {
-        value: 'NEW_TESTAMENT',
-        title: 'The New Testament',
-        description: 'Explore the early church, letters, and Christian life',
-        icon: BookMarked,
       },
       {
         value: 'OLD_TESTAMENT',
         title: 'The Old Testament',
-        description: 'Start with creation, covenant, wisdom, and the prophets',
+        description: 'Foundations, history, and wisdom',
+        detail: 'Explore the promises and stories that shape our faith.',
         icon: Library,
+      },
+      {
+        value: 'NEW_TESTAMENT',
+        title: 'The New Testament',
+        description: 'Letters and the early Church',
+        detail: 'Discover Christian life and the beginning of the Church.',
+        icon: BookMarked,
       },
     ],
   },
   {
-    eyebrow: 'Find your moment',
+    eyebrow: 'Daily rhythm',
     title: 'When do you read best?',
-    subtitle:
-      'Choose the part of your day when reflection feels most natural and sustainable.',
+    subtitle: 'Choose the moment when you are most likely to find some peace.',
     field: 'dailyRhythm',
+    icon: Sunrise,
     options: [
       {
         value: 'MORNING',
-        title: 'Morning',
-        description: 'Start the day with a clear mind and quiet focus',
+        title: 'Early morning',
+        description: 'Begin the day with a clear mind',
         icon: Sunrise,
       },
       {
         value: 'AFTERNOON',
-        title: 'Afternoon',
-        description: 'Pause and reset in the middle of your day',
+        title: 'During the day',
+        description: 'Pause, read, and reset',
         icon: Sun,
       },
       {
         value: 'EVENING',
-        title: 'Evening',
-        description: 'Slow down, reflect, and close the day intentionally',
+        title: 'In the evening',
+        description: 'Close the day with reflection',
         icon: Moon,
       },
     ],
   },
   {
-    eyebrow: 'Set your pace',
-    title: 'How much time feels realistic?',
-    subtitle:
-      'A sustainable rhythm matters more than speed. You can adjust this later.',
-    field: 'pace',
+    eyebrow: 'Your schedule',
+    title: 'What is your typical work pace?',
+    subtitle: 'Your daily routine helps us place reading where it can last.',
+    field: 'workPace',
+    icon: CalendarDays,
     options: [
       {
-        value: 'GENTLE',
-        workPace: 'FLEXIBLE',
-        dailyCapacityMinutes: 10,
-        title: 'A gentle rhythm',
-        description: 'Around 10 minutes, with a flexible weekly pace',
+        value: 'STEADY_NINE_TO_FIVE',
+        title: 'Steady 9-to-5',
+        description: 'A regular schedule with predictable hours',
+        icon: BriefcaseBusiness,
+      },
+      {
+        value: 'FLEXIBLE',
+        title: 'I have a flexible schedule',
+        description: 'My hours vary from day to day',
+        icon: RefreshCw,
+      },
+    ],
+  },
+  {
+    eyebrow: 'Reading capacity',
+    title: 'How much time can you set aside?',
+    subtitle: 'Choose an honest daily target. You can always adjust it later.',
+    field: 'dailyCapacityMinutes',
+    icon: Gauge,
+    options: [
+      {
+        value: 10,
+        title: '10 minutes',
+        description: 'A gentle daily commitment',
         icon: Feather,
       },
       {
-        value: 'STEADY',
-        workPace: 'STEADY_NINE_TO_FIVE',
-        dailyCapacityMinutes: 20,
-        title: 'Steady progress',
-        description: 'Around 20 minutes of focused reading each day',
+        value: 20,
+        title: '20 minutes',
+        description: 'A steady amount of focused time',
         icon: Gauge,
       },
       {
-        value: 'DEEP',
-        workPace: 'STEADY_NINE_TO_FIVE',
-        dailyCapacityMinutes: 30,
-        title: 'Go deeper',
-        description: 'Around 30 minutes for reading and reflection',
+        value: 30,
+        title: '30+ minutes',
+        description: 'Room to read and reflect more deeply',
         icon: Sparkles,
       },
     ],
@@ -141,9 +162,85 @@ const initialAnswers = {
   journeyDescription: 'NEW_TO_FAITH',
   preferredStartingPoint: 'GOSPELS',
   dailyRhythm: 'MORNING',
-  pace: 'GENTLE',
   workPace: 'FLEXIBLE',
   dailyCapacityMinutes: 10,
+}
+
+function Progress({ current }) {
+  return (
+    <div className="flex flex-1 items-center justify-center" aria-label={`Step ${current + 1} of ${steps.length}`}>
+      {steps.map((step, index) => {
+        const complete = index < current
+        const active = index === current
+
+        return (
+          <div key={step.field} className="flex items-center">
+            {index > 0 && (
+              <span
+                className={`mx-1 h-px w-3 transition-colors duration-500 sm:mx-2 sm:w-6 ${
+                  index <= current ? 'bg-[#1e55e5]' : 'bg-[#dfe1e5]'
+                }`}
+                aria-hidden="true"
+              />
+            )}
+            <span
+              className={`flex h-8 w-8 items-center justify-center rounded-full border text-[12px] font-semibold transition-all duration-300 ${
+                complete || active
+                  ? 'border-[#1e55e5] bg-[#1e55e5] text-white'
+                  : 'border-[#d8dbe0] bg-white text-[#8c929c]'
+              }`}
+              aria-current={active ? 'step' : undefined}
+            >
+              {complete ? <Check className="h-4 w-4" strokeWidth={2.4} /> : index + 1}
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function Choice({ option, selected, onSelect, detailed = false }) {
+  const Icon = option.icon
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`group flex w-full items-center gap-3 rounded-[8px] border px-3.5 py-3 text-left transition-[border-color,background-color,transform] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5] ${
+        selected
+          ? 'border-[#1e55e5] bg-[#f3f6ff]'
+          : 'border-[#e1e3e7] bg-white hover:-translate-y-px hover:border-[#aebde9]'
+      } ${detailed ? 'min-h-[88px]' : 'min-h-[66px]'}`}
+      aria-pressed={selected}
+    >
+      <span
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
+          selected
+            ? 'border-[#1e55e5] bg-[#1e55e5] text-white'
+            : 'border-[#9ba1ab] bg-white text-transparent'
+        }`}
+      >
+        <Check className="h-3 w-3" strokeWidth={2.6} />
+      </span>
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f2f3f4] text-[#34383e]">
+        <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[13px] font-semibold text-[#17191c]">
+          {option.title}
+        </span>
+        <span className="mt-0.5 block text-[11px] leading-4 text-[#767c86]">
+          {option.description}
+        </span>
+        {option.detail && (
+          <span className="mt-1 block text-[10px] leading-4 text-[#979ca4]">
+            {option.detail}
+          </span>
+        )}
+      </span>
+    </button>
+  )
 }
 
 function OnboardingFlow({ onFailure }) {
@@ -153,36 +250,18 @@ function OnboardingFlow({ onFailure }) {
   const [isComplete, setIsComplete] = useState(false)
 
   const step = steps[stepIndex]
+  const StepIcon = step.icon
   const isLastStep = stepIndex === steps.length - 1
 
   function selectOption(option) {
-    if (step.field === 'pace') {
-      setAnswers((current) => ({
-        ...current,
-        pace: option.value,
-        workPace: option.workPace,
-        dailyCapacityMinutes: option.dailyCapacityMinutes,
-      }))
-      return
-    }
-
-    setAnswers((current) => ({
-      ...current,
-      [step.field]: option.value,
-    }))
+    setAnswers((current) => ({ ...current, [step.field]: option.value }))
   }
 
   async function finishOnboarding() {
     setIsSubmitting(true)
 
     try {
-      await completeOnboarding({
-        journeyDescription: answers.journeyDescription,
-        preferredStartingPoint: answers.preferredStartingPoint,
-        dailyRhythm: answers.dailyRhythm,
-        workPace: answers.workPace,
-        dailyCapacityMinutes: answers.dailyCapacityMinutes,
-      })
+      await completeOnboarding(answers)
       setIsComplete(true)
     } catch (error) {
       onFailure(
@@ -203,18 +282,18 @@ function OnboardingFlow({ onFailure }) {
 
   if (isComplete) {
     return (
-      <div className="flex min-h-[520px] animate-[auth-panel-in_320ms_ease-out] flex-col items-center justify-center text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#e8f8f2] text-[#22a978]">
+      <div className="flex min-h-[570px] animate-[auth-panel-in_320ms_ease-out] flex-col items-center justify-center text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#e9f8f2] text-[#22a978]">
           <CheckCircle2 className="h-8 w-8" strokeWidth={1.8} aria-hidden="true" />
         </div>
-        <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#1e55e5]">
+        <p className="mt-6 text-[11px] font-semibold uppercase text-[#727780]">
           You&apos;re all set
         </p>
-        <h2 className="mt-3 text-[28px] font-semibold tracking-normal text-[#111114]">
+        <h2 className="mt-3 text-[28px] font-semibold text-[#111114]">
           Your reading plan is ready.
         </h2>
         <p className="mt-3 max-w-[390px] text-[13px] leading-6 text-[#7b7f87]">
-          Koino has created your first progressive plan from the rhythm and
+          Koino created your first progressive plan around the rhythm and
           starting point you chose.
         </p>
       </div>
@@ -222,111 +301,67 @@ function OnboardingFlow({ onFailure }) {
   }
 
   return (
-    <div className="flex min-h-[570px] w-full flex-col">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          {steps.map((item, index) => (
-            <span
-              key={item.field}
-              className={`h-[3px] w-7 rounded-full transition-colors duration-300 ${
-                index <= stepIndex ? 'bg-[#17171a]' : 'bg-[#e4e5e8]'
-              }`}
-            />
-          ))}
-          <span className="ml-2 text-[11px] font-semibold text-[#93969d]">
-            {stepIndex + 1} of {steps.length}
-          </span>
-        </div>
-        {!isLastStep && (
-          <button
-            type="button"
-            onClick={continueFlow}
-            className="text-[12px] font-medium text-[#8b8e96] hover:text-[#17171a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
-          >
-            Skip
-          </button>
-        )}
-      </div>
-
-      <div
-        key={step.field}
-        className="mt-9 animate-[auth-panel-in_280ms_ease-out]"
-      >
-        <p className="inline-flex rounded-full bg-[#eef2ff] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#1e55e5]">
-          {step.eyebrow}
-        </p>
-        <h2 className="mt-4 text-[29px] font-semibold leading-[1.15] tracking-normal text-[#111114]">
-          {step.title}
-        </h2>
-        <p className="mt-2 max-w-[470px] text-[13px] leading-5 text-[#858890]">
-          {step.subtitle}
-        </p>
-
-        <div className="mt-7 space-y-2.5">
-          {step.options.map((option) => {
-            const selected = answers[step.field] === option.value
-            const Icon = option.icon
-
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => selectOption(option)}
-                className={`flex min-h-[72px] w-full items-center gap-3.5 rounded-[13px] border px-4 py-3 text-left transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5] ${
-                  selected
-                    ? 'border-[#1e55e5] bg-[#f0f4ff]'
-                    : 'border-[#e7e8eb] bg-white hover:-translate-y-px hover:border-[#bdc9ef] hover:bg-[#fafbff]'
-                }`}
-                aria-pressed={selected}
-              >
-                <span
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] transition-colors ${
-                    selected
-                      ? 'bg-[#1e55e5] text-white'
-                      : 'bg-[#f5f5f7] text-[#4c5058]'
-                  }`}
-                >
-                  <Icon className="h-[18px] w-[18px]" strokeWidth={1.8} />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[13px] font-semibold text-[#17171a]">
-                    {option.title}
-                  </span>
-                  <span className="mt-0.5 block text-[11px] leading-4 text-[#8b8e96]">
-                    {option.description}
-                  </span>
-                </span>
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                    selected
-                      ? 'border-[#1e55e5] bg-[#1e55e5] text-white'
-                      : 'border-[#dfe1e5] text-transparent'
-                  }`}
-                >
-                  <Check className="h-3 w-3" strokeWidth={2.5} />
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      <div className="mt-auto flex items-center gap-3 pt-7">
+    <div className="flex min-h-[576px] w-full flex-col">
+      <header className="flex items-center">
         <button
           type="button"
           onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
           disabled={stepIndex === 0 || isSubmitting}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[11px] border border-[#e1e2e5] bg-white text-[#17171a] transition-colors hover:bg-[#f6f6f8] disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#555b64] transition-colors hover:bg-[#f2f3f4] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#1e55e5]"
           aria-label="Previous step"
           title="Previous step"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.9} />
         </button>
+        <Progress current={stepIndex} />
+        <button
+          type="button"
+          onClick={continueFlow}
+          disabled={isLastStep || isSubmitting}
+          className="w-10 text-right text-[11px] font-medium text-[#7d838d] transition-colors hover:text-[#1e55e5] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#1e55e5]"
+        >
+          Skip
+        </button>
+      </header>
+
+      <section
+        key={step.field}
+        className="flex flex-1 animate-[onboarding-step-in_340ms_cubic-bezier(0.16,1,0.3,1)] flex-col pt-7"
+      >
+        <div className="text-center">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f2f3f4] text-[#34383e]">
+            <StepIcon className="h-6 w-6" strokeWidth={1.65} aria-hidden="true" />
+          </span>
+          <p className="mt-4 text-[10px] font-semibold uppercase text-[#858a93]">
+            {step.eyebrow}
+          </p>
+          <h2 className="mt-1.5 text-[25px] font-semibold leading-tight text-[#111317]">
+            {step.title}
+          </h2>
+          <p className="mx-auto mt-2 max-w-[390px] text-[12px] leading-5 text-[#7a808a]">
+            {step.subtitle}
+          </p>
+        </div>
+
+        <div className="mt-6">
+          <div className="space-y-2.5">
+            {step.options.map((option) => (
+              <Choice
+                key={option.value}
+                option={option}
+                selected={answers[step.field] === option.value}
+                onSelect={() => selectOption(option)}
+                detailed={Boolean(option.detail)}
+              />
+            ))}
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={continueFlow}
           disabled={isSubmitting}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-[11px] bg-[#1e55e5] text-[13px] font-semibold text-white transition-colors hover:bg-[#194bcf] active:bg-[#1542ba] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
+          className="mt-auto flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-[#1e55e5] text-[13px] font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-[#194bcf] active:scale-[0.995] active:bg-[#1645c2] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
         >
           {isSubmitting ? (
             <>
@@ -335,12 +370,27 @@ function OnboardingFlow({ onFailure }) {
             </>
           ) : (
             <>
-              {isLastStep ? 'Create My Plan' : 'Continue'}
-              <ArrowRight className="h-4 w-4" strokeWidth={1.9} />
+              {isLastStep ? 'Finish' : 'Continue'}
+              {isLastStep ? (
+                <Check className="h-4 w-4" strokeWidth={2} />
+              ) : (
+                <ArrowRight className="h-4 w-4" strokeWidth={1.9} />
+              )}
             </>
           )}
         </button>
-      </div>
+
+        <div className="mt-5 flex justify-center gap-2" aria-hidden="true">
+          {steps.map((item, index) => (
+            <span
+              key={item.field}
+              className={`h-1.5 w-1.5 rounded-full transition-colors duration-300 ${
+                index === stepIndex ? 'bg-[#1e55e5]' : 'bg-[#e2e4e7]'
+              }`}
+            />
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

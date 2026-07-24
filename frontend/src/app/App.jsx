@@ -17,6 +17,8 @@ function App() {
 
   function navigate(nextPath) {
     if (nextPath === path) return
+    const isOnboardingTransition =
+      path === '/register' && nextPath === '/onboarding'
 
     function updateRoute() {
       window.history.pushState({}, '', nextPath)
@@ -24,7 +26,14 @@ function App() {
     }
 
     if (document.startViewTransition) {
-      document.startViewTransition(updateRoute)
+      if (isOnboardingTransition) {
+        document.documentElement.dataset.routeTransition = 'onboarding'
+      }
+
+      const transition = document.startViewTransition(updateRoute)
+      transition.finished.finally(() => {
+        delete document.documentElement.dataset.routeTransition
+      })
     } else {
       updateRoute()
     }

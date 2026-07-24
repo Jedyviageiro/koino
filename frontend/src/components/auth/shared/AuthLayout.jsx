@@ -1,4 +1,3 @@
-import { Zap } from 'lucide-react'
 import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
 import formImage from '@/assets/images/Form-img.png'
 
@@ -87,14 +86,22 @@ function AuthLayout({
 
   return (
     <main className="min-h-svh bg-white px-7 py-6 font-sans text-[#111114] sm:px-9 sm:py-7">
-      <div className="mx-auto grid min-h-[650px] w-full max-w-[1380px] lg:grid-cols-[minmax(370px,0.79fr)_minmax(0,1.21fr)] lg:gap-6 xl:min-h-[700px]">
+      <div
+        className={`mx-auto grid w-full max-w-[1280px] lg:h-[640px] lg:gap-6 xl:h-[660px] ${
+          onboardingActive
+            ? 'lg:grid-cols-[minmax(0,1.08fr)_minmax(390px,0.92fr)]'
+            : 'lg:grid-cols-[minmax(370px,0.79fr)_minmax(0,1.21fr)]'
+        }`}
+      >
         <section
-          className={`flex justify-center px-6 py-12 sm:px-9 lg:px-10 lg:pt-16 ${
-            onboardingActive ? 'lg:order-2' : 'lg:order-1'
+          className={`flex min-h-0 justify-center px-6 py-10 sm:px-9 lg:px-9 ${
+            onboardingActive
+              ? 'onboarding-panel-scroll lg:order-2 lg:overflow-y-auto lg:py-8'
+              : 'lg:order-1 lg:py-12'
           }`}
         >
           {onboardingContent ? (
-            <div className="relative w-full max-w-[620px]">
+            <div className="relative min-h-full w-full max-w-[550px]">
               <div
                 className={
                   onboardingLoading
@@ -107,7 +114,7 @@ function AuthLayout({
               {onboardingLoading && <OnboardingSkeleton overlay />}
             </div>
           ) : onboardingLoading ? (
-            <div className="w-full max-w-[620px] animate-[skeleton-panel-in_480ms_ease-out]">
+            <div className="w-full max-w-[550px] animate-[skeleton-panel-in_480ms_ease-out]">
               <OnboardingSkeleton />
             </div>
           ) : (
@@ -142,7 +149,7 @@ function AuthLayout({
         </section>
 
         <section
-          className={`relative hidden min-h-[650px] overflow-hidden rounded-[24px] lg:block xl:min-h-[700px] ${
+          className={`relative hidden h-full min-h-0 overflow-hidden rounded-[20px] lg:block ${
             onboardingActive ? 'lg:order-1' : 'lg:order-2'
           }`}
           style={{ viewTransitionName: 'auth-visual' }}
@@ -170,23 +177,6 @@ function AuthLayout({
           </div>
         </section>
       </div>
-
-      <footer className="mx-auto mt-7 flex w-full max-w-[1380px] flex-col items-center border-t border-[#ececef] px-6 pb-2 pt-5 text-center">
-        <p className="text-[14px] font-medium text-[#676b73]">Powered By</p>
-        <div className="mt-1.5 flex items-center justify-center gap-1 text-[#777b84]">
-          <Zap
-            className="h-8 w-8 shrink-0 fill-[#1e55e5] text-[#1e55e5]"
-            strokeWidth={1.5}
-            aria-hidden="true"
-          />
-          <p className="text-[12px] leading-5">
-            <strong className="font-semibold text-[#555960]">
-              Matthew 28:19:
-            </strong>{' '}
-            &ldquo;Go therefore and make disciples of all the nations...&rdquo;
-          </p>
-        </div>
-      </footer>
     </main>
   )
 }

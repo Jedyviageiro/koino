@@ -55,13 +55,13 @@ function StatusModal({
           }`}
         >
           <div
-            className={`absolute h-28 w-28 rounded-full animate-[status-ring_2s_ease-out_infinite] ${
+            className={`absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full animate-[status-ring_2s_ease-out_infinite] ${
               isSuccess ? 'bg-[#2ccf9b]/10' : 'bg-[#e25b5b]/10'
             }`}
             aria-hidden="true"
           />
           <div
-            className={`absolute h-20 w-20 rounded-full ${
+            className={`absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full ${
               isSuccess ? 'bg-[#2ccf9b]/15' : 'bg-[#e25b5b]/15'
             }`}
             aria-hidden="true"
@@ -72,7 +72,11 @@ function StatusModal({
             }`}
           >
             {isSuccess ? (
-              <Check className="h-6 w-6" strokeWidth={2.4} aria-hidden="true" />
+              <Check
+                className="h-6 w-6 translate-x-px -translate-y-px"
+                strokeWidth={2.4}
+                aria-hidden="true"
+              />
             ) : (
               <XCircle
                 className="h-7 w-7"
