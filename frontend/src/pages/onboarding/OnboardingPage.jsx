@@ -26,7 +26,12 @@ function OnboardingPage({ onNavigate }) {
         subtitle=""
         onNavigate={onNavigate}
         onboardingLoading={isLoading}
-        onboardingContent={<OnboardingFlow onFailure={setError} />}
+        onboardingContent={
+          <OnboardingFlow
+            onFailure={setError}
+            onComplete={() => window.location.replace('/home')}
+          />
+        }
       />
 
       {error && (

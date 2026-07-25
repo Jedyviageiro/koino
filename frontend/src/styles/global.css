@@ -149,13 +149,14 @@ body,
     transform: scale(0.7);
   }
 
-  42% {
+  22% {
     border-radius: 999px;
     clip-path: inset(45% 45% 45% 45% round 999px);
     opacity: 1;
     transform: scale(1);
   }
 
+  62%,
   100% {
     border-radius: 22px;
     clip-path: inset(0 round 22px);
@@ -235,11 +236,11 @@ body,
 }
 
 .plan-modal-shell {
-  animation: plan-modal-grow 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: plan-modal-grow 1800ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .plan-modal-content {
-  animation: plan-content-in 880ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: plan-content-in 1450ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .plan-book {

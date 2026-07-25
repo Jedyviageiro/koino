@@ -1,0 +1,99 @@
+import {
+  ArrowRight,
+  Bookmark,
+  BookOpen,
+  Check,
+  Flame,
+  NotebookText,
+  Search,
+  Sparkles,
+} from 'lucide-react'
+
+const quickActions = [
+  { label: 'Search Bible', icon: Search },
+  { label: 'Browse Plans', icon: BookOpen },
+  { label: 'My Bookmarks', icon: Bookmark },
+  { label: 'My Notes', icon: NotebookText },
+]
+
+function HomeRail({ streak, bookmarkCount }) {
+  const currentStreak = streak?.currentStreak || 0
+  const today = new Date().getDay()
+  const adjustedToday = today === 0 ? 6 : today - 1
+  const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+
+  return (
+    <div className="flex flex-col gap-7">
+      <section className="flex min-h-[105px] items-center gap-4 rounded-[12px] border border-[#eee5db] bg-[linear-gradient(105deg,#fdf9f3,#fbf7f2)] px-5 py-5">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-[#fcf3e5] text-[#a66b0b]">
+          <Sparkles className="h-6 w-6" strokeWidth={1.45} />
+        </span>
+        <div>
+          <h2 className="text-[14px] font-bold">Keep the habit.</h2>
+          <p className="mt-1.5 text-[12px] text-[#69728a]">Small steps, deep roots.</p>
+        </div>
+      </section>
+
+      <section className="min-h-[300px] rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
+        <header className="flex items-center justify-between">
+          <h2 className="text-[14px] font-bold">Quick Actions</h2>
+          <button type="button" className="flex items-center gap-2 text-[14px] text-[#69728a]">
+            Explore <ArrowRight className="h-[18px] w-[18px]" />
+          </button>
+        </header>
+        <div className="mt-7 grid grid-cols-2 gap-4">
+          {quickActions.map((item) => {
+            const Icon = item.icon
+            return (
+              <button
+                key={item.label}
+                type="button"
+                className="relative flex h-[96px] flex-col items-center justify-center gap-3 rounded-[10px] border border-[#e7e8e9] bg-white text-[12px] text-[#303442] hover:border-[#d5d7da] hover:bg-[#fafafa]"
+              >
+                <Icon className="h-6 w-6 text-[#07090c]" strokeWidth={1.55} />
+                {item.label}
+                {item.label === 'My Bookmarks' && bookmarkCount > 0 && (
+                  <span className="absolute right-2.5 top-2.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f5ad39] px-1 text-[9px] font-bold text-white">
+                    {bookmarkCount}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </section>
+
+      <section className="min-h-[195px] rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
+        <header className="flex items-center justify-between">
+          <h2 className="text-[14px] font-bold">Your Streak</h2>
+          <button type="button" className="text-[13px] text-[#677089]">View all</button>
+        </header>
+        <div className="mt-4 flex items-center gap-5">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full border-[5px] border-[#fbf0e1] border-r-[#f7b44d] border-t-[#f7b44d]">
+            <Flame className="h-7 w-7 fill-[#ffb23b] text-[#ffb23b]" />
+          </span>
+          <div>
+            <p className="text-[25px] font-semibold leading-none">{currentStreak}</p>
+            <p className="mt-2 text-[13px]">Days in a row</p>
+          </div>
+        </div>
+        <div className="mt-4 flex justify-between">
+          {weekdays.map((day, index) => {
+            const daysAgo = adjustedToday - index
+            const complete = daysAgo >= 0 && daysAgo < currentStreak
+            return (
+              <div key={`${day}-${index}`} className="flex flex-col items-center gap-2">
+                <span className="text-[11px] text-[#687188]">{day}</span>
+                <span className={`flex h-[18px] w-[18px] items-center justify-center rounded-full ${complete ? 'bg-[#171b23] text-white' : 'border border-[#dce0e6]'}`}>
+                  {complete && <Check className="h-2.5 w-2.5" strokeWidth={3} />}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+export default HomeRail

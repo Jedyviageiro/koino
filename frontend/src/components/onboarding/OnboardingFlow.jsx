@@ -243,7 +243,7 @@ function Choice({ option, selected, onSelect, detailed = false }) {
   )
 }
 
-function OnboardingFlow({ onFailure }) {
+function OnboardingFlow({ onFailure, onComplete }) {
   const [stepIndex, setStepIndex] = useState(0)
   const [answers, setAnswers] = useState(initialAnswers)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -262,11 +262,9 @@ function OnboardingFlow({ onFailure }) {
     setPlanModalPhase('creating')
 
     try {
-      await Promise.all([
-        completeOnboarding(answers),
-        new Promise((resolve) => window.setTimeout(resolve, 1800)),
-      ])
+      await completeOnboarding(answers)
       setPlanModalPhase('ready')
+      onComplete()
     } catch (error) {
       setPlanModalPhase(null)
       onFailure(
