@@ -39,6 +39,13 @@ public class PlanController {
         return planService.getUserPlans(user.getUserId());
     }
 
+    @GetMapping("/me/route")
+    public List<PlanTemplateDTO> getUserPlanRoute(
+        @AuthenticationPrincipal User user
+    ) {
+        return planService.getUserPlanRoute(user.getUserId());
+    }
+
     @GetMapping("/me/current")
     public ResponseEntity<UserActivePlanResponse> getCurrentPlan(
         @AuthenticationPrincipal User user

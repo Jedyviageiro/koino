@@ -4,7 +4,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.koino.backend.dto.plan.PlanTemplateDTO;
 import com.koino.backend.dto.plan.ReadingPassageResponse;
@@ -13,6 +17,7 @@ import com.koino.backend.dto.plan.UserPlanProgressPointResponse;
 import com.koino.backend.dto.plan.UserPlanProgressResponse;
 import com.koino.backend.dto.plan.UserPlanTaskResponse;
 import com.koino.backend.model.UserActivePlan;
+import com.koino.backend.model.PlanTemplate;
 import com.koino.backend.model.UserPlanPassage;
 import com.koino.backend.model.UserPlanTask;
 import com.koino.backend.model.UserProfile;
@@ -48,17 +53,32 @@ public class PlanService {
 
     public List<PlanTemplateDTO> getAllAvailablePlans(){
         return planTemplateRepository.findAllByOrderByPlanCodeAsc().stream()
-            .map(plan -> new PlanTemplateDTO(
-                plan.getPlanTemplateId(),
-                plan.getPlanCode(),
-                plan.getName(),
-                plan.getDescription(),
-                plan.getDifficulty(),
-                plan.getDurationDays(),
-                plan.getTotalChapters(),
-                plan.getBookNames(),
-                plan.getEstimatedMinutesPerDay()
-            ))
+            .map(this::toPlanTemplateDTO)
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PlanTemplateDTO> getUserPlanRoute(Long userId) {
+        UserProfile profile = userProfileRepository.findByUserUserId(userId)
+            .orElseThrow(() -> new IllegalStateException(
+                "The user has not completed onboarding"
+            ));
+        List<String> routePlanIds = planGenerationService.getRoutePlanIds(
+            profile.getJourneyDescription(),
+            profile.getPreferredStartingPoint()
+        );
+        Map<String, PlanTemplate> templatesByCode =
+            planTemplateRepository.findAllByOrderByPlanCodeAsc()
+                .stream()
+                .collect(Collectors.toMap(
+                    PlanTemplate::getPlanCode,
+                    Function.identity()
+                ));
+
+        return routePlanIds.stream()
+            .map(templatesByCode::get)
+            .filter(Objects::nonNull)
+            .map(this::toPlanTemplateDTO)
             .toList();
     }
 
@@ -205,6 +225,20 @@ public class PlanService {
         List<UserPlanTask> tasks = taskRepository
             .findByActivePlanActivePlanIdOrderByDayNumber(activePlan.getActivePlanId());
         return toActivePlanResponse(activePlan, tasks);
+    }
+
+    private PlanTemplateDTO toPlanTemplateDTO(PlanTemplate plan) {
+        return new PlanTemplateDTO(
+            plan.getPlanTemplateId(),
+            plan.getPlanCode(),
+            plan.getName(),
+            plan.getDescription(),
+            plan.getDifficulty(),
+            plan.getDurationDays(),
+            plan.getTotalChapters(),
+            plan.getBookNames(),
+            plan.getEstimatedMinutesPerDay()
+        );
     }
 
     private UserActivePlanResponse toActivePlanResponse(

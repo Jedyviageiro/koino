@@ -106,6 +106,16 @@ public class PlanGenerationService implements CommandLineRunner {
         );
     }
 
+    public List<String> getRoutePlanIds(
+        String journeyDescription,
+        String preferredStartingPoint
+    ) {
+        return resolveRoute(journeyDescription, preferredStartingPoint)
+            .stream()
+            .map(RouteEntry::planId)
+            .toList();
+    }
+
     @Transactional
     public void generateNextPlan(
         Long userId,

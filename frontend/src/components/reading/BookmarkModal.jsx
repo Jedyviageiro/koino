@@ -66,7 +66,7 @@ function BookmarkModal({
         aria-modal="true"
         aria-labelledby="bookmark-modal-title"
       >
-        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef3ff] text-[#1e55e5]">
+        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fbf4ea] text-[#b27413]">
           <Bookmark className="h-5 w-5" />
         </span>
         <h2
@@ -92,7 +92,7 @@ function BookmarkModal({
               <span
                 className={`h-6 w-6 rounded-full border border-black/5 ${
                   selectedColor === color
-                    ? 'ring-2 ring-[#1e55e5] ring-offset-2'
+                    ? 'ring-2 ring-[#e8a33d] ring-offset-2'
                     : ''
                 }`}
                 style={{ backgroundColor: color }}
@@ -106,7 +106,7 @@ function BookmarkModal({
             type="button"
             onClick={() => onSave(selectedColor)}
             disabled={saving}
-            className="h-11 w-full rounded-[9px] bg-[#1e55e5] text-[12px] font-semibold text-white hover:bg-[#194acb] disabled:opacity-60"
+            className="h-11 w-full rounded-[9px] bg-[#e8a33d] text-[12px] font-semibold text-white hover:bg-[#d8922e] disabled:opacity-60"
           >
             {saving ? 'Saving...' : bookmarked ? 'Update Highlight' : 'Save Highlight'}
           </button>
@@ -114,7 +114,7 @@ function BookmarkModal({
             type="button"
             onClick={bookmarked ? onRemove : onClose}
             disabled={saving}
-            className="h-11 w-full rounded-[9px] border border-[#1e55e5] bg-white text-[12px] font-semibold text-[#1e55e5] hover:bg-[#f2f6ff] disabled:opacity-60"
+            className="h-11 w-full rounded-[9px] border border-[#e8a33d] bg-white text-[12px] font-semibold text-[#b27413] hover:bg-[#fdf7ee] disabled:opacity-60"
           >
             {bookmarked ? 'Remove Bookmark' : 'Not Now'}
           </button>

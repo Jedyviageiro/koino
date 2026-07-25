@@ -11,13 +11,13 @@ function ReadingRail({ plan, task }) {
         <h2 className="text-[14px] font-semibold">Today&apos;s Plan Progress</h2>
         <div className="relative mx-auto mt-5 h-[132px] w-[132px]">
           <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
-            <circle cx="50" cy="50" r="42" fill="none" stroke="#e9efff" strokeWidth="8" />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#fbf0df" strokeWidth="8" />
             <circle
               cx="50"
               cy="50"
               r="42"
               fill="none"
-              stroke="#1e55e5"
+              stroke="#e8a33d"
               strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray={circumference}
@@ -35,7 +35,7 @@ function ReadingRail({ plan, task }) {
       <section className="rounded-[8px] border border-[#e1e4e9] bg-white p-5">
         <h2 className="text-[14px] font-semibold">Today&apos;s Time</h2>
         <div className="mt-6 flex items-center gap-4">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f1f5ff] text-[#1e55e5]">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#fbf4ea] text-[#b27413]">
             <Clock3 className="h-5 w-5" />
           </span>
           <div>

@@ -102,7 +102,7 @@ function HomePage({ onNavigate }) {
             >
               <Bell className="h-5 w-5" strokeWidth={1.65} />
               {unreadCount > 0 && (
-                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#1e55e5] ring-2 ring-white" />
+                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#e8a33d] ring-2 ring-white" />
               )}
             </button>
           </div>

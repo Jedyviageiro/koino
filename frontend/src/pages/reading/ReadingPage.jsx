@@ -148,7 +148,7 @@ function ReadingPage({ onNavigate }) {
       <main className="min-w-0 px-[18px] pb-14 pt-7 sm:px-7 lg:px-9 lg:pt-9">
         <header className="mx-auto mb-6 flex max-w-[1100px] items-start justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase text-[#1e55e5]">
+            <p className="text-[11px] font-semibold uppercase text-[#b27413]">
               Daily Scripture
             </p>
             <h1 className="mt-1.5 text-[28px] font-semibold leading-tight sm:text-[32px]">

@@ -54,7 +54,7 @@ function AuthSwitcher({ mode, onNavigate }) {
       <a
         href="/"
         onClick={(event) => goTo(event, '/')}
-        className={`relative z-10 flex items-center justify-center rounded-lg text-[12px] font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[#1e55e5] ${
+        className={`relative z-10 flex items-center justify-center rounded-lg text-[12px] font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[#e8a33d] ${
           mode === 'login' ? 'text-[#111114]' : 'text-[#777b84]'
         }`}
       >
@@ -63,7 +63,7 @@ function AuthSwitcher({ mode, onNavigate }) {
       <a
         href="/register"
         onClick={(event) => goTo(event, '/register')}
-        className={`relative z-10 flex items-center justify-center rounded-lg text-[12px] font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[#1e55e5] ${
+        className={`relative z-10 flex items-center justify-center rounded-lg text-[12px] font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[#e8a33d] ${
           mode === 'register' ? 'text-[#111114]' : 'text-[#777b84]'
         }`}
       >
@@ -126,7 +126,7 @@ function AuthLayout({
                   onNavigate('/')
                 }}
                 aria-label="Koino home"
-                className="mb-8 block w-20 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1e55e5]"
+                className="mb-8 block w-20 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8a33d]"
               >
                 <img src={koinoLogo} alt="Koino" className="h-auto w-full" />
               </a>

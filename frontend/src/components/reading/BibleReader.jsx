@@ -52,22 +52,22 @@ function BibleReader({
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 text-[13px] font-medium text-[#536078] hover:text-[#1e55e5]"
+          className="inline-flex items-center gap-2 text-[13px] font-medium text-[#536078] hover:text-[#b27413]"
         >
           <ChevronLeft className="h-4 w-4" />
           Back to Home
         </button>
 
         <div className="mt-8">
-          <p className="text-[12px] font-semibold text-[#1e55e5]">Today&apos;s Reading</p>
+          <p className="text-[12px] font-semibold text-[#b27413]">Today&apos;s Reading</p>
           <h1 className="mt-2 text-[28px] font-semibold leading-tight">{reference}</h1>
           <p className="mt-2 text-[15px] text-[#59647a]">{task.readingAssignment}</p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <span className="inline-flex h-8 items-center gap-2 rounded-[7px] bg-[#f2f6ff] px-3 text-[12px]">
+            <span className="inline-flex h-8 items-center gap-2 rounded-[7px] bg-[#fdf7ee] px-3 text-[12px]">
               <Clock3 className="h-4 w-4" />
               {task.estimatedMinutes} min read
             </span>
-            <span className="inline-flex h-8 items-center rounded-[7px] bg-[#f2f6ff] px-3 text-[12px]">
+            <span className="inline-flex h-8 items-center rounded-[7px] bg-[#fdf7ee] px-3 text-[12px]">
               {total} verses
             </span>
           </div>
@@ -80,7 +80,7 @@ function BibleReader({
           </div>
           <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#e9ecf1]">
             <div
-              className="h-full rounded-full bg-[#1e55e5] transition-[width] duration-500 ease-out"
+              className="h-full rounded-full bg-[#e8a33d] transition-[width] duration-500 ease-out"
               style={{ width: `${percentage}%` }}
             />
           </div>
@@ -106,7 +106,7 @@ function BibleReader({
                   onClick={() => onSelect(verseIndex)}
                   className={`grid w-full grid-cols-[28px_minmax(0,1fr)] gap-3 rounded-[7px] px-3 py-3 text-left transition-colors ${
                     !highlightColor && active
-                      ? 'bg-[#f1f5ff]'
+                      ? 'bg-[#fdf7ee]'
                       : !highlightColor
                         ? 'hover:bg-[#f8f9fb]'
                         : ''
@@ -115,7 +115,7 @@ function BibleReader({
                     backgroundColor: highlightColor,
                   }}
                 >
-                  <span className={`pt-0.5 text-[12px] ${active ? 'font-semibold text-[#1e55e5]' : 'text-[#657087]'}`}>
+                  <span className={`pt-0.5 text-[12px] ${active ? 'font-semibold text-[#b27413]' : 'text-[#657087]'}`}>
                     {verse.verseNumber}
                   </span>
                   <span className={`${TEXT_SIZES[textSize].className} text-[#171a20]`}>
@@ -169,7 +169,7 @@ function BibleReader({
           disabled={!currentVerse}
           className={`inline-flex h-10 w-28 shrink-0 items-center justify-center gap-2 rounded-[7px] border text-[12px] ${
             bookmarked
-              ? 'border-[#1e55e5] bg-[#f1f5ff] text-[#1e55e5]'
+              ? 'border-[#e8a33d] bg-[#fdf7ee] text-[#b27413]'
               : 'border-[#dfe3e9] hover:bg-[#f7f8fa]'
           }`}
         >
@@ -182,7 +182,7 @@ function BibleReader({
             type="button"
             onClick={onComplete}
             disabled={saving || completing}
-            className="flex h-10 w-full items-center justify-center gap-2 rounded-[7px] bg-[#1e55e5] text-[13px] font-semibold text-white hover:bg-[#194acb] disabled:opacity-60 sm:w-auto sm:px-5"
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-[7px] bg-[#e8a33d] text-[13px] font-semibold text-white hover:bg-[#d8922e] disabled:opacity-60 sm:w-auto sm:px-5"
           >
             <Check className="h-4 w-4" />
             {completing ? 'Saving...' : 'Complete Reading'}

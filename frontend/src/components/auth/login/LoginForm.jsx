@@ -84,7 +84,7 @@ function LoginForm({ onNavigate, onFailure }) {
         <div className="mt-2.5 flex justify-end">
           <a
             href="/forgot-password"
-            className="text-[11px] font-medium text-[#696d75] hover:text-[#111114] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
+            className="text-[11px] font-medium text-[#696d75] hover:text-[#111114] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d]"
           >
             Forgot password?
           </a>
@@ -106,7 +106,7 @@ function LoginForm({ onNavigate, onFailure }) {
             emailState === 'available' ||
             password.length < 6
           }
-          className="flex h-[47px] w-full items-center justify-center gap-2 rounded-[11px] bg-[#1e55e5] text-[12px] font-semibold text-white transition-colors hover:bg-[#194bcf] active:bg-[#1542ba] disabled:cursor-not-allowed disabled:bg-[#dce3f9]"
+          className="flex h-[47px] w-full items-center justify-center gap-2 rounded-[11px] bg-[#e8a33d] text-[12px] font-semibold text-white transition-colors hover:bg-[#d8922e] active:bg-[#bf7416] disabled:cursor-not-allowed disabled:bg-[#f2dfbf]"
         >
           {isSubmitting && (
             <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -123,7 +123,7 @@ function LoginForm({ onNavigate, onFailure }) {
           onClick={() =>
             onFailure('Google sign-in has not been configured yet.')
           }
-          className="flex h-[45px] w-full items-center justify-center gap-2.5 rounded-[11px] border border-[#dedfe3] bg-white text-[12px] font-semibold text-[#111114] transition-colors hover:bg-[#f8f8f9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
+          className="flex h-[45px] w-full items-center justify-center gap-2.5 rounded-[11px] border border-[#dedfe3] bg-white text-[12px] font-semibold text-[#111114] transition-colors hover:bg-[#f8f8f9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d]"
         >
           <GoogleIcon />
           Continue with Google
@@ -135,7 +135,7 @@ function LoginForm({ onNavigate, onFailure }) {
         <button
           type="button"
           onClick={() => onNavigate('/register')}
-          className="font-semibold text-[#111114] hover:text-[#1e55e5]"
+          className="font-semibold text-[#111114] hover:text-[#b27413]"
         >
           Sign Up
         </button>

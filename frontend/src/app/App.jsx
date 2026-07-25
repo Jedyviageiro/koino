@@ -4,6 +4,7 @@ import RegisterPage from '@/pages/auth/register/RegisterPage.jsx'
 import OnboardingPage from '@/pages/onboarding/OnboardingPage.jsx'
 import HomePage from '@/pages/home/HomePage.jsx'
 import ReadingPage from '@/pages/reading/ReadingPage.jsx'
+import PlansPage from '@/pages/plans/PlansPage.jsx'
 
 function App() {
   const [path, setPath] = useState(window.location.pathname)
@@ -51,6 +52,10 @@ function App() {
 
   if (path === '/reading') {
     return <ReadingPage onNavigate={navigate} />
+  }
+
+  if (path === '/plans') {
+    return <PlansPage onNavigate={navigate} />
   }
 
   return path === '/register' ? (

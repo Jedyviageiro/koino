@@ -161,7 +161,7 @@ function TodayPlanCard({ plan, task, onStartReading }) {
               <Check className="h-6 w-6" />
             </span>
             <div>
-              <span className="text-[12px] font-semibold text-[#1e55e5]">
+              <span className="text-[12px] font-semibold text-[#b27413]">
                 Reading complete
               </span>
               <h3 className="mt-1.5 text-[21px] font-semibold">
@@ -181,9 +181,9 @@ function TodayPlanCard({ plan, task, onStartReading }) {
         type="button"
         onClick={onStartReading}
         disabled={!canStartReading}
-        className={`flex h-14 w-full items-center justify-center gap-3 rounded-[10px] text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e55e5] focus-visible:ring-offset-2 ${
+        className={`flex h-14 w-full items-center justify-center gap-3 rounded-[10px] text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8a33d] focus-visible:ring-offset-2 ${
           canStartReading
-            ? 'bg-[#1e55e5] text-white hover:bg-[#194acb] active:bg-[#1742b7]'
+            ? 'bg-[#e8a33d] text-white hover:bg-[#d8922e] active:bg-[#bf7416]'
             : 'cursor-not-allowed bg-[#e8ebf0] text-[#737c8e]'
         }`}
       >

@@ -3,12 +3,23 @@
 
 :root {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --font-title: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --accent: #e8a33d;
+  --accent-hover: #d8922e;
+  --accent-active: #bf7416;
   color: #20241f;
   background: #f7f8f5;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-title);
+  font-synthesis: none;
 }
 
 * {
@@ -252,8 +263,8 @@ body,
 }
 
 .plan-orbit {
-  border-left-color: #1e55e5;
-  border-right-color: #8eacfa;
+  border-left-color: #e8a33d;
+  border-right-color: #f0bd70;
   animation: plan-orbit 8s linear infinite;
 }
 

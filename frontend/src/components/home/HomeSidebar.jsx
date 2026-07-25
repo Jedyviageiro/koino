@@ -8,12 +8,16 @@ import {
 import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
 
 const navigation = [
-  { label: 'Home', icon: Home, active: true },
-  { label: 'Plans', icon: BarChart3 },
+  { label: 'Home', icon: Home, path: '/home' },
+  { label: 'Plans', icon: BarChart3, path: '/plans' },
   { label: 'Bible', icon: BookOpen },
 ]
 
-function HomeSidebar({ name, onNavigate }) {
+function HomeSidebar({
+  name,
+  onNavigate,
+  activePath = window.location.pathname,
+}) {
   const initials = name
     .split(/\s+/)
     .slice(0, 2)
@@ -26,7 +30,7 @@ function HomeSidebar({ name, onNavigate }) {
       <button
         type="button"
         onClick={() => onNavigate('/home')}
-        className="mx-3 mt-8 w-[72px] focus-visible:outline-2 focus-visible:outline-[#1e55e5]"
+        className="mx-3 mt-8 w-[72px] focus-visible:outline-2 focus-visible:outline-[#e8a33d]"
         aria-label="Koino home"
       >
         <img src={koinoLogo} alt="Koino" className="h-auto w-full" />
@@ -35,12 +39,16 @@ function HomeSidebar({ name, onNavigate }) {
       <nav className="mt-10 space-y-2" aria-label="Main navigation">
         {navigation.map((item) => {
           const Icon = item.icon
+          const active = item.path === activePath
           return (
             <button
               key={item.label}
               type="button"
+              onClick={() => {
+                if (item.path) onNavigate(item.path)
+              }}
               className={`flex h-11 w-full items-center gap-3 rounded-[9px] px-3.5 text-[12.5px] font-medium transition-colors ${
-                item.active
+                active
                   ? 'bg-[#e9ebef] font-semibold text-[#15171b]'
                   : 'text-[#15171b] hover:bg-[#eceef1]'
               }`}
@@ -62,7 +70,7 @@ function HomeSidebar({ name, onNavigate }) {
         </button>
 
         <div className="flex h-11 items-center gap-2.5 rounded-[9px] px-1">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#1e55e5] text-[9px] font-semibold text-white">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#e8a33d] text-[9px] font-semibold text-white">
             {initials}
           </span>
           <span className="min-w-0 flex-1 truncate text-[12px] font-medium">

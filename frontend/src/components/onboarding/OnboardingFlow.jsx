@@ -178,7 +178,7 @@ function Progress({ current }) {
             {index > 0 && (
               <span
                 className={`mx-1 h-px w-3 transition-colors duration-500 sm:mx-2 sm:w-6 ${
-                  index <= current ? 'bg-[#1e55e5]' : 'bg-[#dfe1e5]'
+                  index <= current ? 'bg-[#e8a33d]' : 'bg-[#dfe1e5]'
                 }`}
                 aria-hidden="true"
               />
@@ -186,7 +186,7 @@ function Progress({ current }) {
             <span
               className={`flex h-8 w-8 items-center justify-center rounded-full border text-[12px] font-semibold transition-all duration-300 ${
                 complete || active
-                  ? 'border-[#1e55e5] bg-[#1e55e5] text-white'
+                  ? 'border-[#e8a33d] bg-[#e8a33d] text-white'
                   : 'border-[#d8dbe0] bg-white text-[#8c929c]'
               }`}
               aria-current={active ? 'step' : undefined}
@@ -207,17 +207,17 @@ function Choice({ option, selected, onSelect, detailed = false }) {
     <button
       type="button"
       onClick={onSelect}
-      className={`group flex w-full items-center gap-3 rounded-[8px] border px-3.5 py-3 text-left transition-[border-color,background-color,transform] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5] ${
+      className={`group flex w-full items-center gap-3 rounded-[8px] border px-3.5 py-3 text-left transition-[border-color,background-color,transform] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d] ${
         selected
-          ? 'border-[#1e55e5] bg-[#f3f6ff]'
-          : 'border-[#e1e3e7] bg-white hover:-translate-y-px hover:border-[#aebde9]'
+          ? 'border-[#e8a33d] bg-[#fdf7ee]'
+          : 'border-[#e1e3e7] bg-white hover:-translate-y-px hover:border-[#e6bd7a]'
       } ${detailed ? 'min-h-[88px]' : 'min-h-[66px]'}`}
       aria-pressed={selected}
     >
       <span
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
           selected
-            ? 'border-[#1e55e5] bg-[#1e55e5] text-white'
+            ? 'border-[#e8a33d] bg-[#e8a33d] text-white'
             : 'border-[#9ba1ab] bg-white text-transparent'
         }`}
       >
@@ -291,7 +291,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
           type="button"
           onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
           disabled={stepIndex === 0 || isSubmitting}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#555b64] transition-colors hover:bg-[#f2f3f4] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#1e55e5]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#555b64] transition-colors hover:bg-[#f2f3f4] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#e8a33d]"
           aria-label="Previous step"
           title="Previous step"
         >
@@ -302,7 +302,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
           type="button"
           onClick={continueFlow}
           disabled={isLastStep || isSubmitting}
-          className="w-10 text-right text-[11px] font-medium text-[#7d838d] transition-colors hover:text-[#1e55e5] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#1e55e5]"
+          className="w-10 text-right text-[11px] font-medium text-[#7d838d] transition-colors hover:text-[#b27413] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#e8a33d]"
         >
           Skip
         </button>
@@ -345,7 +345,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
           type="button"
           onClick={continueFlow}
           disabled={isSubmitting}
-          className="mt-auto flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-[#1e55e5] text-[13px] font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-[#194bcf] active:scale-[0.995] active:bg-[#1645c2] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
+          className="mt-auto flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-[#e8a33d] text-[13px] font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-[#d8922e] active:scale-[0.995] active:bg-[#bf7416] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d]"
         >
           {isSubmitting ? (
             <>
@@ -369,7 +369,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
             <span
               key={item.field}
               className={`h-1.5 w-1.5 rounded-full transition-colors duration-300 ${
-                index === stepIndex ? 'bg-[#1e55e5]' : 'bg-[#e2e4e7]'
+                index === stepIndex ? 'bg-[#e8a33d]' : 'bg-[#e2e4e7]'
               }`}
             />
           ))}
