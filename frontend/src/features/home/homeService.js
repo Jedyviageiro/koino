@@ -13,9 +13,3 @@ export async function getHomeData() {
 
   return { plan, task, progress, streak, notifications, bookmarks }
 }
-
-export function completeReadingTask(taskId) {
-  return apiRequest(`/plans/me/tasks/${taskId}/complete`, {
-    method: 'PATCH',
-  })
-}

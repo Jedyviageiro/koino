@@ -10,6 +10,7 @@ public record UserPlanTaskResponse(
     LocalDate scheduledDate,
     String readingAssignment,
     Integer estimatedMinutes,
+    Integer currentVerseIndex,
     boolean completed,
     Instant completedAt,
     List<ReadingPassageResponse> passages

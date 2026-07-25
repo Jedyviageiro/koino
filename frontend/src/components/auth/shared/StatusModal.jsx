@@ -43,7 +43,7 @@ function StatusModal({
       <section
         ref={modalRef}
         tabIndex={-1}
-        className="relative w-full max-w-[360px] overflow-hidden rounded-[22px] bg-white text-center shadow-[0_28px_80px_rgba(0,0,0,0.24)] animate-[modal-card-in_420ms_cubic-bezier(0.16,1,0.3,1)]"
+        className="relative flex h-[330px] w-full max-w-[360px] flex-col overflow-hidden rounded-[22px] bg-white text-center shadow-[0_28px_80px_rgba(0,0,0,0.24)] animate-[modal-card-in_420ms_cubic-bezier(0.16,1,0.3,1)]"
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="status-modal-title"
@@ -87,7 +87,7 @@ function StatusModal({
           </div>
         </div>
 
-        <div className="px-8 pb-8 pt-6">
+        <div className="flex flex-1 flex-col px-8 pb-8 pt-6">
           <h2
             id="status-modal-title"
             className="text-[20px] font-semibold tracking-normal text-[#17171a]"
@@ -105,7 +105,7 @@ function StatusModal({
             <button
               type="button"
               onClick={onClose}
-              className="mt-6 h-11 w-full rounded-[11px] bg-[#1e55e5] text-[12px] font-semibold text-white transition-colors hover:bg-[#194bcf] active:bg-[#1542ba] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
+              className="mt-auto h-11 w-full rounded-[11px] bg-[#1e55e5] text-[12px] font-semibold text-white transition-colors hover:bg-[#194bcf] active:bg-[#1542ba] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e55e5]"
             >
               Try Again
             </button>

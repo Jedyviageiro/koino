@@ -36,6 +36,9 @@ public class VerseBookmark {
     @JoinColumn(name = "verse_id", nullable = false)
     private Verse verse;
 
+    @Column(nullable = false, length = 7, columnDefinition = "varchar(7) default '#CFE0FF'")
+    private String highlightColor = "#CFE0FF";
+
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 

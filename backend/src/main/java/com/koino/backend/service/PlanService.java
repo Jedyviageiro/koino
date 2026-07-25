@@ -131,33 +131,13 @@ public class PlanService {
 
     @Transactional
     public UserPlanTaskResponse completeTask(Long userId, Long taskId) {
-        UserPlanTask task = taskRepository
-            .findByTaskIdAndActivePlanUserUserId(taskId, userId)
-            .orElseThrow(() -> new IllegalArgumentException("Plan task not found"));
+        UserPlanTask task = getAvailableTask(userId, taskId);
         if (task.isCompleted()) {
             return toTaskResponse(task);
         }
 
         UserActivePlan activePlan = task.getActivePlan();
-
-        UserActivePlan currentPlan = findCurrentPlan(userId)
-            .orElseThrow(() -> new IllegalStateException("The user has no active plan"));
-
-        if (!currentPlan.getActivePlanId().equals(activePlan.getActivePlanId())) {
-            throw new IllegalStateException("Only tasks from the current plan can be completed");
-        }
-
-        UserPlanTask nextTask = firstIncompleteTask(activePlan.getActivePlanId())
-            .orElseThrow(() -> new IllegalStateException("The plan has no incomplete reading"));
-        if (!nextTask.getTaskId().equals(task.getTaskId())) {
-            throw new IllegalStateException("Readings must be completed in order");
-        }
-        if (task.getScheduledDate().isAfter(LocalDate.now())) {
-            throw new IllegalStateException(
-                "This reading is locked until " + task.getScheduledDate()
-            );
-        }
-
+        task.setCurrentVerseIndex(countTaskVerses(task));
         task.setCompleted(true);
         task.setCompletedAt(Instant.now());
         task = taskRepository.save(task);
@@ -183,6 +163,28 @@ public class PlanService {
         }
 
         return toTaskResponse(task);
+    }
+
+    @Transactional
+    public UserPlanTaskResponse updateReadingProgress(
+        Long userId,
+        Long taskId,
+        Integer verseIndex
+    ) {
+        UserPlanTask task = getAvailableTask(userId, taskId);
+        if (task.isCompleted()) {
+            return toTaskResponse(task);
+        }
+
+        int totalVerses = countTaskVerses(task);
+        if (verseIndex > totalVerses) {
+            throw new IllegalArgumentException(
+                "Verse position must be between 1 and " + totalVerses
+            );
+        }
+
+        task.setCurrentVerseIndex(verseIndex);
+        return toTaskResponse(taskRepository.save(task));
     }
 
     private UserActivePlanResponse toActivePlanResponse(UserActivePlan activePlan) {
@@ -221,6 +223,7 @@ public class PlanService {
             task.getScheduledDate(),
             task.getReadingAssignment(),
             task.getEstimatedMinutes(),
+            task.getCurrentVerseIndex(),
             task.isCompleted(),
             task.getCompletedAt(),
             task.getPassages().stream().map(this::toPassageResponse).toList()
@@ -251,6 +254,47 @@ public class PlanService {
             .stream()
             .filter(task -> !task.isCompleted())
             .findFirst();
+    }
+
+    private UserPlanTask getAvailableTask(Long userId, Long taskId) {
+        UserPlanTask task = taskRepository
+            .findByTaskIdAndActivePlanUserUserId(taskId, userId)
+            .orElseThrow(() -> new IllegalArgumentException("Plan task not found"));
+        if (task.isCompleted()) {
+            return task;
+        }
+
+        UserActivePlan currentPlan = findCurrentPlan(userId)
+            .orElseThrow(() -> new IllegalStateException("The user has no active plan"));
+        if (!currentPlan.getActivePlanId().equals(
+            task.getActivePlan().getActivePlanId()
+        )) {
+            throw new IllegalStateException(
+                "Only tasks from the current plan can be opened"
+            );
+        }
+
+        UserPlanTask nextTask = firstIncompleteTask(currentPlan.getActivePlanId())
+            .orElseThrow(() -> new IllegalStateException(
+                "The plan has no incomplete reading"
+            ));
+        if (!nextTask.getTaskId().equals(task.getTaskId())) {
+            throw new IllegalStateException("Readings must be completed in order");
+        }
+        if (task.getScheduledDate().isAfter(LocalDate.now())) {
+            throw new IllegalStateException(
+                "This reading is locked until " + task.getScheduledDate()
+            );
+        }
+        return task;
+    }
+
+    private int countTaskVerses(UserPlanTask task) {
+        return task.getPassages().stream()
+            .mapToInt(passage ->
+                Math.max(1, passage.getLastVerse() - passage.getFirstVerse() + 1)
+            )
+            .sum();
     }
 }
 

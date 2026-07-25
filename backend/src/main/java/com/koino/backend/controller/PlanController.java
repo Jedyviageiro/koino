@@ -7,15 +7,18 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.koino.backend.dto.plan.PlanTemplateDTO;
+import com.koino.backend.dto.plan.ReadingProgressRequest;
 import com.koino.backend.dto.plan.UserActivePlanResponse;
 import com.koino.backend.dto.plan.UserPlanProgressResponse;
 import com.koino.backend.dto.plan.UserPlanTaskResponse;
 import com.koino.backend.model.User;
 import com.koino.backend.service.PlanService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/plans")
@@ -73,5 +76,18 @@ public class PlanController {
         @PathVariable Long taskId
     ) {
         return planService.completeTask(user.getUserId(), taskId);
+    }
+
+    @PatchMapping("/me/tasks/{taskId}/progress")
+    public UserPlanTaskResponse updateReadingProgress(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long taskId,
+        @Valid @RequestBody ReadingProgressRequest request
+    ) {
+        return planService.updateReadingProgress(
+            user.getUserId(),
+            taskId,
+            request.verseIndex()
+        );
     }
 }

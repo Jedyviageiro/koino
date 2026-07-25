@@ -5,16 +5,12 @@ import HomeRail from '@/components/home/HomeRail.jsx'
 import TodayPlanCard from '@/components/home/TodayPlanCard.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
-import {
-  completeReadingTask,
-  getHomeData,
-} from '@/features/home/homeService.js'
+import { getHomeData } from '@/features/home/homeService.js'
 
 function HomePage({ onNavigate }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
-  const [completing, setCompleting] = useState(false)
   const session = getAuthSession()
 
   const loadHome = useCallback(async () => {
@@ -63,19 +59,6 @@ function HomePage({ onNavigate }) {
     () => data?.notifications?.filter((item) => !item.read).length || 0,
     [data],
   )
-
-  async function completeToday() {
-    if (!data?.task?.taskId) return
-    setCompleting(true)
-    try {
-      await completeReadingTask(data.task.taskId)
-      await loadHome()
-    } catch (requestError) {
-      setError(requestError.message || 'Unable to save today’s progress.')
-    } finally {
-      setCompleting(false)
-    }
-  }
 
   const firstName = session?.fullname?.trim().split(/\s+/)[0] || 'Friend'
   const hour = new Date().getHours()
@@ -137,8 +120,7 @@ function HomePage({ onNavigate }) {
           <TodayPlanCard
             plan={data?.plan}
             task={data?.task}
-            onComplete={completeToday}
-            completing={completing}
+            onStartReading={() => onNavigate('/reading')}
           />
           )}
 

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   BookOpen,
   CalendarDays,
@@ -25,8 +24,7 @@ function getVerseCount(task) {
   )
 }
 
-function TodayPlanCard({ plan, task, onComplete, completing }) {
-  const [readingStarted, setReadingStarted] = useState(false)
+function TodayPlanCard({ plan, task, onStartReading }) {
   const percentage = Math.round(plan?.completionPercentage || 0)
   const circumference = 2 * Math.PI * 42
   const offset = circumference * (1 - percentage / 100)
@@ -44,14 +42,6 @@ function TodayPlanCard({ plan, task, onComplete, completing }) {
         </p>
       </section>
     )
-  }
-
-  function handleReadingAction() {
-    if (!readingStarted) {
-      setReadingStarted(true)
-      return
-    }
-    onComplete()
   }
 
   return (
@@ -149,8 +139,8 @@ function TodayPlanCard({ plan, task, onComplete, completing }) {
 
       <button
         type="button"
-        onClick={handleReadingAction}
-        disabled={!task || task.completed || completing}
+        onClick={onStartReading}
+        disabled={!task || task.completed}
         className="flex h-14 w-full items-center justify-center gap-3 rounded-[10px] bg-[#1e55e5] text-[15px] font-semibold text-white transition-colors hover:bg-[#194acb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e55e5] focus-visible:ring-offset-2 active:bg-[#1742b7] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {task?.completed ? (
@@ -158,12 +148,10 @@ function TodayPlanCard({ plan, task, onComplete, completing }) {
             <Check className="h-6 w-6" />
             Reading Completed
           </>
-        ) : completing ? (
-          'Saving Progress...'
         ) : (
           <>
             <BookOpen className="h-5 w-5" strokeWidth={1.8} />
-            {readingStarted ? 'Mark Reading Complete' : 'Start Reading'}
+            {task?.currentVerseIndex > 1 ? 'Continue Reading' : 'Start Reading'}
           </>
         )}
       </button>

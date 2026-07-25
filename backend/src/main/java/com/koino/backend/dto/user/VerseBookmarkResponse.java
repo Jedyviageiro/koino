@@ -10,5 +10,6 @@ public record VerseBookmarkResponse(
     Integer chapterNumber,
     Integer verseNumber,
     String text,
+    String highlightColor,
     Instant bookmarkedAt
 ) {}

@@ -26,6 +26,7 @@ import com.koino.backend.dto.auth.ResetPasswordTokenRequest;
 import com.koino.backend.dto.auth.ResetPasswordTokenResponse;
 import com.koino.backend.dto.auth.SaveNewPasswordRequest;
 import com.koino.backend.dto.user.NotificationResponse;
+import com.koino.backend.dto.user.BookmarkVerseRequest;
 import com.koino.backend.dto.user.ProfilePictureResponse;
 import com.koino.backend.dto.user.UserStreakResponse;
 import com.koino.backend.dto.user.VerseBookmarkResponse;
@@ -164,9 +165,14 @@ public class UserController {
     @PutMapping("/me/bookmarks/{verseId}")
     public VerseBookmarkResponse addBookmark(
         @AuthenticationPrincipal User user,
-        @PathVariable Long verseId
+        @PathVariable Long verseId,
+        @Valid @RequestBody(required = false) BookmarkVerseRequest request
     ) {
-        return bookmarkService.addBookmark(user.getUserId(), verseId);
+        return bookmarkService.addBookmark(
+            user.getUserId(),
+            verseId,
+            request == null ? null : request.highlightColor()
+        );
     }
 
     @GetMapping("/me/bookmarks")

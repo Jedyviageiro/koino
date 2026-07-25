@@ -51,6 +51,9 @@ public class UserPlanTask {
     private boolean isCompleted = false;
     private Instant completedAt;
 
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private Integer currentVerseIndex = 0;
+
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("passageOrder ASC")
     private List<UserPlanPassage> passages = new ArrayList<>();
