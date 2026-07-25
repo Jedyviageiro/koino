@@ -4,6 +4,7 @@ import {
   Check,
   ChevronRight,
   Clock3,
+  LockKeyhole,
 } from 'lucide-react'
 
 function getReadingTitle(task) {
@@ -24,11 +25,25 @@ function getVerseCount(task) {
   )
 }
 
+function formatReadingDate(date) {
+  if (!date) return null
+  return new Intl.DateTimeFormat('en', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(`${date}T00:00:00`))
+}
+
 function TodayPlanCard({ plan, task, onStartReading }) {
   const percentage = Math.round(plan?.completionPercentage || 0)
   const circumference = 2 * Math.PI * 42
   const offset = circumference * (1 - percentage / 100)
   const verseCount = getVerseCount(task)
+  const canStartReading = Boolean(task && !task.completed)
+  const nextReadingLabel = formatReadingDate(plan?.nextReadingDate)
+  const reflectionMinutes = task
+    ? Math.max(0, plan.estimatedMinutesPerDay - task.estimatedMinutes)
+    : 0
 
   if (!plan) {
     return (
@@ -54,8 +69,10 @@ function TodayPlanCard({ plan, task, onStartReading }) {
           <div className="min-w-0 flex-1 pt-1">
             <h2 className="text-[16px] font-bold leading-none">Today&apos;s Plan</h2>
             <p className="mt-2 text-[13px] text-[#626b84]">
-              Day {task?.dayNumber || plan.completedDays + 1} of {plan.totalDays}
-              <span className="px-2">•</span>
+              {task
+                ? `Day ${task.dayNumber} of ${plan.totalDays}`
+                : `${plan.completedDays} of ${plan.totalDays} days completed`}
+              <span className="px-2">&bull;</span>
               {plan.name}
             </p>
           </div>
@@ -109,43 +126,75 @@ function TodayPlanCard({ plan, task, onStartReading }) {
       </section>
 
       <section className="min-h-[170px] rounded-[12px] border border-[#e4e4e2] bg-[linear-gradient(105deg,#fff,#fefdfd)] px-6 py-5">
-        <span className="inline-flex rounded-[8px] bg-[#fbf4ea] px-[13px] py-2 text-[13px] text-[#84560d]">
-          Today&apos;s Reading
-        </span>
-        <div className="mt-4 flex items-center justify-between">
-          <div>
-            <h3 className="text-[24px] font-semibold leading-tight">
-              {getReadingTitle(task)}
-            </h3>
-            <p className="mt-1 text-[14px] text-[#353b4a]">
-              {task?.readingAssignment || 'Continue your plan'}
-            </p>
-            <div className="mt-4 flex flex-wrap gap-3 sm:gap-[17px]">
-              <span className="flex h-[39px] items-center gap-2 rounded-[8px] bg-[#faf8f6] px-3.5 text-[13px] sm:text-[14px]">
-                <Clock3 className="h-[19px] w-[19px]" />
-                {task?.estimatedMinutes || plan.estimatedMinutesPerDay} min read
+        {task ? (
+          <>
+            <span className="inline-flex rounded-[8px] bg-[#fbf4ea] px-[13px] py-2 text-[13px] text-[#84560d]">
+              Today&apos;s Reading
+            </span>
+            <div className="mt-4 flex items-center justify-between">
+              <div>
+                <h3 className="text-[24px] font-semibold leading-tight">
+                  {getReadingTitle(task)}
+                </h3>
+                <p className="mt-1 text-[14px] text-[#353b4a]">
+                  {task.readingAssignment}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3 sm:gap-[17px]">
+                  <span className="flex h-[39px] items-center gap-2 rounded-[8px] bg-[#faf8f6] px-3.5 text-[13px] sm:text-[14px]">
+                    <Clock3 className="h-[19px] w-[19px]" />
+                    {task.estimatedMinutes} min read
+                  </span>
+                  {verseCount > 0 && (
+                    <span className="flex h-[39px] items-center gap-2 rounded-[8px] bg-[#faf8f6] px-3.5 text-[13px] sm:text-[14px]">
+                      <BookOpen className="h-[19px] w-[19px]" />
+                      {verseCount} verses
+                    </span>
+                  )}
+                </div>
+              </div>
+              <ChevronRight className="h-6 w-6 shrink-0 text-[#17191d]" />
+            </div>
+          </>
+        ) : (
+          <div className="flex min-h-[128px] items-center gap-5">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-[#f0f3f8] text-[#657087]">
+              <Check className="h-6 w-6" />
+            </span>
+            <div>
+              <span className="text-[12px] font-semibold text-[#1e55e5]">
+                Reading complete
               </span>
-              {verseCount > 0 && (
-                <span className="flex h-[39px] items-center gap-2 rounded-[8px] bg-[#faf8f6] px-3.5 text-[13px] sm:text-[14px]">
-                  <BookOpen className="h-[19px] w-[19px]" />
-                  {verseCount} verses
-                </span>
-              )}
+              <h3 className="mt-1.5 text-[21px] font-semibold">
+                You&apos;re finished for today
+              </h3>
+              <p className="mt-1.5 text-[13px] text-[#626b84]">
+                {nextReadingLabel
+                  ? `Your next reading unlocks ${nextReadingLabel}.`
+                  : 'Your next plan is being prepared.'}
+              </p>
             </div>
           </div>
-          <ChevronRight className="h-6 w-6 shrink-0 text-[#17191d]" />
-        </div>
+        )}
       </section>
 
       <button
         type="button"
         onClick={onStartReading}
-        disabled={!task || task.completed}
-        className="flex h-14 w-full items-center justify-center gap-3 rounded-[10px] bg-[#1e55e5] text-[15px] font-semibold text-white transition-colors hover:bg-[#194acb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e55e5] focus-visible:ring-offset-2 active:bg-[#1742b7] disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={!canStartReading}
+        className={`flex h-14 w-full items-center justify-center gap-3 rounded-[10px] text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e55e5] focus-visible:ring-offset-2 ${
+          canStartReading
+            ? 'bg-[#1e55e5] text-white hover:bg-[#194acb] active:bg-[#1742b7]'
+            : 'cursor-not-allowed bg-[#e8ebf0] text-[#737c8e]'
+        }`}
       >
-        {task?.completed ? (
+        {!task ? (
           <>
-            <Check className="h-6 w-6" />
+            <LockKeyhole className="h-5 w-5" />
+            Next Reading Locked
+          </>
+        ) : task.completed ? (
+          <>
+            <Check className="h-5 w-5" />
             Reading Completed
           </>
         ) : (
@@ -160,11 +209,18 @@ function TodayPlanCard({ plan, task, onStartReading }) {
         <Clock3 className="h-5 w-5 shrink-0 text-[#101318]" strokeWidth={1.8} />
         <div>
           <p className="text-[14px] font-bold">
-            You have {plan.estimatedMinutesPerDay} minutes allocated.
+            {task
+              ? `You have ${plan.estimatedMinutesPerDay} minutes allocated.`
+              : `Your plan reserves ${plan.estimatedMinutesPerDay} minutes per reading day.`}
           </p>
           <p className="mt-1.5 text-[14px] text-[#667089]">
-            This reading takes about {task?.estimatedMinutes || 10} minutes—plenty
-            of time to reflect afterward.
+            {task
+              ? reflectionMinutes > 0
+                ? `This reading takes about ${task.estimatedMinutes} minutes, leaving ${reflectionMinutes} minutes to reflect.`
+                : `This reading matches your ${plan.estimatedMinutesPerDay}-minute allocation.`
+              : nextReadingLabel
+                ? `Your next scheduled reading begins ${nextReadingLabel}.`
+                : 'Your next scheduled reading will appear here when it is ready.'}
           </p>
         </div>
       </div>

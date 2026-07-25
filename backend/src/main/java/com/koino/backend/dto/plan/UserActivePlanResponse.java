@@ -9,6 +9,7 @@ public record UserActivePlanResponse(
     Integer sequenceNumber,
     LocalDate startDate,
     LocalDate estimatedFinishDate,
+    LocalDate nextReadingDate,
     Integer estimatedMinutesPerDay,
     int completedDays,
     int totalDays,

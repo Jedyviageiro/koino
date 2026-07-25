@@ -2,6 +2,7 @@ package com.koino.backend.service;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,9 +78,22 @@ public class PlanService {
     @Transactional(readOnly = true)
     public Optional<UserPlanTaskResponse> getTodayTask(Long userId) {
         return findCurrentPlan(userId)
-            .flatMap(plan -> firstIncompleteTask(plan.getActivePlanId()))
-            .filter(task -> !task.getScheduledDate().isAfter(LocalDate.now()))
-            .map(this::toTaskResponse);
+            .flatMap(plan -> {
+                List<UserPlanTask> tasks = taskRepository
+                    .findByActivePlanActivePlanIdOrderByDayNumber(
+                        plan.getActivePlanId()
+                    );
+                if (hasCompletionToday(tasks)) {
+                    return Optional.empty();
+                }
+                return tasks.stream()
+                    .filter(task -> !task.isCompleted())
+                    .findFirst()
+                    .filter(task ->
+                        !task.getScheduledDate().isAfter(LocalDate.now())
+                    )
+                    .map(this::toTaskResponse);
+            });
     }
 
     @Transactional(readOnly = true)
@@ -200,6 +214,16 @@ public class PlanService {
         int completedDays = (int) tasks.stream().filter(UserPlanTask::isCompleted).count();
         int totalDays = tasks.size();
         double percentage = totalDays == 0 ? 0 : completedDays * 100.0 / totalDays;
+        LocalDate nextReadingDate = tasks.stream()
+            .filter(task -> !task.isCompleted())
+            .map(UserPlanTask::getScheduledDate)
+            .findFirst()
+            .orElse(null);
+        if (nextReadingDate != null
+            && hasCompletionToday(tasks)
+            && !nextReadingDate.isAfter(LocalDate.now())) {
+            nextReadingDate = LocalDate.now().plusDays(1);
+        }
 
         return new UserActivePlanResponse(
             activePlan.getActivePlanId(),
@@ -208,6 +232,7 @@ public class PlanService {
             activePlan.getPlanSequenceNumber(),
             activePlan.getStartDate(),
             tasks.isEmpty() ? activePlan.getStartDate() : tasks.getLast().getScheduledDate(),
+            nextReadingDate,
             activePlan.getEstimatedMinutesPerDay(),
             completedDays,
             totalDays,
@@ -295,6 +320,17 @@ public class PlanService {
                 Math.max(1, passage.getLastVerse() - passage.getFirstVerse() + 1)
             )
             .sum();
+    }
+
+    private boolean hasCompletionToday(List<UserPlanTask> tasks) {
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        return tasks.stream()
+            .map(UserPlanTask::getCompletedAt)
+            .filter(java.util.Objects::nonNull)
+            .map(completedAt ->
+                completedAt.atZone(ZoneOffset.UTC).toLocalDate()
+            )
+            .anyMatch(today::equals);
     }
 }
 
