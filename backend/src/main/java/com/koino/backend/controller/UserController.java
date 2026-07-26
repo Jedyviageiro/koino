@@ -29,6 +29,7 @@ import com.koino.backend.dto.user.NotificationResponse;
 import com.koino.backend.dto.user.BookmarkVerseRequest;
 import com.koino.backend.dto.user.ProfilePictureResponse;
 import com.koino.backend.dto.user.UserStreakResponse;
+import com.koino.backend.dto.user.UserSummaryResponse;
 import com.koino.backend.dto.user.VerseBookmarkResponse;
 import com.koino.backend.model.ResetPasswordToken;
 import com.koino.backend.model.User;
@@ -133,6 +134,18 @@ public class UserController {
     public ResponseEntity<Void> deactivateUser(@AuthenticationPrincipal User user) {
         userService.deactivateUser(user.getUserId());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public UserSummaryResponse getCurrentUser(
+        @AuthenticationPrincipal User user
+    ) {
+        return new UserSummaryResponse(
+            user.getUserId(),
+            user.getEmail(),
+            user.getFullname(),
+            user.getProfilePictureUrl()
+        );
     }
 
     @PutMapping(

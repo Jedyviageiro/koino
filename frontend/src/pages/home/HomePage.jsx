@@ -71,7 +71,7 @@ function HomePage({ onNavigate }) {
   }).format(new Date())
 
   return (
-    <div className="min-h-svh bg-white text-[#0d0f12] lg:grid lg:grid-cols-[150px_minmax(0,1fr)]">
+    <div className="min-h-svh bg-white text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
       <HomeSidebar name={session?.fullname || firstName} onNavigate={onNavigate} />
 
       <main className="min-w-0 px-[18px] pb-20 pt-[30px] sm:px-7 lg:px-9 lg:pb-10 lg:pt-10">
@@ -120,7 +120,7 @@ function HomePage({ onNavigate }) {
           <TodayPlanCard
             plan={data?.plan}
             task={data?.task}
-            onStartReading={() => onNavigate('/reading')}
+            onStartReading={() => onNavigate('/devotional')}
           />
           )}
 

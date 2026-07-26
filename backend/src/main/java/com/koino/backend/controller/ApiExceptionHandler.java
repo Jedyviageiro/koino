@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import com.koino.backend.dto.common.ErrorResponse;
+import com.koino.backend.service.DevotionalGenerationException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -53,6 +54,17 @@ public class ApiExceptionHandler {
             HttpStatus.CONTENT_TOO_LARGE,
             "FILE_TOO_LARGE",
             "Uploaded file must be 5 MB or smaller"
+        );
+    }
+
+    @ExceptionHandler(DevotionalGenerationException.class)
+    public ResponseEntity<ErrorResponse> handleDevotionalGeneration(
+        DevotionalGenerationException exception
+    ) {
+        return error(
+            HttpStatus.BAD_GATEWAY,
+            "DEVOTIONAL_GENERATION_FAILED",
+            exception.getMessage()
         );
     }
 

@@ -16,7 +16,9 @@ import com.koino.backend.dto.plan.ReadingProgressRequest;
 import com.koino.backend.dto.plan.UserActivePlanResponse;
 import com.koino.backend.dto.plan.UserPlanProgressResponse;
 import com.koino.backend.dto.plan.UserPlanTaskResponse;
+import com.koino.backend.dto.plan.UserTaskDevotionalResponse;
 import com.koino.backend.model.User;
+import com.koino.backend.service.DevotionalService;
 import com.koino.backend.service.PlanService;
 import jakarta.validation.Valid;
 
@@ -24,9 +26,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/plans")
 public class PlanController {
     private final PlanService planService;
+    private final DevotionalService devotionalService;
 
-    public PlanController(PlanService planService) {
+    public PlanController(
+        PlanService planService,
+        DevotionalService devotionalService
+    ) {
         this.planService = planService;
+        this.devotionalService = devotionalService;
     }
 
     @GetMapping
@@ -100,5 +107,13 @@ public class PlanController {
             taskId,
             request.verseIndex()
         );
+    }
+
+    @GetMapping("/me/tasks/{taskId}/devotional")
+    public UserTaskDevotionalResponse getTaskDevotional(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long taskId
+    ) {
+        return devotionalService.getOrCreate(user.getUserId(), taskId);
     }
 }

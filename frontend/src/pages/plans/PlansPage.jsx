@@ -76,7 +76,7 @@ function PlansPage({ onNavigate }) {
       : Math.max(0, otherPlans.length - firstUpcomingPlanIndex - 1)
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[150px_minmax(0,1fr)]">
+    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
       <HomeSidebar
         name={session?.fullname || 'Koino Reader'}
         onNavigate={onNavigate}
@@ -116,7 +116,7 @@ function PlansPage({ onNavigate }) {
                 plan={currentPlan}
                 template={currentTemplate}
                 todayTask={data.todayTask}
-                onContinue={() => onNavigate('/reading')}
+                onContinue={() => onNavigate('/devotional')}
               />
             ) : (
               <div className="rounded-[8px] border border-[#dfe3e9] bg-white p-6">

@@ -4,9 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.koino.backend.model.UserPlanTask;
+import jakarta.persistence.LockModeType;
 
 @Repository
 public interface UserPlanTaskRepository extends JpaRepository<UserPlanTask, Long> {
@@ -19,6 +24,36 @@ public interface UserPlanTaskRepository extends JpaRepository<UserPlanTask, Long
     );
 
     Optional<UserPlanTask> findByTaskIdAndActivePlanUserUserId(Long taskId, Long userId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+        select task
+        from UserPlanTask task
+        where task.taskId = :taskId
+          and task.activePlan.user.userId = :userId
+        """)
+    Optional<UserPlanTask> findOwnedTaskForDevotional(
+        @Param("taskId") Long taskId,
+        @Param("userId") Long userId
+    );
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select task from UserPlanTask task where task.taskId = :taskId")
+    Optional<UserPlanTask> findTaskForDevotional(
+        @Param("taskId") Long taskId
+    );
+
+    @Query("""
+        select task.taskId
+        from UserPlanTask task
+        where not exists (
+            select devotional.devotionalId
+            from UserTaskDevotional devotional
+            where devotional.task = task
+        )
+        order by task.taskId
+        """)
+    List<Long> findTaskIdsWithoutDevotional(Pageable pageable);
 
     boolean existsByActivePlanActivePlanIdAndIsCompletedFalse(Long activePlanId);
 }

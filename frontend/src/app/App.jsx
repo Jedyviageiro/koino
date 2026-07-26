@@ -6,6 +6,7 @@ import HomePage from '@/pages/home/HomePage.jsx'
 import ReadingPage from '@/pages/reading/ReadingPage.jsx'
 import PlansPage from '@/pages/plans/PlansPage.jsx'
 import BiblePage from '@/pages/bible/BiblePage.jsx'
+import DevotionalPage from '@/pages/devotional/DevotionalPage.jsx'
 
 function App() {
   const [path, setPath] = useState(window.location.pathname)
@@ -53,6 +54,10 @@ function App() {
 
   if (path === '/reading') {
     return <ReadingPage onNavigate={navigate} />
+  }
+
+  if (path === '/devotional') {
+    return <DevotionalPage onNavigate={navigate} />
   }
 
   if (path === '/plans') {

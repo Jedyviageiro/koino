@@ -139,7 +139,7 @@ function ReadingPage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[150px_minmax(0,1fr)]">
+    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
       <HomeSidebar
         name={session?.fullname || 'Koino Reader'}
         onNavigate={onNavigate}
