@@ -7,6 +7,7 @@ import ReadingPage from '@/pages/reading/ReadingPage.jsx'
 import PlansPage from '@/pages/plans/PlansPage.jsx'
 import BiblePage from '@/pages/bible/BiblePage.jsx'
 import DevotionalPage from '@/pages/devotional/DevotionalPage.jsx'
+import CommunityPage from '@/pages/community/CommunityPage.jsx'
 
 function App() {
   const [path, setPath] = useState(window.location.pathname)
@@ -66,6 +67,10 @@ function App() {
 
   if (path === '/bible') {
     return <BiblePage onNavigate={navigate} />
+  }
+
+  if (path === '/community') {
+    return <CommunityPage onNavigate={navigate} />
   }
 
   return path === '/register' ? (

@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { Bookmark, Type } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Bookmark, Ellipsis, Share2, Type } from 'lucide-react'
 
 const textSizes = [
   'text-[14px] leading-7',
@@ -18,8 +18,10 @@ function BibleChapter({
   onSelectVerse,
   onTextSize,
   onBookmark,
+  onShare,
 }) {
   const verseRefs = useRef(new Map())
+  const [moreOpen, setMoreOpen] = useState(false)
   const selectedVerse = verses[selectedIndex]
   const bookmarked = Boolean(
     selectedVerse && bookmarkColors.has(selectedVerse.verseId),
@@ -68,6 +70,33 @@ function BibleChapter({
           >
             <Bookmark className={`h-[18px] w-[18px] ${bookmarked ? 'fill-current' : ''}`} />
           </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setMoreOpen((current) => !current)}
+              disabled={!selectedVerse}
+              className="flex h-9 w-9 items-center justify-center rounded-[7px] hover:bg-[#f5f3ef] disabled:opacity-40"
+              aria-label="More verse options"
+              aria-expanded={moreOpen}
+            >
+              <Ellipsis className="h-[18px] w-[18px]" />
+            </button>
+            {moreOpen && (
+              <div className="absolute right-0 top-10 z-20 w-[180px] rounded-[7px] border border-[#e0e3e7] bg-white p-1.5 shadow-[0_12px_30px_rgba(27,31,38,0.12)]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMoreOpen(false)
+                    onShare(selectedVerse)
+                  }}
+                  className="flex h-9 w-full items-center gap-2.5 rounded-[5px] px-2.5 text-left text-[11px] font-medium text-[#343a44] hover:bg-[#f7f4ef]"
+                >
+                  <Share2 className="h-3.5 w-3.5" strokeWidth={1.7} />
+                  Share to Community
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -101,7 +130,10 @@ function BibleChapter({
                   >
                     <button
                       type="button"
-                      onClick={() => onSelectVerse(index)}
+                      onClick={() => {
+                        setMoreOpen(false)
+                        onSelectVerse(index)
+                      }}
                       className={`grid w-full grid-cols-[28px_minmax(0,1fr)] gap-4 rounded-[7px] px-2 py-2 text-left transition-colors ${
                         selected && !highlightColor ? 'bg-[#fdf7ee]' : 'hover:bg-[#fafafa]'
                       }`}

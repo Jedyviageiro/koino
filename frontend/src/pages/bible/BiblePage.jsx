@@ -4,6 +4,7 @@ import BibleToolbar from '@/components/bible/BibleToolbar.jsx'
 import HomeSidebar from '@/components/home/HomeSidebar.jsx'
 import BookmarkModal from '@/components/reading/BookmarkModal.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
+import ShareVerseModal from '@/components/community/ShareVerseModal.jsx'
 import {
   getBibleBrowserData,
   getBookChapters,
@@ -14,6 +15,7 @@ import {
   addVerseBookmark,
   removeVerseBookmark,
 } from '@/features/reading/readingService.js'
+import { createCommunityPost } from '@/features/community/communityService.js'
 
 const isOldTestament = (book) => book.orderIndex <= 39
 
@@ -30,6 +32,8 @@ function BiblePage({ onNavigate }) {
   const [bookmarkColors, setBookmarkColors] = useState(new Map())
   const [bookmarkTarget, setBookmarkTarget] = useState(null)
   const [bookmarkSaving, setBookmarkSaving] = useState(false)
+  const [shareTarget, setShareTarget] = useState(null)
+  const [shareSaving, setShareSaving] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const session = getAuthSession()
@@ -251,6 +255,25 @@ function BiblePage({ onNavigate }) {
     }
   }
 
+  async function shareVerse(caption) {
+    if (!shareTarget || shareSaving) return
+    setShareSaving(true)
+    try {
+      await createCommunityPost({
+        postType: 'VERSE',
+        verseId: shareTarget.verseId,
+        content: caption,
+      })
+      setShareTarget(null)
+      onNavigate('/community')
+    } catch (requestError) {
+      setShareTarget(null)
+      setError(requestError.message || 'Unable to share this verse.')
+    } finally {
+      setShareSaving(false)
+    }
+  }
+
   return (
     <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
       <HomeSidebar
@@ -309,6 +332,7 @@ function BiblePage({ onNavigate }) {
             onSelectVerse={setSelectedVerseIndex}
             onTextSize={() => setTextSize((current) => (current + 1) % 3)}
             onBookmark={setBookmarkTarget}
+            onShare={setShareTarget}
           />
         </div>
       </main>
@@ -322,6 +346,15 @@ function BiblePage({ onNavigate }) {
           onSave={(color) => saveBookmark(bookmarkTarget, color)}
           onRemove={() => removeBookmark(bookmarkTarget)}
           onClose={() => setBookmarkTarget(null)}
+        />
+      )}
+
+      {shareTarget && (
+        <ShareVerseModal
+          verse={shareTarget}
+          sharing={shareSaving}
+          onShare={shareVerse}
+          onClose={() => setShareTarget(null)}
         />
       )}
 

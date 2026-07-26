@@ -4,6 +4,7 @@ import {
   ChartNoAxesColumnIncreasing,
   ChevronRight,
   House,
+  MessagesSquare,
   Settings,
 } from 'lucide-react'
 import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
@@ -14,6 +15,7 @@ const navigation = [
   { label: 'Home', icon: House, path: '/home' },
   { label: 'Plans', icon: ChartNoAxesColumnIncreasing, path: '/plans' },
   { label: 'Bible', icon: BookOpen, path: '/bible' },
+  { label: 'Community', icon: MessagesSquare, path: '/community' },
 ]
 
 function HomeSidebar({

@@ -1,0 +1,270 @@
+package com.koino.backend.service;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.koino.backend.dto.community.CommunityAuthorResponse;
+import com.koino.backend.dto.community.CommunityCommentResponse;
+import com.koino.backend.dto.community.CommunityPostResponse;
+import com.koino.backend.dto.community.CommunityVerseResponse;
+import com.koino.backend.dto.community.CreateCommunityPostRequest;
+import com.koino.backend.model.CommunityComment;
+import com.koino.backend.model.CommunityPost;
+import com.koino.backend.model.CommunityPostType;
+import com.koino.backend.model.User;
+import com.koino.backend.model.Verse;
+import com.koino.backend.repository.CommunityCommentRepository;
+import com.koino.backend.repository.CommunityPostRepository;
+import com.koino.backend.repository.UserRepository;
+import com.koino.backend.repository.VerseRepository;
+
+@Service
+public class CommunityService {
+    private static final long MAX_PHOTO_SIZE = 5L * 1024 * 1024;
+    private static final String PHOTO_FOLDER = "koino/community";
+
+    private final CommunityPostRepository postRepository;
+    private final CommunityCommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final VerseRepository verseRepository;
+    private final Cloudinary cloudinary;
+
+    public CommunityService(
+        CommunityPostRepository postRepository,
+        CommunityCommentRepository commentRepository,
+        UserRepository userRepository,
+        VerseRepository verseRepository,
+        Cloudinary cloudinary
+    ) {
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+        this.verseRepository = verseRepository;
+        this.cloudinary = cloudinary;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommunityPostResponse> getFeed(String type) {
+        List<CommunityPost> posts = parseType(type)
+            .map(postRepository::findTop50ByPostTypeOrderByCreatedAtDesc)
+            .orElseGet(postRepository::findTop50ByOrderByCreatedAtDesc);
+
+        if (posts.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> postIds = posts.stream().map(CommunityPost::getPostId).toList();
+        Map<Long, List<CommunityComment>> commentsByPost =
+            commentRepository.findByPostPostIdInOrderByCreatedAtAsc(postIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                    comment -> comment.getPost().getPostId()
+                ));
+
+        return posts.stream()
+            .map(post -> toResponse(
+                post,
+                commentsByPost.getOrDefault(post.getPostId(), List.of())
+            ))
+            .toList();
+    }
+
+    @Transactional
+    public CommunityPostResponse createPost(
+        Long userId,
+        CreateCommunityPostRequest request
+    ) {
+        if (request.postType() == CommunityPostType.PHOTO) {
+            throw new IllegalArgumentException(
+                "Photo posts must include an image upload"
+            );
+        }
+
+        CommunityPost post = new CommunityPost();
+        post.setAuthor(findUser(userId));
+        post.setPostType(request.postType());
+        post.setContent(clean(request.content()));
+
+        if (request.postType() == CommunityPostType.VERSE) {
+            if (request.verseId() == null) {
+                throw new IllegalArgumentException("Select a Bible verse to share");
+            }
+            post.setVerse(verseRepository.findById(request.verseId())
+                .orElseThrow(() -> new IllegalArgumentException("Verse not found")));
+        } else {
+            requireContent(post.getContent(), "Write your question before posting");
+            if (request.verseId() != null) {
+                throw new IllegalArgumentException(
+                    "A question post cannot include a verse"
+                );
+            }
+        }
+
+        return toResponse(postRepository.save(post), List.of());
+    }
+
+    @Transactional
+    public CommunityPostResponse createPhotoPost(
+        Long userId,
+        MultipartFile file,
+        String caption
+    ) {
+        validatePhoto(file);
+        User author = findUser(userId);
+        String cleanedCaption = clean(caption);
+        if (cleanedCaption != null && cleanedCaption.length() > 1200) {
+            throw new IllegalArgumentException(
+                "Photo caption must be 1200 characters or fewer"
+            );
+        }
+
+        try {
+            Map<?, ?> upload = cloudinary.uploader().upload(
+                file.getBytes(),
+                ObjectUtils.asMap(
+                    "resource_type", "image",
+                    "folder", PHOTO_FOLDER,
+                    "unique_filename", true,
+                    "overwrite", false
+                )
+            );
+
+            CommunityPost post = new CommunityPost();
+            post.setAuthor(author);
+            post.setPostType(CommunityPostType.PHOTO);
+            post.setContent(cleanedCaption);
+            post.setPhotoUrl(requiredUploadValue(upload, "secure_url"));
+            post.setPhotoPublicId(requiredUploadValue(upload, "public_id"));
+            return toResponse(postRepository.save(post), List.of());
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                "Could not upload the community photo",
+                exception
+            );
+        }
+    }
+
+    @Transactional
+    public CommunityCommentResponse addComment(
+        Long userId,
+        Long postId,
+        String content
+    ) {
+        String cleanedContent = clean(content);
+        requireContent(cleanedContent, "Write a comment before posting");
+
+        CommunityComment comment = new CommunityComment();
+        comment.setAuthor(findUser(userId));
+        comment.setPost(postRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("Post not found")));
+        comment.setContent(cleanedContent);
+        return toCommentResponse(commentRepository.save(comment));
+    }
+
+    private java.util.Optional<CommunityPostType> parseType(String type) {
+        if (type == null || type.isBlank() || type.equalsIgnoreCase("ALL")) {
+            return java.util.Optional.empty();
+        }
+        try {
+            return java.util.Optional.of(
+                CommunityPostType.valueOf(type.trim().toUpperCase())
+            );
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(
+                "Community type must be VERSE, PHOTO, or QUESTION"
+            );
+        }
+    }
+
+    private CommunityPostResponse toResponse(
+        CommunityPost post,
+        List<CommunityComment> comments
+    ) {
+        return new CommunityPostResponse(
+            post.getPostId(),
+            toAuthorResponse(post.getAuthor()),
+            post.getPostType(),
+            post.getContent(),
+            post.getVerse() == null ? null : toVerseResponse(post.getVerse()),
+            post.getPhotoUrl(),
+            post.getCreatedAt(),
+            comments.stream().map(this::toCommentResponse).toList()
+        );
+    }
+
+    private CommunityVerseResponse toVerseResponse(Verse verse) {
+        String reference = "%s %d:%d".formatted(
+            verse.getChapter().getBook().getTitle(),
+            verse.getChapter().getChapterNumber(),
+            verse.getVerseNumber()
+        );
+        return new CommunityVerseResponse(
+            verse.getVerseId(),
+            reference,
+            verse.getText()
+        );
+    }
+
+    private CommunityCommentResponse toCommentResponse(CommunityComment comment) {
+        return new CommunityCommentResponse(
+            comment.getCommentId(),
+            toAuthorResponse(comment.getAuthor()),
+            comment.getContent(),
+            comment.getCreatedAt()
+        );
+    }
+
+    private CommunityAuthorResponse toAuthorResponse(User user) {
+        return new CommunityAuthorResponse(
+            user.getUserId(),
+            user.getFullname(),
+            user.getProfilePictureUrl()
+        );
+    }
+
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    private String clean(String value) {
+        return value == null ? null : value.trim();
+    }
+
+    private void requireContent(String content, String message) {
+        if (content == null || content.isBlank()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    private void validatePhoto(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Choose a photo to post");
+        }
+        if (file.getSize() > MAX_PHOTO_SIZE) {
+            throw new IllegalArgumentException("Photo must be 5 MB or smaller");
+        }
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("Only image files are allowed");
+        }
+    }
+
+    private String requiredUploadValue(Map<?, ?> upload, String key) {
+        Object value = upload.get(key);
+        if (value == null || value.toString().isBlank()) {
+            throw new IllegalStateException(
+                "Cloudinary response did not contain " + key
+            );
+        }
+        return value.toString();
+    }
+}
