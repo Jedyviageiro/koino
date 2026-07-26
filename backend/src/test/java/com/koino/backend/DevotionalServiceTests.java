@@ -29,6 +29,7 @@ import com.koino.backend.repository.UserTaskDevotionalRepository;
 import com.koino.backend.repository.VerseRepository;
 import com.koino.backend.service.DevotionalService;
 import com.koino.backend.service.GeminiDevotionalClient;
+import com.koino.backend.service.GeminiRateLimitException;
 import com.koino.backend.service.LocalDevotionalCatalog;
 import com.koino.backend.service.LocalDevotionalCatalog.DevotionalTemplate;
 import com.koino.backend.service.GeminiDevotionalClient.GeneratedDevotional;
@@ -155,6 +156,29 @@ class DevotionalServiceTests {
         assertThat(response.devotionalId()).isEqualTo(17L);
         assertThat(response.title()).isEqualTo("Locally restored");
         verify(fixture.geminiClient(), never()).generate(any());
+    }
+
+    @Test
+    void servesAnUnpersistedLocalFallbackWhenGeminiIsRateLimited() {
+        Fixture fixture = fixture(LocalDate.now());
+        when(fixture.devotionalRepository()
+            .findByTaskTaskIdAndTaskActivePlanUserUserId(9L, 42L))
+            .thenReturn(Optional.empty());
+        when(fixture.taskRepository().findOwnedTaskForDevotional(9L, 42L))
+            .thenReturn(Optional.of(fixture.task()));
+        when(fixture.verseRepository()
+            .findByChapterChapterIdOrderByVerseNumber(3L))
+            .thenReturn(List.of(fixture.verse()));
+        when(fixture.geminiClient().generate(any()))
+            .thenThrow(new GeminiRateLimitException("Quota unavailable"));
+
+        var response = fixture.service().getOrCreate(42L, 9L);
+
+        assertThat(response.devotionalId()).isNull();
+        assertThat(response.title()).isEqualTo("A Quiet Moment in Matthew");
+        assertThat(response.anchorVerseReference()).isEqualTo("Matthew 5:3");
+        assertThat(response.reflection()).contains("full assigned passage");
+        verify(fixture.devotionalRepository(), never()).save(any());
     }
 
     @Test

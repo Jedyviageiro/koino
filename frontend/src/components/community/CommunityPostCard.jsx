@@ -1,25 +1,7 @@
 import { useState } from 'react'
 import { BookOpen, MessageCircle, Send } from 'lucide-react'
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
-
-function relativeTime(value) {
-  const seconds = Math.max(
-    1,
-    Math.floor((Date.now() - new Date(value).getTime()) / 1000),
-  )
-  if (seconds < 60) return 'now'
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h`
-  const days = Math.floor(hours / 24)
-  return days < 7
-    ? `${days}d`
-    : new Date(value).toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-      })
-}
+import RelativeTime from '@/components/community/RelativeTime.jsx'
 
 function CommunityPostCard({ post, commenting, onComment }) {
   const [commentsOpen, setCommentsOpen] = useState(false)
@@ -46,7 +28,8 @@ function CommunityPostCard({ post, commenting, onComment }) {
           <p className="mt-0.5 text-[10px] text-[#858c99]">
             {post.postType.charAt(0) +
               post.postType.slice(1).toLowerCase()}{' '}
-            · {relativeTime(post.createdAt)}
+            {' | '}
+            <RelativeTime value={post.createdAt} />
           </p>
         </div>
       </header>
@@ -70,11 +53,13 @@ function CommunityPostCard({ post, commenting, onComment }) {
       )}
 
       {post.postType === 'PHOTO' && post.photoUrl && (
-        <img
-          src={post.photoUrl}
-          alt={post.content || 'Community post'}
-          className="mt-4 max-h-[430px] w-full rounded-[7px] bg-[#f1f2f3] object-cover"
-        />
+        <div className="mt-4 flex max-h-[680px] w-full justify-center overflow-hidden rounded-[7px] bg-[#f1f2f3]">
+          <img
+            src={post.photoUrl}
+            alt={post.content || 'Community post'}
+            className="h-auto max-h-[680px] w-auto max-w-full object-contain"
+          />
+        </div>
       )}
 
       {post.postType !== 'QUESTION' && post.content && (
@@ -110,7 +95,7 @@ function CommunityPostCard({ post, commenting, onComment }) {
                         {item.author.fullname}
                       </p>
                       <span className="text-[9px] text-[#949aa5]">
-                        {relativeTime(item.createdAt)}
+                        <RelativeTime value={item.createdAt} />
                       </span>
                     </div>
                     <p className="mt-0.5 whitespace-pre-wrap text-[11px] leading-5 text-[#4e5665]">

@@ -2,6 +2,7 @@ package com.koino.backend.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -51,9 +52,13 @@ public interface UserPlanTaskRepository extends JpaRepository<UserPlanTask, Long
             from UserTaskDevotional devotional
             where devotional.task = task
         )
+          and task.scheduledDate <= :latestDate
         order by task.taskId
         """)
-    List<Long> findTaskIdsWithoutDevotional(Pageable pageable);
+    List<Long> findTaskIdsWithoutDevotional(
+        @Param("latestDate") LocalDate latestDate,
+        Pageable pageable
+    );
 
     boolean existsByActivePlanActivePlanIdAndIsCompletedFalse(Long activePlanId);
 }

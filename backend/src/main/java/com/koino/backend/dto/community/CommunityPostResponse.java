@@ -1,6 +1,6 @@
 package com.koino.backend.dto.community;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import com.koino.backend.model.CommunityPostType;
@@ -12,7 +12,7 @@ public record CommunityPostResponse(
     String content,
     CommunityVerseResponse verse,
     String photoUrl,
-    LocalDateTime createdAt,
+    Instant createdAt,
     List<CommunityCommentResponse> comments
 ) {
 }

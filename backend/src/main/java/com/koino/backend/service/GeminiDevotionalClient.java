@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ public class GeminiDevotionalClient {
     private final HttpClient httpClient;
     private final String apiKey;
     private final String model;
+    private volatile Instant rateLimitedUntil = Instant.EPOCH;
 
     public GeminiDevotionalClient(
         @Value("${gemini.api-key:}") String apiKey,
@@ -43,6 +45,11 @@ public class GeminiDevotionalClient {
         if (apiKey == null || apiKey.isBlank()) {
             throw new DevotionalGenerationException(
                 "Gemini is not configured. Set GEMINI_KEY in the backend environment."
+            );
+        }
+        if (Instant.now().isBefore(rateLimitedUntil)) {
+            throw new GeminiRateLimitException(
+                "Gemini quota is temporarily unavailable."
             );
         }
 
@@ -69,6 +76,12 @@ public class GeminiDevotionalClient {
                     response.statusCode(),
                     upstreamMessage
                 );
+                if (response.statusCode() == 429) {
+                    rateLimitedUntil = Instant.now().plus(Duration.ofHours(1));
+                    throw new GeminiRateLimitException(
+                        "Gemini quota is temporarily unavailable."
+                    );
+                }
                 throw new DevotionalGenerationException(
                     "Gemini could not create the devotional right now."
                 );

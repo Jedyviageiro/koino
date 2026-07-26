@@ -1,11 +1,11 @@
 package com.koino.backend.dto.community;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record CommunityCommentResponse(
     Long commentId,
     CommunityAuthorResponse author,
     String content,
-    LocalDateTime createdAt
+    Instant createdAt
 ) {
 }

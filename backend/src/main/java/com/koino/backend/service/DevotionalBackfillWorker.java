@@ -1,7 +1,9 @@
 package com.koino.backend.service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,14 +25,17 @@ public class DevotionalBackfillWorker {
 
     private final UserPlanTaskRepository taskRepository;
     private final DevotionalService devotionalService;
+    private final int horizonDays;
     private Instant retryAfter = Instant.EPOCH;
 
     public DevotionalBackfillWorker(
         UserPlanTaskRepository taskRepository,
-        DevotionalService devotionalService
+        DevotionalService devotionalService,
+        @Value("${devotional.backfill.horizon-days:14}") int horizonDays
     ) {
         this.taskRepository = taskRepository;
         this.devotionalService = devotionalService;
+        this.horizonDays = horizonDays;
     }
 
     @Scheduled(
@@ -42,15 +47,25 @@ public class DevotionalBackfillWorker {
             return;
         }
 
-        taskRepository.findTaskIdsWithoutDevotional(PageRequest.of(0, 1))
+        taskRepository.findTaskIdsWithoutDevotional(
+                LocalDate.now().plusDays(horizonDays),
+                PageRequest.of(0, 1)
+            )
             .stream()
             .findFirst()
             .ifPresent(taskId -> {
                 try {
                     devotionalService.generateForTask(taskId);
                     retryAfter = Instant.EPOCH;
+                } catch (GeminiRateLimitException exception) {
+                    retryAfter = Instant.now().plusSeconds(3600);
+                    LOGGER.warn(
+                        "Devotional backfill paused for one hour after Gemini "
+                            + "rate-limited task {}",
+                        taskId
+                    );
                 } catch (RuntimeException exception) {
-                    retryAfter = Instant.now().plusSeconds(20);
+                    retryAfter = Instant.now().plusSeconds(60);
                     LOGGER.warn(
                         "Devotional backfill paused after task {} failed: {}",
                         taskId,

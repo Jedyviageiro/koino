@@ -128,11 +128,11 @@ function CommunityComposer({ user, books, posting, onSubmit }) {
               onChange={(event) => setPhoto(event.target.files?.[0] || null)}
             />
             {previewUrl ? (
-              <div className="relative h-[180px] overflow-hidden rounded-[7px] bg-[#f2f3f4]">
+              <div className="relative flex max-h-[360px] justify-center overflow-hidden rounded-[7px] bg-[#f2f3f4]">
                 <img
                   src={previewUrl}
                   alt="Selected upload"
-                  className="h-full w-full object-cover"
+                  className="h-auto max-h-[360px] w-auto max-w-full object-contain"
                 />
                 <button
                   type="button"

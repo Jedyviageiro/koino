@@ -1,6 +1,7 @@
 package com.koino.backend.service;
 
 import java.io.IOException;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ import com.koino.backend.repository.VerseRepository;
 
 @Service
 public class CommunityService {
-    private static final long MAX_PHOTO_SIZE = 5L * 1024 * 1024;
+    private static final long MAX_PHOTO_SIZE = 8L * 1024 * 1024;
     private static final String PHOTO_FOLDER = "koino/community";
 
     private final CommunityPostRepository postRepository;
@@ -195,7 +196,7 @@ public class CommunityService {
             post.getContent(),
             post.getVerse() == null ? null : toVerseResponse(post.getVerse()),
             post.getPhotoUrl(),
-            post.getCreatedAt(),
+            post.getCreatedAt().toInstant(ZoneOffset.UTC),
             comments.stream().map(this::toCommentResponse).toList()
         );
     }
@@ -218,7 +219,7 @@ public class CommunityService {
             comment.getCommentId(),
             toAuthorResponse(comment.getAuthor()),
             comment.getContent(),
-            comment.getCreatedAt()
+            comment.getCreatedAt().toInstant(ZoneOffset.UTC)
         );
     }
 
@@ -250,7 +251,7 @@ public class CommunityService {
             throw new IllegalArgumentException("Choose a photo to post");
         }
         if (file.getSize() > MAX_PHOTO_SIZE) {
-            throw new IllegalArgumentException("Photo must be 5 MB or smaller");
+            throw new IllegalArgumentException("Photo must be 8 MB or smaller");
         }
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {

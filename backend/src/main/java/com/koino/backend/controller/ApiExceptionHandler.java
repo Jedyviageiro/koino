@@ -53,7 +53,7 @@ public class ApiExceptionHandler {
         return error(
             HttpStatus.CONTENT_TOO_LARGE,
             "FILE_TOO_LARGE",
-            "Uploaded file must be 5 MB or smaller"
+            "Uploaded file must be 8 MB or smaller"
         );
     }
 

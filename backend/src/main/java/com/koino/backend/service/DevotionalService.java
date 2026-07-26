@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.koino.backend.dto.plan.UserTaskDevotionalResponse;
 import com.koino.backend.model.UserPlanPassage;
@@ -20,6 +22,8 @@ import com.koino.backend.service.LocalDevotionalCatalog.DevotionalTemplate;
 
 @Service
 public class DevotionalService {
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(DevotionalService.class);
     private static final int MAX_SCRIPTURE_CHARACTERS = 12_000;
 
     private final UserPlanTaskRepository taskRepository;
@@ -110,9 +114,20 @@ public class DevotionalService {
         }
 
         ScriptureContext scripture = buildScriptureContext(task);
-        GeneratedDevotional generated = geminiClient.generate(
-            buildPrompt(task, scripture)
-        );
+        GeneratedDevotional generated;
+        try {
+            generated = geminiClient.generate(buildPrompt(task, scripture));
+        } catch (DevotionalGenerationException exception) {
+            if (!enforceSchedule) {
+                throw exception;
+            }
+            LOGGER.warn(
+                "Serving a local devotional fallback for task {}: {}",
+                task.getTaskId(),
+                exception.getMessage()
+            );
+            return localFallback(task, scripture);
+        }
 
         UserTaskDevotional devotional = new UserTaskDevotional();
         devotional.setTask(task);
@@ -126,6 +141,44 @@ public class DevotionalService {
         devotional.setModelName(generated.model());
         devotional.setGeneratedAt(Instant.now());
         return toResponse(devotionalRepository.save(devotional));
+    }
+
+    private UserTaskDevotionalResponse localFallback(
+        UserPlanTask task,
+        ScriptureContext scripture
+    ) {
+        String book = task.getPassages().getFirst()
+            .getChapter()
+            .getBook()
+            .getTitle();
+        String reflection = """
+            Begin with the anchor verse and then read the full assigned passage \
+            slowly. Notice the words or ideas that draw your attention, and \
+            consider what they reveal within the passage.
+
+            Return to the text once more without rushing toward an answer. Ask \
+            where its truth meets your thoughts, choices, relationships, or \
+            needs today.
+            """;
+        return new UserTaskDevotionalResponse(
+            null,
+            task.getTaskId(),
+            task.getReadingAssignment(),
+            task.getEstimatedMinutes(),
+            scripture.verseCount(),
+            "A Quiet Moment in " + book,
+            scripture.anchorReference(),
+            scripture.anchorText(),
+            "Take a quiet moment with today's reading and let Scripture set "
+                + "the pace.",
+            reflection,
+            "Choose one phrase from the passage to remember, and carry it into "
+                + "one concrete decision or conversation today.",
+            "Lord, help me listen carefully to Your Word and respond with "
+                + "wisdom. Shape my heart and my actions through what I have "
+                + "read today. Amen.",
+            Instant.now()
+        );
     }
 
     private UserTaskDevotional saveCopy(
