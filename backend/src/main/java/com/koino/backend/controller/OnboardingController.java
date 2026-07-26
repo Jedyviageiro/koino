@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.koino.backend.dto.user.OnboardingRequest;
+import com.koino.backend.dto.user.OnboardingStatusResponse;
 import com.koino.backend.dto.user.UserProfileUpdateResponse;
 import com.koino.backend.model.User;
 import com.koino.backend.service.UserProfileService;
@@ -41,5 +42,14 @@ public class OnboardingController {
     @GetMapping
     public UserProfileUpdateResponse getOnboarding(@AuthenticationPrincipal User user) {
         return userProfileService.getProfile(user.getUserId());
+    }
+
+    @GetMapping("/status")
+    public OnboardingStatusResponse getOnboardingStatus(
+        @AuthenticationPrincipal User user
+    ) {
+        return new OnboardingStatusResponse(
+            userProfileService.hasCompletedOnboarding(user.getUserId())
+        );
     }
 }

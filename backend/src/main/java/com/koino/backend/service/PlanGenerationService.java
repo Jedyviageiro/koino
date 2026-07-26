@@ -102,7 +102,8 @@ public class PlanGenerationService implements CommandLineRunner {
             firstPlan.sequenceNumber(),
             dailyCapacityMinutes,
             workPace,
-            LocalDate.now()
+            LocalDate.now(),
+            false
         );
     }
 
@@ -158,7 +159,8 @@ public class PlanGenerationService implements CommandLineRunner {
             nextPlan.sequenceNumber(),
             dailyCapacityMinutes,
             workPace,
-            LocalDate.now().plusDays(1)
+            LocalDate.now().plusDays(1),
+            true
         );
     }
 
@@ -168,7 +170,8 @@ public class PlanGenerationService implements CommandLineRunner {
         int planSequenceNumber,
         int dailyCapacityMinutes,
         String workPace,
-        LocalDate startingDate
+        LocalDate startingDate,
+        boolean normalizeStartingDate
     ) {
         if (activePlanRepository.existsByUserUserIdAndPlanTemplatePlanCode(userId, planId)) {
             return;
@@ -186,7 +189,11 @@ public class PlanGenerationService implements CommandLineRunner {
         activePlan.setUser(user);
         activePlan.setPlanTemplate(template);
         activePlan.setPlanSequenceNumber(planSequenceNumber);
-        activePlan.setStartDate(normalizeScheduleDate(startingDate, workPace));
+        activePlan.setStartDate(
+            normalizeStartingDate
+                ? normalizeScheduleDate(startingDate, workPace)
+                : startingDate
+        );
         activePlan.setEstimatedMinutesPerDay(pace.estimatedMinutesPerDay());
         activePlan.setCompleted(false);
         activePlan = activePlanRepository.save(activePlan);

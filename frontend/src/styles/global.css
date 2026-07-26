@@ -2,7 +2,7 @@
 @config "../../tailwind.config.js";
 
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   --font-title: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --accent: #e8a33d;
   --accent-hover: #d8922e;
@@ -142,161 +142,24 @@ body,
   }
 }
 
-@keyframes plan-backdrop-in {
+@keyframes plan-processing {
   from {
-    opacity: 0;
+    transform: translateX(-120%);
   }
 
   to {
-    opacity: 1;
+    transform: translateX(350%);
   }
 }
 
-@keyframes plan-modal-grow {
-  0% {
-    border-radius: 999px;
-    clip-path: inset(45% 45% 45% 45% round 999px);
-    opacity: 0;
-    transform: scale(0.7);
-  }
-
-  22% {
-    border-radius: 999px;
-    clip-path: inset(45% 45% 45% 45% round 999px);
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  62%,
-  100% {
-    border-radius: 22px;
-    clip-path: inset(0 round 22px);
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes plan-content-in {
-  0%,
-  52% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes plan-book {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-  }
-
-  50% {
-    transform: translateY(-2px) scale(1.025);
-  }
-}
-
-@keyframes plan-pencil {
-  0% {
-    transform: translate(28px, -25px) rotate(-10deg);
-  }
-
-  50% {
-    transform: translate(17px, -13px) rotate(-18deg);
-  }
-
-  100% {
-    transform: translate(28px, -25px) rotate(-10deg);
-  }
-}
-
-@keyframes plan-orbit {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes plan-spark {
-  0%,
-  100% {
-    opacity: 0.25;
-    transform: scale(0.75);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-}
-
-@keyframes plan-dot {
-  0%,
-  100% {
-    opacity: 0.35;
-    transform: translateY(0);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateY(-3px);
-  }
-}
-
-.plan-modal-shell {
-  animation: plan-modal-grow 1800ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.plan-modal-content {
-  animation: plan-content-in 1450ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.plan-book {
-  animation: plan-book 1.8s ease-in-out infinite;
-}
-
-.plan-pencil {
-  animation: plan-pencil 1.35s ease-in-out infinite;
-}
-
-.plan-orbit {
-  border-left-color: #e8a33d;
-  border-right-color: #f0bd70;
-  animation: plan-orbit 8s linear infinite;
-}
-
-.plan-spark {
-  animation: plan-spark 1.6s ease-in-out infinite;
-}
-
-.plan-spark-one {
-  left: 12px;
-  top: 48px;
-}
-
-.plan-spark-two {
-  right: 17px;
-  top: 35px;
-  animation-delay: 300ms;
-}
-
-.plan-spark-three {
-  bottom: 24px;
-  right: 25px;
-  animation-delay: 600ms;
+.plan-processing-line {
+  animation: plan-processing 1.35s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .plan-modal-shell,
-  .plan-modal-content,
-  .plan-book,
-  .plan-pencil,
-  .plan-orbit,
-  .plan-spark {
+  .plan-processing-line {
     animation: none;
+    width: 70%;
   }
 }
 
@@ -304,6 +167,25 @@ body,
   background: linear-gradient(100deg, #f0f1f3 20%, #fafafa 42%, #f0f1f3 64%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s linear infinite;
+}
+
+.bible-chapter-scroll {
+  scrollbar-color: #c9c6c0 transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.bible-chapter-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bible-chapter-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bible-chapter-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #c9c6c0;
 }
 
 @media (min-width: 64rem) {

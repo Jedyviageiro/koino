@@ -117,6 +117,36 @@ class UserServiceTests {
         assertThat(user.getLongestStreak()).isEqualTo(12);
     }
 
+    @Test
+    void recordsTheFirstAuthenticatedAppDayWhenStreakIsRequested() {
+        UserRepository repository = mock(UserRepository.class);
+        User user = user(42L, true);
+        when(repository.findById(42L)).thenReturn(Optional.of(user));
+
+        var streak = service(repository).getStreak(42L);
+
+        assertThat(streak.currentStreak()).isEqualTo(1);
+        assertThat(streak.longestStreak()).isEqualTo(1);
+        assertThat(streak.lastLoginDate()).isEqualTo(LocalDate.now());
+        verify(repository).save(user);
+    }
+
+    @Test
+    void doesNotCountTheSameAuthenticatedDayTwice() {
+        UserRepository repository = mock(UserRepository.class);
+        User user = user(42L, true);
+        user.setCurrentStreak(3);
+        user.setLongestStreak(5);
+        user.setLastLoginDate(LocalDate.now());
+        when(repository.findById(42L)).thenReturn(Optional.of(user));
+
+        var streak = service(repository).getStreak(42L);
+
+        assertThat(streak.currentStreak()).isEqualTo(3);
+        assertThat(streak.longestStreak()).isEqualTo(5);
+        verify(repository, never()).save(user);
+    }
+
     private UserService service(UserRepository repository) {
         return new UserService(mock(PasswordEncoder.class), repository);
     }

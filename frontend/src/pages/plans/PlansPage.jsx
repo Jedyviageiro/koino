@@ -94,7 +94,24 @@ function PlansPage({ onNavigate }) {
 
           <section className="mt-8">
             <h2 className="mb-3 text-[14px] font-semibold">My Current Plan</h2>
-            {data ? (
+            {data?.needsOnboarding ? (
+              <div className="rounded-[8px] border border-[#e5dfd6] bg-white px-6 py-8">
+                <h2 className="text-[18px] font-semibold">
+                  Let&apos;s build your reading route
+                </h2>
+                <p className="mt-2 max-w-[520px] text-[13px] leading-6 text-[#667089]">
+                  Complete the short onboarding so Koino can choose your first
+                  plan and reading pace.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('/onboarding')}
+                  className="mt-5 h-11 rounded-[8px] bg-[#e8a33d] px-5 text-[12px] font-semibold text-white hover:bg-[#d8922e]"
+                >
+                  Complete Onboarding
+                </button>
+              </div>
+            ) : data ? (
               <CurrentPlanCard
                 plan={currentPlan}
                 template={currentTemplate}
@@ -109,39 +126,47 @@ function PlansPage({ onNavigate }) {
             )}
           </section>
 
-          <section className="mt-7">
-            <h2 className="mb-3 text-[14px] font-semibold">Your Reading Route</h2>
-            <div className="space-y-2.5">
-              {data
-                ? visiblePlans.map(({ template, index, existingPlan }) => (
-                    <PlanRouteItem
-                      key={template.planCode}
-                      template={template}
-                      existingPlan={existingPlan}
-                      dependencyName={
-                        data.route[Math.max(0, index - 1)]?.name || currentPlan?.name
-                      }
-                    />
-                  ))
-                : Array.from({ length: 4 }, (_, index) => (
-                    <div
-                      key={index}
-                      className="auth-skeleton h-[78px] rounded-[8px]"
-                    />
-                  ))}
-            </div>
-            {data && concealedPlanCount > 0 && (
-              <div className="relative mt-2.5 h-[118px] overflow-hidden" aria-label="Additional locked plans">
-                <div className="absolute inset-x-0 top-0 h-[70px] rounded-[8px] border border-[#e9e6e0] bg-white opacity-70 blur-[1.5px]" />
-                <div className="absolute inset-x-4 top-11 h-[64px] rounded-[8px] border border-[#efede9] bg-white opacity-40 blur-[3px]" />
-                <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(180deg,rgba(251,252,254,0.18)_0%,rgba(251,252,254,0.92)_58%,#fbfcfe_100%)]">
-                  <p className="mt-7 text-[12px] font-medium text-[#77746e]">
-                    More plans will be revealed as you progress
-                  </p>
-                </div>
+          {!data?.needsOnboarding && (
+            <section className="mt-7">
+              <h2 className="mb-3 text-[14px] font-semibold">
+                Your Reading Route
+              </h2>
+              <div className="space-y-2.5">
+                {data
+                  ? visiblePlans.map(({ template, index, existingPlan }) => (
+                      <PlanRouteItem
+                        key={template.planCode}
+                        template={template}
+                        existingPlan={existingPlan}
+                        dependencyName={
+                          data.route[Math.max(0, index - 1)]?.name ||
+                          currentPlan?.name
+                        }
+                      />
+                    ))
+                  : Array.from({ length: 4 }, (_, index) => (
+                      <div
+                        key={index}
+                        className="auth-skeleton h-[78px] rounded-[8px]"
+                      />
+                    ))}
               </div>
-            )}
-          </section>
+              {data && concealedPlanCount > 0 && (
+                <div
+                  className="relative mt-2.5 h-[118px] overflow-hidden"
+                  aria-label="Additional locked plans"
+                >
+                  <div className="absolute inset-x-0 top-0 h-[70px] rounded-[8px] border border-[#e9e6e0] bg-white opacity-70 blur-[1.5px]" />
+                  <div className="absolute inset-x-4 top-11 h-[64px] rounded-[8px] border border-[#efede9] bg-white opacity-40 blur-[3px]" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(180deg,rgba(251,252,254,0.18)_0%,rgba(251,252,254,0.92)_58%,#fbfcfe_100%)]">
+                    <p className="mt-7 text-[12px] font-medium text-[#77746e]">
+                      More plans will be revealed as you progress
+                    </p>
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
         </div>
       </main>
 

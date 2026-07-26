@@ -10,7 +10,7 @@ import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
 const navigation = [
   { label: 'Home', icon: Home, path: '/home' },
   { label: 'Plans', icon: BarChart3, path: '/plans' },
-  { label: 'Bible', icon: BookOpen },
+  { label: 'Bible', icon: BookOpen, path: '/bible' },
 ]
 
 function HomeSidebar({
@@ -26,7 +26,7 @@ function HomeSidebar({
     .toUpperCase()
 
   return (
-    <aside className="hidden min-h-svh bg-[linear-gradient(106deg,#f8f8f8_0%,#f4f5f7_100%)] px-3 lg:sticky lg:top-0 lg:flex lg:h-svh lg:w-[150px] lg:flex-col">
+    <aside className="relative z-10 hidden min-h-svh bg-white px-3 shadow-[5px_0_18px_rgba(20,24,32,0.055)] lg:sticky lg:top-0 lg:flex lg:h-svh lg:w-[150px] lg:flex-col">
       <button
         type="button"
         onClick={() => onNavigate('/home')}
@@ -49,8 +49,8 @@ function HomeSidebar({
               }}
               className={`flex h-11 w-full items-center gap-3 rounded-[9px] px-3.5 text-[12.5px] font-medium transition-colors ${
                 active
-                  ? 'bg-[#e9ebef] font-semibold text-[#15171b]'
-                  : 'text-[#15171b] hover:bg-[#eceef1]'
+                  ? 'bg-[#e8a33d] font-semibold text-white shadow-[0_2px_8px_rgba(184,120,24,0.16)]'
+                  : 'text-[#15171b] hover:bg-[#f7f4ef]'
               }`}
             >
               <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.65} />

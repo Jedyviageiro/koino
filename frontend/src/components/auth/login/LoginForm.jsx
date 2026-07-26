@@ -50,7 +50,7 @@ function LoginForm({ onNavigate, onFailure }) {
     try {
       const session = await login({ email: email.trim(), password })
       setSuccessMessage(`Welcome back, ${session.fullname}.`)
-      onNavigate('/home')
+      onNavigate(session.onboardingCompleted ? '/home' : '/onboarding')
     } catch (requestError) {
       onFailure(requestError.message || 'Unable to log in. Please try again.')
     } finally {

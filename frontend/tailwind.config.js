@@ -30,12 +30,7 @@ export default {
       },
       fontFamily: {
         sans: [
-          '"SF Pro Display"',
-          '"SF Pro Text"',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          '"Segoe UI"',
-          'system-ui',
+          '"Poppins"',
           'sans-serif',
         ],
       },

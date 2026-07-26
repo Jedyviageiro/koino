@@ -5,6 +5,7 @@ import OnboardingPage from '@/pages/onboarding/OnboardingPage.jsx'
 import HomePage from '@/pages/home/HomePage.jsx'
 import ReadingPage from '@/pages/reading/ReadingPage.jsx'
 import PlansPage from '@/pages/plans/PlansPage.jsx'
+import BiblePage from '@/pages/bible/BiblePage.jsx'
 
 function App() {
   const [path, setPath] = useState(window.location.pathname)
@@ -56,6 +57,10 @@ function App() {
 
   if (path === '/plans') {
     return <PlansPage onNavigate={navigate} />
+  }
+
+  if (path === '/bible') {
+    return <BiblePage onNavigate={navigate} />
   }
 
   return path === '/register' ? (

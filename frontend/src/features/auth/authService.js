@@ -9,7 +9,13 @@ export async function login(credentials) {
   })
 
   saveAuthSession(session)
-  return session
+  const onboarding = await apiRequest('/onboarding/status')
+  const authenticatedSession = {
+    ...session,
+    onboardingCompleted: onboarding.completed,
+  }
+  saveAuthSession(authenticatedSession)
+  return authenticatedSession
 }
 
 export async function register(details) {

@@ -271,6 +271,7 @@ public class PlanService {
             completedDays,
             totalDays,
             percentage,
+            hasCompletionToday(tasks),
             activePlan.isCompleted()
         );
     }

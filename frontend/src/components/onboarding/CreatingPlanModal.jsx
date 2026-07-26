@@ -1,78 +1,92 @@
-import { BookOpen, Pencil } from 'lucide-react'
+import ModalShell from '@/components/common/ModalShell.jsx'
 
-function CreatingPlanModal({ phase = 'creating' }) {
+function CreatingPlanModal({
+  phase = 'creating',
+  plan,
+  reason,
+  onContinue,
+}) {
   const isReady = phase === 'ready'
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#17191c]/35 px-5 py-8 backdrop-blur-[5px] animate-[plan-backdrop-in_320ms_ease-out]"
-      role="presentation"
+    <ModalShell
+      labelledBy="creating-plan-title"
+      describedBy="creating-plan-message"
+      dismissible={false}
     >
-      <section
-        className="plan-modal-shell relative w-full max-w-[390px] overflow-hidden bg-white text-center shadow-[0_30px_90px_rgba(11,20,40,0.25)]"
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="creating-plan-title"
-        aria-describedby="creating-plan-message"
-      >
-        <div className="plan-modal-content px-9 pb-10 pt-11">
+      {isReady ? (
+        <div className="flex h-full flex-col px-7 pb-7 pt-6 text-left">
+          <p className="text-[10px] font-semibold uppercase text-[#b27413]">
+            Your first plan
+          </p>
+          <h2
+            id="creating-plan-title"
+            className="mt-1.5 text-[22px] font-semibold leading-tight text-[#17191c]"
+          >
+            {plan?.name || 'Your reading plan is ready'}
+          </h2>
+          <p
+            id="creating-plan-message"
+            className="mt-2 line-clamp-2 text-[11px] leading-[1.65] text-[#747880]"
+          >
+            {plan?.description ||
+              'Your first progressive reading plan has been prepared.'}
+          </p>
+
+          <div className="mt-4 rounded-[8px] bg-[#fbf6ee] px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase text-[#9a6718]">
+              Why this plan
+            </p>
+            <p className="mt-1 text-[11px] leading-[1.55] text-[#56524b]">
+              {reason}
+            </p>
+          </div>
+
+          <p className="mt-3 text-[11px] text-[#747880]">
+            {plan?.estimatedMinutesPerDay || 10} min per reading
+            <span className="px-2 text-[#c4b8a4]">&bull;</span>
+            {plan?.totalDays || 1} reading days
+          </p>
+
+          <button
+            type="button"
+            onClick={onContinue}
+            className="mt-auto h-11 w-full rounded-[11px] bg-[#e8a33d] text-[12px] font-semibold text-white transition-colors hover:bg-[#d8922e] active:bg-[#bf7416]"
+          >
+            Open My Plan
+          </button>
+        </div>
+      ) : (
+        <div className="flex h-full flex-col items-center justify-center px-8">
           <p className="text-[10px] font-semibold uppercase text-[#b27413]">
             Personalized for you
           </p>
           <h2
             id="creating-plan-title"
-            className="mx-auto mt-3 max-w-[290px] text-[23px] font-semibold leading-tight text-[#17191c]"
+            className="mt-3 text-[22px] font-semibold text-[#17191c]"
           >
-            {isReady
-              ? 'Your reading plan is ready.'
-              : 'Creating your reading plan.'}
+            Creating your reading plan
           </h2>
           <p
             id="creating-plan-message"
-            className="mx-auto mt-2 max-w-[280px] text-[12px] leading-5 text-[#7a8089]"
-            aria-live="polite"
+            className="mx-auto mt-2 max-w-[270px] text-[11px] leading-[1.65] text-[#747880]"
           >
-            {isReady
-              ? 'Your first progressive plan has been prepared around your rhythm and goals.'
-              : 'Koino is arranging your first readings around the pace and starting point you chose.'}
+            Matching your starting point, daily rhythm, and reading capacity.
           </p>
 
           <div
-            className="relative mx-auto mt-9 flex h-36 w-36 items-center justify-center"
-            aria-hidden="true"
+            className="mt-8 h-1.5 w-full overflow-hidden rounded-full bg-[#eee9e1]"
+            role="progressbar"
+            aria-label="Creating plan"
           >
-            <span className="plan-orbit absolute inset-0 rounded-full border border-[#f3dfbd]" />
-            <span className="absolute inset-4 rounded-full bg-[#fdf7ee]" />
-            <span className="absolute inset-8 rounded-[18px] border border-[#efd6aa] bg-white shadow-[0_12px_30px_rgba(232,163,61,0.12)]" />
-            <BookOpen
-              className="plan-book relative h-12 w-12 text-[#e8a33d]"
-              strokeWidth={1.55}
-            />
-            <Pencil
-              className="plan-pencil absolute h-7 w-7 text-[#e8a33d]"
-              strokeWidth={1.8}
-            />
-            <span className="plan-spark plan-spark-one absolute h-1.5 w-1.5 rounded-full bg-[#e8a33d]" />
-            <span className="plan-spark plan-spark-two absolute h-1 w-1 rounded-full bg-[#f0bd70]" />
-            <span className="plan-spark plan-spark-three absolute h-1 w-1 rounded-full bg-[#e8a33d]" />
+            <span className="plan-processing-line block h-full w-2/5 rounded-full bg-[#e8a33d]" />
           </div>
-
-          <div className="mt-8 flex items-center justify-center gap-1.5" aria-hidden="true">
-            {[0, 1, 2].map((dot) => (
-              <span
-                key={dot}
-                className={`h-1.5 w-1.5 rounded-full ${
-                  isReady
-                    ? 'bg-[#e8a33d]'
-                    : 'animate-[plan-dot_1.2s_ease-in-out_infinite] bg-[#f0bd70]'
-                }`}
-                style={{ animationDelay: `${dot * 160}ms` }}
-              />
-            ))}
-          </div>
+          <p className="mt-3 text-[10px] text-[#96918a]">
+            Preparing your first reading
+          </p>
         </div>
-      </section>
-    </div>
+      )}
+    </ModalShell>
   )
 }
 

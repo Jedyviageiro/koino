@@ -58,8 +58,10 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public UserStreakResponse getStreak(Long userId) {
         User user = findUser(userId);
+        recordLogin(user, LocalDate.now());
         return new UserStreakResponse(
             user.getCurrentStreak(),
             user.getLongestStreak(),

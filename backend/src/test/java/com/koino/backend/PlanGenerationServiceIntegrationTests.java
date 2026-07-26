@@ -75,7 +75,7 @@ class PlanGenerationServiceIntegrationTests {
             "NEW_TO_FAITH",
             "GOSPELS",
             10,
-            "STEADY_NINE_TO_FIVE"
+            "FLEXIBLE"
         );
 
         UserActivePlan activePlan = activePlanRepository
@@ -89,7 +89,9 @@ class PlanGenerationServiceIntegrationTests {
 
         assertThat(activePlan.getPlanSequenceNumber()).isEqualTo(1);
         assertThat(activePlan.getEstimatedMinutesPerDay()).isEqualTo(10);
+        assertThat(activePlan.getStartDate()).isEqualTo(LocalDate.now());
         assertThat(tasks).hasSize(74);
+        assertThat(tasks.getFirst().getScheduledDate()).isEqualTo(LocalDate.now());
         assertThat(tasks.getFirst().getReadingAssignment()).startsWith("Mark 1:");
         assertThat(tasks.getLast().getReadingAssignment()).isEqualTo("John 21:5-25");
         assertThat(tasks).allSatisfy(task -> {
@@ -110,7 +112,7 @@ class PlanGenerationServiceIntegrationTests {
             "NEW_TO_FAITH",
             "GOSPELS",
             10,
-            "STEADY_NINE_TO_FIVE"
+            "FLEXIBLE"
         );
 
         assertThat(taskRepository.findByActivePlanActivePlanIdOrderByDayNumber(
@@ -201,6 +203,8 @@ class PlanGenerationServiceIntegrationTests {
         UserPlanTask secondTask = tasks.get(1);
 
         UserPlanTaskResponse today = planService.getTodayTask(userId).orElseThrow();
+        assertThat(planService.getCurrentPlan(userId).orElseThrow().completedToday())
+            .isFalse();
         assertThat(today.taskId()).isEqualTo(firstTask.getTaskId());
         assertThat(today.estimatedMinutes()).isEqualTo(20);
         assertThat(today.passages()).isNotEmpty();
@@ -218,6 +222,8 @@ class PlanGenerationServiceIntegrationTests {
         assertThat(completed.completed()).isTrue();
         assertThat(completed.completedAt()).isNotNull();
         assertThat(planService.getTodayTask(userId)).isEmpty();
+        assertThat(planService.getCurrentPlan(userId).orElseThrow().completedToday())
+            .isTrue();
 
         assertThatThrownBy(() ->
             planService.completeTask(userId, secondTask.getTaskId())

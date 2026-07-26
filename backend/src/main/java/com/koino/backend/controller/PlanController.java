@@ -50,7 +50,9 @@ public class PlanController {
     public ResponseEntity<UserActivePlanResponse> getCurrentPlan(
         @AuthenticationPrincipal User user
     ) {
-        return ResponseEntity.of(planService.getCurrentPlan(user.getUserId()));
+        return planService.getCurrentPlan(user.getUserId())
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping("/me/today")
@@ -66,7 +68,9 @@ public class PlanController {
     public ResponseEntity<UserPlanProgressResponse> getCurrentProgress(
         @AuthenticationPrincipal User user
     ) {
-        return ResponseEntity.of(planService.getCurrentProgress(user.getUserId()));
+        return planService.getCurrentProgress(user.getUserId())
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping("/me/{activePlanId}/tasks")

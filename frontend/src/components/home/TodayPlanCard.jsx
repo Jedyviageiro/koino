@@ -40,6 +40,7 @@ function TodayPlanCard({ plan, task, onStartReading }) {
   const offset = circumference * (1 - percentage / 100)
   const verseCount = getVerseCount(task)
   const canStartReading = Boolean(task && !task.completed)
+  const completedToday = Boolean(plan?.completedToday)
   const nextReadingLabel = formatReadingDate(plan?.nextReadingDate)
   const reflectionMinutes = task
     ? Math.max(0, plan.estimatedMinutesPerDay - task.estimatedMinutes)
@@ -155,7 +156,7 @@ function TodayPlanCard({ plan, task, onStartReading }) {
               <ChevronRight className="h-6 w-6 shrink-0 text-[#17191d]" />
             </div>
           </>
-        ) : (
+        ) : completedToday ? (
           <div className="flex min-h-[128px] items-center gap-5">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-[#f0f3f8] text-[#657087]">
               <Check className="h-6 w-6" />
@@ -171,6 +172,25 @@ function TodayPlanCard({ plan, task, onStartReading }) {
                 {nextReadingLabel
                   ? `Your next reading unlocks ${nextReadingLabel}.`
                   : 'Your next plan is being prepared.'}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex min-h-[128px] items-center gap-5">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-[#fbf4ea] text-[#a66b0b]">
+              <CalendarDays className="h-6 w-6" />
+            </span>
+            <div>
+              <span className="text-[12px] font-semibold text-[#b27413]">
+                Reading scheduled
+              </span>
+              <h3 className="mt-1.5 text-[21px] font-semibold">
+                Your next reading is coming up
+              </h3>
+              <p className="mt-1.5 text-[13px] text-[#626b84]">
+                {nextReadingLabel
+                  ? `It unlocks ${nextReadingLabel}.`
+                  : 'Your plan is preparing the next reading.'}
               </p>
             </div>
           </div>

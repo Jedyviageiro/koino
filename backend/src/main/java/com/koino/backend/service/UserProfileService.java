@@ -66,6 +66,11 @@ public class UserProfileService {
         return toResponse(profile);
     }
 
+    @Transactional(readOnly = true)
+    public boolean hasCompletedOnboarding(Long userId) {
+        return userProfileRepository.existsByUserUserId(userId);
+    }
+
     private UserProfileUpdateResponse toResponse(UserProfile profile) {
         return new UserProfileUpdateResponse(
             profile.getJourneyDescription(),

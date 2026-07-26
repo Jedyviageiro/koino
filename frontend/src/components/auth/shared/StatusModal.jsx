@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { Check, XCircle } from 'lucide-react'
+import ModalShell from '@/components/common/ModalShell.jsx'
 
 function StatusModal({
   type,
@@ -8,47 +9,24 @@ function StatusModal({
   onClose,
   autoCloseMs,
 }) {
-  const modalRef = useRef(null)
   const isSuccess = type === 'success'
 
   useEffect(() => {
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    modalRef.current?.focus()
-
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') onClose()
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
     const timer = autoCloseMs
       ? window.setTimeout(onClose, autoCloseMs)
       : undefined
 
     return () => {
-      document.body.style.overflow = previousOverflow
-      window.removeEventListener('keydown', handleKeyDown)
       if (timer) window.clearTimeout(timer)
     }
   }, [autoCloseMs, onClose])
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-5 py-8 backdrop-blur-[3px] animate-[modal-backdrop-in_220ms_ease-out]"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose()
-      }}
+    <ModalShell
+      labelledBy="status-modal-title"
+      describedBy="status-modal-message"
+      onClose={onClose}
     >
-      <section
-        ref={modalRef}
-        tabIndex={-1}
-        className="relative flex h-[330px] w-full max-w-[360px] flex-col overflow-hidden rounded-[22px] bg-white text-center shadow-[0_28px_80px_rgba(0,0,0,0.24)] animate-[modal-card-in_420ms_cubic-bezier(0.16,1,0.3,1)]"
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="status-modal-title"
-        aria-describedby="status-modal-message"
-      >
         <div
           className={`relative flex h-[142px] items-center justify-center overflow-hidden ${
             isSuccess ? 'bg-[#f3fcf9]' : 'bg-[#fff7f7]'
@@ -111,8 +89,7 @@ function StatusModal({
             </button>
           )}
         </div>
-      </section>
-    </div>
+    </ModalShell>
   )
 }
 

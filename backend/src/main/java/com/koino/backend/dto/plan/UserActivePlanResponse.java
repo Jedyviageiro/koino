@@ -14,5 +14,6 @@ public record UserActivePlanResponse(
     int completedDays,
     int totalDays,
     double completionPercentage,
+    boolean completedToday,
     boolean completed
 ) {}

@@ -21,7 +21,10 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import CreatingPlanModal from '@/components/onboarding/CreatingPlanModal.jsx'
-import { completeOnboarding } from '@/features/onboarding/onboardingService.js'
+import {
+  completeOnboarding,
+  getGeneratedPlanSummary,
+} from '@/features/onboarding/onboardingService.js'
 
 const steps = [
   {
@@ -166,6 +169,34 @@ const initialAnswers = {
   dailyCapacityMinutes: 10,
 }
 
+const journeyReasons = {
+  NEW_TO_FAITH: 'you are beginning your journey with Scripture',
+  DEEPEN_UNDERSTANDING: 'you want to deepen your understanding of Scripture',
+  BUILD_READING_HABIT: 'you want to build a consistent reading habit',
+}
+
+const startingPointLabels = {
+  GOSPELS: 'the Gospels',
+  OLD_TESTAMENT: 'the Old Testament',
+  NEW_TESTAMENT: 'the New Testament',
+}
+
+const rhythmLabels = {
+  MORNING: 'morning rhythm',
+  AFTERNOON: 'daytime rhythm',
+  EVENING: 'evening rhythm',
+}
+
+function buildPlanReason(answers) {
+  return `We created this plan because ${
+    journeyReasons[answers.journeyDescription]
+  }. It begins in ${
+    startingPointLabels[answers.preferredStartingPoint]
+  } with ${answers.dailyCapacityMinutes}-minute readings that fit your ${
+    rhythmLabels[answers.dailyRhythm]
+  }.`
+}
+
 function Progress({ current }) {
   return (
     <div className="flex flex-1 items-center justify-center" aria-label={`Step ${current + 1} of ${steps.length}`}>
@@ -248,6 +279,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
   const [answers, setAnswers] = useState(initialAnswers)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [planModalPhase, setPlanModalPhase] = useState(null)
+  const [generatedPlan, setGeneratedPlan] = useState(null)
 
   const step = steps[stepIndex]
   const StepIcon = step.icon
@@ -263,8 +295,12 @@ function OnboardingFlow({ onFailure, onComplete }) {
 
     try {
       await completeOnboarding(answers)
+      try {
+        setGeneratedPlan(await getGeneratedPlanSummary())
+      } catch {
+        setGeneratedPlan(null)
+      }
       setPlanModalPhase('ready')
-      onComplete()
     } catch (error) {
       setPlanModalPhase(null)
       onFailure(
@@ -377,7 +413,14 @@ function OnboardingFlow({ onFailure, onComplete }) {
       </section>
       </div>
 
-      {planModalPhase && <CreatingPlanModal phase={planModalPhase} />}
+      {planModalPhase && (
+        <CreatingPlanModal
+          phase={planModalPhase}
+          plan={generatedPlan}
+          reason={buildPlanReason(answers)}
+          onContinue={onComplete}
+        />
+      )}
     </>
   )
 }
