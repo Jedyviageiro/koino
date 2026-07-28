@@ -23,7 +23,7 @@ function ReflectionText({ text }) {
 
 function DevotionalSkeleton() {
   return (
-    <div className="mx-auto max-w-[860px] pt-2">
+    <div className="mx-auto max-w-[1100px] pt-2">
       <div className="auth-skeleton h-4 w-24 rounded-[5px]" />
       <div className="auth-skeleton mt-8 h-4 w-32 rounded-[5px]" />
       <div className="auth-skeleton mt-3 h-10 w-80 max-w-full rounded-[6px]" />
@@ -84,11 +84,11 @@ function DevotionalPage({ onNavigate }) {
         activePath="/plans"
       />
 
-      <main className="min-w-0 px-5 pb-12 pt-7 sm:px-9 lg:px-12 lg:pt-9">
+      <main className="min-w-0 px-[18px] pb-12 pt-7 sm:px-7 lg:px-9 lg:pt-8">
         {!data ? (
           <DevotionalSkeleton />
         ) : (
-          <article className="mx-auto max-w-[860px]">
+          <article className="mx-auto max-w-[1100px]">
             <button
               type="button"
               onClick={() => onNavigate('/plans')}
