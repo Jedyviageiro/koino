@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 
 function ModalShell({
   children,
@@ -9,8 +10,14 @@ function ModalShell({
 }) {
   const modalRef = useRef(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const previousOverflow = document.body.style.overflow
+    const previousPaddingRight = document.body.style.paddingRight
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
     document.body.style.overflow = 'hidden'
     modalRef.current?.focus({ preventScroll: true })
 
@@ -21,13 +28,14 @@ function ModalShell({
     window.addEventListener('keydown', handleKeyDown)
     return () => {
       document.body.style.overflow = previousOverflow
+      document.body.style.paddingRight = previousPaddingRight
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [dismissible, onClose])
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-5 py-8 backdrop-blur-[3px] animate-[modal-backdrop-in_220ms_ease-out]"
+      className="fixed inset-0 z-[100] grid min-h-dvh place-items-center overflow-y-auto bg-black/45 px-5 py-8 backdrop-blur-[3px] animate-[modal-backdrop-in_220ms_ease-out]"
       role="presentation"
       onMouseDown={(event) => {
         if (
@@ -49,7 +57,8 @@ function ModalShell({
       >
         {children}
       </section>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

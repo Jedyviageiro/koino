@@ -12,6 +12,9 @@ import StatusPage from '@/pages/status/StatusPage.jsx'
 import WatchPage from '@/pages/watch/WatchPage.jsx'
 import WatchPlayerPage from '@/pages/watch/WatchPlayerPage.jsx'
 import SettingsPage from '@/pages/settings/SettingsPage.jsx'
+import VerifyEmailPage from '@/pages/auth/verify-email/VerifyEmailPage.jsx'
+import ForgotPasswordPage from '@/pages/auth/forgot-password/ForgotPasswordPage.jsx'
+import ResetPasswordPage from '@/pages/auth/reset-password/ResetPasswordPage.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 
 function App() {
@@ -96,6 +99,12 @@ function App() {
     page = <SettingsPage onNavigate={navigate} />
   } else if (path === '/register') {
     page = <RegisterPage onNavigate={navigate} />
+  } else if (path === '/verify-email') {
+    page = <VerifyEmailPage onNavigate={navigate} />
+  } else if (path === '/forgot-password') {
+    page = <ForgotPasswordPage onNavigate={navigate} />
+  } else if (path === '/reset-password') {
+    page = <ResetPasswordPage onNavigate={navigate} />
   } else {
     page = <LoginPage onNavigate={navigate} />
   }

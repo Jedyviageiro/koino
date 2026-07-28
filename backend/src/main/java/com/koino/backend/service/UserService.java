@@ -40,13 +40,28 @@ public class UserService {
     }
 
     public User createUser(String fullname, String email, String password){
+        return createUser(fullname, email, password, true);
+    }
+
+    public User createPendingUser(String fullname, String email, String password) {
+        com.koino.backend.utils.PasswordPolicy.requireStrong(password);
+        return createUser(fullname, email, password, false);
+    }
+
+    private User createUser(
+        String fullname,
+        String email,
+        String password,
+        boolean emailVerified
+    ){
         String normalizedEmail = normalizeEmail(email);
         if(userRepository.existsByEmail(normalizedEmail)){
-            throw new IllegalArgumentException("Email already exists");
+            throw new IllegalArgumentException("Email already in use");
         } else{
             User user = new User();
-            user.setFullname(fullname);
+            user.setFullname(fullname == null ? "" : fullname.trim());
             user.setEmail(normalizedEmail);
+            user.setEmailVerified(emailVerified);
 
             String hashedPassword = passwordEncoder.encode(password);
             user.setPassword(hashedPassword);
@@ -68,7 +83,43 @@ public class UserService {
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw new IllegalArgumentException("Invalid email or password");
         }
+        if (!user.isEmailVerified()) {
+            throw new IllegalArgumentException(
+                "Please verify your email address before logging in"
+            );
+        }
 
+        recordLogin(user, LocalDate.now());
+        return user;
+    }
+
+    @Transactional
+    public User loginGoogleUser(String email, String fullname, String pictureUrl) {
+        String normalizedEmail = normalizeEmail(email);
+        User user = userRepository.findByEmail(normalizedEmail);
+        if (user == null) {
+            user = new User();
+            user.setEmail(normalizedEmail);
+            user.setFullname(
+                fullname == null || fullname.isBlank()
+                    ? normalizedEmail.substring(0, normalizedEmail.indexOf('@'))
+                    : fullname.trim()
+            );
+            user.setPassword(passwordEncoder.encode(
+                java.util.UUID.randomUUID() + "Gg!"
+            ));
+            user.setCreatedAt(LocalDateTime.now());
+        }
+        if (!user.isActive()) {
+            throw new IllegalArgumentException("This account is deactivated");
+        }
+        user.setEmailVerified(true);
+        if (pictureUrl != null && !pictureUrl.isBlank()
+            && user.getProfilePictureUrl() == null) {
+            user.setProfilePictureUrl(pictureUrl);
+        }
+        user.setUpdatedAt(LocalDateTime.now());
+        user = userRepository.save(user);
         recordLogin(user, LocalDate.now());
         return user;
     }

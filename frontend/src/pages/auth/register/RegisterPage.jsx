@@ -1,38 +1,26 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import RegisterForm from '@/components/auth/register/RegisterForm.jsx'
 
 function RegisterPage({ onNavigate }) {
   const [status, setStatus] = useState(null)
-  const onboardingTimerRef = useRef(null)
-
-  useEffect(
-    () => () => window.clearTimeout(onboardingTimerRef.current),
-    [],
-  )
-
-  const beginOnboarding = useCallback(() => {
-    setStatus(null)
-    onboardingTimerRef.current = window.setTimeout(
-      () => onNavigate('/onboarding'),
-      160,
-    )
-  }, [onNavigate])
-
   const closeStatus = useCallback(() => {
     if (status?.type === 'success') {
-      beginOnboarding()
+      const query = new URLSearchParams({ email: status.email })
+      setStatus(null)
+      onNavigate(`/verify-email?${query}`)
     } else {
       setStatus(null)
     }
-  }, [beginOnboarding, status])
+  }, [onNavigate, status])
 
   function handleSuccess(session) {
     setStatus({
       type: 'success',
       title: 'Account created successfully',
-      message: `Welcome, ${session.fullname}. We are preparing your Koino experience now.`,
+      message: `We sent a verification link to ${session.email}.`,
+      email: session.email,
     })
   }
 
@@ -65,7 +53,7 @@ function RegisterPage({ onNavigate }) {
           title={status.title}
           message={status.message}
           onClose={closeStatus}
-          autoCloseMs={status.type === 'success' ? 2400 : undefined}
+          autoCloseMs={status.type === 'success' ? 1800 : undefined}
         />
       )}
     </>

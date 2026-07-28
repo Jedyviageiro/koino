@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,6 +20,7 @@ import com.koino.backend.model.User;
 import com.koino.backend.repository.ResetPasswordTokenRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.service.ResetPasswordTokenService;
+import com.koino.backend.service.GmailService.EmailService;
 
 class ResetPasswordTokenServiceTests {
 
@@ -34,14 +36,14 @@ class ResetPasswordTokenServiceTests {
         user.setUserId(42L);
         user.setActive(true);
 
-        when(tokenRepository.findByTokenForUpdate("reset-token"))
+        when(tokenRepository.findByTokenForUpdate(anyString()))
             .thenReturn(Optional.of(token));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user));
-        when(encoder.encode("new-password")).thenReturn("encoded-password");
+        when(encoder.encode("New-password1!")).thenReturn("encoded-password");
 
         service(tokenRepository, userRepository, encoder).saveNewPassword(
-            "new-password",
-            "new-password",
+            "New-password1!",
+            "New-password1!",
             "reset-token"
         );
 
@@ -62,11 +64,11 @@ class ResetPasswordTokenServiceTests {
             tokenRepository,
             mock(UserRepository.class),
             mock(PasswordEncoder.class)
-        ).saveNewPassword("new-password", "different-password", "reset-token"))
+        ).saveNewPassword("New-password1!", "Different-password1!", "reset-token"))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("The new passwords do not match");
 
-        verify(tokenRepository, never()).findByTokenForUpdate("reset-token");
+        verify(tokenRepository, never()).findByTokenForUpdate(anyString());
     }
 
     @Test
@@ -77,14 +79,14 @@ class ResetPasswordTokenServiceTests {
         UserRepository userRepository = mock(UserRepository.class);
         ResetPasswordToken token = validToken();
         token.setUsed(true);
-        when(tokenRepository.findByTokenForUpdate("reset-token"))
+        when(tokenRepository.findByTokenForUpdate(anyString()))
             .thenReturn(Optional.of(token));
 
         assertThatThrownBy(() -> service(
             tokenRepository,
             userRepository,
             mock(PasswordEncoder.class)
-        ).saveNewPassword("new-password", "new-password", "reset-token"))
+        ).saveNewPassword("New-password1!", "New-password1!", "reset-token"))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Password reset token is expired or already used");
 
@@ -100,7 +102,9 @@ class ResetPasswordTokenServiceTests {
             tokenRepository,
             userRepository,
             encoder,
-            Duration.ofMinutes(30)
+            Duration.ofMinutes(30),
+            mock(EmailService.class),
+            "http://localhost:5173"
         );
     }
 

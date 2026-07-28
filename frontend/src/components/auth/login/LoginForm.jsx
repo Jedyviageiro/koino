@@ -1,31 +1,9 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { LoaderCircle, Mail } from 'lucide-react'
 import { AuthField, PasswordField } from '@/components/auth/shared/AuthField.jsx'
 import { login } from '@/features/auth/authService.js'
 import { useEmailExistence } from '@/features/auth/useEmailExistence.js'
-
-function GoogleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-      <path
-        fill="#4285F4"
-        d="M23.5 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.89c2.28-2.1 3.54-5.2 3.54-8.66Z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 24c3.24 0 5.95-1.07 7.93-2.9l-3.89-3.02c-1.08.72-2.46 1.15-4.04 1.15-3.1 0-5.73-2.1-6.67-4.92H1.32v3.09A12 12 0 0 0 12 24Z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M5.33 14.31A7.2 7.2 0 0 1 4.96 12c0-.8.14-1.58.37-2.31V6.6H1.32A12 12 0 0 0 0 12c0 1.94.47 3.77 1.32 5.4l4.01-3.09Z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 4.77c1.76 0 3.34.6 4.58 1.79l3.44-3.44C17.94 1.19 15.23 0 12 0 7.31 0 3.26 2.7 1.32 6.6l4.01 3.09C6.27 6.87 8.9 4.77 12 4.77Z"
-      />
-    </svg>
-  )
-}
+import GoogleSignInButton from '@/components/auth/shared/GoogleSignInButton.jsx'
 
 function LoginForm({ onNavigate, onFailure }) {
   const [email, setEmail] = useState('')
@@ -41,6 +19,13 @@ function LoginForm({ onNavigate, onFailure }) {
       : emailState === 'available'
         ? 'invalid'
         : emailState
+  const completeLogin = useCallback(
+    (session) => {
+      setSuccessMessage(`Welcome back, ${session.fullname}.`)
+      onNavigate(session.onboardingCompleted ? '/home' : '/onboarding')
+    },
+    [onNavigate],
+  )
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -49,8 +34,7 @@ function LoginForm({ onNavigate, onFailure }) {
 
     try {
       const session = await login({ email: email.trim(), password })
-      setSuccessMessage(`Welcome back, ${session.fullname}.`)
-      onNavigate(session.onboardingCompleted ? '/home' : '/onboarding')
+      completeLogin(session)
     } catch (requestError) {
       onFailure(requestError.message || 'Unable to log in. Please try again.')
     } finally {
@@ -82,12 +66,13 @@ function LoginForm({ onNavigate, onFailure }) {
         </div>
 
         <div className="mt-2.5 flex justify-end">
-          <a
-            href="/forgot-password"
+          <button
+            type="button"
+            onClick={() => onNavigate('/forgot-password')}
             className="text-[11px] font-medium text-[#696d75] hover:text-[#111114] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d]"
           >
             Forgot password?
-          </a>
+          </button>
         </div>
 
         <div
@@ -118,16 +103,10 @@ function LoginForm({ onNavigate, onFailure }) {
           or
         </div>
 
-        <button
-          type="button"
-          onClick={() =>
-            onFailure('Google sign-in has not been configured yet.')
-          }
-          className="flex h-[45px] w-full items-center justify-center gap-2.5 rounded-[11px] border border-[#dedfe3] bg-white text-[12px] font-semibold text-[#111114] transition-colors hover:bg-[#f8f8f9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d]"
-        >
-          <GoogleIcon />
-          Continue with Google
-        </button>
+        <GoogleSignInButton
+          onSuccess={completeLogin}
+          onFailure={onFailure}
+        />
       </form>
 
       <p className="mt-5 text-center text-[10px] text-[#777b84]">

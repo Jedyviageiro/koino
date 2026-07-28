@@ -1,5 +1,6 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Bookmark } from 'lucide-react'
+import ModalShell from '@/components/common/ModalShell.jsx'
 
 const BOOKMARK_COLORS = [
   '#FFF1A8',
@@ -24,48 +25,13 @@ function BookmarkModal({
   const [selectedColor, setSelectedColor] = useState(
     initialColor || BOOKMARK_COLORS[5],
   )
-  const modalRef = useRef(null)
-
-  useLayoutEffect(() => {
-    const previousOverflow = document.body.style.overflow
-    const previousPaddingRight = document.body.style.paddingRight
-    const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth
-
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`
-    }
-    document.body.style.overflow = 'hidden'
-    modalRef.current?.focus({ preventScroll: true })
-
-    function handleKeyDown(event) {
-      if (event.key === 'Escape' && !saving) onClose()
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.body.style.overflow = previousOverflow
-      document.body.style.paddingRight = previousPaddingRight
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [onClose, saving])
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-5 py-8 backdrop-blur-[3px] animate-[modal-backdrop-in_220ms_ease-out]"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !saving) onClose()
-      }}
+    <ModalShell
+      labelledBy="bookmark-modal-title"
+      onClose={onClose}
+      dismissible={!saving}
     >
-      <section
-        ref={modalRef}
-        tabIndex={-1}
-        className="flex h-[330px] w-full max-w-[360px] flex-col rounded-[22px] bg-white px-7 py-7 text-center shadow-[0_28px_80px_rgba(0,0,0,0.24)] animate-[modal-card-in_420ms_cubic-bezier(0.16,1,0.3,1)]"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="bookmark-modal-title"
-      >
+      <div className="flex h-full flex-col px-7 py-7 text-center">
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fbf4ea] text-[#b27413]">
           <Bookmark className="h-5 w-5" />
         </span>
@@ -119,8 +85,8 @@ function BookmarkModal({
             {bookmarked ? 'Remove Bookmark' : 'Not Now'}
           </button>
         </div>
-      </section>
-    </div>
+      </div>
+    </ModalShell>
   )
 }
 

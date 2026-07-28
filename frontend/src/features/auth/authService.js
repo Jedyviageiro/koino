@@ -19,14 +19,11 @@ export async function login(credentials) {
 }
 
 export async function register(details) {
-  const session = await apiRequest('/users/register', {
+  return apiRequest('/users/register', {
     method: 'POST',
     authenticated: false,
     body: JSON.stringify(details),
   })
-
-  saveAuthSession(session)
-  return session
 }
 
 export async function emailExists(email, signal) {
@@ -35,5 +32,60 @@ export async function emailExists(email, signal) {
     method: 'GET',
     authenticated: false,
     signal,
+  })
+}
+
+export async function getGoogleConfig() {
+  return apiRequest('/users/google/config', {
+    method: 'GET',
+    authenticated: false,
+  })
+}
+
+export async function loginWithGoogle(credential) {
+  const session = await apiRequest('/users/login/google', {
+    method: 'POST',
+    authenticated: false,
+    body: JSON.stringify({ credential }),
+  })
+  saveAuthSession(session)
+  const onboarding = await apiRequest('/onboarding/status')
+  const authenticatedSession = {
+    ...session,
+    onboardingCompleted: onboarding.completed,
+  }
+  saveAuthSession(authenticatedSession)
+  return authenticatedSession
+}
+
+export async function confirmEmail(token) {
+  return apiRequest('/users/verify-email/confirm', {
+    method: 'POST',
+    authenticated: false,
+    body: JSON.stringify({ token }),
+  })
+}
+
+export async function resendVerification(email) {
+  return apiRequest('/users/verify-email/resend', {
+    method: 'POST',
+    authenticated: false,
+    body: JSON.stringify({ email }),
+  })
+}
+
+export async function requestPasswordReset(email) {
+  return apiRequest('/users/resetPassword', {
+    method: 'POST',
+    authenticated: false,
+    body: JSON.stringify({ email }),
+  })
+}
+
+export async function resetPassword(token, newPassword, confirmPassword) {
+  return apiRequest('/users/resetPassword/confirm', {
+    method: 'POST',
+    authenticated: false,
+    body: JSON.stringify({ token, newPassword, confirmPassword }),
   })
 }

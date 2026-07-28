@@ -70,7 +70,10 @@ public class SecurityConfig {
                     "/api/bible/**",
                     "/api/users/email-exists",
                     "/api/users/login",
+                    "/api/users/login/google",
+                    "/api/users/google/config",
                     "/api/users/register",
+                    "/api/users/verify-email/**",
                     "/api/users/resetPassword",
                     "/api/users/resetPassword/confirm"
                 ).permitAll()

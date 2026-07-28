@@ -1,5 +1,10 @@
 package com.koino.backend.dto.auth;
 
-public record RegisterResponse(Long id, String token, String email, String fullname) {
+public record RegisterResponse(
+    Long id,
+    String email,
+    String fullname,
+    boolean verificationRequired
+) {
     
 }

@@ -46,6 +46,10 @@ public class User {
     @ColumnDefault("true")
     private boolean active = true;
 
+    @Column(nullable = false)
+    @ColumnDefault("true")
+    private boolean emailVerified = true;
+
     private LocalDateTime deactivatedAt;
 
     @Column(length = 2048)

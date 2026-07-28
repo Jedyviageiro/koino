@@ -25,6 +25,9 @@ import com.koino.backend.dto.auth.RegisterResponse;
 import com.koino.backend.dto.auth.ResetPasswordTokenRequest;
 import com.koino.backend.dto.auth.ResetPasswordTokenResponse;
 import com.koino.backend.dto.auth.SaveNewPasswordRequest;
+import com.koino.backend.dto.auth.EmailVerificationConfirmRequest;
+import com.koino.backend.dto.auth.EmailVerificationRequest;
+import com.koino.backend.dto.auth.GoogleLoginRequest;
 import com.koino.backend.dto.user.NotificationResponse;
 import com.koino.backend.dto.user.BookmarkVerseRequest;
 import com.koino.backend.dto.user.ProfilePictureResponse;
@@ -33,7 +36,6 @@ import com.koino.backend.dto.user.UserSummaryResponse;
 import com.koino.backend.dto.user.UserSettingsRequest;
 import com.koino.backend.dto.user.UserSettingsResponse;
 import com.koino.backend.dto.user.VerseBookmarkResponse;
-import com.koino.backend.model.ResetPasswordToken;
 import com.koino.backend.model.User;
 import com.koino.backend.service.JwtService;
 import com.koino.backend.service.NotificationService;
@@ -41,8 +43,11 @@ import com.koino.backend.service.ProfilePictureService;
 import com.koino.backend.service.ResetPasswordTokenService;
 import com.koino.backend.service.UserService;
 import com.koino.backend.service.VerseBookmarkService;
+import com.koino.backend.service.EmailVerificationService;
+import com.koino.backend.service.GoogleIdentityService;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/api/users")
 @RestController
@@ -54,6 +59,8 @@ public class UserController {
     private final NotificationService notificationService;
     private final VerseBookmarkService bookmarkService;
     private final ProfilePictureService profilePictureService;
+    private final EmailVerificationService emailVerificationService;
+    private final GoogleIdentityService googleIdentityService;
 
     public UserController(
         UserService userService,
@@ -61,7 +68,9 @@ public class UserController {
         ResetPasswordTokenService resetPasswordTokenService,
         NotificationService notificationService,
         VerseBookmarkService bookmarkService,
-        ProfilePictureService profilePictureService
+        ProfilePictureService profilePictureService,
+        EmailVerificationService emailVerificationService,
+        GoogleIdentityService googleIdentityService
     ) {
         this.userService = userService;
         this.jwtService = jwtService;
@@ -69,10 +78,34 @@ public class UserController {
         this.notificationService = notificationService;
         this.bookmarkService = bookmarkService;
         this.profilePictureService = profilePictureService;
+        this.emailVerificationService = emailVerificationService;
+        this.googleIdentityService = googleIdentityService;
+    }
+
+    @GetMapping("/google/config")
+    public Map<String, String> googleConfig() {
+        return Map.of("clientId", googleIdentityService.getClientId());
+    }
+
+    @PostMapping("/login/google")
+    public ResponseEntity<?> loginWithGoogle(
+        @Valid @RequestBody GoogleLoginRequest request
+    ) {
+        try {
+            User user = googleIdentityService.authenticate(request.credential());
+            return ResponseEntity.ok(new LoginResponse(
+                user.getUserId(),
+                jwtService.generateToken(user),
+                user.getEmail(),
+                user.getFullname()
+            ));
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest request){
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request){
         try{
             User user = userService.loginUser(request.email(), request.password());
             String token = jwtService.generateToken(user);
@@ -86,19 +119,46 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request){
+    public ResponseEntity<?> registerUser(
+        @Valid @RequestBody RegisterRequest request
+    ){
         try{
-            User user = userService.createUser(
+            User user = userService.createPendingUser(
                 request.fullname(), request.email(), request.password()
             );
-            String token = jwtService.generateToken(user);
+            emailVerificationService.sendVerification(user);
             return ResponseEntity.ok(new RegisterResponse(
-                user.getUserId(), token, user.getEmail(), user.getFullname()
+                user.getUserId(),
+                user.getEmail(),
+                user.getFullname(),
+                true
             ));
         
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/verify-email/resend")
+    public ResponseEntity<Map<String, String>> resendVerification(
+        @Valid @RequestBody EmailVerificationRequest request
+    ) {
+        emailVerificationService.resend(request.email());
+        return ResponseEntity.accepted().body(Map.of(
+            "message",
+            "If the account is awaiting verification, a new email has been sent."
+        ));
+    }
+
+    @PostMapping("/verify-email/confirm")
+    public ResponseEntity<Map<String, String>> confirmEmail(
+        @Valid @RequestBody EmailVerificationConfirmRequest request
+    ) {
+        emailVerificationService.confirm(request.token());
+        return ResponseEntity.ok(Map.of(
+            "message",
+            "Your email is verified. You can now log in."
+        ));
     }
 
     @GetMapping("/email-exists")
@@ -108,16 +168,16 @@ public class UserController {
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> requestPasswordReset(
-        @RequestBody ResetPasswordTokenRequest request
+        @Valid @RequestBody ResetPasswordTokenRequest request
     ) {
-        try{
-            ResetPasswordToken token = resetPasswordTokenService.generateToken(request.email());
-            return ResponseEntity.ok(new ResetPasswordTokenResponse(
-                token.getToken(), token.getExpiresAt()
-            ));
-        } catch (IllegalArgumentException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+        try {
+            resetPasswordTokenService.generateToken(request.email());
+        } catch (IllegalArgumentException ignored) {
+            // Always return the same response so account existence is not disclosed.
         }
+        return ResponseEntity.accepted().body(new ResetPasswordTokenResponse(
+            "If an account exists for that email, a reset link has been sent."
+        ));
     }
 
     @PostMapping("/resetPassword/confirm")

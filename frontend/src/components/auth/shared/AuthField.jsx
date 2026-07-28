@@ -24,6 +24,8 @@ function AuthField({
   validationState = 'idle',
   autoFocus = false,
   ariaLabel,
+  maxLength,
+  ariaDescribedBy,
 }) {
   return (
     <div
@@ -49,6 +51,8 @@ function AuthField({
         autoComplete={autoComplete}
         required={required}
         minLength={minLength}
+        maxLength={maxLength}
+        aria-describedby={ariaDescribedBy}
         disabled={disabled}
         autoFocus={autoFocus}
         className={inputClassName}
@@ -84,6 +88,7 @@ function PasswordField({
   autoComplete,
   disabled = false,
   autoFocus = false,
+  placeholder = 'Password',
 }) {
   const [visible, setVisible] = useState(false)
 
@@ -100,11 +105,12 @@ function PasswordField({
         type={visible ? 'text' : 'password'}
         value={value}
         onChange={onChange}
-        placeholder="Password"
-        aria-label="Password"
+        placeholder={placeholder}
+        aria-label={placeholder}
         autoComplete={autoComplete}
         required
         minLength={6}
+        maxLength={72}
         disabled={disabled}
         autoFocus={autoFocus}
         className={inputClassName}

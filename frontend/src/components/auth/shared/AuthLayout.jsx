@@ -80,6 +80,7 @@ function AuthLayout({
   onNavigate,
   onboardingLoading = false,
   onboardingContent = null,
+  hideSwitcher = false,
   children,
 }) {
   const onboardingActive = onboardingLoading || Boolean(onboardingContent)
@@ -140,7 +141,9 @@ function AuthLayout({
                 </p>
               </div>
 
-              <AuthSwitcher mode={mode} onNavigate={onNavigate} />
+              {!hideSwitcher && (
+                <AuthSwitcher mode={mode} onNavigate={onNavigate} />
+              )}
               <div className="animate-[auth-panel-in_240ms_ease-out]">
                 {children}
               </div>
