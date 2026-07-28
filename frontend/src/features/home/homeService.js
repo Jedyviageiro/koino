@@ -13,3 +13,9 @@ export async function getHomeData() {
 
   return { plan, task, progress, streak, notifications, bookmarks }
 }
+
+export function markNotificationRead(notificationId) {
+  return apiRequest(`/users/me/notifications/${notificationId}/read`, {
+    method: 'PATCH',
+  })
+}

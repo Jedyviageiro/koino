@@ -4,6 +4,12 @@ export function saveAuthSession(session) {
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session))
 }
 
+export function updateAuthSession(changes) {
+  const current = getAuthSession()
+  if (!current) return
+  saveAuthSession({ ...current, ...changes })
+}
+
 export function getAuthSession() {
   const storedSession = localStorage.getItem(AUTH_STORAGE_KEY)
   if (!storedSession) {

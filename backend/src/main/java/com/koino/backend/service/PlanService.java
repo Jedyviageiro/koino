@@ -67,6 +67,24 @@ public class PlanService {
             profile.getJourneyDescription(),
             profile.getPreferredStartingPoint()
         );
+        List<UserActivePlan> existingPlans =
+            activePlanRepository.findByUserUserIdOrderByPlanSequenceNumberAsc(
+                userId
+            );
+        if (!existingPlans.isEmpty()) {
+            String firstExistingPlanCode = existingPlans.getFirst()
+                .getPlanTemplate()
+                .getPlanCode();
+            int firstExistingPlanIndex = routePlanIds.indexOf(
+                firstExistingPlanCode
+            );
+            if (firstExistingPlanIndex > 0) {
+                routePlanIds = routePlanIds.subList(
+                    firstExistingPlanIndex,
+                    routePlanIds.size()
+                );
+            }
+        }
         Map<String, PlanTemplate> templatesByCode =
             planTemplateRepository.findAllByOrderByPlanCodeAsc()
                 .stream()

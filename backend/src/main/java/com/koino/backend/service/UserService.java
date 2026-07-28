@@ -2,6 +2,8 @@ package com.koino.backend.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.DateTimeException;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.koino.backend.model.User;
 import com.koino.backend.dto.user.UserStreakResponse;
 import com.koino.backend.dto.user.UserStreakDayResponse;
+import com.koino.backend.dto.user.UserSettingsRequest;
+import com.koino.backend.dto.user.UserSettingsResponse;
 import com.koino.backend.model.UserLoginDay;
 import com.koino.backend.repository.UserLoginDayRepository;
 import com.koino.backend.repository.UserRepository;
@@ -103,6 +107,39 @@ public class UserService {
         return userRepository.existsByEmail(normalizeEmail(email));
     }
 
+    @Transactional(readOnly = true)
+    public UserSettingsResponse getSettings(Long userId) {
+        return toSettingsResponse(findUser(userId));
+    }
+
+    @Transactional
+    public UserSettingsResponse updateSettings(
+        Long userId,
+        UserSettingsRequest request
+    ) {
+        User user = findUser(userId);
+        String email = normalizeEmail(request.email());
+        if (userRepository.existsByEmailAndUserIdNot(email, userId)) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        try {
+            ZoneId.of(request.timeZone());
+        } catch (DateTimeException exception) {
+            throw new IllegalArgumentException("Unknown time zone");
+        }
+        if (!Set.of("en", "pt").contains(request.language())) {
+            throw new IllegalArgumentException("Unsupported language");
+        }
+
+        user.setFullname(request.fullname().trim());
+        user.setEmail(email);
+        user.setTimeZone(request.timeZone());
+        user.setLanguage(request.language());
+        user.setUpdatedAt(LocalDateTime.now());
+        return toSettingsResponse(userRepository.save(user));
+    }
+
     @Transactional
     public void deactivateUser(Long userId){
         User user = findUser(userId);
@@ -162,6 +199,17 @@ public class UserService {
         loginDay.setUser(user);
         loginDay.setLoginDate(date);
         loginDayRepository.save(loginDay);
+    }
+
+    private UserSettingsResponse toSettingsResponse(User user) {
+        return new UserSettingsResponse(
+            user.getUserId(),
+            user.getFullname(),
+            user.getEmail(),
+            user.getTimeZone(),
+            user.getLanguage(),
+            user.getProfilePictureUrl()
+        );
     }
 
     private String normalizeEmail(String email) {

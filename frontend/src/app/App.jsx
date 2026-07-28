@@ -11,6 +11,7 @@ import CommunityPage from '@/pages/community/CommunityPage.jsx'
 import StatusPage from '@/pages/status/StatusPage.jsx'
 import WatchPage from '@/pages/watch/WatchPage.jsx'
 import WatchPlayerPage from '@/pages/watch/WatchPlayerPage.jsx'
+import SettingsPage from '@/pages/settings/SettingsPage.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 
 function App() {
@@ -91,6 +92,8 @@ function App() {
     page = <WatchPlayerPage onNavigate={navigate} />
   } else if (path === '/watch') {
     page = <WatchPage onNavigate={navigate} />
+  } else if (path === '/settings') {
+    page = <SettingsPage onNavigate={navigate} />
   } else if (path === '/register') {
     page = <RegisterPage onNavigate={navigate} />
   } else {

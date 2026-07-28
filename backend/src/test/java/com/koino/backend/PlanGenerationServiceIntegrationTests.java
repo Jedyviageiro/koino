@@ -23,6 +23,7 @@ import com.koino.backend.repository.UserActivePlanRepositor;
 import com.koino.backend.repository.UserPlanTaskRepository;
 import com.koino.backend.repository.UserProfileRepository;
 import com.koino.backend.repository.UserRepository;
+import com.koino.backend.repository.UserNotificationRepository;
 import com.koino.backend.service.PlanGenerationService;
 import com.koino.backend.service.PlanService;
 
@@ -53,6 +54,9 @@ class PlanGenerationServiceIntegrationTests {
 
     @Autowired
     private PlanService planService;
+
+    @Autowired
+    private UserNotificationRepository notificationRepository;
 
     @Test
     void catalogIsAvailableBeforeOnboarding() {
@@ -118,6 +122,21 @@ class PlanGenerationServiceIntegrationTests {
         assertThat(taskRepository.findByActivePlanActivePlanIdOrderByDayNumber(
             activePlan.getActivePlanId()
         )).hasSize(74);
+        assertThat(notificationRepository
+            .findByUserUserIdOrderByCreatedAtDesc(userId))
+            .singleElement()
+            .satisfies(notification -> {
+                assertThat(notification.getTitle())
+                    .isEqualTo("Your new plan is ready");
+                assertThat(notification.isRead()).isFalse();
+            });
+    }
+
+    @Test
+    void deepeningRoutesBeginWithManageableFoundationLevelsAtTenMinutes() {
+        assertManageableInitialPlan("GOSPELS", "P02", 30);
+        assertManageableInitialPlan("NEW_TESTAMENT", "P06", 48);
+        assertManageableInitialPlan("OLD_TESTAMENT", "P10", 120);
     }
 
     @Test
@@ -240,5 +259,46 @@ class PlanGenerationServiceIntegrationTests {
         assertThat(progress.dailyProgress().getFirst().completed()).isTrue();
         assertThat(progress.dailyProgress().getFirst().completedAt()).isNotNull();
         assertThat(progress.dailyProgress().getFirst().cumulativeCompletedDays()).isEqualTo(1);
+    }
+
+    private void assertManageableInitialPlan(
+        String startingPoint,
+        String expectedPlanCode,
+        int expectedDays
+    ) {
+        User user = new User();
+        user.setEmail(
+            "deepening-" + startingPoint.toLowerCase() + "@koino.local"
+        );
+        user.setPassword(
+            "not-used-in-this-test-" + startingPoint.toLowerCase()
+        );
+        user.setFullname("Deepening " + startingPoint);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        user = userRepository.save(user);
+
+        planGenerationService.generateInitialPlan(
+            user.getUserId(),
+            "DEEPEN_UNDERSTANDING",
+            startingPoint,
+            10,
+            "STEADY_NINE_TO_FIVE"
+        );
+
+        UserActivePlan activePlan = activePlanRepository
+            .findByUserUserIdOrderByPlanSequenceNumberAsc(user.getUserId())
+            .getFirst();
+        List<UserPlanTask> tasks = taskRepository
+            .findByActivePlanActivePlanIdOrderByDayNumber(
+                activePlan.getActivePlanId()
+            );
+
+        assertThat(activePlan.getPlanTemplate().getPlanCode())
+            .isEqualTo(expectedPlanCode);
+        assertThat(activePlan.getPlanTemplate().getDifficulty())
+            .isEqualTo("BEGINNER");
+        assertThat(tasks).hasSize(expectedDays);
+        assertThat(tasks.size()).isLessThanOrEqualTo(120);
     }
 }

@@ -51,8 +51,16 @@ function BiblePage({ onNavigate }) {
         const browserData = await getBibleBrowserData()
         if (!active) return
 
+        const showBookmarks =
+          new URLSearchParams(window.location.search).get('bookmarks') === '1'
+        const initialBookmark = showBookmarks
+          ? browserData.bookmarks[0]
+          : null
         const todayPassage = browserData.todayTask?.passages?.[0]
         const initialBook =
+          browserData.books.find(
+            (book) => book.title === initialBookmark?.book,
+          ) ||
           browserData.books.find(
             (book) => book.bookId === todayPassage?.bookId,
           ) ||
@@ -66,7 +74,9 @@ function BiblePage({ onNavigate }) {
 
         const initialChapters = await getBookChapters(initialBook.bookId)
         const preferredChapter =
-          todayPassage?.bookId === initialBook.bookId
+          initialBookmark?.book === initialBook.title
+            ? initialBookmark.chapterNumber
+            : todayPassage?.bookId === initialBook.bookId
             ? todayPassage.chapterNumber
             : initialBook.title === 'Matthew'
               ? 5
@@ -104,6 +114,12 @@ function BiblePage({ onNavigate }) {
             chapterNumber: initialChapter.chapterNumber,
           })),
         )
+        if (initialBookmark) {
+          const bookmarkedIndex = initialVerses.findIndex(
+            (verse) => verse.verseId === initialBookmark.verseId,
+          )
+          if (bookmarkedIndex >= 0) setSelectedVerseIndex(bookmarkedIndex)
+        }
       } catch (requestError) {
         if (active) {
           setError(requestError.message || 'Unable to load the Bible.')

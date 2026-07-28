@@ -30,6 +30,8 @@ import com.koino.backend.dto.user.BookmarkVerseRequest;
 import com.koino.backend.dto.user.ProfilePictureResponse;
 import com.koino.backend.dto.user.UserStreakResponse;
 import com.koino.backend.dto.user.UserSummaryResponse;
+import com.koino.backend.dto.user.UserSettingsRequest;
+import com.koino.backend.dto.user.UserSettingsResponse;
 import com.koino.backend.dto.user.VerseBookmarkResponse;
 import com.koino.backend.model.ResetPasswordToken;
 import com.koino.backend.model.User;
@@ -173,6 +175,27 @@ public class UserController {
     @GetMapping("/me/notifications")
     public List<NotificationResponse> getNotifications(@AuthenticationPrincipal User user) {
         return notificationService.getNotifications(user.getUserId());
+    }
+
+    @PatchMapping("/me/notifications/{notificationId}/read")
+    public NotificationResponse markNotificationRead(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long notificationId
+    ) {
+        return notificationService.markRead(user.getUserId(), notificationId);
+    }
+
+    @GetMapping("/me/settings")
+    public UserSettingsResponse getSettings(@AuthenticationPrincipal User user) {
+        return userService.getSettings(user.getUserId());
+    }
+
+    @PatchMapping("/me/settings")
+    public UserSettingsResponse updateSettings(
+        @AuthenticationPrincipal User user,
+        @Valid @RequestBody UserSettingsRequest request
+    ) {
+        return userService.updateSettings(user.getUserId(), request);
     }
 
     @PutMapping("/me/bookmarks/{verseId}")

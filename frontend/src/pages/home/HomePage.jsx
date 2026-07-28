@@ -1,16 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Bell, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import HomeSidebar from '@/components/home/HomeSidebar.jsx'
 import HomeRail from '@/components/home/HomeRail.jsx'
 import TodayPlanCard from '@/components/home/TodayPlanCard.jsx'
+import NotificationMenu from '@/components/home/NotificationMenu.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
-import { getHomeData } from '@/features/home/homeService.js'
+import {
+  getHomeData,
+  markNotificationRead,
+} from '@/features/home/homeService.js'
 
 function HomePage({ onNavigate }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const session = getAuthSession()
 
   const loadHome = useCallback(async () => {
@@ -55,10 +60,22 @@ function HomePage({ onNavigate }) {
     return () => window.clearTimeout(refreshTimer)
   }, [data, loadHome, loading])
 
-  const unreadCount = useMemo(
-    () => data?.notifications?.filter((item) => !item.read).length || 0,
-    [data],
-  )
+  const notifications = useMemo(() => data?.notifications || [], [data])
+
+  async function readNotification(notification) {
+    if (notification.read) return
+    try {
+      const updated = await markNotificationRead(notification.notificationId)
+      setData((current) => ({
+        ...current,
+        notifications: current.notifications.map((item) =>
+          item.notificationId === updated.notificationId ? updated : item,
+        ),
+      }))
+    } catch (requestError) {
+      setError(requestError.message || 'Unable to update this notification.')
+    }
+  }
 
   const firstName = session?.fullname?.trim().split(/\s+/)[0] || 'Friend'
   const hour = new Date().getHours()
@@ -88,23 +105,19 @@ function HomePage({ onNavigate }) {
           <div className="flex gap-2 sm:gap-5">
             <button
               type="button"
+              onClick={() => onNavigate('/bible')}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e6e7e9] bg-white hover:bg-[#f7f7f8] sm:h-11 sm:w-11"
               aria-label="Search"
               title="Search"
             >
               <Search className="h-5 w-5" strokeWidth={1.65} />
             </button>
-            <button
-              type="button"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e6e7e9] bg-white hover:bg-[#f7f7f8] sm:h-11 sm:w-11"
-              aria-label="Notifications"
-              title="Notifications"
-            >
-              <Bell className="h-5 w-5" strokeWidth={1.65} />
-              {unreadCount > 0 && (
-                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#e8a33d] ring-2 ring-white" />
-              )}
-            </button>
+            <NotificationMenu
+              notifications={notifications}
+              open={notificationsOpen}
+              onToggle={() => setNotificationsOpen((current) => !current)}
+              onRead={readNotification}
+            />
           </div>
         </header>
 
@@ -127,7 +140,7 @@ function HomePage({ onNavigate }) {
           <HomeRail
             streak={data?.streak}
             bookmarkCount={data?.bookmarks?.length || 0}
-            unreadCount={unreadCount}
+            onNavigate={onNavigate}
           />
         </div>
       </main>

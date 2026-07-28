@@ -53,6 +53,14 @@ public class User {
 
     private String profilePicturePublicId;
 
+    @Column(nullable = false, length = 64)
+    @ColumnDefault("'Africa/Maputo'")
+    private String timeZone = "Africa/Maputo";
+
+    @Column(nullable = false, length = 10)
+    @ColumnDefault("'en'")
+    private String language = "en";
+
     @Column(nullable = false)
     @ColumnDefault("0")
     private int currentStreak;
