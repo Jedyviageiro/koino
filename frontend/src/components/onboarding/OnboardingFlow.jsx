@@ -21,10 +21,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import CreatingPlanModal from '@/components/onboarding/CreatingPlanModal.jsx'
-import {
-  completeOnboarding,
-  getGeneratedPlanSummary,
-} from '@/features/onboarding/onboardingService.js'
+import { completeOnboarding } from '@/features/onboarding/onboardingService.js'
 
 const steps = [
   {
@@ -169,34 +166,6 @@ const initialAnswers = {
   dailyCapacityMinutes: 10,
 }
 
-const journeyReasons = {
-  NEW_TO_FAITH: 'you are beginning your journey with Scripture',
-  DEEPEN_UNDERSTANDING: 'you want to deepen your understanding of Scripture',
-  BUILD_READING_HABIT: 'you want to build a consistent reading habit',
-}
-
-const startingPointLabels = {
-  GOSPELS: 'the Gospels',
-  OLD_TESTAMENT: 'the Old Testament',
-  NEW_TESTAMENT: 'the New Testament',
-}
-
-const rhythmLabels = {
-  MORNING: 'morning rhythm',
-  AFTERNOON: 'daytime rhythm',
-  EVENING: 'evening rhythm',
-}
-
-function buildPlanReason(answers) {
-  return `We created this plan because ${
-    journeyReasons[answers.journeyDescription]
-  }. It begins in ${
-    startingPointLabels[answers.preferredStartingPoint]
-  } with ${answers.dailyCapacityMinutes}-minute readings that fit your ${
-    rhythmLabels[answers.dailyRhythm]
-  }.`
-}
-
 function Progress({ current }) {
   return (
     <div className="flex flex-1 items-center justify-center" aria-label={`Step ${current + 1} of ${steps.length}`}>
@@ -278,8 +247,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
   const [stepIndex, setStepIndex] = useState(0)
   const [answers, setAnswers] = useState(initialAnswers)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [planModalPhase, setPlanModalPhase] = useState(null)
-  const [generatedPlan, setGeneratedPlan] = useState(null)
+  const [showCreatingPlan, setShowCreatingPlan] = useState(false)
 
   const step = steps[stepIndex]
   const StepIcon = step.icon
@@ -291,18 +259,16 @@ function OnboardingFlow({ onFailure, onComplete }) {
 
   async function finishOnboarding() {
     setIsSubmitting(true)
-    setPlanModalPhase('creating')
+    setShowCreatingPlan(true)
+    const startedAt = Date.now()
 
     try {
       await completeOnboarding(answers)
-      try {
-        setGeneratedPlan(await getGeneratedPlanSummary())
-      } catch {
-        setGeneratedPlan(null)
-      }
-      setPlanModalPhase('ready')
+      const remainingDelay = Math.max(0, 700 - (Date.now() - startedAt))
+      await new Promise((resolve) => window.setTimeout(resolve, remainingDelay))
+      onComplete()
     } catch (error) {
-      setPlanModalPhase(null)
+      setShowCreatingPlan(false)
       onFailure(
         error.message || 'Unable to save your preferences. Please try again.',
       )
@@ -321,7 +287,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
 
   return (
     <>
-      <div className="flex min-h-[576px] w-full flex-col">
+      <div className="flex min-h-[540px] w-full flex-col">
       <header className="flex items-center">
         <button
           type="button"
@@ -413,14 +379,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
       </section>
       </div>
 
-      {planModalPhase && (
-        <CreatingPlanModal
-          phase={planModalPhase}
-          plan={generatedPlan}
-          reason={buildPlanReason(answers)}
-          onContinue={onComplete}
-        />
-      )}
+      {showCreatingPlan && <CreatingPlanModal />}
     </>
   )
 }

@@ -10,6 +10,7 @@ import DevotionalPage from '@/pages/devotional/DevotionalPage.jsx'
 import CommunityPage from '@/pages/community/CommunityPage.jsx'
 import StatusPage from '@/pages/status/StatusPage.jsx'
 import WatchPage from '@/pages/watch/WatchPage.jsx'
+import WatchPlayerPage from '@/pages/watch/WatchPlayerPage.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 
 function App() {
@@ -28,19 +29,25 @@ function App() {
   }, [])
 
   function navigate(nextPath) {
-    if (nextPath === path) return
+    const nextUrl = new URL(nextPath, window.location.origin)
+    if (
+      nextUrl.pathname === path &&
+      nextUrl.search === window.location.search
+    ) {
+      return
+    }
     const isOnboardingTransition =
-      path === '/register' && nextPath === '/onboarding'
+      path === '/register' && nextUrl.pathname === '/onboarding'
 
     function updateRoute() {
-      window.history.pushState({}, '', nextPath)
-      setPath(nextPath)
+      window.history.pushState({}, '', `${nextUrl.pathname}${nextUrl.search}`)
+      setPath(nextUrl.pathname)
     }
 
     if (document.startViewTransition) {
-      if (isOnboardingTransition) {
-        document.documentElement.dataset.routeTransition = 'onboarding'
-      }
+      document.documentElement.dataset.routeTransition = isOnboardingTransition
+        ? 'onboarding'
+        : 'page'
 
       const transition = document.startViewTransition(updateRoute)
       transition.finished.finally(() => {
@@ -57,51 +64,43 @@ function App() {
     setPath(nextPath)
   }
 
+  let page
+
   if (path === '/status') {
-    return (
+    page = (
       <StatusPage
         returnPath={statusReturnPath}
         onRecover={recover}
       />
     )
+  } else if (path === '/onboarding') {
+    page = <OnboardingPage onNavigate={navigate} />
+  } else if (path === '/home') {
+    page = <HomePage onNavigate={navigate} />
+  } else if (path === '/reading') {
+    page = <ReadingPage onNavigate={navigate} />
+  } else if (path === '/devotional') {
+    page = <DevotionalPage onNavigate={navigate} />
+  } else if (path === '/plans') {
+    page = <PlansPage onNavigate={navigate} />
+  } else if (path === '/bible') {
+    page = <BiblePage onNavigate={navigate} />
+  } else if (path === '/community') {
+    page = <CommunityPage onNavigate={navigate} />
+  } else if (path === '/watch/player') {
+    page = <WatchPlayerPage onNavigate={navigate} />
+  } else if (path === '/watch') {
+    page = <WatchPage onNavigate={navigate} />
+  } else if (path === '/register') {
+    page = <RegisterPage onNavigate={navigate} />
+  } else {
+    page = <LoginPage onNavigate={navigate} />
   }
 
-  if (path === '/onboarding') {
-    return <OnboardingPage onNavigate={navigate} />
-  }
-
-  if (path === '/home') {
-    return <HomePage onNavigate={navigate} />
-  }
-
-  if (path === '/reading') {
-    return <ReadingPage onNavigate={navigate} />
-  }
-
-  if (path === '/devotional') {
-    return <DevotionalPage onNavigate={navigate} />
-  }
-
-  if (path === '/plans') {
-    return <PlansPage onNavigate={navigate} />
-  }
-
-  if (path === '/bible') {
-    return <BiblePage onNavigate={navigate} />
-  }
-
-  if (path === '/community') {
-    return <CommunityPage onNavigate={navigate} />
-  }
-
-  if (path === '/watch') {
-    return <WatchPage onNavigate={navigate} />
-  }
-
-  return path === '/register' ? (
-    <RegisterPage onNavigate={navigate} />
-  ) : (
-    <LoginPage onNavigate={navigate} />
+  return (
+    <div key={path} className="app-route">
+      {page}
+    </div>
   )
 }
 

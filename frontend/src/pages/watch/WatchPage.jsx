@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   BookOpen,
-  ExternalLink,
   MessageCircleHeart,
   Mic2,
   Music2,
   Play,
-  Search,
   SunMedium,
   TvMinimalPlay,
 } from 'lucide-react'
@@ -76,7 +74,6 @@ function VideoArtwork({ video, className = '' }) {
 
 function WatchPage({ onNavigate }) {
   const session = getAuthSession()
-  const playerRef = useRef(null)
   const [videos, setVideos] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('ALL')
   const [selectedVideo, setSelectedVideo] = useState(null)
@@ -137,12 +134,7 @@ function WatchPage({ onNavigate }) {
   )
 
   function openVideo(video) {
-    if (!video.youtubeVideoId) {
-      window.open(video.youtubeUrl, '_blank', 'noopener,noreferrer')
-      return
-    }
-    setSelectedVideo(video)
-    playerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    onNavigate(`/watch/player?video=${encodeURIComponent(video.catalogKey)}`)
   }
 
   return (
@@ -171,7 +163,7 @@ function WatchPage({ onNavigate }) {
             <div className="grid items-start gap-7 xl:grid-cols-[minmax(0,1fr)_280px]">
               <div className="min-w-0">
                 {selectedVideo && (
-                  <section ref={playerRef} className="scroll-mt-6">
+                  <section>
                     <div className="aspect-video overflow-hidden rounded-[8px] bg-black">
                       <iframe
                         key={selectedVideo.youtubeVideoId}
@@ -227,11 +219,7 @@ function WatchPage({ onNavigate }) {
                       <span className="relative block aspect-video overflow-hidden rounded-[7px] bg-[#f2f0ec]">
                         <VideoArtwork video={video} />
                         <span className="absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/75 text-white transition-transform group-hover:scale-105">
-                          {video.youtubeVideoId ? (
-                            <Play className="h-3.5 w-3.5 fill-current" />
-                          ) : (
-                            <Search className="h-3.5 w-3.5" />
-                          )}
+                          <Play className="h-3.5 w-3.5 fill-current" />
                         </span>
                       </span>
                       <span className="mt-2.5 block line-clamp-2 text-[12px] font-semibold leading-5 text-[#242933]">
@@ -286,21 +274,12 @@ function WatchPage({ onNavigate }) {
 
                 <section className="rounded-[8px] border border-[#dfe3e8] bg-white p-4">
                   <h2 className="font-sans text-[13px] font-semibold">
-                    On YouTube
+                    Watch inside Koino
                   </h2>
                   <p className="mt-2 text-[10px] leading-5 text-[#747c8a]">
-                    Catalog entries without a direct video link open the exact
-                    YouTube search supplied for that teaching.
+                    Every catalog item now opens in the Koino player with an
+                    in-app queue, using YouTube&apos;s embedded playback.
                   </p>
-                  <a
-                    href="https://www.youtube.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 flex h-9 items-center justify-center gap-2 rounded-[7px] border border-[#e0e3e7] text-[10px] font-semibold text-[#555e6d] hover:bg-[#f8f8f8]"
-                  >
-                    Open YouTube
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
                 </section>
               </aside>
             </div>

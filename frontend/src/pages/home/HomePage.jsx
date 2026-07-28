@@ -74,14 +74,14 @@ function HomePage({ onNavigate }) {
     <div className="min-h-svh bg-white text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
       <HomeSidebar name={session?.fullname || firstName} onNavigate={onNavigate} />
 
-      <main className="min-w-0 px-[18px] pb-20 pt-[30px] sm:px-7 lg:px-9 lg:pb-10 lg:pt-10">
-        <header className="mx-auto mb-7 flex max-w-[1100px] items-start justify-between">
+      <main className="min-w-0 px-[18px] pb-16 pt-7 sm:px-7 lg:px-8 lg:pb-9 lg:pt-8">
+        <header className="mx-auto mb-6 flex max-w-[1040px] items-start justify-between">
           <div>
             <p className="mb-2 text-[11px] font-semibold uppercase text-[#b27413] lg:hidden">{today}</p>
-            <h1 className="text-[30px] font-semibold leading-[1.17] sm:text-[34px]">
+            <h1 className="text-[28px] font-semibold leading-[1.17] sm:text-[31px]">
               {greeting.replace('Good ', 'Good ')}, {firstName}
             </h1>
-            <p className="mt-2 text-[14px] text-[#677089] sm:text-[15px]">
+            <p className="mt-2 text-[13px] text-[#677089] sm:text-[14px]">
               Let&apos;s grow closer to God together.
             </p>
           </div>
@@ -108,7 +108,7 @@ function HomePage({ onNavigate }) {
           </div>
         </header>
 
-        <div className="mx-auto grid max-w-[1100px] items-start gap-6 xl:grid-cols-[minmax(0,746px)_minmax(300px,330px)]">
+        <div className="mx-auto grid max-w-[1040px] items-start gap-5 xl:grid-cols-[minmax(0,710px)_minmax(290px,310px)]">
           {loading ? (
           <div className="rounded-[15px] border border-[#e2e5ea] bg-white p-7">
             <div className="auth-skeleton h-10 w-40 rounded-[7px]" />

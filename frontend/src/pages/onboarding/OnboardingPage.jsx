@@ -29,7 +29,7 @@ function OnboardingPage({ onNavigate }) {
         onboardingContent={
           <OnboardingFlow
             onFailure={setError}
-            onComplete={() => window.location.replace('/home')}
+            onComplete={() => onNavigate('/home')}
           />
         }
       />
