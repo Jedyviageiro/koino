@@ -10,7 +10,6 @@ services:
     rootDir: backend
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health
-    maxShutdownDelaySeconds: 30
     disk:
       name: koino-data
       mountPath: /app/data
