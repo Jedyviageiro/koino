@@ -69,7 +69,7 @@ function BattleArena({
   const opponentCorrect = Math.floor(battle.opponentScore / 10)
 
   return (
-    <div className="mx-auto max-w-[1040px]">
+    <div className="mx-auto max-w-[1100px]">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fff5e3] text-[#d58c20]">

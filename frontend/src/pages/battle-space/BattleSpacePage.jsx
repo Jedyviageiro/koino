@@ -200,45 +200,47 @@ function BattleSpacePage({ onNavigate }) {
     : lobby?.profile.rank
 
   return (
-    <div className="min-h-svh bg-[#fbfcfd] text-[#111318] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
+    <div className="min-h-svh bg-[#fbfcfe] text-[#111318] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
       <HomeSidebar
         name={session?.fullname}
         onNavigate={onNavigate}
         activePath="/battle-space"
       />
 
-      <main className="min-w-0 px-[18px] pb-14 pt-7 sm:px-7 lg:px-8 lg:pt-8">
-        {view === 'loading' && (
-          <div className="flex min-h-[520px] items-center justify-center">
-            <LoaderCircle className="h-6 w-6 animate-spin text-[#d58c20]" />
-          </div>
-        )}
-        {view === 'lobby' && lobby && (
-          <BattleLobby
-            lobby={lobby}
-            selectedMode={selectedMode}
-            onSelectMode={setSelectedMode}
-            onStart={beginMatch}
-            onHelp={() => setShowRules(true)}
-          />
-        )}
-        {view === 'matching' && matchingMode && (
-          <BattleMatchmaking mode={matchingMode} onCancel={cancelMatching} />
-        )}
-        {view === 'battle' && battle && (
-          <BattleArena
-            battle={battle}
-            user={{
-              ...session,
-              elo: lobby?.profile.elo,
-            }}
-            answering={answering}
-            feedback={feedback}
-            onAnswer={answer}
-            onLeave={() => setConfirmLeave(true)}
-            onTimeUp={endForTime}
-          />
-        )}
+      <main className="min-w-0 px-[18px] pb-14 pt-7 sm:px-7 lg:px-9 lg:pt-9">
+        <div className="mx-auto max-w-[1100px]">
+          {view === 'loading' && (
+            <div className="flex min-h-[520px] items-center justify-center">
+              <LoaderCircle className="h-6 w-6 animate-spin text-[#d58c20]" />
+            </div>
+          )}
+          {view === 'lobby' && lobby && (
+            <BattleLobby
+              lobby={lobby}
+              selectedMode={selectedMode}
+              onSelectMode={setSelectedMode}
+              onStart={beginMatch}
+              onHelp={() => setShowRules(true)}
+            />
+          )}
+          {view === 'matching' && matchingMode && (
+            <BattleMatchmaking mode={matchingMode} onCancel={cancelMatching} />
+          )}
+          {view === 'battle' && battle && (
+            <BattleArena
+              battle={battle}
+              user={{
+                ...session,
+                elo: lobby?.profile.elo,
+              }}
+              answering={answering}
+              feedback={feedback}
+              onAnswer={answer}
+              onLeave={() => setConfirmLeave(true)}
+              onTimeUp={endForTime}
+            />
+          )}
+        </div>
       </main>
 
       {showRules && (

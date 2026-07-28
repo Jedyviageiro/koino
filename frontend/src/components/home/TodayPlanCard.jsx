@@ -34,7 +34,7 @@ function formatReadingDate(date) {
   }).format(new Date(`${date}T00:00:00`))
 }
 
-function TodayPlanCard({ plan, task, onStartReading }) {
+function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
   const percentage = Math.round(plan?.completionPercentage || 0)
   const circumference = 2 * Math.PI * 42
   const offset = circumference * (1 - percentage / 100)
@@ -79,6 +79,7 @@ function TodayPlanCard({ plan, task, onStartReading }) {
           </div>
           <button
             type="button"
+            onClick={onViewPlan}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[9px] border border-[#e4e5e7] bg-white hover:bg-[#f8f8f8] sm:w-[116px] sm:gap-2"
           >
             <CalendarDays className="h-4 w-4" strokeWidth={1.8} />

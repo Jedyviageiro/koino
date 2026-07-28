@@ -63,15 +63,18 @@ function HomePage({ onNavigate }) {
   const notifications = useMemo(() => data?.notifications || [], [data])
 
   async function readNotification(notification) {
-    if (notification.read) return
     try {
-      const updated = await markNotificationRead(notification.notificationId)
-      setData((current) => ({
-        ...current,
-        notifications: current.notifications.map((item) =>
-          item.notificationId === updated.notificationId ? updated : item,
-        ),
-      }))
+      if (!notification.read) {
+        const updated = await markNotificationRead(notification.notificationId)
+        setData((current) => ({
+          ...current,
+          notifications: current.notifications.map((item) =>
+            item.notificationId === updated.notificationId ? updated : item,
+          ),
+        }))
+      }
+      setNotificationsOpen(false)
+      if (notification.type === 'PLAN_READY') onNavigate('/plans')
     } catch (requestError) {
       setError(requestError.message || 'Unable to update this notification.')
     }
@@ -116,6 +119,7 @@ function HomePage({ onNavigate }) {
               notifications={notifications}
               open={notificationsOpen}
               onToggle={() => setNotificationsOpen((current) => !current)}
+              onClose={() => setNotificationsOpen(false)}
               onRead={readNotification}
             />
           </div>
@@ -134,6 +138,7 @@ function HomePage({ onNavigate }) {
             plan={data?.plan}
             task={data?.task}
             onStartReading={() => onNavigate('/devotional')}
+            onViewPlan={() => onNavigate('/plans')}
           />
           )}
 

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Bell, Check } from 'lucide-react'
 
 function relativeTime(value) {
@@ -16,12 +17,33 @@ function NotificationMenu({
   notifications,
   open,
   onToggle,
+  onClose,
   onRead,
 }) {
+  const menuRef = useRef(null)
   const unreadCount = notifications.filter((item) => !item.read).length
 
+  useEffect(() => {
+    if (!open) return undefined
+
+    function closeFromOutside(event) {
+      if (!menuRef.current?.contains(event.target)) onClose()
+    }
+
+    function closeFromKeyboard(event) {
+      if (event.key === 'Escape') onClose()
+    }
+
+    document.addEventListener('pointerdown', closeFromOutside)
+    document.addEventListener('keydown', closeFromKeyboard)
+    return () => {
+      document.removeEventListener('pointerdown', closeFromOutside)
+      document.removeEventListener('keydown', closeFromKeyboard)
+    }
+  }, [onClose, open])
+
   return (
-    <div className="relative">
+    <div ref={menuRef} className="relative">
       <button
         type="button"
         onClick={onToggle}

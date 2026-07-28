@@ -62,3 +62,7 @@ export function addVerseBookmark(verseId, highlightColor) {
 export function removeVerseBookmark(verseId) {
   return apiRequest(`/users/me/bookmarks/${verseId}`, { method: 'DELETE' })
 }
+
+export function getVerseBookmarks() {
+  return apiRequest('/users/me/bookmarks')
+}

@@ -53,8 +53,11 @@ function BiblePage({ onNavigate }) {
         const browserData = await getBibleBrowserData()
         if (!active) return
 
-        const showBookmarks =
-          new URLSearchParams(window.location.search).get('bookmarks') === '1'
+        const search = new URLSearchParams(window.location.search)
+        const requestedBook = search.get('book')
+        const requestedChapter = Number(search.get('chapter'))
+        const requestedVerse = Number(search.get('verse'))
+        const showBookmarks = search.get('bookmarks') === '1'
         const initialBookmark = showBookmarks
           ? browserData.bookmarks[0]
           : null
@@ -63,6 +66,7 @@ function BiblePage({ onNavigate }) {
           browserData.books.find(
             (book) => book.title === initialBookmark?.book,
           ) ||
+          browserData.books.find((book) => book.title === requestedBook) ||
           browserData.books.find(
             (book) => book.bookId === todayPassage?.bookId,
           ) ||
@@ -78,6 +82,10 @@ function BiblePage({ onNavigate }) {
         const preferredChapter =
           initialBookmark?.book === initialBook.title
             ? initialBookmark.chapterNumber
+            : requestedBook === initialBook.title &&
+                Number.isInteger(requestedChapter) &&
+                requestedChapter > 0
+              ? requestedChapter
             : todayPassage?.bookId === initialBook.bookId
             ? todayPassage.chapterNumber
             : initialBook.title === 'Matthew'
@@ -127,9 +135,12 @@ function BiblePage({ onNavigate }) {
             chapterNumber: initialChapter.chapterNumber,
           })),
         )
-        if (initialBookmark) {
+        if (initialBookmark || requestedVerse > 0) {
           const bookmarkedIndex = initialVerses.findIndex(
-            (verse) => verse.verseId === initialBookmark.verseId,
+            (verse) =>
+              initialBookmark
+                ? verse.verseId === initialBookmark.verseId
+                : verse.verseNumber === requestedVerse,
           )
           if (bookmarkedIndex >= 0) setSelectedVerseIndex(bookmarkedIndex)
         }

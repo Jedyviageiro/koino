@@ -29,7 +29,7 @@ function BattleLobby({ lobby, selectedMode, onSelectMode, onStart, onHelp }) {
     lobby.modes.find((item) => item.mode === selectedMode) || lobby.modes[0]
 
   return (
-    <div className="mx-auto max-w-[1040px]">
+    <div className="mx-auto max-w-[1100px]">
       <header className="mb-5 flex items-start justify-between gap-5">
         <div>
           <div className="flex items-center gap-2.5">

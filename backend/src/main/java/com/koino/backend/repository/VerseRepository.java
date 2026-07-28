@@ -15,7 +15,8 @@ public interface VerseRepository extends JpaRepository<Verse, Long>{
     @Query("""
         select verse from Verse verse
         join fetch verse.chapter chapter
-        join fetch chapter.book
+        join fetch chapter.book book
+        order by book.orderIndex, chapter.chapterNumber, verse.verseNumber
         """)
     List<Verse> findAllWithReference();
 }

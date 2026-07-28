@@ -10,12 +10,14 @@ import com.koino.backend.repository.ChapterRepository;
 import com.koino.backend.repository.VerseRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 
 @Service
+@Order(10)
 public class BibleSeedService implements CommandLineRunner {
 
     private final BookRepository bookRepository;

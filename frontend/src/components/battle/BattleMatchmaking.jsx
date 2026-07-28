@@ -13,7 +13,7 @@ function BattleMatchmaking({ mode, onCancel }) {
   }, [])
 
   return (
-    <div className="mx-auto max-w-[1040px]">
+    <div className="mx-auto max-w-[1100px]">
       <header>
         <div className="flex items-center gap-2.5">
           <h1 className="text-[28px] font-semibold">Battle Space</h1>

@@ -32,6 +32,10 @@ services:
       - SPRING_DATASOURCE_PASSWORD=secretpassword
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173}
+      - BIBLE_LICENSED_IMPORT_ENABLED=true
+      - BIBLE_LICENSED_RIGHTS_CONFIRMED=true
+      - BIBLE_LICENSED_SOURCE_DIRECTORY=/app/data/licensed-bibles
+      - BIBLE_LICENSED_COPYRIGHT_NOTICE=New International Version (NIV). Used under license.
     depends_on:
       postgres:
         condition: service_healthy

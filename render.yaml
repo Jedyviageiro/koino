@@ -41,4 +41,10 @@ services:
       - key: BATTLE_QUESTION_BACKUP_PATH
         value: /app/data/battle-question-catalog.generated.json
       - key: BIBLE_LICENSED_IMPORT_ENABLED
-        value: "false"
+        value: "true"
+      - key: BIBLE_LICENSED_RIGHTS_CONFIRMED
+        value: "true"
+      - key: BIBLE_LICENSED_SOURCE_DIRECTORY
+        value: /app/seed-data/licensed-bibles
+      - key: BIBLE_LICENSED_COPYRIGHT_NOTICE
+        value: New International Version (NIV). Used under license.

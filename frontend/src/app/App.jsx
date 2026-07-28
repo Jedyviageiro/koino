@@ -16,6 +16,7 @@ import VerifyEmailPage from '@/pages/auth/verify-email/VerifyEmailPage.jsx'
 import ForgotPasswordPage from '@/pages/auth/forgot-password/ForgotPasswordPage.jsx'
 import ResetPasswordPage from '@/pages/auth/reset-password/ResetPasswordPage.jsx'
 import BattleSpacePage from '@/pages/battle-space/BattleSpacePage.jsx'
+import BookmarksPage from '@/pages/bookmarks/BookmarksPage.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 
 function App() {
@@ -90,6 +91,8 @@ function App() {
     page = <PlansPage onNavigate={navigate} />
   } else if (path === '/bible') {
     page = <BiblePage onNavigate={navigate} />
+  } else if (path === '/bookmarks') {
+    page = <BookmarksPage onNavigate={navigate} />
   } else if (path === '/community') {
     page = <CommunityPage onNavigate={navigate} />
   } else if (path === '/watch/player') {

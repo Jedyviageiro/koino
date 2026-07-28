@@ -1,10 +1,8 @@
 import {
-  ArrowRight,
   Bookmark,
   BookOpen,
   Check,
   Flame,
-  NotebookText,
   Search,
   Sparkles,
 } from 'lucide-react'
@@ -12,8 +10,7 @@ import {
 const quickActions = [
   { label: 'Search Bible', icon: Search, path: '/bible' },
   { label: 'Browse Plans', icon: BookOpen, path: '/plans' },
-  { label: 'My Bookmarks', icon: Bookmark, path: '/bible?bookmarks=1' },
-  { label: 'Ask a Question', icon: NotebookText, path: '/community?compose=question' },
+  { label: 'My Bookmarks', icon: Bookmark, path: '/bookmarks' },
 ]
 
 function HomeRail({ streak, bookmarkCount, onNavigate }) {
@@ -36,15 +33,8 @@ function HomeRail({ streak, bookmarkCount, onNavigate }) {
       <section className="min-h-[300px] rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
         <header className="flex items-center justify-between">
           <h2 className="text-[14px] font-bold">Quick Actions</h2>
-          <button
-            type="button"
-            onClick={() => onNavigate('/plans')}
-            className="flex items-center gap-2 text-[14px] text-[#69728a]"
-          >
-            Explore <ArrowRight className="h-[18px] w-[18px]" />
-          </button>
         </header>
-        <div className="mt-7 grid grid-cols-2 gap-4">
+        <div className="mt-7 grid grid-cols-3 gap-2.5">
           {quickActions.map((item) => {
             const Icon = item.icon
             return (
@@ -52,7 +42,7 @@ function HomeRail({ streak, bookmarkCount, onNavigate }) {
                 key={item.label}
                 type="button"
                 onClick={() => onNavigate(item.path)}
-                className="relative flex h-[96px] flex-col items-center justify-center gap-3 rounded-[10px] border border-[#e7e8e9] bg-white text-[12px] text-[#303442] hover:border-[#d5d7da] hover:bg-[#fafafa]"
+                className="relative flex h-[96px] min-w-0 flex-col items-center justify-center gap-3 rounded-[10px] border border-[#e7e8e9] bg-white px-1.5 text-center text-[10px] leading-4 text-[#303442] hover:border-[#d5d7da] hover:bg-[#fafafa]"
               >
                 <Icon className="h-6 w-6 text-[#07090c]" strokeWidth={1.55} />
                 {item.label}
@@ -70,7 +60,7 @@ function HomeRail({ streak, bookmarkCount, onNavigate }) {
       <section className="min-h-[195px] rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
         <header className="flex items-center justify-between">
           <h2 className="text-[14px] font-bold">Your Streak</h2>
-          <button type="button" className="text-[13px] text-[#677089]">View all</button>
+          <span className="text-[11px] text-[#7b8392]">Last 7 days</span>
         </header>
         <div className="mt-4 flex items-center gap-5">
           <span
