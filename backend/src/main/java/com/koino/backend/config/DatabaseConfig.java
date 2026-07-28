@@ -40,7 +40,12 @@ public class DatabaseConfig {
         String jdbcUrl = "jdbc:postgresql://"
             + uri.getHost()
             + ":" + port
-            + uri.getPath();
+            + uri.getPath()
+            + (
+                uri.getRawQuery() == null
+                    ? ""
+                    : "?" + uri.getRawQuery()
+            );
 
         return DataSourceBuilder.create()
             .driverClassName("org.postgresql.Driver")
