@@ -7,6 +7,7 @@ import {
   House,
   Clapperboard,
   MessagesSquare,
+  Swords,
   LogOut,
   Settings,
 } from 'lucide-react'
@@ -23,6 +24,7 @@ const navigation = [
   { label: 'Bible', icon: BookOpen, path: '/bible' },
   { label: 'Watch', icon: Clapperboard, path: '/watch' },
   { label: 'Community', icon: MessagesSquare, path: '/community' },
+  { label: 'Battle Space', icon: Swords, path: '/battle-space' },
 ]
 
 function HomeSidebar({
@@ -33,6 +35,7 @@ function HomeSidebar({
   const session = getAuthSession()
   const profileMenuRef = useRef(null)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [avatarFailed, setAvatarFailed] = useState(false)
   const [user, setUser] = useState({
     fullname: name || session?.fullname || 'Koino Reader',
     profilePictureUrl: session?.profilePictureUrl || '',
@@ -143,10 +146,12 @@ function HomeSidebar({
             aria-expanded={profileMenuOpen}
             className="flex h-9 w-full items-center gap-2.5 px-1 text-left"
           >
-          {user.profilePictureUrl ? (
+          {user.profilePictureUrl && !avatarFailed ? (
             <img
               src={user.profilePictureUrl}
               alt=""
+              referrerPolicy="no-referrer"
+              onError={() => setAvatarFailed(true)}
               className="h-8 w-8 shrink-0 rounded-full object-cover"
             />
           ) : (

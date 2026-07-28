@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,8 @@ import com.koino.backend.repository.UserRepository;
 
 @Service
 public class ProfilePictureService {
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(ProfilePictureService.class);
     private static final long MAX_FILE_SIZE = 5L * 1024 * 1024;
     private static final String PROFILE_FOLDER = "koino/profile-pictures";
 
@@ -53,6 +57,39 @@ public class ProfilePictureService {
             return new ProfilePictureResponse(secureUrl, publicId);
         } catch (IOException exception) {
             throw new IllegalStateException("Could not upload profile picture", exception);
+        }
+    }
+
+    @Transactional
+    public User importGoogleAvatar(User user, String remoteUrl) {
+        if (user.getProfilePicturePublicId() != null
+            || remoteUrl == null
+            || remoteUrl.isBlank()) {
+            return user;
+        }
+        try {
+            Map<?, ?> result = cloudinary.uploader().upload(
+                remoteUrl,
+                ObjectUtils.asMap(
+                    "resource_type", "image",
+                    "folder", PROFILE_FOLDER,
+                    "public_id", "user-" + user.getUserId(),
+                    "overwrite", true,
+                    "invalidate", true,
+                    "transformation", "c_fill,g_face,h_256,w_256,q_auto,f_auto"
+                )
+            );
+            user.setProfilePictureUrl(requiredResult(result, "secure_url"));
+            user.setProfilePicturePublicId(requiredResult(result, "public_id"));
+            user.setUpdatedAt(LocalDateTime.now());
+            return userRepository.save(user);
+        } catch (Exception exception) {
+            LOGGER.warn(
+                "Could not import Google avatar for user {}. Using remote fallback.",
+                user.getUserId()
+            );
+            user.setProfilePictureUrl(remoteUrl);
+            return userRepository.save(user);
         }
     }
 

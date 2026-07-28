@@ -97,7 +97,8 @@ public class UserController {
                 user.getUserId(),
                 jwtService.generateToken(user),
                 user.getEmail(),
-                user.getFullname()
+                user.getFullname(),
+                user.getProfilePictureUrl()
             ));
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
@@ -110,7 +111,11 @@ public class UserController {
             User user = userService.loginUser(request.email(), request.password());
             String token = jwtService.generateToken(user);
             return ResponseEntity.ok(new LoginResponse(
-                user.getUserId(), token, user.getEmail(), user.getFullname()
+                user.getUserId(),
+                token,
+                user.getEmail(),
+                user.getFullname(),
+                user.getProfilePictureUrl()
             ));
 
         } catch(IllegalArgumentException e){

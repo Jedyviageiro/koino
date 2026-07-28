@@ -12,6 +12,7 @@ function CommunityAvatar({ author, size = 'md' }) {
       <img
         src={author.profilePictureUrl}
         alt=""
+        referrerPolicy="no-referrer"
         className={`${dimension} shrink-0 rounded-full object-cover`}
       />
     )

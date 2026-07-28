@@ -1,0 +1,1297 @@
+[ {
+  "catalogKey" : "gemini-1-b52ac035-6f8",
+  "prompt" : "What was the name of the first man created by God?",
+  "options" : [ "Abraham", "Adam", "Moses", "David" ],
+  "correctOption" : 1,
+  "difficulty" : 1,
+  "category" : "Genesis",
+  "reference" : "Genesis 2:7",
+  "explanation" : "God formed the first man, Adam, from the dust of the ground."
+}, {
+  "catalogKey" : "gemini-1-71401fd3-0d6",
+  "prompt" : "Who was the first woman created by God?",
+  "options" : [ "Sarah", "Mary", "Eve", "Ruth" ],
+  "correctOption" : 2,
+  "difficulty" : 1,
+  "category" : "Genesis",
+  "reference" : "Genesis 3:20",
+  "explanation" : "Adam named his wife Eve because she would become the mother of all the living."
+}, {
+  "catalogKey" : "gemini-1-8e50981d-68e",
+  "prompt" : "In which garden did the first man and woman live?",
+  "options" : [ "Garden of Gethsemane", "Garden of Eden", "Garden of Versailles", "Garden of Babylon" ],
+  "correctOption" : 1,
+  "difficulty" : 1,
+  "category" : "Genesis",
+  "reference" : "Genesis 2:8",
+  "explanation" : "The Lord God planted a garden eastward in Eden and placed the man there."
+}, {
+  "catalogKey" : "gemini-1-c2e76773-8e3",
+  "prompt" : "Who built the ark to survive the great flood?",
+  "options" : [ "Noah", "Moses", "Abraham", "Joshua" ],
+  "correctOption" : 0,
+  "difficulty" : 1,
+  "category" : "Genesis",
+  "reference" : "Genesis 6:14",
+  "explanation" : "God commanded Noah to build an ark of gopher wood."
+}, {
+  "catalogKey" : "gemini-1-aeb72238-931",
+  "prompt" : "Who received the Ten Commandments from God on Mount Sinai?",
+  "options" : [ "Aaron", "Joshua", "Moses", "Samuel" ],
+  "correctOption" : 2,
+  "difficulty" : 1,
+  "category" : "Exodus",
+  "reference" : "Exodus 20:1",
+  "explanation" : "God spoke all these words to Moses, giving him the commandments."
+}, {
+  "catalogKey" : "gemini-1-9a862071-6c6",
+  "prompt" : "Who was swallowed by a great fish after running away from God's command?",
+  "options" : [ "Jonah", "Daniel", "Job", "Elijah" ],
+  "correctOption" : 0,
+  "difficulty" : 1,
+  "category" : "Jonah",
+  "reference" : "Jonah 1:17",
+  "explanation" : "The Lord provided a huge fish to swallow Jonah, and he was inside it for three days and nights."
+}, {
+  "catalogKey" : "gemini-1-a5d5f2ff-ef3",
+  "prompt" : "Who killed the giant Philistine warrior Goliath with a sling and a stone?",
+  "options" : [ "Saul", "David", "Solomon", "Samson" ],
+  "correctOption" : 1,
+  "difficulty" : 1,
+  "category" : "1 Samuel",
+  "reference" : "1 Samuel 17:50",
+  "explanation" : "David triumphed over the Philistine with a sling and a stone without a sword in his hand."
+}, {
+  "catalogKey" : "gemini-1-caff02f6-13f",
+  "prompt" : "Which king of Israel was renowned for his great wisdom and for building the first temple?",
+  "options" : [ "David", "Saul", "Solomon", "Hezekiah" ],
+  "correctOption" : 2,
+  "difficulty" : 1,
+  "category" : "1 Kings",
+  "reference" : "1 Kings 6:1",
+  "explanation" : "Solomon began to build the temple of the Lord in the fourth year of his reign."
+}, {
+  "catalogKey" : "gemini-1-f5b2a07a-86f",
+  "prompt" : "Who was thrown into a den of lions because he continued to pray to God against a royal decree?",
+  "options" : [ "Shadrach", "Meshach", "Abednego", "Daniel" ],
+  "correctOption" : 3,
+  "difficulty" : 1,
+  "category" : "Daniel",
+  "reference" : "Daniel 6:16",
+  "explanation" : "The king gave the order, and they brought Daniel and threw him into the lions' den."
+}, {
+  "catalogKey" : "gemini-1-f98cdcac-0b4",
+  "prompt" : "In the New Testament, in which town was Jesus born?",
+  "options" : [ "Nazareth", "Jerusalem", "Bethlehem", "Capernaum" ],
+  "correctOption" : 2,
+  "difficulty" : 1,
+  "category" : "Matthew",
+  "reference" : "Matthew 2:1",
+  "explanation" : "Jesus was born in Bethlehem in Judea during the time of King Herod."
+}, {
+  "catalogKey" : "gemini-1-cacca246-d5b",
+  "prompt" : "Who baptized Jesus in the Jordan River?",
+  "options" : [ "John the Baptist", "Peter", "Paul", "James" ],
+  "correctOption" : 0,
+  "difficulty" : 1,
+  "category" : "Matthew",
+  "reference" : "Matthew 3:13",
+  "explanation" : "Jesus came from Galilee to the Jordan to be baptized by John."
+}, {
+  "catalogKey" : "gemini-1-d9b13489-b95",
+  "prompt" : "How many disciples did Jesus choose to be his closest apostles?",
+  "options" : [ "Three", "Seven", "Ten", "Twelve" ],
+  "correctOption" : 3,
+  "difficulty" : 1,
+  "category" : "Matthew",
+  "reference" : "Matthew 10:1",
+  "explanation" : "Jesus called his twelve disciples to him and gave them authority to drive out impure spirits."
+}, {
+  "catalogKey" : "gemini-2-803a8f31-73b",
+  "prompt" : "Who was the mother of King Solomon?",
+  "options" : [ "Abigail", "Bathsheba", "Jezebel", "Sarah" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "Old Testament",
+  "reference" : "2 Samuel 12:24",
+  "explanation" : "Bathsheba bore a son named Solomon, whom the Lord loved."
+}, {
+  "catalogKey" : "gemini-2-5a2929be-2ca",
+  "prompt" : "On which mountain did Moses receive the Ten Commandments?",
+  "options" : [ "Mount Ararat", "Mount Carmel", "Mount Sinai", "Mount Nebo" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "Old Testament",
+  "reference" : "Exodus 31:18",
+  "explanation" : "God gave Moses the two tablets of the testimony on Mount Sinai."
+}, {
+  "catalogKey" : "gemini-2-bdbd8505-4bf",
+  "prompt" : "What was the name of Abraham's firstborn son through Hagar?",
+  "options" : [ "Isaac", "Ishmael", "Jacob", "Esau" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "Old Testament",
+  "reference" : "Genesis 16:15",
+  "explanation" : "Hagar bore Abram a son, and Abram gave the name Ishmael to the son she had borne."
+}, {
+  "catalogKey" : "gemini-2-0f9f3bd8-a15",
+  "prompt" : "In which city was Jesus born according to the Gospels?",
+  "options" : [ "Nazareth", "Jerusalem", "Bethlehem", "Capernaum" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "New Testament",
+  "reference" : "Matthew 2:1",
+  "explanation" : "Jesus was born in Bethlehem in Judea during the time of King Herod."
+}, {
+  "catalogKey" : "gemini-2-e60ac169-0d4",
+  "prompt" : "What is the final book of the New Testament?",
+  "options" : [ "Acts", "Revelation", "Jude", "Hebrews" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "New Testament",
+  "reference" : "Revelation 1:1",
+  "explanation" : "The Revelation of Jesus Christ is the final book in the New Testament canon."
+}, {
+  "catalogKey" : "gemini-2-c260cc95-5ca",
+  "prompt" : "Who was thrown into a den of lions by King Darius?",
+  "options" : [ "Daniel", "Joseph", "Jeremiah", "Ezekiel" ],
+  "correctOption" : 0,
+  "difficulty" : 2,
+  "category" : "Old Testament",
+  "reference" : "Daniel 6:16",
+  "explanation" : "The king gave the order, and they brought Daniel and threw him into the lions' den."
+}, {
+  "catalogKey" : "gemini-2-61b7927d-645",
+  "prompt" : "What sign did God give Noah to promise never to destroy the earth by flood again?",
+  "options" : [ "A burning bush", "A rainbow", "A pillar of fire", "A dove with an olive branch" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "Old Testament",
+  "reference" : "Genesis 9:13",
+  "explanation" : "God set His rainbow in the clouds as the sign of the covenant between Himself and the earth."
+}, {
+  "catalogKey" : "gemini-2-1f60d85a-f51",
+  "prompt" : "Who betrayed Jesus to the chief priests for thirty pieces of silver?",
+  "options" : [ "Peter", "Thomas", "Judas Iscariot", "Pontius Pilate" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "New Testament",
+  "reference" : "Matthew 26:14-15",
+  "explanation" : "Judas Iscariot went to the chief priests and asked what they would give him if he delivered Jesus to them."
+}, {
+  "catalogKey" : "gemini-2-aedfd42a-60b",
+  "prompt" : "Which Old Testament figure was known for having a coat of many colors?",
+  "options" : [ "Joseph", "Benjamin", "Gideon", "Samson" ],
+  "correctOption" : 0,
+  "difficulty" : 2,
+  "category" : "Old Testament",
+  "reference" : "Genesis 37:3",
+  "explanation" : "Israel loved Joseph more than any of his other sons and made an ornate robe for him."
+}, {
+  "catalogKey" : "gemini-2-f21e0d65-11f",
+  "prompt" : "What trade or profession did the Apostle Paul practice to support himself?",
+  "options" : [ "Fishing", "Tentmaking", "Tax collecting", "Shepherding" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "New Testament",
+  "reference" : "Acts 18:3",
+  "explanation" : "Paul stayed and worked with Aquila and Priscilla because they were tentmakers by trade."
+}, {
+  "catalogKey" : "gemini-2-c9fa4379-afc",
+  "prompt" : "Who was swallowed by a great fish after fleeing from the Lord's command?",
+  "options" : [ "Elijah", "Elisha", "Jonah", "Amos" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "Old Testament",
+  "reference" : "Jonah 1:17",
+  "explanation" : "The Lord provided a huge fish to swallow Jonah, and Jonah was in the belly of the fish three days and three nights."
+}, {
+  "catalogKey" : "gemini-2-82de3a75-bda",
+  "prompt" : "How many days and nights did Jesus fast in the wilderness before being tempted?",
+  "options" : [ "7 days", "12 days", "40 days", "100 days" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "New Testament",
+  "reference" : "Matthew 4:2",
+  "explanation" : "After fasting forty days and forty nights, Jesus was hungry."
+}, {
+  "catalogKey" : "gemini-3-df4f5eb3-628",
+  "prompt" : "According to 1 Kings, which officer in Solomon's administration was in charge of the forced labor?",
+  "options" : [ "Adoniram", "Zadok", "Benaiah", "Ahijah" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Historical Books",
+  "reference" : "1 Kings 4:6",
+  "explanation" : "Adoniram the son of Abda was in charge of the forced labor under Solomon."
+}, {
+  "catalogKey" : "gemini-3-90ff1f6e-285",
+  "prompt" : "In the book of Acts, what was the surname of Justus, who was nominated alongside Matthias to replace Judas Iscariot?",
+  "options" : [ "Bar-Jesus", "Barsabbas", "Barnabas", "Bartholomew" ],
+  "correctOption" : 1,
+  "difficulty" : 3,
+  "category" : "New Testament History",
+  "reference" : "Acts 1:23",
+  "explanation" : "Joseph called Barsabbas, who was also surnamed Justus, was nominated along with Matthias."
+}, {
+  "catalogKey" : "gemini-3-7add12f1-ab6",
+  "prompt" : "In Paul's Epistle to the Galatians, how many years does he state passed before he went up again to Jerusalem with Barnabas, taking Titus along?",
+  "options" : [ "Three years", "Seven years", "Fourteen years", "Seventeen years" ],
+  "correctOption" : 2,
+  "difficulty" : 3,
+  "category" : "Pauline Epistles",
+  "reference" : "Galatians 2:1",
+  "explanation" : "Paul states that after fourteen years he went up again to Jerusalem with Barnabas."
+}, {
+  "catalogKey" : "gemini-3-36af2fdf-d3a",
+  "prompt" : "Which specific valley is mentioned in the book of Zechariah where the feet of the Lord will stand on the day of His final gathering against Jerusalem?",
+  "options" : [ "Valley of Elah", "Valley of Siddim", "Valley of Achor", "Valley of Olivet" ],
+  "correctOption" : 3,
+  "difficulty" : 3,
+  "category" : "Prophetic Books",
+  "reference" : "Zechariah 14:4",
+  "explanation" : "The feet of the Lord will stand on the Mount of Olives, which lies before Jerusalem on the east."
+}, {
+  "catalogKey" : "gemini-3-48564689-0b0",
+  "prompt" : "According to the genealogies in 1 Chronicles, who was the mother of Jerahmeel's children?",
+  "options" : [ "Atarah", "Maachah", "Abihail", "Ephah" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Historical Books",
+  "reference" : "1 Chronicles 2:26",
+  "explanation" : "Ahitub's son Jerahmeel had another wife, whose name was Atarah, who was the mother of Onam."
+}, {
+  "catalogKey" : "gemini-3-20fb2a63-20f",
+  "prompt" : "In the Book of Revelation, which specific church is rebuked for holding the teaching of the Nicolaitans?",
+  "options" : [ "Smyrna", "Pergamum", "Sardis", "Philadelphia" ],
+  "correctOption" : 1,
+  "difficulty" : 3,
+  "category" : "General Epistles and Revelation",
+  "reference" : "Revelation 2:15",
+  "explanation" : "The church in Pergamum is specifically stated to have some who hold the teaching of the Nicolaitans."
+}, {
+  "catalogKey" : "gemini-3-cb239422-458",
+  "prompt" : "In the narrative of the rebuilding of the wall in Nehemiah, who is recorded as repairing a section opposite his own house?",
+  "options" : [ "Sanballat", "Tobiah", "Jaddua", "Zadok" ],
+  "correctOption" : 3,
+  "difficulty" : 3,
+  "category" : "Historical Books",
+  "reference" : "Nehemiah 3:29",
+  "explanation" : "Zadok the son of Immer repaired the wall opposite his own house."
+}, {
+  "catalogKey" : "gemini-3-00318ba3-f2e",
+  "prompt" : "In the genealogy of Jesus recorded in the Gospel of Matthew, who is listed as the father of Uzziah?",
+  "options" : [ "Joram", "Ahaziah", "Amaziah", "Joash" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Gospels",
+  "reference" : "Matthew 1:8",
+  "explanation" : "Joram begat Uzziah in the lineage recorded by Matthew."
+}, {
+  "catalogKey" : "gemini-3-0539b977-7e9",
+  "prompt" : "According to the book of Leviticus, what specific bird was required to be used alongside the living bird, cedar wood, scarlet yarn, and hyssop in the ritual for cleansing a healed leper?",
+  "options" : [ "A pigeon", "A turtle-dove", "A sparrow", "A raven" ],
+  "correctOption" : 2,
+  "difficulty" : 3,
+  "category" : "Law",
+  "reference" : "Leviticus 14:4",
+  "explanation" : "The priest shall command for him who is to be cleansed to take two live clean birds, cedar wood, scarlet yarn, and hyssop."
+}, {
+  "catalogKey" : "gemini-3-31252ebd-f2d",
+  "prompt" : "In the book of Amos, from which town did the prophet Amos originate before he was called to prophesy to Israel?",
+  "options" : [ "Tekoa", "Anathoth", "Ramah", "Bethlehem" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Prophetic Books",
+  "reference" : "Amos 1:1",
+  "explanation" : "Amos was among the herdmen of Tekoa, which he saw concerning Israel in the days of Uzziah."
+}, {
+  "catalogKey" : "gemini-3-31fc5fb0-2f0",
+  "prompt" : "In Paul's Epistle to the Romans, who does he greet as his kinsman and fellow prisoner, noting that they are well known to the apostles?",
+  "options" : [ "Epenetus", "Andronicus", "Ampliatus", "Urbanus" ],
+  "correctOption" : 1,
+  "difficulty" : 3,
+  "category" : "Pauline Epistles",
+  "reference" : "Romans 16:7",
+  "explanation" : "Paul greets Andronicus and Junia, his kinsmen and his fellow prisoners, who are notable among the apostles."
+}, {
+  "catalogKey" : "gemini-3-f2a035f0-06b",
+  "prompt" : "According to the Book of Joshua, which specific king of Jerusalem formed a coalition with four other Amorite kings to attack the city of Gibeon?",
+  "options" : [ "Adoni-Zedek", "Hoham", "Jarmuth", "Piram" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Historical Books",
+  "reference" : "Joshua 10:3",
+  "explanation" : "Adoni-Zedek king of Jerusalem sent word to four other kings to come up and help him attack Gibeon."
+}, {
+  "catalogKey" : "gemini-4-47f43dfd-bed",
+  "prompt" : "In Paul's Epistle to the Galatians, how many years passed before he went up again to Jerusalem with Barnabas, taking Titus along also?",
+  "options" : [ "Three years", "Fourteen years", "Seven years", "Ten years" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Galatians 2:1",
+  "explanation" : "Paul explicitly states in Galatians 2:1 that fourteen years passed before he went up again to Jerusalem."
+}, {
+  "catalogKey" : "gemini-4-e681e8af-57e",
+  "prompt" : "Which specific gate of Jerusalem was repaired by Joiada the son of Paseah and Meshullam the son of Besodeiah during the rebuilding under Nehemiah?",
+  "options" : [ "The Sheep Gate", "The Old Gate", "The Valley Gate", "The Dung Gate" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "Nehemiah 3:6",
+  "explanation" : "Nehemiah 3:6 records that Joiada and Meshullam repaired the Old Gate."
+}, {
+  "catalogKey" : "gemini-4-708e8f31-739",
+  "prompt" : "What was the name of the valley where the armies of Judah and Jerusalem found the Moabites and Ammonites destroyed after praising the Lord in song?",
+  "options" : [ "The Valley of Elah", "The Valley of Beracah", "The Valley of Achor", "The Valley of Siddim" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "2 Chronicles 20:26",
+  "explanation" : "The people assembled in the Valley of Beracah and blessed the Lord, naming the place accordingly."
+}, {
+  "catalogKey" : "gemini-4-d8a541e9-29d",
+  "prompt" : "In the genealogical records of 1 Chronicles, who is listed as the father of Shallum and the grandfather of Hilkiah?",
+  "options" : [ "Zadok", "Meshullam", "Azariah", "Meraioth" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "1 Chronicles 9:11",
+  "explanation" : "First Chronicles 9:11 lists Meshullam as the father of Shallum and grandfather of Hilkiah."
+}, {
+  "catalogKey" : "gemini-4-49e66c0e-1fc",
+  "prompt" : "During Paul's shipwreck journey in Acts 27, off the coast of which island did the sailors measure the depth of the water to be twenty fathoms?",
+  "options" : [ "Crete", "Melita", "Cauda", "Cyprus" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Acts 27:27-28",
+  "explanation" : "The sailors took soundings near the island of Melita and found the water to be twenty fathoms deep."
+}, {
+  "catalogKey" : "gemini-4-edf3a425-026",
+  "prompt" : "In the Book of Revelation, which specific church is rebuked for holding to the teaching of Balaam?",
+  "options" : [ "Ephesus", "Pergamum", "Thyatira", "Sardis" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Revelation 2:14",
+  "explanation" : "The church in Pergamum is specifically rebuked for having some who hold the teaching of Balaam."
+}, {
+  "catalogKey" : "gemini-4-80d4f219-116",
+  "prompt" : "Which Levite clan was stationed on the west side of the tabernacle during the wilderness encampments under the leadership of Eliasaph the son of Lael?",
+  "options" : [ "Gershonites", "Merarites", "Kohathites", "Izharites" ],
+  "correctOption" : 0,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "Numbers 3:23",
+  "explanation" : "Numbers 3:23 states that the families of the Gershonites were to pitch their tents behind the tabernacle on the west."
+}, {
+  "catalogKey" : "gemini-4-07125abb-7ec",
+  "prompt" : "What was the name of the king of Hamath who sent his son Joram to congratulate King David after David defeated Hadadezer?",
+  "options" : [ "Toi", "Hadadezer", "Rezon", "Ben-Hadad" ],
+  "correctOption" : 0,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "2 Samuel 8:9-10",
+  "explanation" : "Toi, king of Hamath, sent his son Joram to greet and bless King David."
+}, {
+  "catalogKey" : "gemini-4-b25c061c-2e6",
+  "prompt" : "In the genealogy of Jesus recorded in the Gospel of Luke, who is listed as the father of Mattathias?",
+  "options" : [ "Amos", "Nahum", "Esli", "Naggai" ],
+  "correctOption" : 0,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Luke 3:25",
+  "explanation" : "Luke's genealogy lists Amos as the father of Mattathias."
+}, {
+  "catalogKey" : "gemini-4-24bcc13b-6a7",
+  "prompt" : "Which prophet declared that the city of Tyre would be forgotten for seventy years, the span of the life of one king?",
+  "options" : [ "Isaiah", "Jeremiah", "Ezekiel", "Amos" ],
+  "correctOption" : 0,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "Isaiah 23:15",
+  "explanation" : "Isaiah 23:15 prophesies that Tyre will be forgotten for seventy years, according to the days of one king."
+}, {
+  "catalogKey" : "gemini-4-50247716-e8c",
+  "prompt" : "In Paul's first letter to the Corinthians, who does he mention as having baptized Crispus and Gaius?",
+  "options" : [ "Apollos", "Paul himself", "Silas", "Timothy" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "1 Corinthians 1:14",
+  "explanation" : "Paul thanks God that he baptized none of them except Crispus and Gaius."
+}, {
+  "catalogKey" : "gemini-4-28783899-a2a",
+  "prompt" : "According to the Book of Joshua, what was the name of the king of Jerusalem who formed a coalition of five Amorite kings against Gibeon?",
+  "options" : [ "Adoni-Zedek", "Hoham", "Piram", "Japhia" ],
+  "correctOption" : 0,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "Joshua 10:1",
+  "explanation" : "Joshua 10:1 identifies Adoni-Zedek as the king of Jerusalem who led the coalition against Gibeon."
+}, {
+  "catalogKey" : "gemini-5-17abe664-950",
+  "prompt" : "According to 1 Kings 7:46, where did King Solomon cast the bronze articles for the temple?",
+  "options" : [ "In the Valley of salt", "In the plain of Jordan between Succoth and Zarethan", "In the wilderness of Zin near Kadesh", "In the plain of Megiddo near Jezreel" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "1 Kings 7:46",
+  "explanation" : "King Solomon had the bronze vessels cast in the clay ground in the plain of Jordan between Succoth and Zarethan."
+}, {
+  "catalogKey" : "gemini-5-5d953eea-055",
+  "prompt" : "In Paul's genealogy of Christ in Romans 16, who is mentioned as the mother of Rufus?",
+  "options" : [ "Lois", "Eunice", "Persis", "A woman who had been a mother to Paul as well" ],
+  "correctOption" : 3,
+  "difficulty" : 5,
+  "category" : "New Testament Epistles",
+  "reference" : "Romans 16:13",
+  "explanation" : "Paul greets Rufus, chosen in the Lord, and his mother, who had been a mother to him as well."
+}, {
+  "catalogKey" : "gemini-5-61fed683-f02",
+  "prompt" : "Which prophet rebuked King Amaziah of Judah for hiring mercenary troops from the northern kingdom of Israel?",
+  "options" : [ "A man of God from Judah", "Micah the son of Imlah", "Oded the prophet", "Hanani the seer" ],
+  "correctOption" : 0,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "2 Chronicles 25:7",
+  "explanation" : "A man of God came to King Amaziah and warned him not to let the army of Israel go with him because the Lord was not with Israel."
+}, {
+  "catalogKey" : "gemini-5-cf77c654-af8",
+  "prompt" : "In the book of Numbers, which specific clan of the Levites was assigned the duty of caring for the sanctuary's furnishings, including the ark and the table?",
+  "options" : [ "Gershonites", "Merarites", "Kohathites", "Izharites" ],
+  "correctOption" : 2,
+  "difficulty" : 5,
+  "category" : "Pentateuch",
+  "reference" : "Numbers 4:15",
+  "explanation" : "The Kohathites were responsible for carrying the most holy things of the sanctuary after Aaron and his sons had covered them."
+}, {
+  "catalogKey" : "gemini-5-5acb22aa-6d4",
+  "prompt" : "According to the geographical boundaries in Joshua 15, which city marked the southernmost boundary of the tribe of Judah toward the border of Edom?",
+  "options" : [ "Beersheba", "Kabzeel", "Hazar-shual", "Kadesh-barnea" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "Joshua 15:21",
+  "explanation" : "Kabzeel was listed as the southernmost city of the tribe of Judah toward the border of Edom in the Negev."
+}, {
+  "catalogKey" : "gemini-5-9b466eb5-fd3",
+  "prompt" : "In the Book of Revelation, what specific title is given to the angel of the abyss in the Hebrew tongue?",
+  "options" : [ "Abaddon", "Satan", "Beelzebub", "Belial" ],
+  "correctOption" : 0,
+  "difficulty" : 5,
+  "category" : "New Testament Prophecy",
+  "reference" : "Revelation 9:11",
+  "explanation" : "The angel of the abyss has the name Abaddon in Hebrew and Apollyon in Greek."
+}, {
+  "catalogKey" : "gemini-5-86e93822-903",
+  "prompt" : "In the lists of David's mighty men in 2 Samuel 23, who was the chief of the three mighty men who famously broke through the Philistine camp to draw water from the well of Bethlehem?",
+  "options" : [ "Abishai", "Benaiah", "Josheb-basshebeth", "Eleazar" ],
+  "correctOption" : 2,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "2 Samuel 23:8",
+  "explanation" : "Josheb-basshebeth a Tahchemonite was chief of the captains, also called Adino the Eznite."
+}, {
+  "catalogKey" : "gemini-5-cbf40a68-c91",
+  "prompt" : "Which son of King Saul was killed alongside his father on Mount Gilboa according to 1 Samuel 31?",
+  "options" : [ "Ish-bosheth", "Jonathan", "Armoni", "Mephibosheth" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "1 Samuel 31:2",
+  "explanation" : "The Philistines overtook Saul and his sons, and killed Jonathan, Abinadab, and Malchishua, the sons of Saul."
+}, {
+  "catalogKey" : "gemini-5-0f1dbc24-db4",
+  "prompt" : "In Acts 27, near what island did the ship carrying Paul run aground during the violent storm known as the northeaster?",
+  "options" : [ "Crete", "Melita", "Cauda", "Cyprus" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "New Testament History",
+  "reference" : "Acts 28:1",
+  "explanation" : "After they had escaped safely, they learned that the island was called Melita."
+}, {
+  "catalogKey" : "gemini-5-b0a4001f-fea",
+  "prompt" : "According to Jeremiah 52, which Babylonian official held the title of captain of the guard and burned the house of the Lord in Jerusalem?",
+  "options" : [ "Nebuchadnezzar", "Nebuzaradan", "Nergal-sharezer", "Samgar-nebo" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "Jeremiah 52:12",
+  "explanation" : "Nebuzaradan, the captain of the guard, who served the king of Babylon, came to Jerusalem and burned the house of the Lord."
+}, {
+  "catalogKey" : "gemini-5-7ee01af1-020",
+  "prompt" : "In Paul's Epistle to the Galatians, how many years does he state passed before he went up again to Jerusalem with Barnabas, taking Titus along?",
+  "options" : [ "Three years", "Fourteen years", "Seven years", "Ten years" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "New Testament Epistles",
+  "reference" : "Galatians 2:1",
+  "explanation" : "Then after fourteen years Paul went up again to Jerusalem with Barnabas, and also took Titus with him."
+}, {
+  "catalogKey" : "gemini-5-5063dbb1-e07",
+  "prompt" : "In the book of Ezekiel, what was the name of the river by which the prophet received his inaugural vision while among the captives?",
+  "options" : [ "Ulai", "Chebar", "Hiddekel", "Ahava" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament Prophecy",
+  "reference" : "Ezekiel 1:3",
+  "explanation" : "The word of the Lord came expressly unto Ezekiel the priest, the son of Buzi, in the land of the Chaldeans by the river Chebar."
+}, {
+  "catalogKey" : "gemini-6-43f48f15-03b",
+  "prompt" : "According to 1 Kings 6:38, in which month (the eighth month) was the building of Solomon's temple finished?",
+  "options" : [ "Bul", "Ethanim", "Abib", "Ziv" ],
+  "correctOption" : 0,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "1 Kings 6:38",
+  "explanation" : "First Kings 6:38 states that the house was finished in the month of Bul, which is the eighth month, in all its details."
+}, {
+  "catalogKey" : "gemini-6-db505d40-a53",
+  "prompt" : "In the genealogy of 1 Chronicles 2:18, who was the mother of Jerioth, whom Caleb son of Hezron had by his wife Azubah?",
+  "options" : [ "Jerioth was Azubah's daughter or sister", "Azubah herself was the mother", "Ephrath", "Jerahmeel's wife" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "1 Chronicles 2:18",
+  "explanation" : "First Chronicles 2:18 explicitly lists Azubah as the mother of Jerioth by Caleb."
+}, {
+  "catalogKey" : "gemini-6-2fce0949-d1e",
+  "prompt" : "What was the specific name of the valley where Joshua stoned Achan and all Israel executed judgment upon him?",
+  "options" : [ "Valley of Elah", "Valley of Achor", "Valley of Beracah", "Valley of Jezreel" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "Joshua 7:26",
+  "explanation" : "Joshua 7:26 records that Achan was stoned and burned in the Valley of Achor."
+}, {
+  "catalogKey" : "gemini-6-6670ec92-9d3",
+  "prompt" : "According to Numbers 34:4, what was the southern boundary landmark for the Promised Land after passing through the Ascent of Akrabbim?",
+  "options" : [ "Kadesh Barnea", "The Brook of Egypt", "Zin", "The Dead Sea" ],
+  "correctOption" : 2,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "Numbers 34:4",
+  "explanation" : "Numbers 34:4 specifies that the southern boundary passed on to Zin and went south of Kadesh Barnea."
+}, {
+  "catalogKey" : "gemini-6-0d24b9a9-212",
+  "prompt" : "In Paul's list of traveling companions in Acts 20:4, who was specifically identified as coming from Derbe?",
+  "options" : [ "Sopater", "Gaius", "Aristarchus", "Secundus" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "New Testament",
+  "reference" : "Acts 20:4",
+  "explanation" : "Acts 20:4 lists Gaius of Derbe alongside Timothy and others accompanying Paul."
+}, {
+  "catalogKey" : "gemini-6-a59e7492-0cb",
+  "prompt" : "In Revelation 2:13, in which city was Antipas, Christ's faithful martyr, killed where Satan dwells?",
+  "options" : [ "Smyrna", "Pergamum", "Thatira", "Philadelphia" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "New Testament",
+  "reference" : "Revelation 2:13",
+  "explanation" : "Revelation 2:13 states that Antipas was killed in Pergamum, where Satan's throne is located."
+}, {
+  "catalogKey" : "gemini-6-bb501528-e47",
+  "prompt" : "According to 2 Samuel 23:8, what was the proper proper name of the chief of the three mighty men whom David had, also known as Josheb-Basshebeth?",
+  "options" : [ "Abishai", "Benaiah", "Ishbosheth", "Tahchemonite" ],
+  "correctOption" : 3,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "2 Samuel 23:8",
+  "explanation" : "Second Samuel 23:8 identifies the chief of the captains as Josheb-Basshebeth the Tachmonite."
+}, {
+  "catalogKey" : "gemini-6-d2a0c00b-e8b",
+  "prompt" : "In Ezekiel 8:14, at which gate of the Lord's house did Ezekiel see women sitting and weeping for Tammuz?",
+  "options" : [ "The East Gate", "The North Gate", "The Inner Gate", "The Beautiful Gate" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "Ezekiel 8:14",
+  "explanation" : "Ezekiel 8:14 records that the prophet was brought to the door of the north gate of the Lord's house, where women were weeping for Tammuz."
+}, {
+  "catalogKey" : "gemini-6-0613892d-008",
+  "prompt" : "According to Jeremiah 52:24, what was the title and name of the second priest captured alongside Seraiah the chief priest by Nebuzaradan?",
+  "options" : [ "Zephaniah the son of Maaseiah", "Pashhur the son of Immer", "Urijah the priest", "Jehoshaphat the son of Ahilud" ],
+  "correctOption" : 0,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "Jeremiah 52:24",
+  "explanation" : "Jeremiah 52:24 names Zephaniah the second priest as one of the captives taken by the captain of the guard."
+}, {
+  "catalogKey" : "gemini-6-ad1dd61b-7fd",
+  "prompt" : "In the genealogy of Matthew 1, who is recorded as the father of Matthan, who was the grandfather of Joseph the husband of Mary?",
+  "options" : [ "Eleazar", "Eliud", "Achim", "Azor" ],
+  "correctOption" : 0,
+  "difficulty" : 6,
+  "category" : "New Testament",
+  "reference" : "Matthew 1:15",
+  "explanation" : "Matthew 1:15 states that Eleazar was the father of Matthan, and Matthan the father of Jacob."
+}, {
+  "catalogKey" : "gemini-6-51f478bc-986",
+  "prompt" : "According to 1 Kings 16:24, how much did Omri, king of Israel, pay to Shemer for the hill of Samaria?",
+  "options" : [ "Two talents of silver", "Six hundred shekels of gold", "Two talents of gold", "Fifty shekels of silver" ],
+  "correctOption" : 0,
+  "difficulty" : 6,
+  "category" : "Old Testament",
+  "reference" : "1 Kings 16:24",
+  "explanation" : "First Kings 16:24 notes that Omri bought the hill of Samaria from Shemer for two talents of silver."
+}, {
+  "catalogKey" : "gemini-6-8bf2dd0f-c63",
+  "prompt" : "In Acts 27:16, under the shelter of which small island did Luke and Paul's ship manage, with difficulty, to secure the ship's boat?",
+  "options" : [ "Melita", "Cauda", "Crete", "Cyprus" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "New Testament",
+  "reference" : "Acts 27:16",
+  "explanation" : "Acts 27:16 mentions that running under the shelter of an island called Cauda, they were able to secure the ship's boat."
+}, {
+  "catalogKey" : "gemini-1-5b42ca2b-a24",
+  "prompt" : "According to Genesis, how many days did God take to create the heavens and the earth?",
+  "options" : [ "Three days", "Six days", "Seven days", "Forty days" ],
+  "correctOption" : 1,
+  "difficulty" : 1,
+  "category" : "Creation",
+  "reference" : "Genesis 1:31",
+  "explanation" : "Genesis states that God completed His work of creation in six days and rested on the seventh."
+}, {
+  "catalogKey" : "gemini-1-3fc94c5b-e77",
+  "prompt" : "Who was the mother of Isaac according to the book of Genesis?",
+  "options" : [ "Sarah", "Rebekah", "Rachel", "Leah" ],
+  "correctOption" : 0,
+  "difficulty" : 1,
+  "category" : "Patriarchs",
+  "reference" : "Genesis 21:3",
+  "explanation" : "Abraham named his son born to him by Sarah, Isaac."
+}, {
+  "catalogKey" : "gemini-1-6af3152b-05d",
+  "prompt" : "In which river was Jesus baptized by John the Baptist?",
+  "options" : [ "Nile River", "Euphrates River", "Jordan River", "Tigris River" ],
+  "correctOption" : 2,
+  "difficulty" : 1,
+  "category" : "Life of Christ",
+  "reference" : "Matthew 3:13",
+  "explanation" : "Jesus came from Galilee to the Jordan to be baptized by John."
+}, {
+  "catalogKey" : "gemini-1-89cf0e09-d96",
+  "prompt" : "What was the name of the giant whom David defeated with a sling and a stone?",
+  "options" : [ "Goliath", "Og", "Anak", "Geth" ],
+  "correctOption" : 0,
+  "difficulty" : 1,
+  "category" : "Historical Books",
+  "reference" : "1 Samuel 17:50",
+  "explanation" : "David triumphed over the Philistine giant Goliath with a sling and a stone."
+}, {
+  "catalogKey" : "gemini-1-98456353-036",
+  "prompt" : "Who was thrown into a den of lions because he continued to pray to God against the king's decree?",
+  "options" : [ "Moses", "Daniel", "Joseph", "Elijah" ],
+  "correctOption" : 1,
+  "difficulty" : 1,
+  "category" : "Prophets",
+  "reference" : "Daniel 6:16",
+  "explanation" : "King Darius gave the command, and Daniel was thrown into the den of lions."
+}, {
+  "catalogKey" : "gemini-1-f053e2d1-22c",
+  "prompt" : "Which city's walls fell down after the people of Israel marched around them for seven days?",
+  "options" : [ "Jerusalem", "Babylon", "Jericho", "Nineveh" ],
+  "correctOption" : 2,
+  "difficulty" : 1,
+  "category" : "Historical Books",
+  "reference" : "Joshua 6:20",
+  "explanation" : "When the trumpets sounded and the people shouted, the wall of Jericho collapsed."
+}, {
+  "catalogKey" : "gemini-1-ee291ac4-891",
+  "prompt" : "What is the name of the first book in the New Testament?",
+  "options" : [ "Mark", "John", "Genesis", "Matthew" ],
+  "correctOption" : 3,
+  "difficulty" : 1,
+  "category" : "New Testament",
+  "reference" : "Matthew 1:1",
+  "explanation" : "The Gospel according to Matthew is the first book listed in the New Testament canon."
+}, {
+  "catalogKey" : "gemini-1-b31d3b21-48e",
+  "prompt" : "Who built the great ark to save his family and animals from the flood?",
+  "options" : [ "Noah", "Abraham", "Isaac", "Jacob" ],
+  "correctOption" : 0,
+  "difficulty" : 1,
+  "category" : "Early Genesis",
+  "reference" : "Genesis 6:14",
+  "explanation" : "God instructed Noah to build an ark of gopher wood."
+}, {
+  "catalogKey" : "gemini-1-911a51bd-a8f",
+  "prompt" : "Which disciple denied knowing Jesus three times before the rooster crowed?",
+  "options" : [ "John", "Peter", "Judas", "Thomas" ],
+  "correctOption" : 1,
+  "difficulty" : 1,
+  "category" : "Life of Christ",
+  "reference" : "Luke 22:61",
+  "explanation" : "Peter remembered the word of the Lord how He had said to him, Before the rooster crows, you will deny Me three times."
+}, {
+  "catalogKey" : "gemini-1-785293a3-8fa",
+  "prompt" : "Who was swallowed by a great fish after fleeing from the Lord's command to go to Nineveh?",
+  "options" : [ "Elisha", "Jonah", "Amos", "Micah" ],
+  "correctOption" : 1,
+  "difficulty" : 1,
+  "category" : "Prophets",
+  "reference" : "Jonah 1:17",
+  "explanation" : "The Lord provided a huge fish to swallow Jonah, and he was inside the fish three days and three nights."
+}, {
+  "catalogKey" : "gemini-1-cf46f9da-430",
+  "prompt" : "On which mountain did Moses receive the Ten Commandments from God?",
+  "options" : [ "Mount Ararat", "Mount Carmel", "Mount Sinai", "Mount Nebo" ],
+  "correctOption" : 2,
+  "difficulty" : 1,
+  "category" : "Exodus",
+  "reference" : "Exodus 19:20",
+  "explanation" : "The Lord descended upon Mount Sinai, on the top of the mountain, and called Moses up."
+}, {
+  "catalogKey" : "gemini-1-0c8656b5-6df",
+  "prompt" : "In the parable of the Good Samaritan, who was the first person to pass by the injured man without helping?",
+  "options" : [ "A priest", "A Levite", "A merchant", "A Roman soldier" ],
+  "correctOption" : 0,
+  "difficulty" : 1,
+  "category" : "Parables",
+  "reference" : "Luke 10:31",
+  "explanation" : "A priest happened to be going down the same road, and when he saw the man, he passed by on the other side."
+}, {
+  "catalogKey" : "gemini-2-aae17ce1-212",
+  "prompt" : "Who was the mother of King Solomon?",
+  "options" : [ "Abigail", "Bathsheba", "Jezebel", "Rahab" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "Kings and Chronicles",
+  "reference" : "2 Samuel 12:24",
+  "explanation" : "Bathsheba bore a son to David, and he called his name Solomon."
+}, {
+  "catalogKey" : "gemini-2-2827a2d1-c24",
+  "prompt" : "On which mountain did Elijah challenge the prophets of Baal?",
+  "options" : [ "Mount Sinai", "Mount Ararat", "Mount Carmel", "Mount Nebo" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "Prophets",
+  "reference" : "1 Kings 18:20",
+  "explanation" : "Ahab gathered all the people of Israel together and assembled the prophets at Mount Carmel."
+}, {
+  "catalogKey" : "gemini-2-f1f3363c-4c3",
+  "prompt" : "What was the name of Moses's brother?",
+  "options" : [ "Aaron", "Joshua", "Caleb", "Hur" ],
+  "correctOption" : 0,
+  "difficulty" : 2,
+  "category" : "Pentateuch",
+  "reference" : "Exodus 6:20",
+  "explanation" : "Amram married his father's sister Jochebed, and she bore him Aaron and Moses."
+}, {
+  "catalogKey" : "gemini-2-83f674aa-22d",
+  "prompt" : "Who was swallowed by a great fish after fleeing from the Lord's command?",
+  "options" : [ "Daniel", "Jonah", "Amos", "Hosea" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "Prophets",
+  "reference" : "Jonah 1:17",
+  "explanation" : "Now the Lord provided a huge fish to swallow Jonah, and Jonah was in the belly of the fish three days and three nights."
+}, {
+  "catalogKey" : "gemini-2-94d724dd-dd2",
+  "prompt" : "Which city's walls fell down after the Israelites marched around them for seven days?",
+  "options" : [ "Ai", "Jericho", "Babylon", "Nineveh" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "History",
+  "reference" : "Joshua 6:20",
+  "explanation" : "When the trumpets sounded, the people shouted, and at the sound of the trumpets, the walls collapsed."
+}, {
+  "catalogKey" : "gemini-2-d0d72824-1f9",
+  "prompt" : "In the parable of the Good Samaritan, who was the first person to pass by the injured man?",
+  "options" : [ "A Levite", "A priest", "A merchant", "A Roman soldier" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "New Testament Parables",
+  "reference" : "Luke 10:31",
+  "explanation" : "A priest happened to be going down the same road, and when he saw the man, he passed by on the other side."
+}, {
+  "catalogKey" : "gemini-2-21a96409-8f2",
+  "prompt" : "Who interpreted Pharaoh's dreams concerning seven years of plenty and seven years of famine?",
+  "options" : [ "Joseph", "Daniel", "Moses", "Abraham" ],
+  "correctOption" : 0,
+  "difficulty" : 2,
+  "category" : "Genesis",
+  "reference" : "Genesis 41:25",
+  "explanation" : "Then Joseph said to Pharaoh, 'The dreams of Pharaoh are one and the same; God has revealed to Pharaoh what he is about to do.'"
+}, {
+  "catalogKey" : "gemini-2-0d7db26e-11e",
+  "prompt" : "What trade or profession did the Apostle Paul practice to support himself?",
+  "options" : [ "Fisherman", "Tentmaker", "Tax collector", "Carpenter" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "New Testament History",
+  "reference" : "Acts 18:3",
+  "explanation" : "Because he was a tentmaker as they were, he stayed and worked with them."
+}, {
+  "catalogKey" : "gemini-2-87577cfd-060",
+  "prompt" : "Who anointed David as king of Israel while he was still a youth?",
+  "options" : [ "Eli", "Samuel", "Nathan", "Ahijah" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "Kings and Chronicles",
+  "reference" : "1 Samuel 16:13",
+  "explanation" : "So Samuel took the horn of oil and anointed him in the presence of his brothers, and from that day on the Spirit of the Lord came powerfully upon David."
+}, {
+  "catalogKey" : "gemini-2-1237b7ac-1b5",
+  "prompt" : "Which apostle denied Jesus three times before the rooster crowed?",
+  "options" : [ "John", "James", "Peter", "Andrew" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "Gospels",
+  "reference" : "Mark 14:72",
+  "explanation" : "Immediately the rooster crowed the second time, and Peter remembered the word Jesus had spoken to him."
+}, {
+  "catalogKey" : "gemini-2-fffd75be-b07",
+  "prompt" : "What was the name of Abraham's firstborn son, born through Hagar?",
+  "options" : [ "Isaac", "Ishmael", "Midian", "Zimran" ],
+  "correctOption" : 1,
+  "difficulty" : 2,
+  "category" : "Genesis",
+  "reference" : "Genesis 16:15",
+  "explanation" : "So Hagar bore Abram a son, and Abram gave the name Ishmael to the son she had borne."
+}, {
+  "catalogKey" : "gemini-2-8a17a371-692",
+  "prompt" : "On which island was the Apostle John when he received the revelation recorded in the Book of Revelation?",
+  "options" : [ "Malta", "Crete", "Patmos", "Cyprus" ],
+  "correctOption" : 2,
+  "difficulty" : 2,
+  "category" : "Revelation",
+  "reference" : "Revelation 1:9",
+  "explanation" : "I, John, your brother and companion in the suffering and kingdom and patient endurance that are ours in Jesus, was on the island of Patmos because of the word of God and the testimony of Jesus."
+}, {
+  "catalogKey" : "gemini-3-2a4b1bd0-f0c",
+  "prompt" : "According to 1 Kings 6:38, in which month was the temple of Solomon completed?",
+  "options" : [ "Bul", "Ethanim", "Ziv", "Abib" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Old Testament History",
+  "reference" : "1 Kings 6:38",
+  "explanation" : "The temple was finished in the month of Bul, which is the eighth month, in the eleventh year of Solomon's reign."
+}, {
+  "catalogKey" : "gemini-3-13fdc343-8a1",
+  "prompt" : "In the book of Nehemiah, who was the governor of Judah alongside Nehemiah, as mentioned in Nehemiah 7:65?",
+  "options" : [ "Sanballat", "Tirshatha", "Tobiah", "Geshem" ],
+  "correctOption" : 1,
+  "difficulty" : 3,
+  "category" : "Old Testament History",
+  "reference" : "Nehemiah 7:65",
+  "explanation" : "The Tirshatha told them that they should not eat of the most holy things till there stood up a priest with Urim and Thummim."
+}, {
+  "catalogKey" : "gemini-3-fcdec1e1-700",
+  "prompt" : "According to Exodus 28:15-20, what is the third stone in the third row of the high priest's breastplate?",
+  "options" : [ "Agate", "Amethyst", "Beryl", "Jasper" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Pentateuch",
+  "reference" : "Exodus 28:19",
+  "explanation" : "The third row of the breastplate contains a ligure, an agate, and an amethyst."
+}, {
+  "catalogKey" : "gemini-3-8ddd22e7-2ff",
+  "prompt" : "According to Judges 1:7, how many kings had their thumbs and great toes cut off and gathered food under Adoni-Bezek's table?",
+  "options" : [ "Seventy", "Forty", "Seventeen", "Twelve" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Old Testament History",
+  "reference" : "Judges 1:7",
+  "explanation" : "Adoni-Bezek stated that three-score and ten kings with their thumbs and great toes cut off gathered their meat under his table."
+}, {
+  "catalogKey" : "gemini-3-4eb742d5-aec",
+  "prompt" : "In 2 Samuel 23, who was the chief of the captains among David's mighty men, also known as Josheb-Basshebeth the Tachmonite?",
+  "options" : [ "Abishai", "Benaiah", "Adino the Eznite", "Asahel" ],
+  "correctOption" : 2,
+  "difficulty" : 3,
+  "category" : "Old Testament History",
+  "reference" : "2 Samuel 23:8",
+  "explanation" : "The Tachmonite that sat in the seat, chief among the captains, was Adino the Eznite who lifted up his spear against eight hundred."
+}, {
+  "catalogKey" : "gemini-3-0b17bf32-622",
+  "prompt" : "According to 1 Chronicles 24:7, which of the twenty-four courses of the sons of Aaron received the first lot?",
+  "options" : [ "Jedaiah", "Jeharib", "Harim", "Seorim" ],
+  "correctOption" : 1,
+  "difficulty" : 3,
+  "category" : "Old Testament History",
+  "reference" : "1 Chronicles 24:7",
+  "explanation" : "The first lot came forth to Jehoiarib, the second to Jedaiah."
+}, {
+  "catalogKey" : "gemini-3-57088b1b-fc8",
+  "prompt" : "In the genealogical lists of 1 Chronicles 2:3, who were the three sons of Judah by Bathshua the Canaanitess?",
+  "options" : [ "Perez, Zerah, and Shelah", "Er, Onan, and Shelah", "Amnon, Daniel, and Absalom", "Bela, Becher, and Jediael" ],
+  "correctOption" : 1,
+  "difficulty" : 3,
+  "category" : "Old Testament History",
+  "reference" : "1 Chronicles 2:3",
+  "explanation" : "The sons of Judah were Er, and Onan, and Shelah; which three were born unto him of the daughter of Shua the Canaanitess."
+}, {
+  "catalogKey" : "gemini-3-2e2b2090-4bd",
+  "prompt" : "According to Ezekiel 1:10, what were the four faces of each of the four living creatures?",
+  "options" : [ "Lion, ox, man, and eagle", "Lion, bear, leopard, and dragon", "Man, lion, bear, and eagle", "Ox, eagle, calf, and man" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "Old Testament Prophecy",
+  "reference" : "Ezekiel 1:10",
+  "explanation" : "As for the likeness of their faces, they four had the face of a man, and the face of a lion, on the right side: and they four had the face of an ox on the left side; they four also had the face of an eagle."
+}, {
+  "catalogKey" : "gemini-3-4ec49d9d-bfa",
+  "prompt" : "In Acts 27:16, as Paul's ship sailed under a certain small island called Clauda, what did the sailors have much work to do?",
+  "options" : [ "Repair the mast", "Pump out the water", "Secure the boat", "Lower the anchor" ],
+  "correctOption" : 2,
+  "difficulty" : 3,
+  "category" : "New Testament History",
+  "reference" : "Acts 27:16",
+  "explanation" : "Running under a certain island which is called Clauda, they had much work to come by the boat."
+}, {
+  "catalogKey" : "gemini-3-1feb525c-127",
+  "prompt" : "According to Revelation 2:13, in which city did Satan's seat dwell, where Antipas was slain?",
+  "options" : [ "Smyrna", "Pergamos", "Thyatira", "Philadelphia" ],
+  "correctOption" : 1,
+  "difficulty" : 3,
+  "category" : "New Testament Prophecy",
+  "reference" : "Revelation 2:13",
+  "explanation" : "Jesus commends the church in Pergamos for holding fast His name where Satan dwells and where Antipas was a faithful martyr."
+}, {
+  "catalogKey" : "gemini-3-ee1f9254-0f7",
+  "prompt" : "In Colossians 4:14, who is mentioned alongside Luke as sending greetings to the church?",
+  "options" : [ "Demas", "Aristarchus", "Epaphras", "Mark" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "New Testament Epistles",
+  "reference" : "Colossians 4:14",
+  "explanation" : "Luke, the beloved physician, and Demas, greet you."
+}, {
+  "catalogKey" : "gemini-3-097f28cb-826",
+  "prompt" : "According to Hebrews 11:37, how were some of the faithful old testament figures sawn, in addition to being stoned and tempted?",
+  "options" : [ "Asunder", "In twain", "Apart", "By pieces" ],
+  "correctOption" : 0,
+  "difficulty" : 3,
+  "category" : "New Testament Epistles",
+  "reference" : "Hebrews 11:37",
+  "explanation" : "They were stoned, they were sawn asunder, were tempted, were slain with the sword."
+}, {
+  "catalogKey" : "gemini-4-6b0ae2a3-3b4",
+  "prompt" : "In the book of Ezekiel, which specific gate of the inner court facing the east was ordered to be shut for six working days and opened on the Sabbath and the day of the new moon?",
+  "options" : [ "The gate facing the north", "The upper gate", "The gate that looks toward the east", "The southern gate" ],
+  "correctOption" : 2,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "Ezekiel 46:1",
+  "explanation" : "Ezekiel 46:1 specifies that the gate of the inner court facing the east shall be shut the six working days but opened on the Sabbath and the day of the new moon."
+}, {
+  "catalogKey" : "gemini-4-c1520cb9-640",
+  "prompt" : "According to Paul's epistle to the Galatians, how long after his conversion did he first go up to Jerusalem, where he conferred with Peter and stayed with him for fifteen days?",
+  "options" : [ "Three years", "Fourteen years", "Immediately", "One year" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Galatians 2:1",
+  "explanation" : "Galatians 2:1 states that after fourteen years Paul went up again to Jerusalem with Barnabas, taking Titus along also."
+}, {
+  "catalogKey" : "gemini-4-496208a4-7f7",
+  "prompt" : "During the reign of King Josiah, which high priest found the Book of the Law in the house of the Lord?",
+  "options" : [ "Jehoiada", "Uriah", "Hilkiah", "Zadok" ],
+  "correctOption" : 2,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "2 Kings 22:8",
+  "explanation" : "2 Kings 22:8 records that Hilkiah the high priest said to Shaphan the secretary, 'I have found the Book of the Law in the house of the Lord.'"
+}, {
+  "catalogKey" : "gemini-4-4a09272d-2c4",
+  "prompt" : "In the Book of Revelation, which church does Jesus rebuke for holding the teaching of Balaam, who taught Balak to put a stumbling block before the sons of Israel?",
+  "options" : [ "Smyrna", "Pergamum", "Thyatira", "Laodicea" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Revelation 2:14",
+  "explanation" : "Revelation 2:14 states that the church in Pergamum has some there who hold the teaching of Balaam."
+}, {
+  "catalogKey" : "gemini-4-d5426850-ca7",
+  "prompt" : "What was the name of the valley where King Jehoshaphat and the people of Judah gathered to praise the Lord after receiving victory without fighting against the Ammonites and Moabites?",
+  "options" : [ "Valley of Achor", "Valley of Elah", "Valley of Beracah", "Valley of Siddim" ],
+  "correctOption" : 2,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "2 Chronicles 20:26",
+  "explanation" : "2 Chronicles 20:26 records that on the fourth day they assembled in the Valley of Beracah, where they blessed the Lord."
+}, {
+  "catalogKey" : "gemini-4-f407fbf9-42a",
+  "prompt" : "In the genealogies of 1 Chronicles, which son of Benjamin is listed as the father of Gibeon, whose wife's name was Maacah?",
+  "options" : [ "Bela", "Becher", "Jediael", "Jeiel" ],
+  "correctOption" : 3,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "1 Chronicles 8:29",
+  "explanation" : "1 Chronicles 8:29 states that in Gibeon lived the father of Gibeon, whose wife's name was Maacah."
+}, {
+  "catalogKey" : "gemini-4-5c919626-59b",
+  "prompt" : "When the Apostle Paul was on trial before Felix, which prominent orator was hired by the Jewish leaders to present their case against Paul?",
+  "options" : [ "Tertullus", "Demetrius", "Gamaliel", "Alexander" ],
+  "correctOption" : 0,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Acts 24:1",
+  "explanation" : "Acts 24:1 records that after five days the high priest Ananias came down with some elders and a spokesman, a lawyer named Tertullus."
+}, {
+  "catalogKey" : "gemini-4-2fb2e094-773",
+  "prompt" : "In the book of Numbers, which specific Levite clan was given the responsibility for the care of the sanctuary, including the table, the lampstand, the altars, and the vessels of the sanctuary?",
+  "options" : [ "Gershonites", "Merarites", "Kohathites", "Korahites" ],
+  "correctOption" : 2,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "Numbers 3:31",
+  "explanation" : "Numbers 3:31 states that the guard of the Kohathites involved the ark, the table, the lampstand, the altars, and the vessels of the sanctuary."
+}, {
+  "catalogKey" : "gemini-4-8200c19f-7c5",
+  "prompt" : "According to the Epistle of James, what specific Old Testament figure is cited as an example of being justified by works when she received the messengers and sent them out by another way?",
+  "options" : [ "Sarah", "Rahab", "Hannah", "Abigail" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "James 2:25",
+  "explanation" : "James 2:25 asks likewise whether not also Rahab the prostitute was justified by works when she received the messengers and sent them out another way."
+}, {
+  "catalogKey" : "gemini-4-86d0a776-00c",
+  "prompt" : "In the historical narrative of the divided monarchy, who was the king of Israel who hired Syrian mercenaries and was subsequently rebuked by the prophet Jehu son of Hanani?",
+  "options" : [ "Ahab", "Baasha", "Jeroboam II", "Pekah" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "2 Chronicles 16:1",
+  "explanation" : "2 Chronicles 16:1 and 16:7 record that Baasha king of Israel went up against Judah, and Hanani the seer came to Asa king of Judah regarding his reliance on Aram."
+}, {
+  "catalogKey" : "gemini-4-838954f8-baf",
+  "prompt" : "In the closing greetings of Paul's Epistle to the Romans, who is mentioned as the amanuensis or secretary who wrote down the letter?",
+  "options" : [ "Timothy", "Tertius", "Sosthenes", "Silvanus" ],
+  "correctOption" : 1,
+  "difficulty" : 4,
+  "category" : "New Testament",
+  "reference" : "Romans 16:22",
+  "explanation" : "Romans 16:22 explicitly states, 'I Tertius, who wrote this letter, greet you in the Lord.'"
+}, {
+  "catalogKey" : "gemini-4-e4872929-b90",
+  "prompt" : "What was the specific name of the city in the land of Moab that Isaiah prophesied against, noting that its waters of Nimrim would become desolate?",
+  "options" : [ "Zoar", "Dibon", "Kir Moab", "Horonaim" ],
+  "correctOption" : 3,
+  "difficulty" : 4,
+  "category" : "Old Testament",
+  "reference" : "Isaiah 15:5",
+  "explanation" : "Isaiah 15:5 mentions the fugitives of Moab fleeing to Zoar, to Eglath-shelishiyah, up the ascent of Luhith, and crying out on the road to Horonaim."
+}, {
+  "catalogKey" : "gemini-5-168627a4-3b4",
+  "prompt" : "According to 1 Kings 6:38, in which month and year of Solomon's reign was the house of the Lord finished?",
+  "options" : [ "The eighth month, Bul, in the eleventh year", "The second month, Ziv, in the fourth year", "The seventh month, Ethanim, in the twelfth year", "The first month, Abib, in the tenth year" ],
+  "correctOption" : 0,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "1 Kings 6:38",
+  "explanation" : "The temple was finished in the eighth month, which is the month Bul, in the eleventh year of Solomon's reign."
+}, {
+  "catalogKey" : "gemini-5-560bfc7e-962",
+  "prompt" : "In Ezekiel 8:14, at which gate of the Lord's house did Ezekiel see women sitting and weeping for Tammuz?",
+  "options" : [ "The East Gate", "The New Gate", "The North Gate", "The Inner Gate" ],
+  "correctOption" : 2,
+  "difficulty" : 5,
+  "category" : "Old Testament Prophets",
+  "reference" : "Ezekiel 8:14",
+  "explanation" : "Ezekiel was brought to the door of the north gate of the house of the Lord where women sat weeping for Tammuz."
+}, {
+  "catalogKey" : "gemini-5-3cc55239-4a4",
+  "prompt" : "In Acts 27:16, as Paul's ship sailed under the lee of a small island named Clauda, what action did the sailors take with great difficulty regarding the ship's boat?",
+  "options" : [ "They hoisted it aboard", "They secured it with extra ropes", "They filled it with provisions", "They set it adrift" ],
+  "correctOption" : 0,
+  "difficulty" : 5,
+  "category" : "New Testament History",
+  "reference" : "Acts 27:16",
+  "explanation" : "Under the lee of Clauda, the sailors were able with difficulty to secure the ship's boat by hoisting it aboard."
+}, {
+  "catalogKey" : "gemini-5-5a39cf24-dcb",
+  "prompt" : "According to Numbers 3:35, who was the leader of the fathers' house of the Merarite clans?",
+  "options" : [ "Eliezer", "Zuriel the son of Abihail", "Elisaphan the son of Uzziel", "Elkanah" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament Law",
+  "reference" : "Numbers 3:35",
+  "explanation" : "The chief of the fathers' house of the Merarite clans was Zuriel the son of Abihail."
+}, {
+  "catalogKey" : "gemini-5-ca967798-b2e",
+  "prompt" : "In 1 Chronicles 2:48, what was the name of Caleb's concubine who bore him Haran, Moza, and Gazez?",
+  "options" : [ "Maacah", "Ephah", "Azubah", "Jeroth" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament Genealogies",
+  "reference" : "1 Chronicles 2:48",
+  "explanation" : "Caleb's concubine Ephah bore Haran, Moza, and Gazez."
+}, {
+  "catalogKey" : "gemini-5-7a936858-644",
+  "prompt" : "In the book of Revelation, what is the name of the third angel's star that fell from heaven, blazing like a torch, and poisoned a third of the rivers and springs of water?",
+  "options" : [ "Abaddon", "Apollyon", "Wormwood", "Belial" ],
+  "correctOption" : 2,
+  "difficulty" : 5,
+  "category" : "New Testament Prophecy",
+  "reference" : "Revelation 8:10-11",
+  "explanation" : "The name of the star that fell and made the waters bitter is Wormwood."
+}, {
+  "catalogKey" : "gemini-5-1370b52a-82f",
+  "prompt" : "According to 2 Kings 15:30, who conspired against Hoshea the son of Elah, defeated him, killed him, and reigned in his place in the twentieth year of Jotham?",
+  "options" : [ "Pekahiah", "Menahem", "Pekah", "Shallum" ],
+  "correctOption" : 2,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "2 Kings 15:30",
+  "explanation" : "Hoshea the son of Elah made a conspiracy against Pekah the son of Remaliah, struck him down and killed him, and reigned in his place."
+}, {
+  "catalogKey" : "gemini-5-977e31eb-bf1",
+  "prompt" : "In Joshua 19:22, the border of Issachar's inheritance touched which prominent geographic landmark before ending at the Jordan?",
+  "options" : [ "Mount Carmel", "Mount Tabor", "The Great Sea", "The Valley of Elah" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "Old Testament Geography",
+  "reference" : "Joshua 19:22",
+  "explanation" : "The boundary of Issachar touched Tabor, Shahazumah, and Beth Shemesh, ending at the Jordan."
+}, {
+  "catalogKey" : "gemini-5-561c9c3d-daa",
+  "prompt" : "In the genealogy of Matthew 1, who is recorded as the father of Matthan?",
+  "options" : [ "Eleazar", "Achim", "Zorobabel", "Sadok" ],
+  "correctOption" : 0,
+  "difficulty" : 5,
+  "category" : "New Testament Genealogies",
+  "reference" : "Matthew 1:15",
+  "explanation" : "Eliud was the father of Eleazar, Eleazar the father of Matthan, and Matthan the father of Jacob."
+}, {
+  "catalogKey" : "gemini-5-858b8353-a48",
+  "prompt" : "According to 1 Samuel 13:19, what specific occupation was entirely absent throughout the land of Israel because the Philistines prevented them from practicing it?",
+  "options" : [ "Potters", "Stonemasons", "Blacksmiths", "Weavers" ],
+  "correctOption" : 2,
+  "difficulty" : 5,
+  "category" : "Old Testament History",
+  "reference" : "1 Samuel 13:19",
+  "explanation" : "No blacksmith was to be found throughout all the land of Israel, because the Philistines said, 'Lest the Hebrews make swords or spears.'"
+}, {
+  "catalogKey" : "gemini-5-419f82ea-6b4",
+  "prompt" : "In the book of Amos, which specific foreign nation does the prophet declare God brought up from Kir, just as He brought the Philistines from Caphtor?",
+  "options" : [ "Aram", "Moab", "Ammon", "Edom" ],
+  "correctOption" : 0,
+  "difficulty" : 5,
+  "category" : "Old Testament Prophets",
+  "reference" : "Amos 9:7",
+  "explanation" : "God states that He brought up Israel from the land of Egypt, the Philistines from Caphtor, and the Syrians from Kir."
+}, {
+  "catalogKey" : "gemini-5-a8ef0575-e89",
+  "prompt" : "In Romans 16:23, who is mentioned as the city treasurer who sends greetings alongside Paul?",
+  "options" : [ "Tychicus", "Erastus", "Gaius", "Tertius" ],
+  "correctOption" : 1,
+  "difficulty" : 5,
+  "category" : "New Testament Epistles",
+  "reference" : "Romans 16:23",
+  "explanation" : "Erastus the city treasurer and our brother Quartus greet you."
+}, {
+  "catalogKey" : "gemini-6-fb4deb97-73c",
+  "prompt" : "According to 1 Chronicles 7:20, who was the son of Ephraim whose sons Ezer and Elead were killed by the men of Gath because they came down to steal their cattle?",
+  "options" : [ "Shuthelah", "Beriah", "Rephah", "Tahan" ],
+  "correctOption" : 0,
+  "difficulty" : 6,
+  "category" : "Genealogy",
+  "reference" : "1 Chronicles 7:20",
+  "explanation" : "Shuthelah is listed in 1 Chronicles 7:20 as a son of Ephraim whose descendants were slain by the men of Gath."
+}, {
+  "catalogKey" : "gemini-6-abc13775-f27",
+  "prompt" : "In the book of Ezekiel, which specific gate of the inner court facing the east is commanded to be shut during the six working days and opened only on the Sabbath and the day of the new moon?",
+  "options" : [ "The north gate", "The south gate", "The east gate", "The west gate" ],
+  "correctOption" : 2,
+  "difficulty" : 6,
+  "category" : "Prophecy",
+  "reference" : "Ezekiel 46:1",
+  "explanation" : "Ezekiel 46:1 specifies that the gate of the inner court that faces toward the east shall be shut the six working days."
+}, {
+  "catalogKey" : "gemini-6-c6cabb86-fe5",
+  "prompt" : "In Paul's genealogy in Luke 3, how many generations are listed between Shephatiah and Noah?",
+  "options" : [ "34", "38", "42", "47" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Genealogy",
+  "reference" : "Luke 3:31-36",
+  "explanation" : "Counting the generations strictly between Shephatiah and Noah in Luke 3 yields exactly 38 generations."
+}, {
+  "catalogKey" : "gemini-6-70bce0ed-6e2",
+  "prompt" : "Which city is mentioned in Joshua 19:38 as one of the fortified cities in the territory allotted to the tribe of Naphtali?",
+  "options" : [ "Hazor", "Migdalel", "Kartan", "Hammath" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Geography",
+  "reference" : "Joshua 19:38",
+  "explanation" : "Joshua 19:38 lists Migdalel, Horem, Bethanath, and Bethshemesh as fortified cities for Naphtali."
+}, {
+  "catalogKey" : "gemini-6-a6b00581-b4f",
+  "prompt" : "According to Numbers 34, who was appointed from the tribe of Asher to help divide the land as a tribal leader?",
+  "options" : [ "Elidad the son of Kislon", "Bukki the son of Jogli", "Hanniel the son of Ephod", "Paltiel the son of Azzan" ],
+  "correctOption" : 2,
+  "difficulty" : 6,
+  "category" : "Leadership",
+  "reference" : "Numbers 34:23",
+  "explanation" : "Numbers 34:23 identifies Hanniel the son of Ephod as the leader from the tribe of Asher appointed for dividing the land."
+}, {
+  "catalogKey" : "gemini-6-4e6f50d9-b10",
+  "prompt" : "In the book of Nehemiah, who repaired the section of the wall from the Tower of the Ovens as far as the Broad Wall?",
+  "options" : [ "Nehemiah the son of Hacaliah", "Malchijah the son of Harim and Hashub the son of Pahath-moab", "Shallum the son of Hallohesh", "Uzziel the son of Harhaiah" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "History",
+  "reference" : "Nehemiah 3:11",
+  "explanation" : "Nehemiah 3:11 records that Malchijah son of Harim and Hashub son of Pahath-moab repaired another section and the Tower of the Ovens."
+}, {
+  "catalogKey" : "gemini-6-6195b69c-b5f",
+  "prompt" : "According to 1 Kings 15, which king of Israel did Asa king of Judah defeat and drive out of Ramah, allowing Asa to use the building materials to fortify Geba of Benjamin and Mizpah?",
+  "options" : [ "Nadab", "Baasha", "Elah", "Zimri" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Kings",
+  "reference" : "1 Kings 15:17-22",
+  "explanation" : "Baasha king of Israel built Ramah to prevent anyone from going out or coming in to Asa king of Judah."
+}, {
+  "catalogKey" : "gemini-6-ea80942b-4bf",
+  "prompt" : "In the listing of David's mighty men in 2 Samuel 23, who was the father of Benaiah, one of the thirty elite warriors?",
+  "options" : [ "Ittai", "Jehoiada", "Palti", "Hiddai" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Military",
+  "reference" : "2 Samuel 23:20",
+  "explanation" : "2 Samuel 23:20 identifies Benaiah as the son of Jehoiada, a valiant man of Kabzeel."
+}, {
+  "catalogKey" : "gemini-6-0c9dfddc-c88",
+  "prompt" : "Which specific clan descended from Kohath is mentioned in Numbers 3:27 as making up the Amramites, Izharites, Hebronites, and Uzzielites?",
+  "options" : [ "The Gershonites", "The Merarites", "The Kohathites", "The Korahites" ],
+  "correctOption" : 2,
+  "difficulty" : 6,
+  "category" : "Levites",
+  "reference" : "Numbers 3:27",
+  "explanation" : "Numbers 3:27 states that to Kohath belonged the clan of the Amramites, the clan of the Izharites, the clan of the Hebronites, and the clan of the Uzzielites."
+}, {
+  "catalogKey" : "gemini-6-b8edbbe7-102",
+  "prompt" : "According to Jeremiah 52, what was the personal name of the captain of the guard who burned the house of the Lord and the king's house in Jerusalem under Nebuchadnezzar?",
+  "options" : [ "Nebuzaradan", "Nergal-sharezer", "Samgar-nebo", "Sarsechim" ],
+  "correctOption" : 0,
+  "difficulty" : 6,
+  "category" : "Prophets",
+  "reference" : "Jeremiah 52:12-13",
+  "explanation" : "Jeremiah 52:12-13 identifies Nebuzaradan, the captain of the guard, as the official who burned the temple and royal palace."
+}, {
+  "catalogKey" : "gemini-6-ec15b569-5a8",
+  "prompt" : "In Acts 27, during Paul's shipwreck, off the coast of which island did the sailors measure the water depth as twenty fathoms, and then fifteen fathoms shortly after?",
+  "options" : [ "Crete", "Cauda", "Melita", "Cyprus" ],
+  "correctOption" : 1,
+  "difficulty" : 6,
+  "category" : "Apostles",
+  "reference" : "Acts 27:16",
+  "explanation" : "Acts 27:16-28 mentions running under the lee of a small island called Cauda where soundings were taken during the storm."
+}, {
+  "catalogKey" : "gemini-6-2d63d730-b1d",
+  "prompt" : "According to Revelation 2, to the angel of which church did the writer dictate the warning regarding the teachings of Balaam and the Nicolaitans?",
+  "options" : [ "Pergamum", "Thyatira", "Sardis", "Philadelphia" ],
+  "correctOption" : 0,
+  "difficulty" : 6,
+  "category" : "Revelation",
+  "reference" : "Revelation 2:12-15",
+  "explanation" : "Revelation 2:12-15 addresses the church in Pergamum, noting they held to the teaching of Balaam and the Nicolaitans."
+} ]

@@ -17,13 +17,16 @@ public class GoogleIdentityService {
     private final UserService userService;
     private final JwtDecoder decoder;
     private final String clientId;
+    private final ProfilePictureService profilePictureService;
 
     public GoogleIdentityService(
         UserService userService,
+        ProfilePictureService profilePictureService,
         @Value("${app.google.client-id}") String clientId
     ) {
         this.userService = userService;
         this.clientId = clientId;
+        this.profilePictureService = profilePictureService;
         NimbusJwtDecoder googleDecoder = NimbusJwtDecoder.withJwkSetUri(
             "https://www.googleapis.com/oauth2/v3/certs"
         ).build();
@@ -50,9 +53,13 @@ public class GoogleIdentityService {
                     "Google could not verify this account"
                 );
             }
-            return userService.loginGoogleUser(
+            User user = userService.loginGoogleUser(
                 email,
                 jwt.getClaimAsString("name"),
+                jwt.getClaimAsString("picture")
+            );
+            return profilePictureService.importGoogleAvatar(
+                user,
                 jwt.getClaimAsString("picture")
             );
         } catch (JwtException exception) {

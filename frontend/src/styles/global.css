@@ -193,6 +193,22 @@ html[data-route-transition="page"]::view-transition-new(root) {
   animation: plan-processing 1.35s ease-in-out infinite;
 }
 
+@keyframes battle-search-pulse {
+  0% {
+    opacity: 0.75;
+    transform: scale(0.88);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+.battle-search-ring {
+  animation: battle-search-pulse 1.8s ease-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-route,
   .plan-processing-line {
@@ -201,6 +217,10 @@ html[data-route-transition="page"]::view-transition-new(root) {
 
   .plan-processing-line {
     width: 70%;
+  }
+
+  .battle-search-ring {
+    animation: none;
   }
 
   html[data-route-transition]::view-transition-old(root),
