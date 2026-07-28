@@ -4,6 +4,7 @@ import {
   ChartNoAxesColumnIncreasing,
   ChevronRight,
   House,
+  Clapperboard,
   MessagesSquare,
   Settings,
 } from 'lucide-react'
@@ -15,6 +16,7 @@ const navigation = [
   { label: 'Home', icon: House, path: '/home' },
   { label: 'Plans', icon: ChartNoAxesColumnIncreasing, path: '/plans' },
   { label: 'Bible', icon: BookOpen, path: '/bible' },
+  { label: 'Watch', icon: Clapperboard, path: '/watch' },
   { label: 'Community', icon: MessagesSquare, path: '/community' },
 ]
 
@@ -52,7 +54,7 @@ function HomeSidebar({
     .toUpperCase()
 
   return (
-    <aside className="relative z-10 hidden min-h-svh border-r border-[#e5e7eb] bg-white shadow-[4px_0_14px_rgba(22,28,38,0.045)] lg:sticky lg:top-0 lg:flex lg:h-svh lg:w-[164px] lg:flex-col">
+    <aside className="relative z-10 hidden min-h-svh border-r border-[#e5e7eb] bg-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:w-[164px] lg:flex-col">
       <button
         type="button"
         onClick={() => onNavigate('/home')}

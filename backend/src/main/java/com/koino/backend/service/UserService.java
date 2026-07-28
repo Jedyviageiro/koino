@@ -3,6 +3,8 @@ package com.koino.backend.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.koino.backend.model.User;
 import com.koino.backend.dto.user.UserStreakResponse;
+import com.koino.backend.dto.user.UserStreakDayResponse;
+import com.koino.backend.model.UserLoginDay;
+import com.koino.backend.repository.UserLoginDayRepository;
 import com.koino.backend.repository.UserRepository;
 
 
@@ -18,10 +23,16 @@ import com.koino.backend.repository.UserRepository;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final UserLoginDayRepository loginDayRepository;
 
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository){
+    public UserService(
+        PasswordEncoder passwordEncoder,
+        UserRepository userRepository,
+        UserLoginDayRepository loginDayRepository
+    ){
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.loginDayRepository = loginDayRepository;
     }
 
     public User createUser(String fullname, String email, String password){
@@ -61,11 +72,30 @@ public class UserService {
     @Transactional
     public UserStreakResponse getStreak(Long userId) {
         User user = findUser(userId);
-        recordLogin(user, LocalDate.now());
+        LocalDate today = LocalDate.now();
+        recordLogin(user, today);
+        restoreCurrentStreakHistory(user);
+        LocalDate startDate = today.minusDays(6);
+        Set<LocalDate> activeDates = loginDayRepository
+            .findByUserUserIdAndLoginDateBetweenOrderByLoginDateAsc(
+                userId,
+                startDate,
+                today
+            )
+            .stream()
+            .map(UserLoginDay::getLoginDate)
+            .collect(Collectors.toSet());
+        var recentDays = startDate.datesUntil(today.plusDays(1))
+            .map(date -> new UserStreakDayResponse(
+                date,
+                activeDates.contains(date)
+            ))
+            .toList();
         return new UserStreakResponse(
             user.getCurrentStreak(),
             user.getLongestStreak(),
-            user.getLastLoginDate()
+            user.getLastLoginDate(),
+            recentDays
         );
     }
 
@@ -94,6 +124,7 @@ public class UserService {
     }
 
     private void recordLogin(User user, LocalDate today) {
+        recordLoginDay(user, today);
         LocalDate previousLogin = user.getLastLoginDate();
         if (today.equals(previousLogin)) {
             return;
@@ -107,6 +138,30 @@ public class UserService {
         user.setLastLoginDate(today);
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+    private void restoreCurrentStreakHistory(User user) {
+        LocalDate lastLoginDate = user.getLastLoginDate();
+        if (lastLoginDate == null || user.getCurrentStreak() <= 0) {
+            return;
+        }
+
+        for (int offset = 0; offset < user.getCurrentStreak(); offset++) {
+            recordLoginDay(user, lastLoginDate.minusDays(offset));
+        }
+    }
+
+    private void recordLoginDay(User user, LocalDate date) {
+        if (loginDayRepository.existsByUserUserIdAndLoginDate(
+            user.getUserId(),
+            date
+        )) {
+            return;
+        }
+        UserLoginDay loginDay = new UserLoginDay();
+        loginDay.setUser(user);
+        loginDay.setLoginDate(date);
+        loginDayRepository.save(loginDay);
     }
 
     private String normalizeEmail(String email) {

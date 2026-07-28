@@ -18,9 +18,7 @@ const quickActions = [
 
 function HomeRail({ streak, bookmarkCount }) {
   const currentStreak = streak?.currentStreak || 0
-  const today = new Date().getDay()
-  const adjustedToday = today === 0 ? 6 : today - 1
-  const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  const recentDays = streak?.recentDays || []
 
   return (
     <div className="flex flex-col gap-7">
@@ -78,14 +76,20 @@ function HomeRail({ streak, bookmarkCount }) {
           </div>
         </div>
         <div className="mt-4 flex justify-between">
-          {weekdays.map((day, index) => {
-            const daysAgo = adjustedToday - index
-            const complete = daysAgo >= 0 && daysAgo < currentStreak
+          {recentDays.map((day) => {
+            const date = new Date(`${day.date}T00:00:00`)
+            const weekday = new Intl.DateTimeFormat('en', {
+              weekday: 'narrow',
+            }).format(date)
             return (
-              <div key={`${day}-${index}`} className="flex flex-col items-center gap-2">
-                <span className="text-[11px] text-[#687188]">{day}</span>
-                <span className={`flex h-[18px] w-[18px] items-center justify-center rounded-full ${complete ? 'bg-[#171b23] text-white' : 'border border-[#dce0e6]'}`}>
-                  {complete && <Check className="h-2.5 w-2.5" strokeWidth={3} />}
+              <div
+                key={day.date}
+                className="flex flex-col items-center gap-2"
+                title={date.toLocaleDateString()}
+              >
+                <span className="text-[11px] text-[#687188]">{weekday}</span>
+                <span className={`flex h-[18px] w-[18px] items-center justify-center rounded-full ${day.active ? 'bg-[#171b23] text-white' : 'border border-[#dce0e6]'}`}>
+                  {day.active && <Check className="h-2.5 w-2.5" strokeWidth={3} />}
                 </span>
               </div>
             )

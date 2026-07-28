@@ -9,6 +9,7 @@ import BiblePage from '@/pages/bible/BiblePage.jsx'
 import DevotionalPage from '@/pages/devotional/DevotionalPage.jsx'
 import CommunityPage from '@/pages/community/CommunityPage.jsx'
 import StatusPage from '@/pages/status/StatusPage.jsx'
+import WatchPage from '@/pages/watch/WatchPage.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 
 function App() {
@@ -91,6 +92,10 @@ function App() {
 
   if (path === '/community') {
     return <CommunityPage onNavigate={navigate} />
+  }
+
+  if (path === '/watch') {
+    return <WatchPage onNavigate={navigate} />
   }
 
   return path === '/register' ? (

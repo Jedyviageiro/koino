@@ -8,12 +8,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.List;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.koino.backend.model.User;
+import com.koino.backend.model.UserLoginDay;
+import com.koino.backend.repository.UserLoginDayRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.service.UserService;
 
@@ -90,7 +93,7 @@ class UserServiceTests {
         when(repository.findByEmail(user.getEmail())).thenReturn(user);
         when(encoder.matches("password", "encoded")).thenReturn(true);
 
-        new UserService(encoder, repository).loginUser(user.getEmail(), "password");
+        service(repository, encoder).loginUser(user.getEmail(), "password");
 
         assertThat(user.getCurrentStreak()).isEqualTo(5);
         assertThat(user.getLongestStreak()).isEqualTo(8);
@@ -111,7 +114,7 @@ class UserServiceTests {
         when(repository.findByEmail(user.getEmail())).thenReturn(user);
         when(encoder.matches("password", "encoded")).thenReturn(true);
 
-        new UserService(encoder, repository).loginUser(user.getEmail(), "password");
+        service(repository, encoder).loginUser(user.getEmail(), "password");
 
         assertThat(user.getCurrentStreak()).isEqualTo(1);
         assertThat(user.getLongestStreak()).isEqualTo(12);
@@ -147,8 +150,70 @@ class UserServiceTests {
         verify(repository, never()).save(user);
     }
 
+    @Test
+    void returnsRealRecentLoginDatesForTheStreakGraphic() {
+        UserRepository repository = mock(UserRepository.class);
+        UserLoginDayRepository loginDays = mock(UserLoginDayRepository.class);
+        User user = user(42L, true);
+        user.setCurrentStreak(2);
+        user.setLongestStreak(4);
+        user.setLastLoginDate(LocalDate.now());
+        when(repository.findById(42L)).thenReturn(Optional.of(user));
+        when(loginDays.existsByUserUserIdAndLoginDate(
+            42L,
+            LocalDate.now()
+        )).thenReturn(true);
+        when(loginDays.existsByUserUserIdAndLoginDate(
+            42L,
+            LocalDate.now().minusDays(1)
+        )).thenReturn(true);
+        when(loginDays
+            .findByUserUserIdAndLoginDateBetweenOrderByLoginDateAsc(
+                42L,
+                LocalDate.now().minusDays(6),
+                LocalDate.now()
+            ))
+            .thenReturn(List.of(
+                loginDay(user, LocalDate.now().minusDays(1)),
+                loginDay(user, LocalDate.now())
+            ));
+
+        var streak = new UserService(
+            mock(PasswordEncoder.class),
+            repository,
+            loginDays
+        ).getStreak(42L);
+
+        assertThat(streak.recentDays()).hasSize(7);
+        assertThat(streak.recentDays())
+            .filteredOn(day -> day.active())
+            .extracting(day -> day.date())
+            .containsExactly(
+                LocalDate.now().minusDays(1),
+                LocalDate.now()
+            );
+    }
+
     private UserService service(UserRepository repository) {
-        return new UserService(mock(PasswordEncoder.class), repository);
+        return service(repository, mock(PasswordEncoder.class));
+    }
+
+    private UserService service(
+        UserRepository repository,
+        PasswordEncoder encoder
+    ) {
+        return new UserService(
+            encoder,
+            repository,
+            mock(UserLoginDayRepository.class)
+        );
+    }
+
+    private UserLoginDay loginDay(User user, LocalDate date) {
+        UserLoginDay loginDay = new UserLoginDay();
+        loginDay.setUser(user);
+        loginDay.setLoginDate(date);
+        return loginDay;
     }
 
     private User user(Long id, boolean active) {
