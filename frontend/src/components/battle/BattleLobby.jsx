@@ -124,8 +124,8 @@ function BattleLobby({ lobby, selectedMode, onSelectMode, onStart, onHelp }) {
                       {item.name}
                     </p>
                     <div className="mt-2 flex items-center gap-2 text-[8px] text-[#777e8a]">
-                      <span>{item.questions} questions</span>
-                      <span className="h-0.5 w-0.5 rounded-full bg-current" />
+                      <span>Answer as many as you can</span>
+                      <span className="h-0.5 w-0.5 shrink-0 rounded-full bg-current" />
                       <span className="flex items-center gap-1">
                         <Timer className="h-2.5 w-2.5" />
                         {item.durationSeconds}s

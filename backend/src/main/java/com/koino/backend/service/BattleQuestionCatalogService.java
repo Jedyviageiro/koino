@@ -31,14 +31,18 @@ public class BattleQuestionCatalogService {
     private final BattleQuestionRepository questionRepository;
     private final ObjectMapper objectMapper;
     private final Path generatedCatalogPath;
+    private final Path bootstrapCatalogPath;
 
     public BattleQuestionCatalogService(
         BattleQuestionRepository questionRepository,
-        @Value("${battle.questions.backup-path}") String generatedCatalogPath
+        @Value("${battle.questions.backup-path}") String generatedCatalogPath,
+        @Value("${battle.questions.bootstrap-path}")
+            String bootstrapCatalogPath
     ) {
         this.questionRepository = questionRepository;
         this.objectMapper = new ObjectMapper();
         this.generatedCatalogPath = Path.of(generatedCatalogPath);
+        this.bootstrapCatalogPath = Path.of(bootstrapCatalogPath);
     }
 
     @PostConstruct
@@ -111,6 +115,7 @@ public class BattleQuestionCatalogService {
     }
 
     private List<QuestionCatalogEntry> readGenerated() {
+        initializeGeneratedBackup();
         if (!Files.exists(generatedCatalogPath)) {
             return List.of();
         }
@@ -122,6 +127,23 @@ public class BattleQuestionCatalogService {
         } catch (Exception exception) {
             LOGGER.warn("Could not load generated Battle Space backup", exception);
             return List.of();
+        }
+    }
+
+    private void initializeGeneratedBackup() {
+        if (Files.exists(generatedCatalogPath)
+            || !Files.isRegularFile(bootstrapCatalogPath)) {
+            return;
+        }
+        try {
+            Files.createDirectories(generatedCatalogPath.getParent());
+            Files.copy(bootstrapCatalogPath, generatedCatalogPath);
+            LOGGER.info("Initialized the persistent Battle Space backup");
+        } catch (Exception exception) {
+            LOGGER.warn(
+                "Could not initialize the persistent Battle Space backup",
+                exception
+            );
         }
     }
 

@@ -9,11 +9,11 @@ import com.koino.backend.repository.BookRepository;
 import com.koino.backend.repository.ChapterRepository;
 import com.koino.backend.repository.VerseRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
-import java.net.URI;
 
 @Service
 public class BibleSeedService implements CommandLineRunner {
@@ -33,14 +33,13 @@ public class BibleSeedService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // Only seed if the books table is empty
         if (bookRepository.count() == 0) {
-            System.out.println(">>> Seeding database with real Bible data from public repository...");
-
-            // Using a standard public domain JSON Bible source (e.g., World English Bible / KJV format)
-            String jsonUrl = "https://raw.githubusercontent.com/thiagobodruk/bible/master/json/en_kjv.json";
+            System.out.println(">>> Seeding database with bundled KJV Bible data...");
             
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootArray;
-            try (InputStream input = URI.create(jsonUrl).toURL().openStream()) {
+            try (InputStream input = new ClassPathResource(
+                "bible/en_kjv.json"
+            ).getInputStream()) {
                 rootArray = mapper.readTree(input);
             }
 

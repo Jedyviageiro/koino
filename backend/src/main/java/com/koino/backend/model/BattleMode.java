@@ -1,26 +1,30 @@
 package com.koino.backend.model;
 
 public enum BattleMode {
-    LIGHTNING(10, 60, "Lightning Rated"),
-    RAPID(15, 90, "Rapid Rated"),
-    CLASSICAL(20, 120, "Classical Rated");
+    LIGHTNING(60, 2600, "Lightning Rated"),
+    RAPID(90, 3300, "Rapid Rated"),
+    CLASSICAL(120, 3900, "Classical Rated");
 
-    private final int questionCount;
     private final int durationSeconds;
+    private final int opponentAttemptIntervalMs;
     private final String displayName;
 
-    BattleMode(int questionCount, int durationSeconds, String displayName) {
-        this.questionCount = questionCount;
+    BattleMode(
+        int durationSeconds,
+        int opponentAttemptIntervalMs,
+        String displayName
+    ) {
         this.durationSeconds = durationSeconds;
+        this.opponentAttemptIntervalMs = opponentAttemptIntervalMs;
         this.displayName = displayName;
-    }
-
-    public int getQuestionCount() {
-        return questionCount;
     }
 
     public int getDurationSeconds() {
         return durationSeconds;
+    }
+
+    public int getOpponentAttemptIntervalMs() {
+        return opponentAttemptIntervalMs;
     }
 
     public String getDisplayName() {

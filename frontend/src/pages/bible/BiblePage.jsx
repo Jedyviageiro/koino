@@ -21,6 +21,8 @@ const isOldTestament = (book) => book.orderIndex <= 39
 
 function BiblePage({ onNavigate }) {
   const [books, setBooks] = useState([])
+  const [versions, setVersions] = useState([])
+  const [selectedVersion, setSelectedVersion] = useState('KJV')
   const [chapters, setChapters] = useState([])
   const [verses, setVerses] = useState([])
   const [todayTask, setTodayTask] = useState(null)
@@ -90,10 +92,21 @@ function BiblePage({ onNavigate }) {
           throw new Error(`No chapters are available for ${initialBook.title}.`)
         }
 
-        const initialVerses = await getChapterVerses(initialChapter.chapterId)
+        const initialVersion =
+          browserData.versions.find((version) => version.code === 'KJV') ||
+          browserData.versions[0]
+        if (!initialVersion) {
+          throw new Error('No Bible versions are available.')
+        }
+        const initialVerses = await getChapterVerses(
+          initialChapter.chapterId,
+          initialVersion.code,
+        )
         if (!active) return
 
         setBooks(browserData.books)
+        setVersions(browserData.versions)
+        setSelectedVersion(initialVersion.code)
         setTodayTask(browserData.todayTask)
         setBookmarkColors(
           new Map(
@@ -143,11 +156,18 @@ function BiblePage({ onNavigate }) {
     [books, testament],
   )
 
-  async function loadChapter(chapter, book = selectedBook) {
+  async function loadChapter(
+    chapter,
+    book = selectedBook,
+    versionCode = selectedVersion,
+  ) {
     if (!chapter || !book) return
     setLoading(true)
     try {
-      const chapterVerses = await getChapterVerses(chapter.chapterId)
+      const chapterVerses = await getChapterVerses(
+        chapter.chapterId,
+        versionCode,
+      )
       setSelectedChapter(chapter)
       setSelectedVerseIndex(0)
       setVerses(
@@ -177,7 +197,10 @@ function BiblePage({ onNavigate }) {
 
       if (!chapter) throw new Error(`No chapters are available for ${book.title}.`)
 
-      const chapterVerses = await getChapterVerses(chapter.chapterId)
+      const chapterVerses = await getChapterVerses(
+        chapter.chapterId,
+        selectedVersion,
+      )
       setTestament(isOldTestament(book) ? 'OLD' : 'NEW')
       setSelectedBook(book)
       setChapters(bookChapters)
@@ -204,6 +227,30 @@ function BiblePage({ onNavigate }) {
         : !isOldTestament(book),
     )
     if (firstBook) openBook(firstBook)
+  }
+
+  async function changeVersion(versionCode) {
+    if (!selectedChapter || versionCode === selectedVersion) return
+    setLoading(true)
+    try {
+      const chapterVerses = await getChapterVerses(
+        selectedChapter.chapterId,
+        versionCode,
+      )
+      setSelectedVersion(versionCode)
+      setSelectedVerseIndex(0)
+      setVerses(
+        chapterVerses.map((verse) => ({
+          ...verse,
+          bookTitle: selectedBook.title,
+          chapterNumber: selectedChapter.chapterNumber,
+        })),
+      )
+    } catch (requestError) {
+      setError(requestError.message || 'Unable to change Bible version.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   function navigateChapter(direction) {
@@ -308,6 +355,8 @@ function BiblePage({ onNavigate }) {
           </header>
 
           <BibleToolbar
+            versions={versions}
+            selectedVersion={selectedVersion}
             testament={testament}
             books={testamentBooks}
             chapters={chapters}
@@ -318,6 +367,7 @@ function BiblePage({ onNavigate }) {
             todayAvailable={Boolean(todayTask?.passages?.length)}
             loading={loading}
             onTestamentChange={changeTestament}
+            onVersionChange={changeVersion}
             onBookChange={(bookId) =>
               openBook(books.find((book) => book.bookId === bookId))
             }
@@ -341,6 +391,10 @@ function BiblePage({ onNavigate }) {
             book={selectedBook}
             chapter={selectedChapter}
             verses={verses}
+            versionName={
+              versions.find((version) => version.code === selectedVersion)
+                ?.name
+            }
             selectedIndex={selectedVerseIndex}
             textSize={textSize}
             bookmarkColors={bookmarkColors}

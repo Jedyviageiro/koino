@@ -18,6 +18,8 @@ FROM eclipse-temurin:26-jre-alpine
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
+COPY data /app/seed-data
 EXPOSE 8080
+ENV PORT=8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

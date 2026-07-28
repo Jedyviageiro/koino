@@ -4,6 +4,8 @@ const controlClass =
   'h-10 w-full rounded-[8px] border border-[#dfe3e9] bg-white px-3 text-[12px] font-medium text-[#20242b] outline-none transition-colors focus:border-[#e8a33d]'
 
 function BibleToolbar({
+  versions,
+  selectedVersion,
   testament,
   books,
   chapters,
@@ -14,6 +16,7 @@ function BibleToolbar({
   todayAvailable,
   loading,
   onTestamentChange,
+  onVersionChange,
   onBookChange,
   onChapterChange,
   onVerseChange,
@@ -27,8 +30,17 @@ function BibleToolbar({
         <span className="mb-1.5 block text-[11px] font-medium text-[#565e6e]">
           Version
         </span>
-        <select className={controlClass} value="KJV" disabled>
-          <option value="KJV">King James Version (KJV)</option>
+        <select
+          className={controlClass}
+          value={selectedVersion}
+          onChange={(event) => onVersionChange(event.target.value)}
+          disabled={loading || versions.length < 2}
+        >
+          {versions.map((version) => (
+            <option key={version.code} value={version.code}>
+              {version.name} ({version.code})
+            </option>
+          ))}
         </select>
       </label>
 

@@ -9,6 +9,7 @@ import {
   X,
   Zap,
 } from 'lucide-react'
+import { playBattleSound } from '@/features/battle/battleAudio.js'
 
 function BattleArena({
   battle,
@@ -23,12 +24,21 @@ function BattleArena({
     remainingSeconds(battle.expiresAt),
   )
   const timeUpCalled = useRef(false)
+  const lastWarningSecond = useRef(null)
 
   useEffect(() => {
     timeUpCalled.current = false
     const timer = window.setInterval(() => {
       const next = remainingSeconds(battle.expiresAt)
       setSecondsLeft(next)
+      if (
+        next > 0 &&
+        next <= 10 &&
+        lastWarningSecond.current !== next
+      ) {
+        lastWarningSecond.current = next
+        playBattleSound('warning')
+      }
       if (next === 0 && !timeUpCalled.current) {
         timeUpCalled.current = true
         onTimeUp()
@@ -41,6 +51,7 @@ function BattleArena({
     0,
     (secondsLeft / battle.durationSeconds) * 100,
   )
+  const timeCritical = secondsLeft <= 10
   const question = battle.currentQuestion
   const initials = (user?.fullname || 'You')
     .split(/\s+/)
@@ -98,11 +109,17 @@ function BattleArena({
               <div
                 className="mx-auto flex h-[78px] w-[78px] items-center justify-center rounded-full p-[5px]"
                 style={{
-                  background: `conic-gradient(#e8a33d ${timerProgress}%, #edf0f3 ${timerProgress}% 100%)`,
+                  background: `conic-gradient(${
+                    timeCritical ? '#d94f4f' : '#e8a33d'
+                  } ${timerProgress}%, #edf0f3 ${timerProgress}% 100%)`,
                 }}
               >
                 <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-white">
-                  <span className="font-mono text-[18px] font-semibold tabular-nums">
+                  <span
+                    className={`font-mono text-[18px] font-semibold tabular-nums ${
+                      timeCritical ? 'text-[#c93e3e]' : ''
+                    }`}
+                  >
                     {formatTime(secondsLeft)}
                   </span>
                   <span className="mt-0.5 text-[7px] text-[#8a9099]">
@@ -123,7 +140,7 @@ function BattleArena({
           <section className="min-h-[360px] rounded-[8px] border border-[#e2e5e9] bg-white p-6">
             <div className="flex items-center justify-between">
               <p className="text-[9px] text-[#6f7682]">
-                Question {question?.number} of {question?.total}
+                Question {question?.number}
               </p>
               <span className="rounded-[5px] border border-[#ead3ac] bg-[#fffbf5] px-2 py-1 text-[8px] font-semibold text-[#9a671d]">
                 10 pts
@@ -165,24 +182,15 @@ function BattleArena({
             </div>
           </section>
 
-          <div className="flex items-center gap-4 rounded-[8px] border border-[#e2e5e9] bg-white px-5 py-4">
+          <div className="flex min-h-[54px] items-center gap-4 rounded-[8px] border border-[#e2e5e9] bg-white px-5 py-4">
             <span className="text-[8px] font-semibold text-[#68707d]">
-              Battle progress
+              Keep going until time expires
             </span>
-            <div className="flex h-1.5 flex-1 gap-0.5 overflow-hidden rounded-full bg-[#edf0f2]">
-              {Array.from({ length: battle.questionCount }, (_, index) => (
-                <span
-                  key={index}
-                  className={`h-full flex-1 ${
-                    index < battle.currentQuestionIndex
-                      ? 'bg-[#e8a33d]'
-                      : 'bg-transparent'
-                  }`}
-                />
-              ))}
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#edf0f2]">
+              <span className="plan-processing-line block h-full rounded-full bg-[#e8a33d]" />
             </div>
             <span className="text-[8px] font-semibold tabular-nums text-[#8b672e]">
-              {battle.currentQuestionIndex}/{battle.questionCount}
+              {playerCorrect} correct
             </span>
           </div>
         </div>
@@ -286,7 +294,12 @@ function BattleLiveRail({ battle, playerCorrect, opponentCorrect, feedback }) {
           <span
             className="block h-full rounded-full bg-[#e8a33d] transition-[width] duration-300"
             style={{
-              width: `${Math.max(4, (battle.currentQuestionIndex / battle.questionCount) * 100)}%`,
+              width: `${Math.max(
+                4,
+                (playerCorrect /
+                  Math.max(1, playerCorrect + opponentCorrect)) *
+                  100,
+              )}%`,
             }}
           />
         </div>

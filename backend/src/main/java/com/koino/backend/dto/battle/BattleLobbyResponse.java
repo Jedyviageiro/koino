@@ -6,7 +6,6 @@ public record BattleLobbyResponse(
     BattleProfileResponse profile,
     List<BattleModeResponse> modes,
     List<BattleLeaderboardEntryResponse> leaderboard,
-    int questionBankSize,
     boolean beta
 ) {
 }

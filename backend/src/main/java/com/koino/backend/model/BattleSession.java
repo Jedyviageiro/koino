@@ -57,6 +57,16 @@ public class BattleSession {
     @Column(nullable = false)
     private int opponentScore;
 
+    private Integer opponentAttempts = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 16)
+    private BattleOpponentType opponentType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "opponent_user_id")
+    private User opponentUser;
+
     @Column(nullable = false)
     private int currentQuestionIndex;
 
@@ -89,6 +99,9 @@ public class BattleSession {
     void initializeId() {
         if (battleId == null) {
             battleId = UUID.randomUUID().toString();
+        }
+        if (opponentType == null) {
+            opponentType = BattleOpponentType.BOT;
         }
     }
 }

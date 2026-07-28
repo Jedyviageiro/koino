@@ -12,7 +12,7 @@ function StatusPage({ returnPath = '/home', onRecover }) {
     setChecking(true)
     setStillUnavailable(false)
     try {
-      const response = await fetch(`${API_BASE_URL}/bible/books`, {
+      const response = await fetch(`${API_BASE_URL}/health`, {
         cache: 'no-store',
       })
       if (!response.ok) throw new Error('Service unavailable')

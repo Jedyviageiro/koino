@@ -12,8 +12,10 @@ import {
   answerBattleQuestion,
   createBattle,
   finishBattle,
+  getBattle,
   getBattleLobby,
 } from '@/features/battle/battleService.js'
+import { playBattleSound } from '@/features/battle/battleAudio.js'
 import {
   getAuthSession,
   getAuthToken,
@@ -31,7 +33,7 @@ function BattleSpacePage({ onNavigate }) {
   const [error, setError] = useState('')
   const [showRules, setShowRules] = useState(false)
   const [confirmLeave, setConfirmLeave] = useState(false)
-  const matchingTimerRef = useRef(null)
+  const matchingRequestRef = useRef(0)
   const feedbackTimerRef = useRef(null)
 
   const loadLobby = useCallback(async () => {
@@ -60,42 +62,51 @@ function BattleSpacePage({ onNavigate }) {
       })
     return () => {
       active = false
-      window.clearTimeout(matchingTimerRef.current)
+      matchingRequestRef.current += 1
       window.clearTimeout(feedbackTimerRef.current)
     }
   }, [onNavigate])
 
   const beginMatch = useCallback(
-    (modeName) => {
+    async (modeName) => {
       const mode = lobby?.modes.find((item) => item.mode === modeName)
       if (!mode) return
+      const requestId = matchingRequestRef.current + 1
+      matchingRequestRef.current = requestId
+      playBattleSound('select')
       setSelectedMode(modeName)
       setMatchingMode(mode)
       setFeedback(null)
       setView('matching')
-      window.clearTimeout(matchingTimerRef.current)
-      matchingTimerRef.current = window.setTimeout(async () => {
-        try {
-          const created = await createBattle(modeName)
-          setBattle(created)
-          setView('battle')
-        } catch (requestError) {
-          setView('lobby')
-          setError(requestError.message || 'Unable to start this battle.')
-        }
-      }, 1900)
+      try {
+        const minimumSearchTime = modeName === 'LIGHTNING' ? 420 : 700
+        const [created] = await Promise.all([
+          createBattle(modeName),
+          new Promise((resolve) =>
+            window.setTimeout(resolve, minimumSearchTime),
+          ),
+        ])
+        if (matchingRequestRef.current !== requestId) return
+        setBattle(created)
+        setView('battle')
+      } catch (requestError) {
+        if (matchingRequestRef.current !== requestId) return
+        setView('lobby')
+        setError(requestError.message || 'Unable to start this battle.')
+      }
     },
     [lobby],
   )
 
   function cancelMatching() {
-    window.clearTimeout(matchingTimerRef.current)
+    matchingRequestRef.current += 1
     setView('lobby')
     setMatchingMode(null)
   }
 
   async function answer(selectedOption) {
     if (!battle?.currentQuestion || answering || feedback) return
+    playBattleSound('select')
     setAnswering(true)
     try {
       const response = await answerBattleQuestion(
@@ -107,11 +118,17 @@ function BattleSpacePage({ onNavigate }) {
         ...response,
         selectedOption,
       })
+      playBattleSound(response.correct ? 'correct' : 'incorrect')
+      const feedbackDuration = {
+        LIGHTNING: 320,
+        RAPID: 560,
+        CLASSICAL: 760,
+      }[battle.mode] || 560
       feedbackTimerRef.current = window.setTimeout(() => {
         setBattle(response.battle)
         setFeedback(null)
         setAnswering(false)
-      }, 1100)
+      }, feedbackDuration)
     } catch (requestError) {
       setAnswering(false)
       if (/time is up/i.test(requestError.message)) {
@@ -124,6 +141,7 @@ function BattleSpacePage({ onNavigate }) {
 
   const endForTime = useCallback(async () => {
     if (!battle?.battleId || battle.status !== 'ACTIVE') return
+    window.clearTimeout(feedbackTimerRef.current)
     try {
       setBattle(await finishBattle(battle.battleId))
       setFeedback(null)
@@ -132,6 +150,30 @@ function BattleSpacePage({ onNavigate }) {
       setError(requestError.message || 'Unable to finish this battle.')
     }
   }, [battle])
+
+  useEffect(() => {
+    if (
+      view !== 'battle' ||
+      !battle?.battleId ||
+      battle.status !== 'ACTIVE' ||
+      answering ||
+      feedback
+    ) {
+      return undefined
+    }
+    const timer = window.setInterval(() => {
+      getBattle(battle.battleId)
+        .then((latest) => setBattle(latest))
+        .catch(() => {})
+    }, 1200)
+    return () => window.clearInterval(timer)
+  }, [
+    answering,
+    battle?.battleId,
+    battle?.status,
+    feedback,
+    view,
+  ])
 
   async function leaveBattle() {
     setConfirmLeave(false)

@@ -24,7 +24,7 @@ public class BattleQuestionBackfillWorker {
         GeminiBattleQuestionClient geminiClient,
         BattleQuestionCatalogService catalogService,
         @Value("${battle.questions.gemini.enabled:true}") boolean enabled,
-        @Value("${battle.questions.target-per-tier:40}") int targetPerTier
+        @Value("${battle.questions.target-per-tier:150}") int targetPerTier
     ) {
         this.questionRepository = questionRepository;
         this.geminiClient = geminiClient;
@@ -35,7 +35,7 @@ public class BattleQuestionBackfillWorker {
 
     @Scheduled(
         initialDelayString = "${battle.questions.gemini.initial-delay-ms:45000}",
-        fixedDelayString = "${battle.questions.gemini.delay-ms:120000}"
+        fixedDelayString = "${battle.questions.gemini.delay-ms:45000}"
     )
     public void generateNextBatch() {
         if (!enabled) {
@@ -54,7 +54,7 @@ public class BattleQuestionBackfillWorker {
             return;
         }
         try {
-            int requested = (int) Math.min(12, targetPerTier - smallestCount);
+            int requested = (int) Math.min(20, targetPerTier - smallestCount);
             int saved = catalogService.appendGenerated(
                 geminiClient.generate(tier, requested)
             );

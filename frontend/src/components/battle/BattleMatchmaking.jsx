@@ -22,8 +22,7 @@ function BattleMatchmaking({ mode, onCancel }) {
           </span>
         </div>
         <p className="mt-1.5 text-[10px] text-[#707784]">
-          {mode.name} · 1v1 · {mode.questions} questions ·{' '}
-          {mode.durationSeconds} seconds
+          {mode.name} / 1v1 / {mode.durationSeconds} seconds
         </p>
       </header>
 
@@ -31,7 +30,7 @@ function BattleMatchmaking({ mode, onCancel }) {
         <div className="relative flex h-40 w-40 items-center justify-center">
           <span className="battle-search-ring absolute inset-0 rounded-full border border-[#e9d4b2]" />
           <span className="battle-search-ring absolute inset-5 rounded-full border border-[#efd9b6] [animation-delay:350ms]" />
-          <span className="absolute inset-9 rounded-full border-[5px] border-[#f5ead8] border-t-[#e8a33d]" />
+          <span className="absolute inset-9 animate-spin rounded-full border-[5px] border-[#f5ead8] border-t-[#e8a33d]" />
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#fff8ed] text-[#d58c20]">
             <Swords className="h-7 w-7" strokeWidth={1.7} />
           </span>
@@ -55,9 +54,22 @@ function BattleMatchmaking({ mode, onCancel }) {
       </section>
 
       <div className="mt-4 grid rounded-[8px] border border-[#e2e5e9] bg-white sm:grid-cols-3">
-        <Tip icon={Zap} title="Be fast" text="Answer confidently before time runs out." />
-        <Tip icon={Target} title="Be accurate" text="Correct answers earn battle points." bordered />
-        <Tip icon={BookOpen} title="Grow wiser" text="Every result includes a Bible reference." />
+        <Tip
+          icon={Zap}
+          title="Be fast"
+          text="Answer confidently before time runs out."
+        />
+        <Tip
+          icon={Target}
+          title="Be accurate"
+          text="Correct answers earn battle points."
+          bordered
+        />
+        <Tip
+          icon={BookOpen}
+          title="Grow wiser"
+          text="Every result includes a Bible reference."
+        />
       </div>
     </div>
   )
@@ -65,7 +77,11 @@ function BattleMatchmaking({ mode, onCancel }) {
 
 function Tip({ icon: Icon, title, text, bordered = false }) {
   return (
-    <div className={`flex items-center gap-3 px-5 py-4 ${bordered ? 'sm:border-x sm:border-[#eceef1]' : ''}`}>
+    <div
+      className={`flex items-center gap-3 px-5 py-4 ${
+        bordered ? 'sm:border-x sm:border-[#eceef1]' : ''
+      }`}
+    >
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fff7e9] text-[#d58c20]">
         <Icon className="h-4 w-4" />
       </span>

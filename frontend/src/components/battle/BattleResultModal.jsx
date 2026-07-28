@@ -36,6 +36,8 @@ function BattleResultModal({ battle, rank, onNext, onLobby }) {
             : draw
               ? `You matched ${battle.opponentName}.`
               : `${battle.opponentName} won this round.`}
+          {' '}Final score: {Math.max(0, Math.floor(battle.playerScore / 10))}
+          -{Math.floor(battle.opponentScore / 10)}.
         </p>
 
         <div className="mt-4 grid grid-cols-[1fr_auto] items-center rounded-[7px] border border-[#e4e6e9] bg-[#fafbfc] px-4 py-3 text-left">

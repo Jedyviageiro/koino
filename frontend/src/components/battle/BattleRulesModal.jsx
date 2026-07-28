@@ -2,11 +2,11 @@ import { Swords } from 'lucide-react'
 import ModalShell from '@/components/common/ModalShell.jsx'
 
 const ratings = [
-  ['200–699', 'Novice'],
-  ['700–1,199', 'Disciple'],
-  ['1,200–1,699', 'Scribe'],
-  ['1,700–2,199', 'Master'],
-  ['2,200–2,599', 'Grandmaster'],
+  ['200-699', 'Novice'],
+  ['700-1,199', 'Disciple'],
+  ['1,200-1,699', 'Scribe'],
+  ['1,700-2,199', 'Master'],
+  ['2,200-2,599', 'Grandmaster'],
   ['2,600+', 'Super Grandmaster'],
 ]
 
@@ -24,13 +24,19 @@ function BattleRulesModal({ onClose }) {
         <h2 id="battle-rules-title" className="mt-3 text-[20px] font-semibold">
           How Battle Space works
         </h2>
-        <p id="battle-rules-message" className="mt-1 text-[8px] leading-4 text-[#747b86]">
-          Start at 200 ELO. Win rated battles to climb. Stronger opponents
-          reward more; your rating never falls below 200.
+        <p
+          id="battle-rules-message"
+          className="mt-1 text-[8px] leading-4 text-[#747b86]"
+        >
+          Answer as many questions correctly as you can before time expires.
+          The highest correct-answer total wins; equal totals are a draw.
         </p>
         <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-1.5">
           {ratings.map(([range, rank]) => (
-            <div key={rank} className="flex items-center justify-between border-b border-[#eceef1] pb-1.5">
+            <div
+              key={rank}
+              className="flex items-center justify-between border-b border-[#eceef1] pb-1.5"
+            >
               <span className="text-[7px] tabular-nums text-[#858b95]">
                 {range}
               </span>
@@ -39,7 +45,7 @@ function BattleRulesModal({ onClose }) {
           ))}
         </div>
         <div className="mt-4 rounded-[6px] bg-[#fff8ed] px-3 py-2 text-[8px] leading-4 text-[#765522]">
-          Lightning: 10 / 60s · Rapid: 15 / 90s · Classical: 20 / 120s
+          Lightning: 60s / Rapid: 90s / Classical: 120s
         </div>
         <button
           type="button"

@@ -81,18 +81,6 @@ function BattleRail({ lobby }) {
           ))}
         </div>
       </section>
-
-      <section className="rounded-[8px] border border-[#eadfce] bg-[#fffbf5] p-5">
-        <p className="text-[10px] font-semibold text-[#9a671d]">
-          Question vault
-        </p>
-        <p className="mt-2 text-[22px] font-semibold">
-          {lobby.questionBankSize}
-        </p>
-        <p className="mt-1 text-[9px] leading-4 text-[#727986]">
-          Locally available questions, expanded by Gemini across six levels.
-        </p>
-      </section>
     </aside>
   )
 }

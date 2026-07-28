@@ -11,6 +11,7 @@ function BibleChapter({
   book,
   chapter,
   verses,
+  versionName,
   selectedIndex,
   textSize,
   bookmarkColors,
@@ -45,7 +46,7 @@ function BibleChapter({
             {book?.title || 'Bible'} {chapter?.chapterNumber || ''}
           </h2>
           <p className="mt-1 text-[13px] text-[#667089]">
-            King James Version
+            {versionName || 'King James Version'}
           </p>
         </div>
         <div className="flex gap-1">

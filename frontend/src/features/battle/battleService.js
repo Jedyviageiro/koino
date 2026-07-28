@@ -8,6 +8,10 @@ export function createBattle(mode) {
   return apiRequest('/battles', {
     method: 'POST',
     body: JSON.stringify({ mode }),
+    signal:
+      typeof AbortSignal.timeout === 'function'
+        ? AbortSignal.timeout(12000)
+        : undefined,
   })
 }
 
