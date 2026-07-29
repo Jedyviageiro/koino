@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Search } from 'lucide-react'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import {
+  AppPageLayout,
+  PageHeader,
+} from '@/components/common/AppPageLayout.jsx'
 import HomeRail from '@/components/home/HomeRail.jsx'
 import TodayPlanCard from '@/components/home/TodayPlanCard.jsx'
 import NotificationMenu from '@/components/home/NotificationMenu.jsx'
@@ -176,21 +179,18 @@ function HomePage({ onNavigate }) {
   }).format(new Date())
 
   return (
-    <div className="min-h-svh bg-white text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar name={session?.fullname || firstName} onNavigate={onNavigate} />
-
-      <main className="min-w-0 px-[18px] pb-16 pt-7 sm:px-7 lg:px-8 lg:pb-9 lg:pt-8">
-        <header className="mx-auto mb-6 flex max-w-[1040px] items-start justify-between">
-          <div>
-            <p className="mb-2 text-[11px] font-semibold uppercase text-[#b27413] lg:hidden">{today}</p>
-            <h1 className="text-[28px] font-semibold leading-[1.17] sm:text-[31px]">
-              {greeting.replace('Good ', 'Good ')}, {firstName}
-            </h1>
-            <p className="mt-2 text-[13px] text-[#677089] sm:text-[14px]">
-              Let&apos;s grow closer to God together.
-            </p>
-          </div>
-          <div className="flex gap-2 sm:gap-5">
+    <AppPageLayout
+      name={session?.fullname || firstName}
+      onNavigate={onNavigate}
+      activePath="/home"
+    >
+        <PageHeader
+          title={`${greeting}, ${firstName}`}
+          subtitle="Let's grow closer to God together."
+          eyebrow={<span className="lg:hidden">{today}</span>}
+          className="mb-6"
+          actions={
+            <>
             <button
               type="button"
               onClick={() => onNavigate('/bible')}
@@ -214,10 +214,11 @@ function HomePage({ onNavigate }) {
               }
               actioningId={actioningNotificationId}
             />
-          </div>
-        </header>
+            </>
+          }
+        />
 
-        <div className="mx-auto grid max-w-[1040px] items-start gap-5 xl:grid-cols-[minmax(0,710px)_minmax(290px,310px)]">
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(290px,310px)]">
           {loading ? (
           <div className="rounded-[15px] border border-[#e2e5ea] bg-white p-7">
             <div className="auth-skeleton h-10 w-40 rounded-[7px]" />
@@ -240,7 +241,6 @@ function HomePage({ onNavigate }) {
             onNavigate={onNavigate}
           />
         </div>
-      </main>
 
       {error && (
         <StatusModal
@@ -250,7 +250,7 @@ function HomePage({ onNavigate }) {
           onClose={() => setError('')}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

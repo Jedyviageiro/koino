@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Copy, ExternalLink, LoaderCircle } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import ModalShell from '@/components/common/ModalShell.jsx'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
 import {
   clearAuthSession,
   getAuthSession,
@@ -123,21 +123,15 @@ function SettingsPage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={form.fullname}
-        onNavigate={onNavigate}
-        activePath="/settings"
-      />
-
-      <main className="min-w-0 px-[18px] pb-12 pt-7 sm:px-7 lg:px-8 lg:pt-8">
-        <div className="mx-auto max-w-[1040px]">
-          <header className="mb-6">
-            <h1 className="text-[30px] font-semibold leading-tight">Settings</h1>
-            <p className="mt-1.5 text-[13px] text-[#667089]">
-              Manage your profile and account information.
-            </p>
-          </header>
+    <AppPageLayout
+      name={form.fullname}
+      onNavigate={onNavigate}
+      activePath="/settings"
+    >
+          <PageHeader
+            title="Settings"
+            subtitle="Manage your profile and account information."
+          />
 
           <form
             onSubmit={save}
@@ -318,9 +312,6 @@ function SettingsPage({ onNavigate }) {
               Deactivate Account
             </button>
           </section>
-        </div>
-      </main>
-
       {confirmDeactivate && (
         <ModalShell
           labelledBy="deactivate-title"
@@ -369,7 +360,7 @@ function SettingsPage({ onNavigate }) {
           onClose={() => setStatus(null)}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

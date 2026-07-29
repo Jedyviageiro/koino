@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.koino.backend.model.Friendship;
 import com.koino.backend.model.User;
 import com.koino.backend.repository.BattleProfileRepository;
+import com.koino.backend.repository.BattleRatingRepository;
 import com.koino.backend.repository.CommunityPostRepository;
 import com.koino.backend.repository.FriendshipRepository;
 import com.koino.backend.repository.UserActivePlanRepositor;
@@ -70,6 +71,7 @@ class FriendshipServiceTests {
             mock(UserProfileRepository.class),
             mock(UserActivePlanRepositor.class),
             mock(BattleProfileRepository.class),
+            mock(BattleRatingRepository.class),
             mock(CommunityPostRepository.class),
             notifications,
             userService

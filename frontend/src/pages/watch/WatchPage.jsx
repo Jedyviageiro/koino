@@ -9,7 +9,7 @@ import {
   TvMinimalPlay,
 } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getWatchCatalog } from '@/features/watch/watchService.js'
 
@@ -138,21 +138,16 @@ function WatchPage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname}
-        onNavigate={onNavigate}
-        activePath="/watch"
-      />
-
-      <main className="min-w-0 px-[18px] pb-12 pt-7 sm:px-7 lg:px-9 lg:pt-8">
-        <div className="mx-auto max-w-[1100px]">
-          <header className="mb-5">
-            <h1 className="text-[30px] font-semibold leading-tight">Watch</h1>
-            <p className="mt-1.5 text-[13px] text-[#667089]">
-              Watch videos that inspire, teach, and strengthen your faith.
-            </p>
-          </header>
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      activePath="/watch"
+    >
+          <PageHeader
+            title="Watch"
+            subtitle="Watch videos that inspire, teach, and strengthen your faith."
+            className="mb-5"
+          />
 
           {loading ? (
             <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
@@ -284,9 +279,6 @@ function WatchPage({ onNavigate }) {
               </aside>
             </div>
           )}
-        </div>
-      </main>
-
       {error && (
         <StatusModal
           type="error"
@@ -295,7 +287,7 @@ function WatchPage({ onNavigate }) {
           onClose={() => setError('')}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

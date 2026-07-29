@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import {
+  AppPageLayout,
+  PageHeader,
+  SectionTitle,
+} from '@/components/common/AppPageLayout.jsx'
 import CurrentPlanCard from '@/components/plans/CurrentPlanCard.jsx'
 import PlanRouteItem from '@/components/plans/PlanRouteItem.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
@@ -76,24 +80,18 @@ function PlansPage({ onNavigate }) {
       : Math.max(0, otherPlans.length - firstUpcomingPlanIndex - 1)
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname || 'Koino Reader'}
-        onNavigate={onNavigate}
-        activePath="/plans"
-      />
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      activePath="/plans"
+    >
+          <PageHeader
+            title="Plans"
+            subtitle="Stay consistent with God's Word through intentional reading plans."
+          />
 
-      <main className="min-w-0 px-[18px] pb-14 pt-7 sm:px-7 lg:px-9 lg:pt-9">
-        <div className="mx-auto max-w-[1100px]">
-          <header>
-            <h1 className="text-[30px] font-semibold leading-tight">Plans</h1>
-            <p className="mt-2 text-[14px] text-[#667089]">
-              Stay consistent with God&apos;s Word through intentional reading plans.
-            </p>
-          </header>
-
-          <section className="mt-8">
-            <h2 className="mb-3 text-[14px] font-semibold">My Current Plan</h2>
+          <section>
+            <SectionTitle>My Current Plan</SectionTitle>
             {data?.needsOnboarding ? (
               <div className="rounded-[8px] border border-[#e5dfd6] bg-white px-6 py-8">
                 <h2 className="text-[18px] font-semibold">
@@ -128,9 +126,7 @@ function PlansPage({ onNavigate }) {
 
           {!data?.needsOnboarding && (
             <section className="mt-7">
-              <h2 className="mb-3 text-[14px] font-semibold">
-                Your Reading Route
-              </h2>
+              <SectionTitle>Your Reading Route</SectionTitle>
               <div className="space-y-2.5">
                 {data
                   ? visiblePlans.map(({ template, index, existingPlan }) => (
@@ -167,8 +163,6 @@ function PlansPage({ onNavigate }) {
               )}
             </section>
           )}
-        </div>
-      </main>
 
       {error && (
         <StatusModal
@@ -181,7 +175,7 @@ function PlansPage({ onNavigate }) {
           }}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

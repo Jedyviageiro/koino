@@ -4,7 +4,10 @@ import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import CommunityComposer from '@/components/community/CommunityComposer.jsx'
 import CommunityPostCard from '@/components/community/CommunityPostCard.jsx'
 import UserProfileModal from '@/components/community/UserProfileModal.jsx'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import {
+  AppPageLayout,
+  PageHeader,
+} from '@/components/common/AppPageLayout.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import {
   addCommunityComment,
@@ -132,23 +135,16 @@ function CommunityPage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={user.fullname}
-        onNavigate={onNavigate}
-        activePath="/community"
-      />
-
-      <main className="min-w-0 px-[18px] pb-12 pt-7 sm:px-7 lg:px-9 lg:pt-8">
-        <div className="mx-auto max-w-[1100px]">
-          <header className="mb-5">
-            <h1 className="text-[30px] font-semibold leading-tight">
-              Community
-            </h1>
-            <p className="mt-1.5 text-[13px] text-[#667089]">
-              Share Scripture, ask questions, and encourage one another.
-            </p>
-          </header>
+    <AppPageLayout
+      name={user.fullname}
+      onNavigate={onNavigate}
+      activePath="/community"
+    >
+          <PageHeader
+            title="Community"
+            subtitle="Share Scripture, ask questions, and encourage one another."
+            className="mb-5"
+          />
 
           <CommunityComposer
             user={user}
@@ -222,9 +218,6 @@ function CommunityPage({ onNavigate }) {
               </div>
             )}
           </div>
-        </div>
-      </main>
-
       {error && (
         <StatusModal
           type="error"
@@ -245,7 +238,7 @@ function CommunityPage({ onNavigate }) {
           }}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

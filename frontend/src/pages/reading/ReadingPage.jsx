@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Bell, Search } from 'lucide-react'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import {
+  AppPageLayout,
+  PageHeader,
+} from '@/components/common/AppPageLayout.jsx'
 import BibleReader from '@/components/reading/BibleReader.jsx'
 import BookmarkModal from '@/components/reading/BookmarkModal.jsx'
 import ReadingRail from '@/components/reading/ReadingRail.jsx'
@@ -139,26 +142,18 @@ function ReadingPage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname || 'Koino Reader'}
-        onNavigate={onNavigate}
-      />
-
-      <main className="min-w-0 px-[18px] pb-14 pt-7 sm:px-7 lg:px-9 lg:pt-9">
-        <header className="mx-auto mb-6 flex max-w-[1100px] items-start justify-between">
-          <div>
-            <p className="text-[11px] font-semibold uppercase text-[#b27413]">
-              Daily Scripture
-            </p>
-            <h1 className="mt-1.5 text-[28px] font-semibold leading-tight sm:text-[32px]">
-              Make space for the Word
-            </h1>
-            <p className="mt-1.5 text-[13px] text-[#677089] sm:text-[14px]">
-              Read slowly, reflect, and continue when you are ready.
-            </p>
-          </div>
-          <div className="flex gap-2">
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      activePath="/plans"
+    >
+        <PageHeader
+          eyebrow="Daily Scripture"
+          title="Make space for the Word"
+          subtitle="Read slowly, reflect, and continue when you are ready."
+          className="mb-6"
+          actions={
+            <>
             <button
               type="button"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e1e4e9] bg-white hover:bg-[#f7f8fa]"
@@ -173,11 +168,12 @@ function ReadingPage({ onNavigate }) {
             >
               <Bell className="h-[18px] w-[18px]" />
             </button>
-          </div>
-        </header>
+            </>
+          }
+        />
 
         {!data ? (
-          <div className="mx-auto grid max-w-[1100px] gap-5 xl:grid-cols-[minmax(0,1fr)_270px]">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_270px]">
             <div className="rounded-[8px] border border-[#e1e4e9] bg-white p-7">
               <div className="auth-skeleton h-5 w-28 rounded-[6px]" />
               <div className="auth-skeleton mt-8 h-9 w-56 rounded-[6px]" />
@@ -186,7 +182,7 @@ function ReadingPage({ onNavigate }) {
             <div className="auth-skeleton hidden h-64 rounded-[8px] xl:block" />
           </div>
         ) : (
-          <div className="mx-auto grid max-w-[1100px] items-start gap-5 xl:grid-cols-[minmax(0,1fr)_270px]">
+          <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_270px]">
             <BibleReader
               task={data.task}
               verses={data.verses}
@@ -205,8 +201,6 @@ function ReadingPage({ onNavigate }) {
             <ReadingRail plan={data.plan} task={data.task} />
           </div>
         )}
-      </main>
-
       {bookmarkTarget && (
         <BookmarkModal
           verse={bookmarkTarget}
@@ -230,7 +224,7 @@ function ReadingPage({ onNavigate }) {
           }}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

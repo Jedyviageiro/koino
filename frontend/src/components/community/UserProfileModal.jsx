@@ -110,7 +110,7 @@ function UserProfileModal({
             <X className="h-4 w-4" />
           </button>
 
-          <header className="flex flex-col gap-4 px-5 pb-5 pt-6 sm:flex-row sm:items-start sm:px-6">
+          <header className="grid grid-cols-[auto_minmax(0,1fr)] gap-4 px-5 pb-5 pt-6 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:px-6">
             <CommunityAvatar author={profile} size="xl" />
             <div className="min-w-0 flex-1 sm:pt-1">
               <h2
@@ -128,7 +128,7 @@ function UserProfileModal({
               </p>
             </div>
             {profile.friendshipStatus !== 'SELF' && (
-              <div className="flex shrink-0 gap-2 pr-8 sm:pr-6">
+              <div className="col-span-2 flex min-w-0 pr-10 sm:col-span-1 sm:pr-8">
                 <FriendAction
                   status={profile.friendshipStatus}
                   working={working}

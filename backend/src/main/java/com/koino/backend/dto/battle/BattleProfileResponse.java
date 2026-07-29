@@ -1,15 +1,9 @@
 package com.koino.backend.dto.battle;
 
+import java.util.List;
+
 public record BattleProfileResponse(
-    int elo,
-    String rank,
-    int battles,
-    int wins,
-    int losses,
-    int draws,
-    int winStreak,
-    int bestWinStreak,
-    int winRate,
-    int nextRankElo
-) {
-}
+    List<BattleModeRatingResponse> ratings,
+    int totalBattles,
+    int totalWins
+) {}

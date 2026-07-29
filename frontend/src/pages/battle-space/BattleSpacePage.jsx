@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { LoaderCircle } from 'lucide-react'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import { AppPageLayout } from '@/components/common/AppPageLayout.jsx'
 import ModalShell from '@/components/common/ModalShell.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import BattleLobby from '@/components/battle/BattleLobby.jsx'
@@ -418,20 +418,19 @@ function BattleSpacePage({ onNavigate }) {
     }
   }
 
+  const selectedRating = lobby?.profile.ratings.find(
+    (rating) => rating.mode === (battle?.mode || selectedMode),
+  )
   const resultRank = battle?.ratingAfter
     ? rankFor(battle.ratingAfter)
-    : lobby?.profile.rank
+    : selectedRating?.rank
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#111318] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname}
-        onNavigate={guardedNavigate}
-        activePath="/battle-space"
-      />
-
-      <main className="min-w-0 px-[18px] pb-14 pt-7 sm:px-7 lg:px-9 lg:pt-9">
-        <div className="mx-auto max-w-[1100px]">
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={guardedNavigate}
+      activePath="/battle-space"
+    >
           {view === 'loading' && (
             <div className="flex min-h-[520px] items-center justify-center">
               <LoaderCircle className="h-6 w-6 animate-spin text-[#d58c20]" />
@@ -471,7 +470,7 @@ function BattleSpacePage({ onNavigate }) {
               battle={battle}
               user={{
                 ...session,
-                elo: lobby?.profile.elo,
+                elo: selectedRating?.elo,
               }}
               answering={answering}
               feedback={feedback}
@@ -480,9 +479,6 @@ function BattleSpacePage({ onNavigate }) {
               onTimeUp={endForTime}
             />
           )}
-        </div>
-      </main>
-
       {showRules && (
         <BattleRulesModal onClose={() => setShowRules(false)} />
       )}
@@ -540,7 +536,7 @@ function BattleSpacePage({ onNavigate }) {
           onClose={() => setError('')}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

@@ -1,6 +1,5 @@
 package com.koino.backend.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +10,4 @@ public interface BattleProfileRepository
     extends JpaRepository<BattleProfile, Long> {
 
     Optional<BattleProfile> findByUserUserId(Long userId);
-
-    List<BattleProfile> findTop10ByOrderByEloDescWinsDesc();
 }

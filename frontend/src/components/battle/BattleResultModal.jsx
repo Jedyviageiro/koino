@@ -42,7 +42,9 @@ function BattleResultModal({ battle, rank, onNext, onLobby }) {
 
         <div className="mt-4 grid grid-cols-[1fr_auto] items-center rounded-[7px] border border-[#e4e6e9] bg-[#fafbfc] px-4 py-3 text-left">
           <div>
-            <p className="text-[7px] uppercase text-[#8a9099]">ELO rating</p>
+            <p className="text-[7px] uppercase text-[#8a9099]">
+              {battle.modeName} ELO
+            </p>
             <div className="mt-1 flex items-center gap-2">
               <span className="text-[20px] font-semibold tabular-nums">
                 {battle.ratingAfter?.toLocaleString()}

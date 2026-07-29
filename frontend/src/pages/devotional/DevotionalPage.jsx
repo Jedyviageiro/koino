@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import {
-  ArrowLeft,
   BookOpen,
   ChevronRight,
   Heart,
 } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import {
+  AppPageLayout,
+  PageBackLink,
+} from '@/components/common/AppPageLayout.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getTodayDevotional } from '@/features/devotional/devotionalService.js'
 
@@ -23,7 +25,7 @@ function ReflectionText({ text }) {
 
 function DevotionalSkeleton() {
   return (
-    <div className="mx-auto max-w-[1100px] pt-2">
+    <div className="pt-2">
       <div className="auth-skeleton h-4 w-24 rounded-[5px]" />
       <div className="auth-skeleton mt-8 h-4 w-32 rounded-[5px]" />
       <div className="auth-skeleton mt-3 h-10 w-80 max-w-full rounded-[6px]" />
@@ -77,28 +79,20 @@ function DevotionalPage({ onNavigate }) {
     session?.fullname?.trim().split(/\s+/)[0] || 'there'
 
   return (
-    <div className="min-h-svh bg-[#fcfcfb] text-[#101318] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname}
-        onNavigate={onNavigate}
-        activePath="/plans"
-      />
-
-      <main className="min-w-0 px-[18px] pb-12 pt-7 sm:px-7 lg:px-9 lg:pt-8">
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      activePath="/plans"
+    >
         {!data ? (
           <DevotionalSkeleton />
         ) : (
-          <article className="mx-auto max-w-[1100px]">
-            <button
-              type="button"
-              onClick={() => onNavigate('/plans')}
-              className="flex items-center gap-2 text-[10px] font-medium text-[#596275] transition-colors hover:text-[#b27413]"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.7} />
+          <article>
+            <PageBackLink onClick={() => onNavigate('/plans')}>
               Back to Plans
-            </button>
+            </PageBackLink>
 
-            <header className="mt-8">
+            <header>
               <p className="text-[11px] font-semibold text-[#c27c11]">
                 Today&apos;s Devotional
               </p>
@@ -163,8 +157,6 @@ function DevotionalPage({ onNavigate }) {
             </section>
           </article>
         )}
-      </main>
-
       {error && (
         <StatusModal
           type="error"
@@ -176,7 +168,7 @@ function DevotionalPage({ onNavigate }) {
           }}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowLeft, Bell, Play, Search } from 'lucide-react'
+import { Bell, Play, Search } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import {
+  AppPageLayout,
+  PageBackLink,
+} from '@/components/common/AppPageLayout.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getWatchCatalog } from '@/features/watch/watchService.js'
 
@@ -114,27 +117,16 @@ function WatchPlayerPage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname}
-        onNavigate={onNavigate}
-        activePath="/watch"
-      />
-
-      <main
-        ref={topRef}
-        className="min-w-0 scroll-mt-4 px-[18px] pb-12 pt-6 sm:px-7 lg:px-8 lg:pt-7"
-      >
-        <div className="mx-auto max-w-[1080px]">
-          <header className="mb-5 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => onNavigate('/watch')}
-              className="flex h-9 items-center gap-2 rounded-[7px] px-2 text-[10px] font-medium text-[#596275] transition-colors hover:bg-white hover:text-[#252a32]"
-            >
-              <ArrowLeft className="h-4 w-4" />
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      activePath="/watch"
+      mainClassName="scroll-mt-4"
+    >
+          <header ref={topRef} className="mb-5 flex items-start justify-between">
+            <PageBackLink onClick={() => onNavigate('/watch')} className="mb-0">
               Back to Watch
-            </button>
+            </PageBackLink>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -227,9 +219,6 @@ function WatchPlayerPage({ onNavigate }) {
               </aside>
             </div>
           ) : null}
-        </div>
-      </main>
-
       {error && (
         <StatusModal
           type="error"
@@ -238,7 +227,7 @@ function WatchPlayerPage({ onNavigate }) {
           onClose={() => setError('')}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

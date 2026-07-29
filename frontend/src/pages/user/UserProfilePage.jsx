@@ -7,7 +7,10 @@ import {
   Swords,
   UserPlus,
 } from 'lucide-react'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import {
+  AppPageLayout,
+  PageBackLink,
+} from '@/components/common/AppPageLayout.jsx'
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
 import ProfileOverview from '@/components/community/ProfileOverview.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
@@ -88,8 +91,7 @@ function UserProfilePage({ username, onNavigate }) {
   }
 
   const content = (
-    <main className="min-w-0 px-[18px] pb-14 pt-5 sm:px-7 lg:px-9 lg:pt-7">
-      <div className="mx-auto max-w-[1080px]">
+      <>
         {!signedIn ? (
           <header className="mb-6 flex items-center justify-between border-b border-[#e4e7eb] pb-5">
             <button
@@ -108,13 +110,9 @@ function UserProfilePage({ username, onNavigate }) {
             </button>
           </header>
         ) : (
-          <button
-            type="button"
-            onClick={() => onNavigate('/community')}
-            className="mb-5 text-[9px] text-[#727b88] transition-colors hover:text-[#9b681d]"
-          >
-            Community <span className="px-1.5">&rsaquo;</span> @{username}
-          </button>
+          <PageBackLink onClick={() => onNavigate('/community')}>
+            Community / @{username}
+          </PageBackLink>
         )}
 
         {loading ? (
@@ -201,23 +199,15 @@ function UserProfilePage({ username, onNavigate }) {
             </footer>
           </article>
         ) : null}
-      </div>
-    </main>
+      </>
   )
 
   return (
-    <div
-      className={`min-h-svh bg-[#fbfcfe] text-[#111318] ${
-        signedIn ? 'lg:grid lg:grid-cols-[164px_minmax(0,1fr)]' : ''
-      }`}
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      showSidebar={signedIn}
     >
-      {signedIn && (
-        <HomeSidebar
-          name={session?.fullname}
-          onNavigate={onNavigate}
-          activePath=""
-        />
-      )}
       {content}
       {error && (
         <StatusModal
@@ -227,7 +217,7 @@ function UserProfilePage({ username, onNavigate }) {
           onClose={() => setError('')}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

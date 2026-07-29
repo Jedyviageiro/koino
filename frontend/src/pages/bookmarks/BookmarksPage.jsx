@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Bookmark, BookOpen, Trash2 } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import {
   getVerseBookmarks,
@@ -74,25 +74,17 @@ function BookmarksPage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname || 'Koino Reader'}
-        onNavigate={onNavigate}
-        activePath="/bookmarks"
-      />
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      activePath="/bookmarks"
+    >
+          <PageHeader
+            title="Bookmarks"
+            subtitle="Return to the verses you saved along the way."
+          />
 
-      <main className="min-w-0 px-[18px] pb-14 pt-7 sm:px-7 lg:px-9 lg:pt-9">
-        <div className="mx-auto max-w-[1100px]">
-          <header>
-            <h1 className="text-[30px] font-semibold leading-tight">
-              Bookmarks
-            </h1>
-            <p className="mt-2 text-[14px] text-[#667089]">
-              Return to the verses you saved along the way.
-            </p>
-          </header>
-
-          <section className="mt-8">
+          <section>
             {loading ? (
               <div className="space-y-3">
                 {Array.from({ length: 3 }, (_, index) => (
@@ -170,8 +162,6 @@ function BookmarksPage({ onNavigate }) {
               </div>
             )}
           </section>
-        </div>
-      </main>
 
       {error && (
         <StatusModal
@@ -181,7 +171,7 @@ function BookmarksPage({ onNavigate }) {
           onClose={() => setError('')}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

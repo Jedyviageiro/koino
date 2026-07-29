@@ -10,14 +10,18 @@ import com.koino.backend.dto.user.FriendUserResponse;
 import com.koino.backend.dto.user.FriendshipResponse;
 import com.koino.backend.dto.user.PublicUserProfileResponse;
 import com.koino.backend.dto.user.PublicUserProfileResponse.PublicBattleResponse;
+import com.koino.backend.dto.user.PublicUserProfileResponse.PublicModeRatingResponse;
 import com.koino.backend.dto.user.PublicUserProfileResponse.PublicPlanResponse;
 import com.koino.backend.model.BattleProfile;
+import com.koino.backend.model.BattleMode;
+import com.koino.backend.model.BattleRating;
 import com.koino.backend.model.Friendship;
 import com.koino.backend.model.FriendshipStatus;
 import com.koino.backend.model.User;
 import com.koino.backend.model.UserActivePlan;
 import com.koino.backend.model.UserProfile;
 import com.koino.backend.repository.BattleProfileRepository;
+import com.koino.backend.repository.BattleRatingRepository;
 import com.koino.backend.repository.CommunityPostRepository;
 import com.koino.backend.repository.FriendshipRepository;
 import com.koino.backend.repository.UserActivePlanRepositor;
@@ -31,6 +35,7 @@ public class FriendshipService {
     private final UserProfileRepository userProfileRepository;
     private final UserActivePlanRepositor activePlanRepository;
     private final BattleProfileRepository battleProfileRepository;
+    private final BattleRatingRepository battleRatingRepository;
     private final CommunityPostRepository communityPostRepository;
     private final NotificationService notificationService;
     private final UserService userService;
@@ -41,6 +46,7 @@ public class FriendshipService {
         UserProfileRepository userProfileRepository,
         UserActivePlanRepositor activePlanRepository,
         BattleProfileRepository battleProfileRepository,
+        BattleRatingRepository battleRatingRepository,
         CommunityPostRepository communityPostRepository,
         NotificationService notificationService,
         UserService userService
@@ -50,6 +56,7 @@ public class FriendshipService {
         this.userProfileRepository = userProfileRepository;
         this.activePlanRepository = activePlanRepository;
         this.battleProfileRepository = battleProfileRepository;
+        this.battleRatingRepository = battleRatingRepository;
         this.communityPostRepository = communityPostRepository;
         this.notificationService = notificationService;
         this.userService = userService;
@@ -224,17 +231,90 @@ public class FriendshipService {
 
     private PublicBattleResponse toBattle(BattleProfile battle) {
         if (battle == null) {
-            return new PublicBattleResponse(200, "Novice", 0, 0, 0);
+            return new PublicBattleResponse(
+                0,
+                0,
+                0,
+                java.util.Arrays.stream(BattleMode.values())
+                    .map(mode -> defaultModeRating(mode))
+                    .toList()
+            );
         }
-        int winRate = battle.getBattles() == 0
+        List<BattleRating> ratings = battleRatingRepository
+            .findByProfileBattleProfileIdOrderByModeAsc(
+                battle.getBattleProfileId()
+            );
+        int battles = ratings.isEmpty()
+            ? battle.getBattles()
+            : ratings.stream().mapToInt(BattleRating::getBattles).sum();
+        int wins = ratings.isEmpty()
+            ? battle.getWins()
+            : ratings.stream().mapToInt(BattleRating::getWins).sum();
+        int winRate = battles == 0
             ? 0
-            : Math.round(battle.getWins() * 100f / battle.getBattles());
+            : Math.round(wins * 100f / battles);
         return new PublicBattleResponse(
-            battle.getElo(),
-            BattleSpaceService.rankFor(battle.getElo()),
-            battle.getBattles(),
-            battle.getWins(),
+            battles,
+            wins,
+            winRate,
+            java.util.Arrays.stream(BattleMode.values())
+                .map(mode -> ratings.stream()
+                    .filter(rating -> rating.getMode() == mode)
+                    .findFirst()
+                    .map(this::toPublicModeRating)
+                    .orElseGet(() -> legacyModeRating(mode, battle)))
+                .toList()
+        );
+    }
+
+    private PublicModeRatingResponse toPublicModeRating(
+        BattleRating rating
+    ) {
+        int winRate = rating.getBattles() == 0
+            ? 0
+            : Math.round(rating.getWins() * 100f / rating.getBattles());
+        return new PublicModeRatingResponse(
+            rating.getMode().name(),
+            rating.getMode().getDisplayName(),
+            rating.getElo(),
+            BattleSpaceService.rankFor(rating.getElo()),
+            rating.getBattles(),
+            rating.getWins(),
             winRate
+        );
+    }
+
+    private PublicModeRatingResponse legacyModeRating(
+        BattleMode mode,
+        BattleProfile battle
+    ) {
+        boolean legacyMode = mode == BattleMode.LIGHTNING;
+        int modeBattles = legacyMode ? battle.getBattles() : 0;
+        int modeWins = legacyMode ? battle.getWins() : 0;
+        int winRate = modeBattles == 0
+            ? 0
+            : Math.round(modeWins * 100f / modeBattles);
+        int elo = legacyMode ? Math.max(200, battle.getElo()) : 200;
+        return new PublicModeRatingResponse(
+            mode.name(),
+            mode.getDisplayName(),
+            elo,
+            BattleSpaceService.rankFor(elo),
+            modeBattles,
+            modeWins,
+            winRate
+        );
+    }
+
+    private PublicModeRatingResponse defaultModeRating(BattleMode mode) {
+        return new PublicModeRatingResponse(
+            mode.name(),
+            mode.getDisplayName(),
+            200,
+            "Novice",
+            0,
+            0,
+            0
         );
     }
 

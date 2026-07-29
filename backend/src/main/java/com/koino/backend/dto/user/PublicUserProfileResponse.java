@@ -1,6 +1,7 @@
 package com.koino.backend.dto.user;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record PublicUserProfileResponse(
     Long userId,
@@ -26,6 +27,15 @@ public record PublicUserProfileResponse(
     ) {}
 
     public record PublicBattleResponse(
+        int battles,
+        int wins,
+        int winRate,
+        List<PublicModeRatingResponse> ratings
+    ) {}
+
+    public record PublicModeRatingResponse(
+        String mode,
+        String modeName,
         int elo,
         String rank,
         int battles,

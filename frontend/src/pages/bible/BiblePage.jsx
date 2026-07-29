@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import BibleChapter from '@/components/bible/BibleChapter.jsx'
 import BibleToolbar from '@/components/bible/BibleToolbar.jsx'
-import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
 import BookmarkModal from '@/components/reading/BookmarkModal.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import ShareVerseModal from '@/components/community/ShareVerseModal.jsx'
@@ -349,21 +349,16 @@ function BiblePage({ onNavigate }) {
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={session?.fullname || 'Koino Reader'}
-        onNavigate={onNavigate}
-        activePath="/bible"
-      />
-
-      <main className="min-w-0 px-[18px] pb-10 pt-6 sm:px-7 lg:px-8 lg:pt-7">
-        <div className="mx-auto max-w-[1180px]">
-          <header className="mb-4">
-            <h1 className="text-[26px] font-semibold leading-tight">Bible</h1>
-            <p className="mt-1 text-[12px] text-[#667089]">
-              Read, study, and grow in God&apos;s Word.
-            </p>
-          </header>
+    <AppPageLayout
+      name={session?.fullname}
+      onNavigate={onNavigate}
+      activePath="/bible"
+    >
+          <PageHeader
+            title="Bible"
+            subtitle="Read, study, and grow in God's Word."
+            className="mb-5"
+          />
 
           <BibleToolbar
             versions={versions}
@@ -415,9 +410,6 @@ function BiblePage({ onNavigate }) {
             onBookmark={setBookmarkTarget}
             onShare={setShareTarget}
           />
-        </div>
-      </main>
-
       {bookmarkTarget && (
         <BookmarkModal
           verse={bookmarkTarget}
@@ -450,7 +442,7 @@ function BiblePage({ onNavigate }) {
           }}
         />
       )}
-    </div>
+    </AppPageLayout>
   )
 }
 

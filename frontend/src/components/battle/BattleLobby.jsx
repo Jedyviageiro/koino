@@ -10,6 +10,7 @@ import {
   Zap,
 } from 'lucide-react'
 import battleHero from '@/assets/images/battle-space-hero.png'
+import { PageHeader } from '@/components/common/AppPageLayout.jsx'
 import BattleRail from './BattleRail.jsx'
 
 const modeIcons = {
@@ -36,23 +37,17 @@ function BattleLobby({
     lobby.modes.find((item) => item.mode === selectedMode) || lobby.modes[0]
 
   return (
-    <div className="mx-auto max-w-[1100px]">
-      <header className="mb-5 flex items-start justify-between gap-5">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-[30px] font-semibold leading-tight">
-              Battle Space
-            </h1>
-            <span className="rounded-[4px] bg-[#fff2d8] px-2 py-1 text-[8px] font-bold uppercase text-[#9a671d]">
-              Beta
-            </span>
-          </div>
-          <p className="mt-1.5 text-[11px] text-[#69717f]">
-            {challengeProfile
-              ? `Choose a time control for your challenge with ${challengeProfile.fullname}.`
-              : 'Compete in timed Bible knowledge battles.'}
-          </p>
-        </div>
+    <div>
+      <PageHeader
+        title="Battle Space"
+        eyebrow="Beta"
+        subtitle={
+          challengeProfile
+            ? `Choose a time control for your challenge with ${challengeProfile.fullname}.`
+            : 'Compete in timed Bible knowledge battles.'
+        }
+        className="mb-5"
+        actions={
         <button
           type="button"
           onClick={onHelp}
@@ -61,7 +56,8 @@ function BattleLobby({
           <CircleHelp className="h-3.5 w-3.5" />
           How it works
         </button>
-      </header>
+        }
+      />
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,720px)_minmax(260px,300px)]">
         <div className="space-y-5">
@@ -114,6 +110,9 @@ function BattleLobby({
               {lobby.modes.map((item) => {
                 const Icon = modeIcons[item.mode]
                 const active = item.mode === selectedMode
+                const rating = lobby.profile.ratings.find(
+                  (candidate) => candidate.mode === item.mode,
+                )
                 return (
                   <button
                     key={item.mode}
@@ -133,6 +132,9 @@ function BattleLobby({
                     />
                     <p className="mt-4 text-[11px] font-semibold">
                       {item.name}
+                    </p>
+                    <p className="mt-1 text-[10px] font-semibold tabular-nums text-[#a66d19]">
+                      {(rating?.elo || 200).toLocaleString()} ELO
                     </p>
                     <div className="mt-2 flex items-center gap-2 text-[8px] text-[#777e8a]">
                       <span>Answer as many as you can</span>
@@ -175,7 +177,7 @@ function BattleLobby({
           </section>
         </div>
 
-        <BattleRail lobby={lobby} />
+        <BattleRail lobby={lobby} selectedMode={selectedMode} />
       </div>
     </div>
   )

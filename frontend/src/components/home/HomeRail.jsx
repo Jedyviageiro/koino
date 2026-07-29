@@ -6,6 +6,7 @@ import {
   Search,
   Sparkles,
 } from 'lucide-react'
+import { SectionTitle } from '@/components/common/AppPageLayout.jsx'
 
 const quickActions = [
   { label: 'Search Bible', icon: Search, path: '/bible' },
@@ -30,11 +31,9 @@ function HomeRail({ streak, bookmarkCount, onNavigate }) {
         </div>
       </section>
 
-      <section className="min-h-[300px] rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
-        <header className="flex items-center justify-between">
-          <h2 className="text-[14px] font-bold">Quick Actions</h2>
-        </header>
-        <div className="mt-7 grid grid-cols-3 gap-2.5">
+      <section className="self-start rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
+        <SectionTitle>Quick Actions</SectionTitle>
+        <div className="mt-5 grid grid-cols-3 gap-2.5">
           {quickActions.map((item) => {
             const Icon = item.icon
             return (
@@ -57,7 +56,7 @@ function HomeRail({ streak, bookmarkCount, onNavigate }) {
         </div>
       </section>
 
-      <section className="min-h-[195px] rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
+      <section className="rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
         <header className="flex items-center justify-between">
           <h2 className="text-[14px] font-bold">Your Streak</h2>
           <span className="text-[11px] text-[#7b8392]">Last 7 days</span>

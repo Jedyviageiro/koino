@@ -23,20 +23,26 @@ function PlayerAvatar({ entry }) {
   )
 }
 
-function BattleRail({ lobby }) {
-  const { profile, leaderboard } = lobby
+function BattleRail({ lobby, selectedMode }) {
+  const { profile } = lobby
+  const rating =
+    profile.ratings.find((item) => item.mode === selectedMode) ||
+    profile.ratings[0]
+  const leaderboard = lobby.leaderboards?.[selectedMode] || []
 
   return (
     <aside className="space-y-4">
       <section className="rounded-[8px] border border-[#e3e5e8] bg-white p-5">
-        <p className="text-[10px] font-semibold text-[#606774]">Your rating</p>
+        <p className="text-[10px] font-semibold text-[#606774]">
+          {rating.modeName} rating
+        </p>
         <div className="mt-4 flex items-end justify-between">
           <div>
             <p className="text-[29px] font-semibold leading-none tabular-nums">
-              {profile.elo.toLocaleString()}
+              {rating.elo.toLocaleString()}
             </p>
             <div className="mt-2">
-              <BattleRankBadge rank={profile.rank} />
+              <BattleRankBadge rank={rating.rank} />
             </div>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#fff7e9] text-[#d58c20]">
@@ -44,16 +50,18 @@ function BattleRail({ lobby }) {
           </div>
         </div>
         <div className="mt-5 grid grid-cols-3 border-t border-[#eceef1] pt-4 text-center">
-          <Stat label="Battles" value={profile.battles} />
-          <Stat label="Win rate" value={`${profile.winRate}%`} bordered />
-          <Stat label="Streak" value={profile.winStreak} />
+          <Stat label="Battles" value={rating.battles} />
+          <Stat label="Win rate" value={`${rating.winRate}%`} bordered />
+          <Stat label="Streak" value={rating.winStreak} />
         </div>
       </section>
 
       <section className="rounded-[8px] border border-[#e3e5e8] bg-white p-5">
         <div className="flex items-center justify-between">
           <h2 className="font-sans text-[11px] font-semibold">Leaderboard</h2>
-          <span className="text-[9px] text-[#858b95]">Global</span>
+          <span className="text-[9px] text-[#858b95]">
+            {rating.modeName}
+          </span>
         </div>
         <div className="mt-4 space-y-2">
           {leaderboard.slice(0, 6).map((entry) => (

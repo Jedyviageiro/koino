@@ -3,8 +3,10 @@ package com.koino.backend.service;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +18,7 @@ import com.koino.backend.dto.battle.BattleAnswerResponse;
 import com.koino.backend.dto.battle.BattleLeaderboardEntryResponse;
 import com.koino.backend.dto.battle.BattleLobbyResponse;
 import com.koino.backend.dto.battle.BattleModeResponse;
+import com.koino.backend.dto.battle.BattleModeRatingResponse;
 import com.koino.backend.dto.battle.BattleProfileResponse;
 import com.koino.backend.dto.battle.BattleQuestionResponse;
 import com.koino.backend.dto.battle.BattleStateResponse;
@@ -23,12 +26,14 @@ import com.koino.backend.model.BattleMode;
 import com.koino.backend.model.BattleOpponentType;
 import com.koino.backend.model.BattleProfile;
 import com.koino.backend.model.BattleQuestion;
+import com.koino.backend.model.BattleRating;
 import com.koino.backend.model.BattleSession;
 import com.koino.backend.model.BattleSessionQuestion;
 import com.koino.backend.model.BattleStatus;
 import com.koino.backend.model.User;
 import com.koino.backend.repository.BattleProfileRepository;
 import com.koino.backend.repository.BattleQuestionRepository;
+import com.koino.backend.repository.BattleRatingRepository;
 import com.koino.backend.repository.BattleSessionRepository;
 import com.koino.backend.repository.UserRepository;
 
@@ -48,17 +53,20 @@ public class BattleSpaceService {
     );
 
     private final BattleProfileRepository profileRepository;
+    private final BattleRatingRepository ratingRepository;
     private final BattleQuestionRepository questionRepository;
     private final BattleSessionRepository sessionRepository;
     private final UserRepository userRepository;
 
     public BattleSpaceService(
         BattleProfileRepository profileRepository,
+        BattleRatingRepository ratingRepository,
         BattleQuestionRepository questionRepository,
         BattleSessionRepository sessionRepository,
         UserRepository userRepository
     ) {
         this.profileRepository = profileRepository;
+        this.ratingRepository = ratingRepository;
         this.questionRepository = questionRepository;
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
@@ -67,38 +75,20 @@ public class BattleSpaceService {
     @Transactional
     public BattleLobbyResponse getLobby(Long userId) {
         BattleProfile profile = getOrCreateProfile(userId);
-        List<BattleProfile> leaders =
-            profileRepository.findTop10ByOrderByEloDescWinsDesc();
-        List<BattleLeaderboardEntryResponse> leaderboard =
-            new ArrayList<>();
-        int position = 1;
-        for (BattleProfile leader : leaders) {
-            leaderboard.add(new BattleLeaderboardEntryResponse(
-                position++,
-                leader.getUser().getUserId(),
-                leader.getUser().getFullname(),
-                leader.getUser().getProfilePictureUrl(),
-                leader.getElo(),
-                rankFor(leader.getElo()),
-                leader.getUser().getUserId().equals(userId)
-            ));
-        }
-        if (leaderboard.stream().noneMatch(
-            BattleLeaderboardEntryResponse::currentUser
-        )) {
-            leaderboard.add(new BattleLeaderboardEntryResponse(
-                position,
-                userId,
-                profile.getUser().getFullname(),
-                profile.getUser().getProfilePictureUrl(),
-                profile.getElo(),
-                rankFor(profile.getElo()),
-                true
-            ));
+        List<BattleRating> ratings = new ArrayList<>();
+        Map<String, List<BattleLeaderboardEntryResponse>> leaderboards =
+            new LinkedHashMap<>();
+        for (BattleMode mode : BattleMode.values()) {
+            BattleRating rating = getOrCreateRating(profile, mode);
+            ratings.add(rating);
+            leaderboards.put(
+                mode.name(),
+                leaderboardFor(mode, rating, userId)
+            );
         }
 
         return new BattleLobbyResponse(
-            toProfile(profile),
+            toProfile(ratings),
             java.util.Arrays.stream(BattleMode.values())
                 .map(mode -> new BattleModeResponse(
                     mode.name(),
@@ -106,7 +96,7 @@ public class BattleSpaceService {
                     mode.getDurationSeconds()
                 ))
                 .toList(),
-            leaderboard,
+            leaderboards,
             true
         );
     }
@@ -114,12 +104,13 @@ public class BattleSpaceService {
     @Transactional
     public BattleStateResponse createBattle(Long userId, BattleMode mode) {
         BattleProfile profile = getOrCreateProfile(userId);
-        List<BattleQuestion> available = questionsFor(profile.getElo());
+        BattleRating rating = getOrCreateRating(profile, mode);
+        List<BattleQuestion> available = questionsFor(rating.getElo());
 
         BattleSession battle = new BattleSession();
         configureBattle(
             battle,
-            profile,
+            rating,
             mode,
             BattleOpponentType.BOT,
             null,
@@ -135,7 +126,7 @@ public class BattleSpaceService {
         int opponentOffset = (seed % 241) - 120;
         battle.setOpponentElo(Math.max(
             MINIMUM_ELO,
-            profile.getElo() + opponentOffset
+            rating.getElo() + opponentOffset
         ));
         return toState(sessionRepository.save(battle));
     }
@@ -148,8 +139,12 @@ public class BattleSpaceService {
     ) {
         BattleProfile challenger = getOrCreateProfile(challengerId);
         BattleProfile addressee = getOrCreateProfile(addresseeId);
+        BattleRating challengerRating = getOrCreateRating(challenger, mode);
+        BattleRating addresseeRating = getOrCreateRating(addressee, mode);
         List<BattleQuestion> available = questionsFor(
-            Math.round((challenger.getElo() + addressee.getElo()) / 2f)
+            Math.round(
+                (challengerRating.getElo() + addresseeRating.getElo()) / 2f
+            )
         );
         String challengerBattleId = UUID.randomUUID().toString();
         String addresseeBattleId = UUID.randomUUID().toString();
@@ -158,7 +153,7 @@ public class BattleSpaceService {
         challengerBattle.setBattleId(challengerBattleId);
         configureBattle(
             challengerBattle,
-            challenger,
+            challengerRating,
             mode,
             BattleOpponentType.USER,
             addressee.getUser(),
@@ -168,13 +163,13 @@ public class BattleSpaceService {
         challengerBattle.setOpponentName(
             addressee.getUser().getFullname()
         );
-        challengerBattle.setOpponentElo(addressee.getElo());
+        challengerBattle.setOpponentElo(addresseeRating.getElo());
 
         BattleSession addresseeBattle = new BattleSession();
         addresseeBattle.setBattleId(addresseeBattleId);
         configureBattle(
             addresseeBattle,
-            addressee,
+            addresseeRating,
             mode,
             BattleOpponentType.USER,
             challenger.getUser(),
@@ -186,7 +181,7 @@ public class BattleSpaceService {
         addresseeBattle.setOpponentName(
             challenger.getUser().getFullname()
         );
-        addresseeBattle.setOpponentElo(challenger.getElo());
+        addresseeBattle.setOpponentElo(challengerRating.getElo());
 
         sessionRepository.save(challengerBattle);
         sessionRepository.save(addresseeBattle);
@@ -225,21 +220,21 @@ public class BattleSpaceService {
 
     private void configureBattle(
         BattleSession battle,
-        BattleProfile profile,
+        BattleRating rating,
         BattleMode mode,
         BattleOpponentType opponentType,
         User opponentUser,
         String pairedBattleId,
         List<BattleQuestion> available
     ) {
-        battle.setUser(profile.getUser());
+        battle.setUser(rating.getProfile().getUser());
         battle.setMode(mode);
         battle.setStatus(BattleStatus.ACTIVE);
         battle.setOpponentType(opponentType);
         battle.setOpponentUser(opponentUser);
         battle.setPairedBattleId(pairedBattleId);
-        battle.setPlayerEloBefore(profile.getElo());
-        battle.setPlayerEloAfter(profile.getElo());
+        battle.setPlayerEloBefore(rating.getElo());
+        battle.setPlayerEloAfter(rating.getElo());
         Instant startedAt = Instant.now();
         battle.setStartedAt(startedAt);
         battle.setExpiresAt(
@@ -395,6 +390,7 @@ public class BattleSpaceService {
         BattleProfile profile = getOrCreateProfile(
             battle.getUser().getUserId()
         );
+        BattleRating rating = getOrCreateRating(profile, battle.getMode());
         int outcome = Integer.compare(
             battle.getPlayerScore(),
             battle.getOpponentScore()
@@ -413,24 +409,24 @@ public class BattleSpaceService {
         battle.setRatingChange(change);
         battle.setPlayerEloAfter(after);
 
-        profile.setElo(after);
-        profile.setBattles(profile.getBattles() + 1);
+        rating.setElo(after);
+        rating.setBattles(rating.getBattles() + 1);
         if (outcome > 0) {
-            profile.setWins(profile.getWins() + 1);
-            profile.setWinStreak(profile.getWinStreak() + 1);
-            profile.setBestWinStreak(Math.max(
-                profile.getBestWinStreak(),
-                profile.getWinStreak()
+            rating.setWins(rating.getWins() + 1);
+            rating.setWinStreak(rating.getWinStreak() + 1);
+            rating.setBestWinStreak(Math.max(
+                rating.getBestWinStreak(),
+                rating.getWinStreak()
             ));
         } else if (outcome < 0) {
-            profile.setLosses(profile.getLosses() + 1);
-            profile.setWinStreak(0);
+            rating.setLosses(rating.getLosses() + 1);
+            rating.setWinStreak(0);
         } else {
-            profile.setDraws(profile.getDraws() + 1);
-            profile.setWinStreak(0);
+            rating.setDraws(rating.getDraws() + 1);
+            rating.setWinStreak(0);
         }
-        profile.setUpdatedAt(Instant.now());
-        profileRepository.save(profile);
+        rating.setUpdatedAt(Instant.now());
+        ratingRepository.save(rating);
     }
 
     private void syncOpponentProgress(
@@ -618,21 +614,97 @@ public class BattleSpaceService {
         });
     }
 
-    private BattleProfileResponse toProfile(BattleProfile profile) {
-        int winRate = profile.getBattles() == 0
-            ? 0
-            : Math.round((profile.getWins() * 100f) / profile.getBattles());
+    private BattleRating getOrCreateRating(
+        BattleProfile profile,
+        BattleMode mode
+    ) {
+        return ratingRepository
+            .findByProfileBattleProfileIdAndMode(
+                profile.getBattleProfileId(),
+                mode
+            )
+            .orElseGet(() -> {
+                BattleRating rating = new BattleRating();
+                rating.setProfile(profile);
+                rating.setMode(mode);
+                if (mode == BattleMode.LIGHTNING) {
+                    rating.setElo(Math.max(MINIMUM_ELO, profile.getElo()));
+                    rating.setBattles(profile.getBattles());
+                    rating.setWins(profile.getWins());
+                    rating.setLosses(profile.getLosses());
+                    rating.setDraws(profile.getDraws());
+                    rating.setWinStreak(profile.getWinStreak());
+                    rating.setBestWinStreak(profile.getBestWinStreak());
+                } else {
+                    rating.setElo(MINIMUM_ELO);
+                }
+                return ratingRepository.save(rating);
+            });
+    }
+
+    private List<BattleLeaderboardEntryResponse> leaderboardFor(
+        BattleMode mode,
+        BattleRating currentRating,
+        Long userId
+    ) {
+        List<BattleLeaderboardEntryResponse> leaderboard =
+            new ArrayList<>();
+        int position = 1;
+        for (BattleRating rating :
+            ratingRepository.findTop10ByModeOrderByEloDescWinsDesc(mode)) {
+            User leader = rating.getProfile().getUser();
+            leaderboard.add(new BattleLeaderboardEntryResponse(
+                position++,
+                leader.getUserId(),
+                leader.getFullname(),
+                leader.getProfilePictureUrl(),
+                rating.getElo(),
+                rankFor(rating.getElo()),
+                leader.getUserId().equals(userId)
+            ));
+        }
+        if (leaderboard.stream().noneMatch(
+            BattleLeaderboardEntryResponse::currentUser
+        )) {
+            User currentUser = currentRating.getProfile().getUser();
+            leaderboard.add(new BattleLeaderboardEntryResponse(
+                position,
+                userId,
+                currentUser.getFullname(),
+                currentUser.getProfilePictureUrl(),
+                currentRating.getElo(),
+                rankFor(currentRating.getElo()),
+                true
+            ));
+        }
+        return leaderboard;
+    }
+
+    private BattleProfileResponse toProfile(List<BattleRating> ratings) {
         return new BattleProfileResponse(
-            profile.getElo(),
-            rankFor(profile.getElo()),
-            profile.getBattles(),
-            profile.getWins(),
-            profile.getLosses(),
-            profile.getDraws(),
-            profile.getWinStreak(),
-            profile.getBestWinStreak(),
+            ratings.stream().map(this::toModeRating).toList(),
+            ratings.stream().mapToInt(BattleRating::getBattles).sum(),
+            ratings.stream().mapToInt(BattleRating::getWins).sum()
+        );
+    }
+
+    private BattleModeRatingResponse toModeRating(BattleRating rating) {
+        int winRate = rating.getBattles() == 0
+            ? 0
+            : Math.round((rating.getWins() * 100f) / rating.getBattles());
+        return new BattleModeRatingResponse(
+            rating.getMode().name(),
+            rating.getMode().getDisplayName(),
+            rating.getElo(),
+            rankFor(rating.getElo()),
+            rating.getBattles(),
+            rating.getWins(),
+            rating.getLosses(),
+            rating.getDraws(),
+            rating.getWinStreak(),
+            rating.getBestWinStreak(),
             winRate,
-            nextRankElo(profile.getElo())
+            nextRankElo(rating.getElo())
         );
     }
 

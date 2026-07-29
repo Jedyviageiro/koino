@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BookOpen, Swords, Target, Zap } from 'lucide-react'
+import { PageHeader } from '@/components/common/AppPageLayout.jsx'
 
 function BattleMatchmaking({
   mode,
@@ -19,20 +20,15 @@ function BattleMatchmaking({
   }, [])
 
   return (
-    <div className="mx-auto max-w-[1100px]">
-      <header>
-        <div className="flex items-center gap-2.5">
-          <h1 className="text-[28px] font-semibold">Battle Space</h1>
-          <span className="rounded-[4px] bg-[#fff2d8] px-2 py-1 text-[8px] font-bold uppercase text-[#9a671d]">
-            Beta
-          </span>
-        </div>
-        <p className="mt-1.5 text-[10px] text-[#707784]">
-          {mode.name} / 1v1 / {mode.durationSeconds} seconds
-        </p>
-      </header>
+    <div>
+      <PageHeader
+        title="Battle Space"
+        eyebrow="Beta"
+        subtitle={`${mode.name} / 1v1 / ${mode.durationSeconds} seconds`}
+        className="mb-5"
+      />
 
-      <section className="mt-5 flex min-h-[440px] flex-col items-center justify-center rounded-[8px] border border-[#e2e5e9] bg-white px-6 text-center">
+      <section className="flex min-h-[440px] flex-col items-center justify-center rounded-[8px] border border-[#e2e5e9] bg-white px-6 text-center">
         <div className="relative flex h-40 w-40 items-center justify-center">
           <span className="battle-search-ring absolute inset-0 rounded-full border border-[#e9d4b2]" />
           <span className="battle-search-ring absolute inset-5 rounded-full border border-[#efd9b6] [animation-delay:350ms]" />

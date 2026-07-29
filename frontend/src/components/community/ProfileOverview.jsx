@@ -3,10 +3,14 @@ import BattleRankBadge from '@/components/battle/BattleRankBadge.jsx'
 import planCover from '@/assets/images/plans-cover.png'
 
 function ProfileStats({ profile }) {
+  const peakElo = Math.max(
+    200,
+    ...(profile.battle?.ratings || []).map((rating) => rating.elo),
+  )
   const stats = [
     [profile.postsCount, 'Posts'],
     [profile.friendsCount, 'Friends'],
-    [profile.battle?.elo || 200, 'ELO'],
+    [peakElo, 'Peak ELO'],
     [`${profile.battle?.winRate || 0}%`, 'Win rate'],
   ]
 
@@ -75,19 +79,53 @@ function ProfilePlanCard({ plan, onViewPlan }) {
 }
 
 function ProfileBattleCard({ battle, canChallenge, onChallenge }) {
+  const ratings = battle?.ratings || []
   return (
     <section className="h-full rounded-[8px] border border-[#e3e6ea] bg-white p-3.5">
-      <h2 className="text-[10px] font-semibold text-[#22262d]">Battle Space</h2>
-      <div className="mt-3 flex items-center justify-between gap-3">
-        <BattleRankBadge rank={battle?.rank || 'Novice'} size="large" />
-        <div className="shrink-0 text-right">
-          <p className="text-[14px] font-semibold">{battle?.elo || 200}</p>
-          <p className="text-[8px] text-[#858d9a]">ELO</p>
-        </div>
+      <div className="flex items-center justify-between">
+        <h2 className="text-[10px] font-semibold text-[#22262d]">
+          Battle Space
+        </h2>
+        <p className="text-[8px] text-[#858d9a]">
+          {battle?.battles || 0} total
+        </p>
       </div>
-      <p className="mt-3 flex items-center gap-1.5 text-[8px] text-[#777f8c]">
+      <div className="mt-2 divide-y divide-[#eceef1]">
+        {ratings.map((rating) => (
+          <div
+            key={rating.mode}
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-2"
+          >
+            <div className="min-w-0">
+              <p className="text-[8px] font-semibold text-[#555e6b]">
+                {rating.modeName}
+              </p>
+              <div className="mt-0.5">
+                <BattleRankBadge rank={rating.rank} compact />
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-[12px] font-semibold tabular-nums">
+                {rating.elo.toLocaleString()}
+              </p>
+              <p className="text-[7px] text-[#858d9a]">
+                {rating.winRate}% wins
+              </p>
+            </div>
+          </div>
+        ))}
+        {!ratings.length && (
+          <div className="py-3">
+            <BattleRankBadge rank="Novice" compact />
+            <p className="mt-1 text-[8px] text-[#858d9a]">
+              All modes begin at 200 ELO.
+            </p>
+          </div>
+        )}
+      </div>
+      <p className="mt-2 flex items-center gap-1.5 text-[8px] text-[#777f8c]">
         <Trophy className="h-3 w-3 text-[#d18b22]" />
-        {battle?.wins || 0} wins across {battle?.battles || 0} battles
+        {battle?.wins || 0} wins across all time controls
       </p>
       {canChallenge && (
         <button
