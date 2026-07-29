@@ -12,12 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.koino.backend.model.BattleQuestion;
-import com.koino.backend.repository.BattleQuestionRepository;
 
 import jakarta.annotation.PostConstruct;
 
@@ -28,18 +27,18 @@ public class BattleQuestionCatalogService {
     private static final String CORE_CATALOG =
         "battle/battle-question-catalog.json";
 
-    private final BattleQuestionRepository questionRepository;
+    private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
     private final Path generatedCatalogPath;
     private final Path bootstrapCatalogPath;
 
     public BattleQuestionCatalogService(
-        BattleQuestionRepository questionRepository,
+        JdbcTemplate jdbcTemplate,
         @Value("${battle.questions.backup-path}") String generatedCatalogPath,
         @Value("${battle.questions.bootstrap-path}")
             String bootstrapCatalogPath
     ) {
-        this.questionRepository = questionRepository;
+        this.jdbcTemplate = jdbcTemplate;
         this.objectMapper = new ObjectMapper();
         this.generatedCatalogPath = Path.of(generatedCatalogPath);
         this.bootstrapCatalogPath = Path.of(bootstrapCatalogPath);
@@ -50,8 +49,12 @@ public class BattleQuestionCatalogService {
     public void seedCatalogs() {
         List<QuestionCatalogEntry> core = readCore();
         List<QuestionCatalogEntry> generated = readGenerated();
-        core.forEach(entry -> upsert(entry, true));
-        generated.forEach(entry -> upsert(entry, true));
+        List<QuestionCatalogEntry> catalog = new ArrayList<>(
+            core.size() + generated.size()
+        );
+        catalog.addAll(core);
+        catalog.addAll(generated);
+        upsertAll(catalog, true);
         LOGGER.info(
             "Battle question bank ready with {} core and {} generated questions",
             core.size(),
@@ -67,6 +70,7 @@ public class BattleQuestionCatalogService {
             return 0;
         }
         List<QuestionCatalogEntry> local = new ArrayList<>(readGenerated());
+        List<QuestionCatalogEntry> additions = new ArrayList<>();
         int before = local.size();
         for (QuestionCatalogEntry entry : generatedQuestions) {
             boolean exists = local.stream().anyMatch(
@@ -74,30 +78,68 @@ public class BattleQuestionCatalogService {
             );
             if (!exists) {
                 local.add(entry);
-                upsert(entry, true);
+                additions.add(entry);
             }
         }
+        upsertAll(additions, true);
         writeGenerated(local);
         return local.size() - before;
     }
 
-    private void upsert(QuestionCatalogEntry entry, boolean locallyBackedUp) {
-        BattleQuestion question = questionRepository
-            .findByCatalogKey(entry.catalogKey())
-            .orElseGet(BattleQuestion::new);
-        question.setCatalogKey(entry.catalogKey());
-        question.setPrompt(entry.prompt());
-        question.setOptionA(entry.options().get(0));
-        question.setOptionB(entry.options().get(1));
-        question.setOptionC(entry.options().get(2));
-        question.setOptionD(entry.options().get(3));
-        question.setCorrectOption(entry.correctOption());
-        question.setDifficulty(entry.difficulty());
-        question.setCategory(entry.category());
-        question.setReference(entry.reference());
-        question.setExplanation(entry.explanation());
-        question.setLocallyBackedUp(locallyBackedUp);
-        questionRepository.save(question);
+    private void upsertAll(
+        List<QuestionCatalogEntry> entries,
+        boolean locallyBackedUp
+    ) {
+        if (entries.isEmpty()) {
+            return;
+        }
+        jdbcTemplate.batchUpdate(
+            """
+            insert into battle_questions (
+                catalog_key,
+                prompt,
+                optiona,
+                optionb,
+                optionc,
+                optiond,
+                correct_option,
+                difficulty,
+                category,
+                reference,
+                explanation,
+                locally_backed_up
+            )
+            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            on conflict (catalog_key) do update set
+                prompt = excluded.prompt,
+                optiona = excluded.optiona,
+                optionb = excluded.optionb,
+                optionc = excluded.optionc,
+                optiond = excluded.optiond,
+                correct_option = excluded.correct_option,
+                difficulty = excluded.difficulty,
+                category = excluded.category,
+                reference = excluded.reference,
+                explanation = excluded.explanation,
+                locally_backed_up = excluded.locally_backed_up
+            """,
+            entries,
+            500,
+            (statement, entry) -> {
+                statement.setString(1, entry.catalogKey());
+                statement.setString(2, entry.prompt());
+                statement.setString(3, entry.options().get(0));
+                statement.setString(4, entry.options().get(1));
+                statement.setString(5, entry.options().get(2));
+                statement.setString(6, entry.options().get(3));
+                statement.setInt(7, entry.correctOption());
+                statement.setInt(8, entry.difficulty());
+                statement.setString(9, entry.category());
+                statement.setString(10, entry.reference());
+                statement.setString(11, entry.explanation());
+                statement.setBoolean(12, locallyBackedUp);
+            }
+        );
     }
 
     private List<QuestionCatalogEntry> readCore() {

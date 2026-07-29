@@ -6,13 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(
-    name = "verses",
-    uniqueConstraints = @UniqueConstraint(
-        name = "uk_verse_chapter_number",
-        columnNames = {"chapter_id", "verse_number"}
-    )
-)
+@Table(name = "verses")
 public class Verse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

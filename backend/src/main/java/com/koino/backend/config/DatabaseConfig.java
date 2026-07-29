@@ -43,8 +43,8 @@ public class DatabaseConfig {
             + uri.getPath()
             + (
                 uri.getRawQuery() == null
-                    ? ""
-                    : "?" + uri.getRawQuery()
+                    ? "?reWriteBatchedInserts=true"
+                    : "?" + uri.getRawQuery() + "&reWriteBatchedInserts=true"
             );
 
         return DataSourceBuilder.create()

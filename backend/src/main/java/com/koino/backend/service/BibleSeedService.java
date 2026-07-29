@@ -149,8 +149,12 @@ public class BibleSeedService implements CommandLineRunner {
         jdbcTemplate.batchUpdate(
             """
             insert into chapters (book_id, chapter_number, verse_count)
-            values (?, ?, ?)
-            on conflict do nothing
+            select ?, ?, ?
+            where not exists (
+                select 1
+                from chapters
+                where book_id = ? and chapter_number = ?
+            )
             """,
             chapters,
             BATCH_SIZE,
@@ -158,6 +162,8 @@ public class BibleSeedService implements CommandLineRunner {
                 statement.setInt(1, chapter.bookId());
                 statement.setInt(2, chapter.chapterNumber());
                 statement.setInt(3, chapter.verseCount());
+                statement.setInt(4, chapter.bookId());
+                statement.setInt(5, chapter.chapterNumber());
             }
         );
     }
@@ -212,8 +218,12 @@ public class BibleSeedService implements CommandLineRunner {
         jdbcTemplate.batchUpdate(
             """
             insert into verses (chapter_id, verse_number, text)
-            values (?, ?, ?)
-            on conflict do nothing
+            select ?, ?, ?
+            where not exists (
+                select 1
+                from verses
+                where chapter_id = ? and verse_number = ?
+            )
             """,
             verses,
             BATCH_SIZE,
@@ -221,6 +231,8 @@ public class BibleSeedService implements CommandLineRunner {
                 statement.setLong(1, verse.chapterId());
                 statement.setInt(2, verse.verseNumber());
                 statement.setString(3, verse.text());
+                statement.setLong(4, verse.chapterId());
+                statement.setInt(5, verse.verseNumber());
             }
         );
     }
