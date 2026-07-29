@@ -329,7 +329,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
           </p>
         </div>
 
-        <div className="mt-6">
+        <div className="mb-5 mt-6">
           <div className="space-y-2.5">
             {step.options.map((option) => (
               <Choice
