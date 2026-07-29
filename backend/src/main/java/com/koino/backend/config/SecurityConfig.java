@@ -1,6 +1,7 @@
 package com.koino.backend.config;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -90,13 +91,21 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource(
         @Value("${app.cors.allowed-origins}") String allowedOrigins,
-        @Value("${app.cors.allowed-origin-patterns}") String allowedOriginPatterns
+        @Value("${app.cors.allowed-origin-patterns}") String allowedOriginPatterns,
+        @Value("${app.frontend-url}") String frontendUrl
     ) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.stream(allowedOrigins.split(","))
-            .map(String::trim)
-            .filter(origin -> !origin.isBlank())
-            .toList());
+        LinkedHashSet<String> exactOrigins = new LinkedHashSet<>(
+            Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .toList()
+        );
+        String configuredFrontendUrl = frontendUrl.trim();
+        if (!configuredFrontendUrl.isBlank()) {
+            exactOrigins.add(configuredFrontendUrl.replaceAll("/+$", ""));
+        }
+        configuration.setAllowedOrigins(List.copyOf(exactOrigins));
         configuration.setAllowedOriginPatterns(
             Arrays.stream(allowedOriginPatterns.split(","))
                 .map(String::trim)

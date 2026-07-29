@@ -16,7 +16,8 @@ class CorsConfigurationTests {
         UrlBasedCorsConfigurationSource source = new SecurityConfig()
             .corsConfigurationSource(
                 "http://localhost:5173, https://app.koino.com",
-                "https://*.vercel.app"
+                "https://*.vercel.app",
+                "https://www.koinoo.space/"
             );
         MockHttpServletRequest request = new MockHttpServletRequest(
             "OPTIONS",
@@ -28,7 +29,8 @@ class CorsConfigurationTests {
         assertThat(configuration).isNotNull();
         assertThat(configuration.getAllowedOrigins()).containsExactly(
             "http://localhost:5173",
-            "https://app.koino.com"
+            "https://app.koino.com",
+            "https://www.koinoo.space"
         );
         assertThat(configuration.checkOrigin(
             "https://koino-feature-123.vercel.app"
