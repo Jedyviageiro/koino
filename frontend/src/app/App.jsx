@@ -18,6 +18,8 @@ import ResetPasswordPage from '@/pages/auth/reset-password/ResetPasswordPage.jsx
 import BattleSpacePage from '@/pages/battle-space/BattleSpacePage.jsx'
 import BookmarksPage from '@/pages/bookmarks/BookmarksPage.jsx'
 import UserProfilePage from '@/pages/user/UserProfilePage.jsx'
+import ChatPage from '@/pages/chat/ChatPage.jsx'
+import ChallengeToast from '@/components/common/ChallengeToast.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 
 function App() {
@@ -96,6 +98,8 @@ function App() {
     page = <BookmarksPage onNavigate={navigate} />
   } else if (path === '/community') {
     page = <CommunityPage onNavigate={navigate} />
+  } else if (path === '/chat') {
+    page = <ChatPage onNavigate={navigate} />
   } else if (path === '/watch/player') {
     page = <WatchPlayerPage onNavigate={navigate} />
   } else if (path === '/watch') {
@@ -124,9 +128,12 @@ function App() {
   }
 
   return (
-    <div key={path} className="app-route">
-      {page}
-    </div>
+    <>
+      <div key={path} className="app-route">
+        {page}
+      </div>
+      <ChallengeToast onNavigate={navigate} routePath={path} />
+    </>
   )
 }
 

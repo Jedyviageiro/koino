@@ -130,6 +130,7 @@ function WatchPlayerPage({ onNavigate }) {
             <div className="flex gap-2">
               <button
                 type="button"
+                onClick={() => onNavigate('/bible')}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e2e5e9] bg-white"
                 aria-label="Search"
                 title="Search"
@@ -138,6 +139,7 @@ function WatchPlayerPage({ onNavigate }) {
               </button>
               <button
                 type="button"
+                onClick={() => onNavigate('/home?notifications=open')}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e2e5e9] bg-white"
                 aria-label="Notifications"
                 title="Notifications"

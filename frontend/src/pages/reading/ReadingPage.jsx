@@ -156,6 +156,7 @@ function ReadingPage({ onNavigate }) {
             <>
             <button
               type="button"
+              onClick={() => onNavigate('/bible')}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e1e4e9] bg-white hover:bg-[#f7f8fa]"
               aria-label="Search"
             >
@@ -163,6 +164,7 @@ function ReadingPage({ onNavigate }) {
             </button>
             <button
               type="button"
+              onClick={() => onNavigate('/home?notifications=open')}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e1e4e9] bg-white hover:bg-[#f7f8fa]"
               aria-label="Notifications"
             >

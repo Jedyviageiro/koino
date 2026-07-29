@@ -21,7 +21,7 @@ function LoginForm({ onNavigate, onFailure }) {
         : emailState
   const completeLogin = useCallback(
     (session) => {
-      setSuccessMessage(`Welcome back, ${session.fullname}.`)
+      setSuccessMessage('Koino')
       onNavigate(session.onboardingCompleted ? '/home' : '/onboarding')
     },
     [onNavigate],

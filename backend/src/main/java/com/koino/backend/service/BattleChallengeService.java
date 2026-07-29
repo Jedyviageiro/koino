@@ -83,6 +83,11 @@ public class BattleChallengeService {
                 existing.setStatus(BattleChallengeStatus.CANCELLED);
                 existing.setRespondedAt(Instant.now());
                 challengeRepository.save(existing);
+                notificationService.resolve(
+                    existing.getAddressee().getUserId(),
+                    "BATTLE_CHALLENGE",
+                    existing.getChallengeId()
+                );
             });
 
         Instant now = Instant.now();

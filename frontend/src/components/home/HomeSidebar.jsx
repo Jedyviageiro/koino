@@ -6,6 +6,7 @@ import {
   ChevronUp,
   House,
   Clapperboard,
+  MessageCircle,
   MessagesSquare,
   Swords,
   LogOut,
@@ -24,6 +25,7 @@ const navigation = [
   { label: 'Bible', icon: BookOpen, path: '/bible' },
   { label: 'Watch', icon: Clapperboard, path: '/watch' },
   { label: 'Community', icon: MessagesSquare, path: '/community' },
+  { label: 'Chat', icon: MessageCircle, path: '/chat' },
   { label: 'Battle Space', icon: Swords, path: '/battle-space' },
 ]
 

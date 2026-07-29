@@ -235,16 +235,17 @@ function BattleSpacePage({ onNavigate }) {
       try {
         const latest = await getBattleChallenge(activeChallenge.challengeId)
         if (!active) return
-        setActiveChallenge(latest)
         if (latest.status === 'ACCEPTED' && latest.battleId) {
           const currentBattle = await getBattle(latest.battleId)
           if (!active) return
+          setActiveChallenge(latest)
           setBattle(currentBattle)
           setView('battle')
           window.history.replaceState({}, '', '/battle-space')
         } else if (
           ['DECLINED', 'CANCELLED', 'EXPIRED'].includes(latest.status)
         ) {
+          setActiveChallenge(latest)
           setView('lobby')
           setMatchingMode(null)
           setError(
@@ -252,6 +253,8 @@ function BattleSpacePage({ onNavigate }) {
               ? 'Your friend declined this challenge.'
               : 'This challenge is no longer available.',
           )
+        } else {
+          setActiveChallenge(latest)
         }
       } catch (requestError) {
         if (active) {

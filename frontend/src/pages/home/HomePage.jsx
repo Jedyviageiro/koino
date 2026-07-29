@@ -11,23 +11,20 @@ import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import {
   getHomeData,
-  markAllNotificationsRead,
   markNotificationRead,
 } from '@/features/home/homeService.js'
 import {
   acceptFriend,
   removeFriendship,
 } from '@/features/social/socialService.js'
-import {
-  acceptBattleChallenge,
-  declineBattleChallenge,
-} from '@/features/battle/battleService.js'
 
 function HomePage({ onNavigate }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(
+    () => new URLSearchParams(window.location.search).get('notifications') === 'open',
+  )
   const [actioningNotificationId, setActioningNotificationId] = useState(null)
   const session = getAuthSession()
 
@@ -73,7 +70,13 @@ function HomePage({ onNavigate }) {
     return () => window.clearTimeout(refreshTimer)
   }, [data, loadHome, loading])
 
-  const notifications = useMemo(() => data?.notifications || [], [data])
+  const notifications = useMemo(
+    () =>
+      (data?.notifications || []).filter(
+        (notification) => notification.type !== 'BATTLE_CHALLENGE',
+      ),
+    [data],
+  )
 
   async function toggleNotifications() {
     if (notificationsOpen) {
@@ -99,7 +102,11 @@ function HomePage({ onNavigate }) {
     }))
 
     try {
-      await markAllNotificationsRead()
+      await Promise.all(
+        Array.from(unreadIds, (notificationId) =>
+          markNotificationRead(notificationId),
+        ),
+      )
     } catch (requestError) {
       setData((current) => ({
         ...current,
@@ -141,16 +148,6 @@ function HomePage({ onNavigate }) {
           await acceptFriend(notification.referenceId)
         } else {
           await removeFriendship(notification.referenceId)
-        }
-      } else if (notification.type === 'BATTLE_CHALLENGE') {
-        if (accepted) {
-          const challenge = await acceptBattleChallenge(
-            notification.referenceId,
-          )
-          setNotificationsOpen(false)
-          onNavigate(`/battle-space?battle=${challenge.battleId}`)
-        } else {
-          await declineBattleChallenge(notification.referenceId)
         }
       }
       setData((current) => ({
