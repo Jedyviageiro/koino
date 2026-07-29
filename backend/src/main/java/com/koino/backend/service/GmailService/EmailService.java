@@ -2,11 +2,19 @@ package com.koino.backend.service.GmailService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 import com.koino.backend.model.User;
 
@@ -15,15 +23,31 @@ import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
+    private static final Logger logger =
+        LoggerFactory.getLogger(EmailService.class);
+    private static final int MAX_SEND_ATTEMPTS = 3;
+
     private final JavaMailSender mailSender;
     private final String from;
+    private final String provider;
+    private final String resendApiKey;
+    private final RestClient resendClient;
 
     public EmailService(
         JavaMailSender mailSender,
-        @Value("${app.mail.from}") String from
+        @Value("${app.mail.from}") String from,
+        @Value("${app.mail.provider:smtp}") String provider,
+        @Value("${app.mail.resend-api-key:}") String resendApiKey,
+        @Value("${app.mail.resend-api-url:https://api.resend.com}")
+            String resendApiUrl
     ) {
         this.mailSender = mailSender;
         this.from = from;
+        this.provider = provider.trim().toLowerCase();
+        this.resendApiKey = resendApiKey.trim();
+        this.resendClient = RestClient.builder()
+            .baseUrl(resendApiUrl)
+            .build();
     }
 
     @Async("mailTaskExecutor")
@@ -69,19 +93,126 @@ public class EmailService {
     }
 
     private void sendHtml(String to, String subject, String html) {
-        MimeMessage message = mailSender.createMimeMessage();
-        try {
-            message.setFrom(from);
-            message.setRecipients(
-                jakarta.mail.Message.RecipientType.TO,
-                to
-            );
-            message.setSubject(subject, StandardCharsets.UTF_8.name());
-            message.setContent(html, "text/html; charset=UTF-8");
-            mailSender.send(message);
-        } catch (MessagingException exception) {
-            throw new IllegalStateException("Unable to prepare email", exception);
+        Exception lastFailure = null;
+        String deliveryId = UUID.randomUUID().toString();
+        for (int attempt = 1; attempt <= MAX_SEND_ATTEMPTS; attempt++) {
+            try {
+                sendOnce(to, subject, html, deliveryId);
+                logger.info(
+                    "Email delivered to {} with {} on attempt {}",
+                    maskEmail(to),
+                    provider,
+                    attempt
+                );
+                return;
+            } catch (
+                MessagingException
+                | MailException
+                | RestClientException exception
+            ) {
+                lastFailure = exception;
+                logger.warn(
+                    "Email delivery to {} with {} failed on attempt {}/{}: {}",
+                    maskEmail(to),
+                    provider,
+                    attempt,
+                    MAX_SEND_ATTEMPTS,
+                    rootMessage(exception)
+                );
+                if (attempt < MAX_SEND_ATTEMPTS && !pauseBeforeRetry(attempt)) {
+                    break;
+                }
+            }
         }
+        throw new IllegalStateException(
+            "Email delivery failed after retries",
+            lastFailure
+        );
+    }
+
+    private void sendOnce(
+        String to,
+        String subject,
+        String html,
+        String deliveryId
+    ) throws MessagingException {
+        if ("resend".equals(provider)) {
+            sendWithResend(to, subject, html, deliveryId);
+            return;
+        }
+        if (!"smtp".equals(provider)) {
+            throw new IllegalStateException(
+                "Unsupported mail provider: " + provider
+            );
+        }
+        mailSender.send(createMessage(to, subject, html));
+    }
+
+    private void sendWithResend(
+        String to,
+        String subject,
+        String html,
+        String deliveryId
+    ) {
+        if (resendApiKey.isBlank()) {
+            throw new IllegalStateException(
+                "RESEND_API_KEY is required when MAIL_PROVIDER=resend"
+            );
+        }
+        resendClient.post()
+            .uri("/emails")
+            .header("Authorization", "Bearer " + resendApiKey)
+            .header("Idempotency-Key", deliveryId)
+            .body(Map.of(
+                "from", from,
+                "to", List.of(to),
+                "subject", subject,
+                "html", html
+            ))
+            .retrieve()
+            .toBodilessEntity();
+    }
+
+    private MimeMessage createMessage(String to, String subject, String html)
+        throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        message.setFrom(from);
+        message.setRecipients(jakarta.mail.Message.RecipientType.TO, to);
+        message.setSubject(subject, StandardCharsets.UTF_8.name());
+        message.setContent(html, "text/html; charset=UTF-8");
+        return message;
+    }
+
+    private boolean pauseBeforeRetry(int attempt) {
+        try {
+            Thread.sleep(Duration.ofSeconds(attempt).toMillis());
+            return true;
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            logger.warn("Email retry interrupted");
+            return false;
+        }
+    }
+
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            return "unknown recipient";
+        }
+        int separator = email.indexOf('@');
+        String local = email.substring(0, separator);
+        String visible = local.substring(0, Math.min(2, local.length()));
+        return visible + "***" + email.substring(separator);
+    }
+
+    private String rootMessage(Throwable exception) {
+        Throwable cause = exception;
+        while (cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        String message = cause.getMessage();
+        return message == null || message.isBlank()
+            ? cause.getClass().getSimpleName()
+            : message;
     }
 
     private String template(
