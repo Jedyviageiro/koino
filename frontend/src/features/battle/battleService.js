@@ -32,3 +32,32 @@ export function finishBattle(battleId, abandoned = false) {
     method: 'POST',
   })
 }
+
+export function createBattleChallenge(userId, mode) {
+  return apiRequest('/battles/challenges', {
+    method: 'POST',
+    body: JSON.stringify({ userId, mode }),
+  })
+}
+
+export function getBattleChallenge(challengeId) {
+  return apiRequest(`/battles/challenges/${challengeId}`)
+}
+
+export function acceptBattleChallenge(challengeId) {
+  return apiRequest(`/battles/challenges/${challengeId}/accept`, {
+    method: 'POST',
+  })
+}
+
+export function declineBattleChallenge(challengeId) {
+  return apiRequest(`/battles/challenges/${challengeId}/decline`, {
+    method: 'POST',
+  })
+}
+
+export function cancelBattleChallenge(challengeId) {
+  return apiRequest(`/battles/challenges/${challengeId}/cancel`, {
+    method: 'POST',
+  })
+}

@@ -1,5 +1,9 @@
 function CommunityAvatar({ author, size = 'md' }) {
-  const dimension = size === 'sm' ? 'h-7 w-7 text-[9px]' : 'h-9 w-9 text-[11px]'
+  const dimension = {
+    sm: 'h-7 w-7 text-[9px]',
+    md: 'h-9 w-9 text-[11px]',
+    xl: 'h-16 w-16 text-[16px] sm:h-20 sm:w-20',
+  }[size] || 'h-9 w-9 text-[11px]'
   const initials = (author?.fullname || 'Koino Reader')
     .split(/\s+/)
     .slice(0, 2)

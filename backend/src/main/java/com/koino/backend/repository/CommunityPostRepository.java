@@ -9,6 +9,8 @@ import com.koino.backend.model.CommunityPost;
 import com.koino.backend.model.CommunityPostType;
 
 public interface CommunityPostRepository extends JpaRepository<CommunityPost, Long> {
+    long countByAuthorUserId(Long userId);
+
     @EntityGraph(attributePaths = {
         "author",
         "verse",

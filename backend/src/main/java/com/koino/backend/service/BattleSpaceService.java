@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -113,7 +114,90 @@ public class BattleSpaceService {
     @Transactional
     public BattleStateResponse createBattle(Long userId, BattleMode mode) {
         BattleProfile profile = getOrCreateProfile(userId);
-        int difficulty = difficultyFor(profile.getElo());
+        List<BattleQuestion> available = questionsFor(profile.getElo());
+
+        BattleSession battle = new BattleSession();
+        configureBattle(
+            battle,
+            profile,
+            mode,
+            BattleOpponentType.BOT,
+            null,
+            null,
+            available
+        );
+        int seed = Math.abs(
+            (userId + "-" + Instant.now().getEpochSecond()).hashCode()
+        );
+        battle.setOpponentName(
+            OPPONENT_NAMES.get(seed % OPPONENT_NAMES.size())
+        );
+        int opponentOffset = (seed % 241) - 120;
+        battle.setOpponentElo(Math.max(
+            MINIMUM_ELO,
+            profile.getElo() + opponentOffset
+        ));
+        return toState(sessionRepository.save(battle));
+    }
+
+    @Transactional
+    public HumanBattlePair createHumanBattle(
+        Long challengerId,
+        Long addresseeId,
+        BattleMode mode
+    ) {
+        BattleProfile challenger = getOrCreateProfile(challengerId);
+        BattleProfile addressee = getOrCreateProfile(addresseeId);
+        List<BattleQuestion> available = questionsFor(
+            Math.round((challenger.getElo() + addressee.getElo()) / 2f)
+        );
+        String challengerBattleId = UUID.randomUUID().toString();
+        String addresseeBattleId = UUID.randomUUID().toString();
+
+        BattleSession challengerBattle = new BattleSession();
+        challengerBattle.setBattleId(challengerBattleId);
+        configureBattle(
+            challengerBattle,
+            challenger,
+            mode,
+            BattleOpponentType.USER,
+            addressee.getUser(),
+            addresseeBattleId,
+            available
+        );
+        challengerBattle.setOpponentName(
+            addressee.getUser().getFullname()
+        );
+        challengerBattle.setOpponentElo(addressee.getElo());
+
+        BattleSession addresseeBattle = new BattleSession();
+        addresseeBattle.setBattleId(addresseeBattleId);
+        configureBattle(
+            addresseeBattle,
+            addressee,
+            mode,
+            BattleOpponentType.USER,
+            challenger.getUser(),
+            challengerBattleId,
+            available
+        );
+        addresseeBattle.setStartedAt(challengerBattle.getStartedAt());
+        addresseeBattle.setExpiresAt(challengerBattle.getExpiresAt());
+        addresseeBattle.setOpponentName(
+            challenger.getUser().getFullname()
+        );
+        addresseeBattle.setOpponentElo(challenger.getElo());
+
+        sessionRepository.save(challengerBattle);
+        sessionRepository.save(addresseeBattle);
+        return new HumanBattlePair(
+            challengerBattleId,
+            addresseeBattleId
+        );
+    }
+
+    private List<BattleQuestion> questionsFor(int elo) {
+        int difficulty = difficultyFor(elo);
         int minimumDifficulty = Math.max(1, difficulty - 1);
         int maximumDifficulty = Math.min(6, difficulty + 1);
         List<BattleQuestion> available =
@@ -136,25 +220,26 @@ public class BattleSpaceService {
                 "No battle questions are available right now"
             );
         }
+        return available;
+    }
 
-        BattleSession battle = new BattleSession();
+    private void configureBattle(
+        BattleSession battle,
+        BattleProfile profile,
+        BattleMode mode,
+        BattleOpponentType opponentType,
+        User opponentUser,
+        String pairedBattleId,
+        List<BattleQuestion> available
+    ) {
         battle.setUser(profile.getUser());
         battle.setMode(mode);
         battle.setStatus(BattleStatus.ACTIVE);
-        battle.setOpponentType(BattleOpponentType.BOT);
+        battle.setOpponentType(opponentType);
+        battle.setOpponentUser(opponentUser);
+        battle.setPairedBattleId(pairedBattleId);
         battle.setPlayerEloBefore(profile.getElo());
         battle.setPlayerEloAfter(profile.getElo());
-        int seed = Math.abs(
-            (userId + "-" + Instant.now().getEpochSecond()).hashCode()
-        );
-        battle.setOpponentName(
-            OPPONENT_NAMES.get(seed % OPPONENT_NAMES.size())
-        );
-        int opponentOffset = (seed % 241) - 120;
-        battle.setOpponentElo(Math.max(
-            MINIMUM_ELO,
-            profile.getElo() + opponentOffset
-        ));
         Instant startedAt = Instant.now();
         battle.setStartedAt(startedAt);
         battle.setExpiresAt(
@@ -169,7 +254,6 @@ public class BattleSpaceService {
             sessionQuestion.setPosition(index);
             battle.getQuestions().add(sessionQuestion);
         }
-        return toState(sessionRepository.save(battle));
     }
 
     @Transactional
@@ -260,6 +344,11 @@ public class BattleSpaceService {
 
     private void settleBattle(BattleSession battle, boolean abandoned) {
         syncOpponentProgress(battle, Instant.now());
+        if (battle.getOpponentType() == BattleOpponentType.USER
+            && battle.getPairedBattleId() != null) {
+            settleHumanPair(battle, abandoned);
+            return;
+        }
         if (abandoned) {
             battle.setPlayerScore(-1);
             battle.setStatus(BattleStatus.ABANDONED);
@@ -267,7 +356,42 @@ public class BattleSpaceService {
             battle.setStatus(BattleStatus.COMPLETED);
         }
         battle.setCompletedAt(Instant.now());
+        applyRating(battle);
+        sessionRepository.save(battle);
+    }
 
+    private void settleHumanPair(
+        BattleSession battle,
+        boolean abandoned
+    ) {
+        BattleSession opponent = sessionRepository.findById(
+            battle.getPairedBattleId()
+        ).orElseThrow(() -> new IllegalStateException(
+            "Paired battle could not be found"
+        ));
+        if (battle.getStatus() != BattleStatus.ACTIVE
+            || opponent.getStatus() != BattleStatus.ACTIVE) {
+            return;
+        }
+        if (abandoned) {
+            battle.setPlayerScore(-1);
+            battle.setStatus(BattleStatus.ABANDONED);
+        } else {
+            battle.setStatus(BattleStatus.COMPLETED);
+        }
+        opponent.setStatus(BattleStatus.COMPLETED);
+        battle.setOpponentScore(opponent.getPlayerScore());
+        opponent.setOpponentScore(battle.getPlayerScore());
+        Instant completedAt = Instant.now();
+        battle.setCompletedAt(completedAt);
+        opponent.setCompletedAt(completedAt);
+        applyRating(battle);
+        applyRating(opponent);
+        sessionRepository.save(opponent);
+        sessionRepository.save(battle);
+    }
+
+    private void applyRating(BattleSession battle) {
         BattleProfile profile = getOrCreateProfile(
             battle.getUser().getUserId()
         );
@@ -307,7 +431,6 @@ public class BattleSpaceService {
         }
         profile.setUpdatedAt(Instant.now());
         profileRepository.save(profile);
-        sessionRepository.save(battle);
     }
 
     private void syncOpponentProgress(
@@ -315,7 +438,17 @@ public class BattleSpaceService {
         Instant now
     ) {
         if (battle.getOpponentType() == BattleOpponentType.USER
-            || battle.getQuestions().isEmpty()) {
+            && battle.getPairedBattleId() != null) {
+            sessionRepository.findById(battle.getPairedBattleId())
+                .ifPresent(opponent -> {
+                    battle.setOpponentScore(opponent.getPlayerScore());
+                    battle.setOpponentAttempts(
+                        opponent.getCurrentQuestionIndex()
+                    );
+                });
+            return;
+        }
+        if (battle.getQuestions().isEmpty()) {
             return;
         }
         Instant effectiveNow = now.isAfter(battle.getExpiresAt())
@@ -589,4 +722,9 @@ public class BattleSpaceService {
         if (elo < 2600) return 2600;
         return elo;
     }
+
+    public record HumanBattlePair(
+        String challengerBattleId,
+        String addresseeBattleId
+    ) {}
 }

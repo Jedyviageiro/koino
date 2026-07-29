@@ -29,6 +29,8 @@ import com.koino.backend.dto.auth.EmailVerificationConfirmRequest;
 import com.koino.backend.dto.auth.EmailVerificationRequest;
 import com.koino.backend.dto.auth.GoogleLoginRequest;
 import com.koino.backend.dto.user.NotificationResponse;
+import com.koino.backend.dto.user.FriendshipResponse;
+import com.koino.backend.dto.user.PublicUserProfileResponse;
 import com.koino.backend.dto.user.BookmarkVerseRequest;
 import com.koino.backend.dto.user.ProfilePictureResponse;
 import com.koino.backend.dto.user.UserStreakResponse;
@@ -45,6 +47,7 @@ import com.koino.backend.service.UserService;
 import com.koino.backend.service.VerseBookmarkService;
 import com.koino.backend.service.EmailVerificationService;
 import com.koino.backend.service.GoogleIdentityService;
+import com.koino.backend.service.FriendshipService;
 
 import java.util.List;
 import java.util.Map;
@@ -61,6 +64,7 @@ public class UserController {
     private final ProfilePictureService profilePictureService;
     private final EmailVerificationService emailVerificationService;
     private final GoogleIdentityService googleIdentityService;
+    private final FriendshipService friendshipService;
 
     public UserController(
         UserService userService,
@@ -70,7 +74,8 @@ public class UserController {
         VerseBookmarkService bookmarkService,
         ProfilePictureService profilePictureService,
         EmailVerificationService emailVerificationService,
-        GoogleIdentityService googleIdentityService
+        GoogleIdentityService googleIdentityService,
+        FriendshipService friendshipService
     ) {
         this.userService = userService;
         this.jwtService = jwtService;
@@ -80,6 +85,7 @@ public class UserController {
         this.profilePictureService = profilePictureService;
         this.emailVerificationService = emailVerificationService;
         this.googleIdentityService = googleIdentityService;
+        this.friendshipService = friendshipService;
     }
 
     @GetMapping("/google/config")
@@ -261,6 +267,60 @@ public class UserController {
     @GetMapping("/me/settings")
     public UserSettingsResponse getSettings(@AuthenticationPrincipal User user) {
         return userService.getSettings(user.getUserId());
+    }
+
+    @GetMapping("/u/{username}")
+    public PublicUserProfileResponse getPublicProfile(
+        @AuthenticationPrincipal User viewer,
+        @PathVariable String username
+    ) {
+        return friendshipService.profileByUsername(
+            viewer == null ? null : viewer.getUserId(),
+            username
+        );
+    }
+
+    @GetMapping("/{userId}/profile")
+    public PublicUserProfileResponse getUserProfile(
+        @AuthenticationPrincipal User viewer,
+        @PathVariable Long userId
+    ) {
+        return friendshipService.profileById(viewer.getUserId(), userId);
+    }
+
+    @GetMapping("/me/friends")
+    public List<FriendshipResponse> getFriends(
+        @AuthenticationPrincipal User user
+    ) {
+        return friendshipService.friends(user.getUserId());
+    }
+
+    @PostMapping("/me/friend-requests/{addresseeId}")
+    public FriendshipResponse requestFriend(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long addresseeId
+    ) {
+        return friendshipService.request(user.getUserId(), addresseeId);
+    }
+
+    @PatchMapping("/me/friend-requests/{friendshipId}/accept")
+    public FriendshipResponse acceptFriend(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long friendshipId
+    ) {
+        return friendshipService.accept(user.getUserId(), friendshipId);
+    }
+
+    @DeleteMapping("/me/friend-requests/{friendshipId}")
+    public ResponseEntity<Void> rejectOrRemoveFriend(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long friendshipId
+    ) {
+        friendshipService.rejectOrRemove(
+            user.getUserId(),
+            friendshipId
+        );
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/me/settings")

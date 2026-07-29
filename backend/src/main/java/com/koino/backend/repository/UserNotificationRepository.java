@@ -20,6 +20,13 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
         Long userId
     );
 
+    Optional<UserNotification>
+        findFirstByUserUserIdAndTypeAndReferenceId(
+            Long userId,
+            String type,
+            String referenceId
+        );
+
     @Modifying
     @Query("""
         update UserNotification notification

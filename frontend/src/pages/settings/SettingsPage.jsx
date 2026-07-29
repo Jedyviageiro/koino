@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { LoaderCircle } from 'lucide-react'
+import { Copy, ExternalLink, LoaderCircle } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import ModalShell from '@/components/common/ModalShell.jsx'
 import HomeSidebar from '@/components/home/HomeSidebar.jsx'
@@ -34,6 +34,9 @@ function SettingsPage({ onNavigate }) {
     email: session?.email || '',
     timeZone: 'Africa/Maputo',
     language: 'en',
+    username: '',
+    bio: '',
+    location: '',
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -212,6 +215,29 @@ function SettingsPage({ onNavigate }) {
                     ))}
                   </select>
                 </label>
+                <label className="text-[11px] font-medium">
+                  About You
+                  <textarea
+                    name="bio"
+                    value={form.bio || ''}
+                    onChange={changeField}
+                    maxLength={280}
+                    rows={3}
+                    placeholder="Share a little about your faith journey."
+                    className="mt-2 min-h-[88px] w-full resize-none rounded-[7px] border border-[#dfe3e8] bg-white px-3.5 py-3 text-[12px] font-normal leading-5 outline-none transition-colors focus:border-[#e8a33d]"
+                  />
+                </label>
+                <label className="text-[11px] font-medium">
+                  Location
+                  <input
+                    name="location"
+                    value={form.location || ''}
+                    onChange={changeField}
+                    maxLength={100}
+                    placeholder="City, country"
+                    className="mt-2 h-11 w-full rounded-[7px] border border-[#dfe3e8] bg-white px-3.5 text-[12px] font-normal outline-none transition-colors focus:border-[#e8a33d]"
+                  />
+                </label>
               </div>
             )}
 
@@ -226,6 +252,54 @@ function SettingsPage({ onNavigate }) {
               </button>
             </div>
           </form>
+
+          {!loading && form.username && (
+            <section className="mt-5 rounded-[8px] border border-[#dfe3e8] bg-white px-6 py-5">
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                <div>
+                  <h2 className="font-sans text-[13px] font-semibold">
+                    Your public profile
+                  </h2>
+                  <p className="mt-1.5 text-[10px] leading-5 text-[#6d7584]">
+                    Share this private-to-you link directly. Koino does not
+                    provide a people search.
+                  </p>
+                  <p className="mt-2 break-all text-[9px] font-medium text-[#9a671d]">
+                    {window.location.origin}/u/{form.username}
+                  </p>
+                </div>
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onNavigate(`/u/${form.username}`)
+                    }
+                    className="flex h-10 items-center gap-2 rounded-[7px] border border-[#dfe3e8] px-3 text-[9px] font-semibold"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    View
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(
+                        `${window.location.origin}/u/${form.username}`,
+                      )
+                      setStatus({
+                        type: 'success',
+                        title: 'Profile link copied',
+                        message: 'Your public profile link is ready to share.',
+                      })
+                    }}
+                    className="flex h-10 items-center gap-2 rounded-[7px] bg-[#e8a33d] px-3 text-[9px] font-semibold text-white"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                    Copy link
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
 
           <section className="mt-5 flex items-center justify-between gap-6 rounded-[8px] border border-[#eadfdf] bg-white px-6 py-5">
             <div>

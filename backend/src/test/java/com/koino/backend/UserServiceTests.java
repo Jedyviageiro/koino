@@ -18,6 +18,7 @@ import com.koino.backend.model.User;
 import com.koino.backend.model.UserLoginDay;
 import com.koino.backend.repository.UserLoginDayRepository;
 import com.koino.backend.repository.UserRepository;
+import com.koino.backend.repository.UserProfileRepository;
 import com.koino.backend.service.UserService;
 
 class UserServiceTests {
@@ -181,7 +182,8 @@ class UserServiceTests {
         var streak = new UserService(
             mock(PasswordEncoder.class),
             repository,
-            loginDays
+            loginDays,
+            mock(UserProfileRepository.class)
         ).getStreak(42L);
 
         assertThat(streak.recentDays()).hasSize(7);
@@ -205,7 +207,8 @@ class UserServiceTests {
         return new UserService(
             encoder,
             repository,
-            mock(UserLoginDayRepository.class)
+            mock(UserLoginDayRepository.class),
+            mock(UserProfileRepository.class)
         );
     }
 

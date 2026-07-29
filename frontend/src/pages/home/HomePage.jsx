@@ -11,12 +11,21 @@ import {
   markAllNotificationsRead,
   markNotificationRead,
 } from '@/features/home/homeService.js'
+import {
+  acceptFriend,
+  removeFriendship,
+} from '@/features/social/socialService.js'
+import {
+  acceptBattleChallenge,
+  declineBattleChallenge,
+} from '@/features/battle/battleService.js'
 
 function HomePage({ onNavigate }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [actioningNotificationId, setActioningNotificationId] = useState(null)
   const session = getAuthSession()
 
   const loadHome = useCallback(async () => {
@@ -121,6 +130,41 @@ function HomePage({ onNavigate }) {
     }
   }
 
+  async function respondToNotification(notification, accepted) {
+    setActioningNotificationId(notification.notificationId)
+    try {
+      if (notification.type === 'FRIEND_REQUEST') {
+        if (accepted) {
+          await acceptFriend(notification.referenceId)
+        } else {
+          await removeFriendship(notification.referenceId)
+        }
+      } else if (notification.type === 'BATTLE_CHALLENGE') {
+        if (accepted) {
+          const challenge = await acceptBattleChallenge(
+            notification.referenceId,
+          )
+          setNotificationsOpen(false)
+          onNavigate(`/battle-space?battle=${challenge.battleId}`)
+        } else {
+          await declineBattleChallenge(notification.referenceId)
+        }
+      }
+      setData((current) => ({
+        ...current,
+        notifications: current.notifications.map((item) =>
+          item.notificationId === notification.notificationId
+            ? { ...item, read: true, referenceId: null }
+            : item,
+        ),
+      }))
+    } catch (requestError) {
+      setError(requestError.message || 'Unable to respond right now.')
+    } finally {
+      setActioningNotificationId(null)
+    }
+  }
+
   const firstName = session?.fullname?.trim().split(/\s+/)[0] || 'Friend'
   const hour = new Date().getHours()
   const greeting =
@@ -162,6 +206,13 @@ function HomePage({ onNavigate }) {
               onToggle={toggleNotifications}
               onClose={() => setNotificationsOpen(false)}
               onRead={readNotification}
+              onAccept={(notification) =>
+                respondToNotification(notification, true)
+              }
+              onDecline={(notification) =>
+                respondToNotification(notification, false)
+              }
+              actioningId={actioningNotificationId}
             />
           </div>
         </header>

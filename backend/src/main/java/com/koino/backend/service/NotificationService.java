@@ -28,13 +28,45 @@ public class NotificationService {
 
     @Transactional
     public UserNotification createPlanReady(User user, String planName) {
+        return create(
+            user,
+            "Your new plan is ready",
+            planName
+                + " is now available. Your first reading is waiting for you.",
+            "PLAN_READY",
+            null
+        );
+    }
+
+    @Transactional
+    public UserNotification createFriendRequest(
+        User recipient,
+        User requester,
+        Long friendshipId
+    ) {
+        return create(
+            recipient,
+            requester.getFullname() + " sent you a friend request",
+            "Grow together in faith and encourage each other.",
+            "FRIEND_REQUEST",
+            friendshipId.toString()
+        );
+    }
+
+    @Transactional
+    public UserNotification create(
+        User user,
+        String title,
+        String message,
+        String type,
+        String referenceId
+    ) {
         UserNotification notification = new UserNotification();
         notification.setUser(user);
-        notification.setTitle("Your new plan is ready");
-        notification.setMessage(
-            planName + " is now available. Your first reading is waiting for you."
-        );
-        notification.setType("PLAN_READY");
+        notification.setTitle(title);
+        notification.setMessage(message);
+        notification.setType(type);
+        notification.setReferenceId(referenceId);
         notification.setRead(false);
         return notificationRepository.save(notification);
     }
@@ -55,12 +87,32 @@ public class NotificationService {
         notificationRepository.markAllRead(userId);
     }
 
+    @Transactional
+    public void resolve(
+        Long userId,
+        String type,
+        String referenceId
+    ) {
+        notificationRepository
+            .findFirstByUserUserIdAndTypeAndReferenceId(
+                userId,
+                type,
+                referenceId
+            )
+            .ifPresent(notification -> {
+                notification.setRead(true);
+                notification.setReferenceId(null);
+                notificationRepository.save(notification);
+            });
+    }
+
     private NotificationResponse toResponse(UserNotification notification) {
         return new NotificationResponse(
             notification.getNotificationId(),
             notification.getTitle(),
             notification.getMessage(),
             notification.getType(),
+            notification.getReferenceId(),
             notification.isRead(),
             notification.getCreatedAt()
         );

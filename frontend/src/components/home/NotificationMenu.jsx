@@ -19,6 +19,9 @@ function NotificationMenu({
   onToggle,
   onClose,
   onRead,
+  onAccept,
+  onDecline,
+  actioningId,
 }) {
   const menuRef = useRef(null)
   const unreadCount = notifications.filter((item) => !item.read).length
@@ -79,11 +82,12 @@ function NotificationMenu({
                 </p>
               </div>
             ) : (
-              notifications.map((notification) => (
-                <button
+              notifications.map((notification) => {
+                const actionable = ['FRIEND_REQUEST', 'BATTLE_CHALLENGE']
+                  .includes(notification.type)
+                return (
+                <div
                   key={notification.notificationId}
-                  type="button"
-                  onClick={() => onRead(notification)}
                   className={`flex w-full gap-3 rounded-[6px] px-3 py-3 text-left hover:bg-[#f7f8f9] ${
                     notification.read ? 'opacity-70' : 'bg-[#fdf8f0]'
                   }`}
@@ -95,7 +99,12 @@ function NotificationMenu({
                       <Bell className="h-3.5 w-3.5" />
                     )}
                   </span>
-                  <span className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1">
+                    <button
+                      type="button"
+                      onClick={() => onRead(notification)}
+                      className="block w-full text-left"
+                    >
                     <span className="block text-[10px] font-semibold text-[#202630]">
                       {notification.title}
                     </span>
@@ -105,9 +114,33 @@ function NotificationMenu({
                     <span className="mt-1.5 block text-[8px] text-[#9aa1ac]">
                       {relativeTime(notification.createdAt)}
                     </span>
-                  </span>
-                </button>
-              ))
+                    </button>
+                    {actionable && notification.referenceId && (
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          disabled={actioningId === notification.notificationId}
+                          onClick={() => onDecline(notification)}
+                          className="h-8 rounded-[6px] border border-[#dfe3e8] text-[8px] font-semibold text-[#5e6673] disabled:opacity-50"
+                        >
+                          Decline
+                        </button>
+                        <button
+                          type="button"
+                          disabled={actioningId === notification.notificationId}
+                          onClick={() => onAccept(notification)}
+                          className="h-8 rounded-[6px] bg-[#e8a33d] text-[8px] font-semibold text-white disabled:opacity-50"
+                        >
+                          {actioningId === notification.notificationId
+                            ? 'Working...'
+                            : 'Accept'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                )
+              })
             )}
           </div>
         </section>

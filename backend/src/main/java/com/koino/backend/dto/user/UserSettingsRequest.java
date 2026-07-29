@@ -8,5 +8,7 @@ public record UserSettingsRequest(
     @NotBlank @Size(min = 2, max = 120) String fullname,
     @NotBlank @Email @Size(max = 254) String email,
     @NotBlank @Size(max = 64) String timeZone,
-    @NotBlank @Size(max = 10) String language
+    @NotBlank @Size(max = 10) String language,
+    @Size(max = 280) String bio,
+    @Size(max = 100) String location
 ) {}

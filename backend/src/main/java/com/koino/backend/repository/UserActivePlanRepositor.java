@@ -18,4 +18,9 @@ public interface UserActivePlanRepositor extends JpaRepository<UserActivePlan, L
     );
 
     List<UserActivePlan> findByUserUserIdOrderByPlanSequenceNumberAsc(Long userId);
+
+    Optional<UserActivePlan>
+        findTopByUserUserIdAndIsCompletedFalseOrderByPlanSequenceNumberDesc(
+            Long userId
+        );
 }

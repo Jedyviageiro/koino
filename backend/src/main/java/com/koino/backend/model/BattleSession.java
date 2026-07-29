@@ -67,6 +67,9 @@ public class BattleSession {
     @JoinColumn(name = "opponent_user_id")
     private User opponentUser;
 
+    @Column(length = 36)
+    private String pairedBattleId;
+
     @Column(nullable = false)
     private int currentQuestionIndex;
 

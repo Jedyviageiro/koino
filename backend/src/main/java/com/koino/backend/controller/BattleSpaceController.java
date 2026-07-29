@@ -14,8 +14,11 @@ import com.koino.backend.dto.battle.BattleAnswerResponse;
 import com.koino.backend.dto.battle.BattleLobbyResponse;
 import com.koino.backend.dto.battle.BattleStateResponse;
 import com.koino.backend.dto.battle.CreateBattleRequest;
+import com.koino.backend.dto.battle.CreateBattleChallengeRequest;
+import com.koino.backend.dto.battle.BattleChallengeResponse;
 import com.koino.backend.model.User;
 import com.koino.backend.service.BattleSpaceService;
+import com.koino.backend.service.BattleChallengeService;
 
 import jakarta.validation.Valid;
 
@@ -23,9 +26,69 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/battles")
 public class BattleSpaceController {
     private final BattleSpaceService battleSpaceService;
+    private final BattleChallengeService challengeService;
 
-    public BattleSpaceController(BattleSpaceService battleSpaceService) {
+    public BattleSpaceController(
+        BattleSpaceService battleSpaceService,
+        BattleChallengeService challengeService
+    ) {
         this.battleSpaceService = battleSpaceService;
+        this.challengeService = challengeService;
+    }
+
+    @PostMapping("/challenges")
+    public BattleChallengeResponse challenge(
+        @AuthenticationPrincipal User user,
+        @Valid @RequestBody CreateBattleChallengeRequest request
+    ) {
+        return challengeService.create(
+            user.getUserId(),
+            request.userId(),
+            request.mode()
+        );
+    }
+
+    @GetMapping("/challenges/{challengeId}")
+    public BattleChallengeResponse challengeState(
+        @AuthenticationPrincipal User user,
+        @PathVariable String challengeId
+    ) {
+        return challengeService.heartbeat(
+            user.getUserId(),
+            challengeId
+        );
+    }
+
+    @PostMapping("/challenges/{challengeId}/accept")
+    public BattleChallengeResponse acceptChallenge(
+        @AuthenticationPrincipal User user,
+        @PathVariable String challengeId
+    ) {
+        return challengeService.accept(user.getUserId(), challengeId);
+    }
+
+    @PostMapping("/challenges/{challengeId}/decline")
+    public BattleChallengeResponse declineChallenge(
+        @AuthenticationPrincipal User user,
+        @PathVariable String challengeId
+    ) {
+        return challengeService.close(
+            user.getUserId(),
+            challengeId,
+            true
+        );
+    }
+
+    @PostMapping("/challenges/{challengeId}/cancel")
+    public BattleChallengeResponse cancelChallenge(
+        @AuthenticationPrincipal User user,
+        @PathVariable String challengeId
+    ) {
+        return challengeService.close(
+            user.getUserId(),
+            challengeId,
+            false
+        );
     }
 
     @GetMapping("/lobby")

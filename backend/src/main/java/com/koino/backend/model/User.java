@@ -34,6 +34,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String fullname;
 
+    @Column(unique = true, length = 40)
+    private String username;
+
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;

@@ -17,6 +17,7 @@ import ForgotPasswordPage from '@/pages/auth/forgot-password/ForgotPasswordPage.
 import ResetPasswordPage from '@/pages/auth/reset-password/ResetPasswordPage.jsx'
 import BattleSpacePage from '@/pages/battle-space/BattleSpacePage.jsx'
 import BookmarksPage from '@/pages/bookmarks/BookmarksPage.jsx'
+import UserProfilePage from '@/pages/user/UserProfilePage.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 
 function App() {
@@ -103,6 +104,13 @@ function App() {
     page = <SettingsPage onNavigate={navigate} />
   } else if (path === '/battle-space') {
     page = <BattleSpacePage onNavigate={navigate} />
+  } else if (path.startsWith('/u/')) {
+    page = (
+      <UserProfilePage
+        username={decodeURIComponent(path.slice(3))}
+        onNavigate={navigate}
+      />
+    )
   } else if (path === '/register') {
     page = <RegisterPage onNavigate={navigate} />
   } else if (path === '/verify-email') {

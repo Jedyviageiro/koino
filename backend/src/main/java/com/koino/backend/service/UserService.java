@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.Locale;
+import java.text.Normalizer;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,8 @@ import com.koino.backend.dto.user.UserSettingsResponse;
 import com.koino.backend.model.UserLoginDay;
 import com.koino.backend.repository.UserLoginDayRepository;
 import com.koino.backend.repository.UserRepository;
+import com.koino.backend.repository.UserProfileRepository;
+import com.koino.backend.model.UserProfile;
 
 
 
@@ -28,15 +31,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserLoginDayRepository loginDayRepository;
+    private final UserProfileRepository userProfileRepository;
 
     public UserService(
         PasswordEncoder passwordEncoder,
         UserRepository userRepository,
-        UserLoginDayRepository loginDayRepository
+        UserLoginDayRepository loginDayRepository,
+        UserProfileRepository userProfileRepository
     ){
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.loginDayRepository = loginDayRepository;
+        this.userProfileRepository = userProfileRepository;
     }
 
     public User createUser(String fullname, String email, String password){
@@ -62,6 +68,7 @@ public class UserService {
             user.setFullname(fullname == null ? "" : fullname.trim());
             user.setEmail(normalizedEmail);
             user.setEmailVerified(emailVerified);
+            user.setUsername(generateUsername(user.getFullname()));
 
             String hashedPassword = passwordEncoder.encode(password);
             user.setPassword(hashedPassword);
@@ -108,6 +115,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(
                 java.util.UUID.randomUUID() + "Gg!"
             ));
+            user.setUsername(generateUsername(user.getFullname()));
             user.setCreatedAt(LocalDateTime.now());
         }
         if (!user.isActive()) {
@@ -158,9 +166,10 @@ public class UserService {
         return userRepository.existsByEmail(normalizeEmail(email));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public UserSettingsResponse getSettings(Long userId) {
-        return toSettingsResponse(findUser(userId));
+        User user = ensureUsername(findUser(userId));
+        return toSettingsResponse(user);
     }
 
     @Transactional
@@ -188,7 +197,13 @@ public class UserService {
         user.setTimeZone(request.timeZone());
         user.setLanguage(request.language());
         user.setUpdatedAt(LocalDateTime.now());
-        return toSettingsResponse(userRepository.save(user));
+        user = ensureUsername(userRepository.save(user));
+        userProfileRepository.findByUserUserId(userId).ifPresent(profile -> {
+            profile.setBio(cleanOptional(request.bio()));
+            profile.setLocation(cleanOptional(request.location()));
+            userProfileRepository.save(profile);
+        });
+        return toSettingsResponse(user);
     }
 
     @Transactional
@@ -253,14 +268,56 @@ public class UserService {
     }
 
     private UserSettingsResponse toSettingsResponse(User user) {
+        UserProfile profile = userProfileRepository.findByUserUserId(
+            user.getUserId()
+        ).orElse(null);
         return new UserSettingsResponse(
             user.getUserId(),
             user.getFullname(),
             user.getEmail(),
             user.getTimeZone(),
             user.getLanguage(),
-            user.getProfilePictureUrl()
+            user.getProfilePictureUrl(),
+            user.getUsername(),
+            profile == null ? null : profile.getBio(),
+            profile == null ? null : profile.getLocation()
         );
+    }
+
+    @Transactional
+    public User ensureUsername(User user) {
+        if (user.getUsername() != null && !user.getUsername().isBlank()) {
+            return user;
+        }
+        user.setUsername(generateUsername(user.getFullname()));
+        return userRepository.save(user);
+    }
+
+    private String generateUsername(String fullname) {
+        String base = Normalizer.normalize(
+            fullname == null ? "" : fullname,
+            Normalizer.Form.NFD
+        )
+            .replaceAll("\\p{M}", "")
+            .toLowerCase(Locale.ROOT)
+            .replaceAll("[^a-z0-9]+", ".")
+            .replaceAll("^\\.+|\\.+$", "");
+        if (base.length() < 3) {
+            base = "reader";
+        }
+        if (base.length() > 32) {
+            base = base.substring(0, 32).replaceAll("\\.+$", "");
+        }
+        String candidate = base;
+        int suffix = 2;
+        while (userRepository.existsByUsernameIgnoreCase(candidate)) {
+            candidate = base + suffix++;
+        }
+        return candidate;
+    }
+
+    private String cleanOptional(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 
     private String normalizeEmail(String email) {

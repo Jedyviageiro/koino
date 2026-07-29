@@ -68,6 +68,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/users/u/**"
+                ).permitAll()
+                .requestMatchers(
                     "/api/health",
                     "/api/bible/**",
                     "/api/users/email-exists",

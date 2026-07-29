@@ -11,15 +11,21 @@ import BattleRulesModal from '@/components/battle/BattleRulesModal.jsx'
 import {
   answerBattleQuestion,
   createBattle,
+  createBattleChallenge,
+  getBattleChallenge,
+  acceptBattleChallenge,
+  cancelBattleChallenge,
   finishBattle,
   getBattle,
   getBattleLobby,
 } from '@/features/battle/battleService.js'
+import { getUserProfile } from '@/features/social/socialService.js'
 import { playBattleSound } from '@/features/battle/battleAudio.js'
 import {
   getAuthSession,
   getAuthToken,
 } from '@/features/auth/authStorage.js'
+import { API_BASE_URL } from '@/config/env.js'
 
 function BattleSpacePage({ onNavigate }) {
   const session = getAuthSession()
@@ -33,6 +39,8 @@ function BattleSpacePage({ onNavigate }) {
   const [error, setError] = useState('')
   const [showRules, setShowRules] = useState(false)
   const [confirmLeave, setConfirmLeave] = useState(false)
+  const [challengeProfile, setChallengeProfile] = useState(null)
+  const [activeChallenge, setActiveChallenge] = useState(null)
   const matchingRequestRef = useRef(0)
   const feedbackTimerRef = useRef(null)
 
@@ -49,13 +57,43 @@ function BattleSpacePage({ onNavigate }) {
       return undefined
     }
     let active = true
+    const params = new URLSearchParams(window.location.search)
+    const challengeTarget = params.get('challenge')
+    const incomingChallenge = params.get('challengeId')
+    const requestedBattle = params.get('battle')
+
     getBattleLobby()
-      .then((data) => {
-        if (active) {
-          setLobby(data)
-          setSelectedMode(data.modes[0]?.mode || 'LIGHTNING')
-          setView('lobby')
+      .then(async (data) => {
+        if (!active) return
+        setLobby(data)
+        setSelectedMode(data.modes[0]?.mode || 'LIGHTNING')
+
+        if (requestedBattle) {
+          const currentBattle = await getBattle(requestedBattle)
+          if (!active) return
+          setBattle(currentBattle)
+          setView('battle')
+          return
         }
+        if (incomingChallenge) {
+          const accepted = await acceptBattleChallenge(incomingChallenge)
+          if (!active) return
+          setActiveChallenge(accepted)
+          if (!accepted.battleId) {
+            throw new Error('The challenge could not start.')
+          }
+          const currentBattle = await getBattle(accepted.battleId)
+          if (!active) return
+          setBattle(currentBattle)
+          setView('battle')
+          return
+        }
+        if (challengeTarget) {
+          const profile = await getUserProfile(challengeTarget)
+          if (!active) return
+          setChallengeProfile(profile)
+        }
+        setView('lobby')
       })
       .catch((requestError) => {
         if (active) setError(requestError.message)
@@ -79,6 +117,18 @@ function BattleSpacePage({ onNavigate }) {
       setFeedback(null)
       setView('matching')
       try {
+        if (challengeProfile) {
+          const challenge = await createBattleChallenge(
+            challengeProfile.userId,
+            modeName,
+          )
+          if (matchingRequestRef.current !== requestId) {
+            await cancelBattleChallenge(challenge.challengeId)
+            return
+          }
+          setActiveChallenge(challenge)
+          return
+        }
         const minimumSearchTime = modeName === 'LIGHTNING' ? 420 : 700
         const [created] = await Promise.all([
           createBattle(modeName),
@@ -95,14 +145,98 @@ function BattleSpacePage({ onNavigate }) {
         setError(requestError.message || 'Unable to start this battle.')
       }
     },
-    [lobby],
+    [challengeProfile, lobby],
   )
 
-  function cancelMatching() {
+  async function cancelMatching() {
     matchingRequestRef.current += 1
+    if (activeChallenge?.status === 'PENDING') {
+      try {
+        await cancelBattleChallenge(activeChallenge.challengeId)
+      } catch {
+        // Expiry on the server still prevents a stale challenge from starting.
+      }
+    }
+    setActiveChallenge(null)
     setView('lobby')
     setMatchingMode(null)
   }
+
+  useEffect(() => {
+    if (activeChallenge?.status !== 'PENDING') return undefined
+    let active = true
+
+    async function refreshChallenge() {
+      try {
+        const latest = await getBattleChallenge(activeChallenge.challengeId)
+        if (!active) return
+        setActiveChallenge(latest)
+        if (latest.status === 'ACCEPTED' && latest.battleId) {
+          const currentBattle = await getBattle(latest.battleId)
+          if (!active) return
+          setBattle(currentBattle)
+          setView('battle')
+          window.history.replaceState({}, '', '/battle-space')
+        } else if (
+          ['DECLINED', 'CANCELLED', 'EXPIRED'].includes(latest.status)
+        ) {
+          setView('lobby')
+          setMatchingMode(null)
+          setError(
+            latest.status === 'DECLINED'
+              ? 'Your friend declined this challenge.'
+              : 'This challenge is no longer available.',
+          )
+        }
+      } catch (requestError) {
+        if (active) {
+          setError(requestError.message || 'Unable to refresh the challenge.')
+        }
+      }
+    }
+
+    refreshChallenge()
+    const timer = window.setInterval(refreshChallenge, 3000)
+    return () => {
+      active = false
+      window.clearInterval(timer)
+    }
+  }, [activeChallenge?.challengeId, activeChallenge?.status])
+
+  useEffect(() => {
+    if (activeChallenge?.status !== 'PENDING') return undefined
+    function cancelOnPageExit() {
+      const token = getAuthToken()
+      fetch(
+        `${API_BASE_URL}/battles/challenges/${activeChallenge.challengeId}/cancel`,
+        {
+          method: 'POST',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          keepalive: true,
+        },
+      ).catch(() => {})
+    }
+    window.addEventListener('pagehide', cancelOnPageExit)
+    window.addEventListener('popstate', cancelOnPageExit)
+    return () => {
+      window.removeEventListener('pagehide', cancelOnPageExit)
+      window.removeEventListener('popstate', cancelOnPageExit)
+    }
+  }, [activeChallenge?.challengeId, activeChallenge?.status])
+
+  const guardedNavigate = useCallback(
+    async (path) => {
+      if (activeChallenge?.status === 'PENDING') {
+        try {
+          await cancelBattleChallenge(activeChallenge.challengeId)
+        } catch {
+          // The pending challenge expires even if cancellation cannot connect.
+        }
+      }
+      onNavigate(path)
+    },
+    [activeChallenge, onNavigate],
+  )
 
   async function answer(selectedOption) {
     if (!battle?.currentQuestion || answering || feedback) return
@@ -203,7 +337,7 @@ function BattleSpacePage({ onNavigate }) {
     <div className="min-h-svh bg-[#fbfcfe] text-[#111318] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
       <HomeSidebar
         name={session?.fullname}
-        onNavigate={onNavigate}
+        onNavigate={guardedNavigate}
         activePath="/battle-space"
       />
 
@@ -221,10 +355,27 @@ function BattleSpacePage({ onNavigate }) {
               onSelectMode={setSelectedMode}
               onStart={beginMatch}
               onHelp={() => setShowRules(true)}
+              challengeProfile={challengeProfile}
             />
           )}
           {view === 'matching' && matchingMode && (
-            <BattleMatchmaking mode={matchingMode} onCancel={cancelMatching} />
+            <BattleMatchmaking
+              mode={matchingMode}
+              onCancel={cancelMatching}
+              title={
+                activeChallenge
+                  ? `Waiting for ${challengeProfile?.fullname || 'your friend'}`
+                  : 'Finding an opponent'
+              }
+              message={
+                activeChallenge
+                  ? 'Stay in Battle Space while your friend responds. Leaving voids the challenge.'
+                  : undefined
+              }
+              cancelLabel={
+                activeChallenge ? 'Cancel challenge' : 'Cancel search'
+              }
+            />
           )}
           {view === 'battle' && battle && (
             <BattleArena

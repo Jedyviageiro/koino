@@ -7,6 +7,7 @@ public record NotificationResponse(
     String title,
     String message,
     String type,
+    String referenceId,
     boolean read,
     Instant createdAt
 ) {}

@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 import { BookOpen, Swords, Target, Zap } from 'lucide-react'
 
-function BattleMatchmaking({ mode, onCancel }) {
+function BattleMatchmaking({
+  mode,
+  onCancel,
+  title = 'Finding an opponent',
+  message = 'Matching you with a similarly rated Bible challenger.',
+  cancelLabel = 'Cancel search',
+}) {
   const [seconds, setSeconds] = useState(0)
 
   useEffect(() => {
@@ -36,10 +42,10 @@ function BattleMatchmaking({ mode, onCancel }) {
           </span>
         </div>
         <h2 className="mt-6 text-[24px] font-semibold">
-          Finding an opponent
+          {title}
         </h2>
         <p className="mt-2 max-w-[310px] text-[10px] leading-5 text-[#747b87]">
-          Matching you with a similarly rated Bible challenger.
+          {message}
         </p>
         <p className="mt-5 font-mono text-[19px] font-semibold tabular-nums text-[#aa6e15]">
           00:{String(seconds).padStart(2, '0')}
@@ -49,7 +55,7 @@ function BattleMatchmaking({ mode, onCancel }) {
           onClick={onCancel}
           className="mt-7 h-9 rounded-[7px] border border-[#dfe2e6] px-5 text-[9px] font-semibold text-[#59616d] hover:bg-[#f7f8f9]"
         >
-          Cancel search
+          {cancelLabel}
         </button>
       </section>
 

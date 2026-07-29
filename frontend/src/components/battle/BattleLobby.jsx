@@ -24,7 +24,14 @@ const modeDescriptions = {
   CLASSICAL: 'The deepest test with the hardest finish.',
 }
 
-function BattleLobby({ lobby, selectedMode, onSelectMode, onStart, onHelp }) {
+function BattleLobby({
+  lobby,
+  selectedMode,
+  onSelectMode,
+  onStart,
+  onHelp,
+  challengeProfile,
+}) {
   const mode =
     lobby.modes.find((item) => item.mode === selectedMode) || lobby.modes[0]
 
@@ -41,7 +48,9 @@ function BattleLobby({ lobby, selectedMode, onSelectMode, onStart, onHelp }) {
             </span>
           </div>
           <p className="mt-1.5 text-[11px] text-[#69717f]">
-            Compete in timed Bible knowledge battles.
+            {challengeProfile
+              ? `Choose a time control for your challenge with ${challengeProfile.fullname}.`
+              : 'Compete in timed Bible knowledge battles.'}
           </p>
         </div>
         <button
@@ -82,7 +91,9 @@ function BattleLobby({ lobby, selectedMode, onSelectMode, onStart, onHelp }) {
                 onClick={() => onStart(mode.mode)}
                 className="mt-5 flex h-10 w-[180px] items-center justify-center gap-2 rounded-[7px] bg-[#e8a33d] text-[10px] font-semibold text-white hover:bg-[#d8922e]"
               >
-                Find an opponent
+                {challengeProfile
+                  ? `Challenge ${challengeProfile.fullname.split(/\s+/)[0]}`
+                  : 'Find an opponent'}
                 <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>

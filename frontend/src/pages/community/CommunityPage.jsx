@@ -3,6 +3,7 @@ import { MessageCircleMore } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import CommunityComposer from '@/components/community/CommunityComposer.jsx'
 import CommunityPostCard from '@/components/community/CommunityPostCard.jsx'
+import UserProfileModal from '@/components/community/UserProfileModal.jsx'
 import HomeSidebar from '@/components/home/HomeSidebar.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import {
@@ -34,6 +35,7 @@ function CommunityPage({ onNavigate }) {
   const [posting, setPosting] = useState(false)
   const [commentingPostId, setCommentingPostId] = useState(null)
   const [error, setError] = useState('')
+  const [profileUserId, setProfileUserId] = useState(null)
 
   useEffect(() => {
     if (!getAuthToken()) {
@@ -203,6 +205,7 @@ function CommunityPage({ onNavigate }) {
                   post={post}
                   commenting={commentingPostId === post.postId}
                   onComment={submitComment}
+                  onAuthorClick={setProfileUserId}
                 />
               ))
             ) : (
@@ -228,6 +231,18 @@ function CommunityPage({ onNavigate }) {
           title="Community unavailable"
           message={error}
           onClose={() => setError('')}
+        />
+      )}
+
+      {profileUserId && (
+        <UserProfileModal
+          userId={profileUserId}
+          onClose={() => setProfileUserId(null)}
+          onNavigate={onNavigate}
+          onChallenge={(profile) => {
+            setProfileUserId(null)
+            onNavigate(`/battle-space?challenge=${profile.userId}`)
+          }}
         />
       )}
     </div>

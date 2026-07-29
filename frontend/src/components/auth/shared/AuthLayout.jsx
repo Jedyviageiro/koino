@@ -86,16 +86,16 @@ function AuthLayout({
   const onboardingActive = onboardingLoading || Boolean(onboardingContent)
 
   return (
-    <main className="min-h-svh bg-white px-7 py-5 font-sans text-[#111114] sm:px-9 sm:py-6">
+    <main className="flex min-h-svh items-center justify-center overflow-x-hidden bg-white px-5 py-5 font-sans text-[#111114] sm:px-8 sm:py-6">
       <div
-        className={`mx-auto grid w-full max-w-[1160px] lg:h-[590px] lg:gap-5 xl:h-[620px] ${
+        className={`my-auto grid w-full max-w-[1160px] lg:h-[min(590px,calc(100svh-40px))] lg:min-h-[540px] lg:gap-5 xl:h-[min(620px,calc(100svh-48px))] ${
           onboardingActive
             ? 'lg:grid-cols-[minmax(0,1.08fr)_minmax(390px,0.92fr)]'
             : 'lg:grid-cols-[minmax(370px,0.79fr)_minmax(0,1.21fr)]'
         }`}
       >
         <section
-          className={`flex min-h-0 justify-center px-6 py-10 sm:px-9 lg:px-9 ${
+          className={`flex min-h-0 items-center justify-center px-3 py-8 sm:px-9 lg:px-9 ${
             onboardingActive
               ? 'lg:order-2 lg:overflow-hidden lg:py-6'
               : 'lg:order-1 lg:py-10'

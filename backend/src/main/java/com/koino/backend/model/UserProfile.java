@@ -1,6 +1,7 @@
 package com.koino.backend.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +23,12 @@ public class UserProfile {
     private String dailyRhythm; // Screen 3: Time of day for peace
     private String workPace; // Screen 4A: Typical work pace
     private Integer dailyCapacityMinutes; // Screen 4B: Time set aside for reading
+
+    @Column(length = 280)
+    private String bio;
+
+    @Column(length = 100)
+    private String location;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

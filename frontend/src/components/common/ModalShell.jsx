@@ -7,6 +7,7 @@ function ModalShell({
   describedBy,
   onClose,
   dismissible = true,
+  panelClassName = '',
 }) {
   const modalRef = useRef(null)
 
@@ -49,7 +50,7 @@ function ModalShell({
       <section
         ref={modalRef}
         tabIndex={-1}
-        className="relative flex h-[330px] w-full max-w-[360px] flex-col overflow-hidden rounded-[22px] bg-white text-center shadow-[0_28px_80px_rgba(0,0,0,0.24)] animate-[modal-card-in_420ms_cubic-bezier(0.16,1,0.3,1)]"
+        className={`relative flex h-[330px] w-full max-w-[360px] flex-col overflow-hidden rounded-[22px] bg-white text-center shadow-[0_28px_80px_rgba(0,0,0,0.24)] animate-[modal-card-in_420ms_cubic-bezier(0.16,1,0.3,1)] ${panelClassName}`}
         role="alertdialog"
         aria-modal="true"
         aria-labelledby={labelledBy}

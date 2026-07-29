@@ -36,6 +36,9 @@ public class UserNotification {
     @Column(nullable = false)
     private String type;
 
+    @Column(length = 80)
+    private String referenceId;
+
     @Column(name = "is_read", nullable = false)
     @ColumnDefault("false")
     private boolean read;

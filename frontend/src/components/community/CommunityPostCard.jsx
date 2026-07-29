@@ -3,7 +3,12 @@ import { BookOpen, MessageCircle, Send } from 'lucide-react'
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
 import RelativeTime from '@/components/community/RelativeTime.jsx'
 
-function CommunityPostCard({ post, commenting, onComment }) {
+function CommunityPostCard({
+  post,
+  commenting,
+  onComment,
+  onAuthorClick,
+}) {
   const [commentsOpen, setCommentsOpen] = useState(false)
   const [comment, setComment] = useState('')
 
@@ -20,8 +25,19 @@ function CommunityPostCard({ post, commenting, onComment }) {
   return (
     <article className="rounded-[8px] border border-[#dfe3e8] bg-white p-4">
       <header className="flex items-center gap-3">
-        <CommunityAvatar author={post.author} />
-        <div className="min-w-0">
+        <button
+          type="button"
+          onClick={() => onAuthorClick(post.author.userId)}
+          className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d]"
+          aria-label={`View ${post.author.fullname}'s profile`}
+        >
+          <CommunityAvatar author={post.author} />
+        </button>
+        <button
+          type="button"
+          onClick={() => onAuthorClick(post.author.userId)}
+          className="min-w-0 text-left"
+        >
           <p className="truncate text-[12px] font-semibold text-[#20242b]">
             {post.author.fullname}
           </p>
@@ -31,7 +47,7 @@ function CommunityPostCard({ post, commenting, onComment }) {
             {' | '}
             <RelativeTime value={post.createdAt} />
           </p>
-        </div>
+        </button>
       </header>
 
       {post.postType === 'QUESTION' && (
@@ -88,7 +104,14 @@ function CommunityPostCard({ post, commenting, onComment }) {
             <div className="space-y-3 pb-3">
               {post.comments.map((item) => (
                 <div key={item.commentId} className="flex gap-2.5">
-                  <CommunityAvatar author={item.author} size="sm" />
+                  <button
+                    type="button"
+                    onClick={() => onAuthorClick(item.author.userId)}
+                    className="h-7 w-7 shrink-0 rounded-full"
+                    aria-label={`View ${item.author.fullname}'s profile`}
+                  >
+                    <CommunityAvatar author={item.author} size="sm" />
+                  </button>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
                       <p className="truncate text-[11px] font-semibold">

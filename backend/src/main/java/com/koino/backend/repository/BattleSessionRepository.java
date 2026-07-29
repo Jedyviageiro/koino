@@ -24,4 +24,9 @@ public interface BattleSessionRepository
         @Param("battleId") String battleId,
         @Param("userId") Long userId
     );
+
+    Optional<BattleSession> findByBattleIdAndUserUserId(
+        String battleId,
+        Long userId
+    );
 }

@@ -6,5 +6,8 @@ public record UserSettingsResponse(
     String email,
     String timeZone,
     String language,
-    String profilePictureUrl
+    String profilePictureUrl,
+    String username,
+    String bio,
+    String location
 ) {}
