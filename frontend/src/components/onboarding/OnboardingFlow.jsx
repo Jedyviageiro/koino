@@ -211,7 +211,11 @@ function Choice({ option, selected, onSelect, detailed = false }) {
         selected
           ? 'border-[#e8a33d] bg-[#fdf7ee]'
           : 'border-[#e1e3e7] bg-white hover:-translate-y-px hover:border-[#e6bd7a]'
-      } ${detailed ? 'min-h-[88px]' : 'min-h-[66px]'}`}
+      } ${
+        detailed
+          ? 'min-h-[88px] lg:min-h-[72px] lg:py-2'
+          : 'min-h-[66px] lg:min-h-[60px] lg:py-2'
+      }`}
       aria-pressed={selected}
     >
       <span
@@ -287,7 +291,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
 
   return (
     <>
-      <div className="flex min-h-[540px] w-full flex-col">
+      <div className="flex min-h-[540px] w-full flex-col lg:min-h-[510px]">
       <header className="flex items-center">
         <button
           type="button"
@@ -312,13 +316,13 @@ function OnboardingFlow({ onFailure, onComplete }) {
 
       <section
         key={step.field}
-        className="flex flex-1 animate-[onboarding-step-in_340ms_cubic-bezier(0.16,1,0.3,1)] flex-col pt-7"
+        className="flex flex-1 animate-[onboarding-step-in_340ms_cubic-bezier(0.16,1,0.3,1)] flex-col pt-7 lg:pt-3"
       >
         <div className="text-center">
-          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f2f3f4] text-[#34383e]">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f2f3f4] text-[#34383e] lg:h-11 lg:w-11">
             <StepIcon className="h-6 w-6" strokeWidth={1.65} aria-hidden="true" />
           </span>
-          <p className="mt-4 text-[10px] font-semibold uppercase text-[#858a93]">
+          <p className="mt-4 text-[10px] font-semibold uppercase text-[#858a93] lg:mt-2">
             {step.eyebrow}
           </p>
           <h2 className="mt-1.5 text-[25px] font-semibold leading-tight text-[#111317]">
@@ -329,7 +333,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
           </p>
         </div>
 
-        <div className="mb-5 mt-6">
+        <div className="mb-5 mt-6 lg:mb-4 lg:mt-4">
           <div className="space-y-2.5">
             {step.options.map((option) => (
               <Choice
@@ -366,7 +370,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
           )}
         </button>
 
-        <div className="mt-5 flex justify-center gap-2" aria-hidden="true">
+        <div className="mt-5 flex justify-center gap-2 lg:mt-3" aria-hidden="true">
           {steps.map((item, index) => (
             <span
               key={item.field}

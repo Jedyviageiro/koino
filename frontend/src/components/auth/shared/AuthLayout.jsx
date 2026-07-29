@@ -97,7 +97,7 @@ function AuthLayout({
         <section
           className={`flex min-h-0 justify-center px-6 py-10 sm:px-9 lg:px-9 ${
             onboardingActive
-              ? 'onboarding-panel-scroll lg:order-2 lg:overflow-y-auto lg:py-8'
+              ? 'lg:order-2 lg:overflow-hidden lg:py-6'
               : 'lg:order-1 lg:py-10'
           }`}
         >

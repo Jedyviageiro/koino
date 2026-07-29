@@ -250,6 +250,14 @@ public class UserController {
         return notificationService.markRead(user.getUserId(), notificationId);
     }
 
+    @PatchMapping("/me/notifications/read")
+    public ResponseEntity<Void> markAllNotificationsRead(
+        @AuthenticationPrincipal User user
+    ) {
+        notificationService.markAllRead(user.getUserId());
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/me/settings")
     public UserSettingsResponse getSettings(@AuthenticationPrincipal User user) {
         return userService.getSettings(user.getUserId());

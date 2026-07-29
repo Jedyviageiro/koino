@@ -50,6 +50,11 @@ public class NotificationService {
         return toResponse(notificationRepository.save(notification));
     }
 
+    @Transactional
+    public void markAllRead(Long userId) {
+        notificationRepository.markAllRead(userId);
+    }
+
     private NotificationResponse toResponse(UserNotification notification) {
         return new NotificationResponse(
             notification.getNotificationId(),

@@ -19,3 +19,9 @@ export function markNotificationRead(notificationId) {
     method: 'PATCH',
   })
 }
+
+export function markAllNotificationsRead() {
+  return apiRequest('/users/me/notifications/read', {
+    method: 'PATCH',
+  })
+}

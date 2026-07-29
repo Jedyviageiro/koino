@@ -8,6 +8,7 @@ import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import {
   getHomeData,
+  markAllNotificationsRead,
   markNotificationRead,
 } from '@/features/home/homeService.js'
 
@@ -61,6 +62,46 @@ function HomePage({ onNavigate }) {
   }, [data, loadHome, loading])
 
   const notifications = useMemo(() => data?.notifications || [], [data])
+
+  async function toggleNotifications() {
+    if (notificationsOpen) {
+      setNotificationsOpen(false)
+      return
+    }
+
+    setNotificationsOpen(true)
+    const unreadIds = new Set(
+      notifications
+        .filter((notification) => !notification.read)
+        .map((notification) => notification.notificationId),
+    )
+    if (unreadIds.size === 0) return
+
+    setData((current) => ({
+      ...current,
+      notifications: current.notifications.map((notification) => (
+        unreadIds.has(notification.notificationId)
+          ? { ...notification, read: true }
+          : notification
+      )),
+    }))
+
+    try {
+      await markAllNotificationsRead()
+    } catch (requestError) {
+      setData((current) => ({
+        ...current,
+        notifications: current.notifications.map((notification) => (
+          unreadIds.has(notification.notificationId)
+            ? { ...notification, read: false }
+            : notification
+        )),
+      }))
+      setError(
+        requestError.message || 'Unable to update your notifications.',
+      )
+    }
+  }
 
   async function readNotification(notification) {
     try {
@@ -118,7 +159,7 @@ function HomePage({ onNavigate }) {
             <NotificationMenu
               notifications={notifications}
               open={notificationsOpen}
-              onToggle={() => setNotificationsOpen((current) => !current)}
+              onToggle={toggleNotifications}
               onClose={() => setNotificationsOpen(false)}
               onRead={readNotification}
             />

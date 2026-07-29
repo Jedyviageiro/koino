@@ -3,6 +3,7 @@ package com.koino.backend.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +24,7 @@ public interface BattleQuestionRepository
         """)
     List<BattleQuestion> findRandomForDifficulty(
         @Param("minimum") int minimum,
-        @Param("maximum") int maximum
+        @Param("maximum") int maximum,
+        Pageable pageable
     );
 }

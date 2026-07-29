@@ -5,6 +5,7 @@ import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.koino.backend.model.User;
@@ -25,6 +26,7 @@ public class EmailService {
         this.from = from;
     }
 
+    @Async("mailTaskExecutor")
     public void sendEmailVerification(
         User user,
         String verificationUrl,
@@ -45,6 +47,7 @@ public class EmailService {
         );
     }
 
+    @Async("mailTaskExecutor")
     public void sendPasswordReset(
         User user,
         String resetUrl,

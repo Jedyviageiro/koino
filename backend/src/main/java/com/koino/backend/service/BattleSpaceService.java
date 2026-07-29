@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ import com.koino.backend.repository.UserRepository;
 @Service
 public class BattleSpaceService {
     private static final int MINIMUM_ELO = 200;
+    private static final int INITIAL_QUESTION_POOL_SIZE = 12;
     private static final List<String> OPPONENT_NAMES = List.of(
         "Miriam K.",
         "Caleb J.",
@@ -117,11 +119,16 @@ public class BattleSpaceService {
         List<BattleQuestion> available =
             new ArrayList<>(questionRepository.findRandomForDifficulty(
                 minimumDifficulty,
-                maximumDifficulty
+                maximumDifficulty,
+                PageRequest.of(0, INITIAL_QUESTION_POOL_SIZE)
             ));
         if (available.isEmpty()) {
             available = new ArrayList<>(
-                questionRepository.findRandomForDifficulty(1, 6)
+                questionRepository.findRandomForDifficulty(
+                    1,
+                    6,
+                    PageRequest.of(0, INITIAL_QUESTION_POOL_SIZE)
+                )
             );
         }
         if (available.isEmpty()) {
@@ -365,10 +372,15 @@ public class BattleSpaceService {
         List<BattleQuestion> candidates =
             questionRepository.findRandomForDifficulty(
                 Math.max(1, difficulty - 1),
-                Math.min(6, difficulty + 1)
+                Math.min(6, difficulty + 1),
+                PageRequest.of(0, INITIAL_QUESTION_POOL_SIZE)
             );
         if (candidates.isEmpty()) {
-            candidates = questionRepository.findRandomForDifficulty(1, 6);
+            candidates = questionRepository.findRandomForDifficulty(
+                1,
+                6,
+                PageRequest.of(0, INITIAL_QUESTION_POOL_SIZE)
+            );
         }
         if (candidates.isEmpty()) {
             throw new IllegalStateException(
