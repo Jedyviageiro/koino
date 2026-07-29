@@ -14,7 +14,10 @@ class CorsConfigurationTests {
     @Test
     void allowsConfiguredFrontendOriginsAndBearerHeaders() {
         UrlBasedCorsConfigurationSource source = new SecurityConfig()
-            .corsConfigurationSource("http://localhost:5173, https://app.koino.com");
+            .corsConfigurationSource(
+                "http://localhost:5173, https://app.koino.com",
+                "https://*.vercel.app"
+            );
         MockHttpServletRequest request = new MockHttpServletRequest(
             "OPTIONS",
             "/api/onboarding"
@@ -27,6 +30,9 @@ class CorsConfigurationTests {
             "http://localhost:5173",
             "https://app.koino.com"
         );
+        assertThat(configuration.checkOrigin(
+            "https://koino-feature-123.vercel.app"
+        )).isEqualTo("https://koino-feature-123.vercel.app");
         assertThat(configuration.getAllowedMethods()).contains("OPTIONS", "POST", "PATCH");
         assertThat(configuration.getAllowedHeaders()).contains("Authorization", "Content-Type");
         assertThat(configuration.getAllowCredentials()).isFalse();
