@@ -1,4 +1,5 @@
 import { BookOpen, CalendarDays, LockKeyhole } from 'lucide-react'
+import planCover from '@/assets/images/plans-cover.png'
 
 function formatDate(date) {
   if (!date) return null
@@ -33,14 +34,21 @@ function CurrentPlanCard({ plan, template, todayTask, onContinue }) {
 
   return (
     <section className="grid gap-6 rounded-[8px] border border-[#dfe3e9] bg-white px-6 py-6 md:grid-cols-[minmax(0,1.05fr)_minmax(280px,1fr)_180px] md:items-center">
-      <div className="min-w-0 md:border-r md:border-[#e2e5ea] md:pr-7">
-        <p className="text-[18px] font-semibold">{plan.name}</p>
-        <p className="mt-1.5 text-[12px] font-medium text-[#b27413]">
-          {template.bookNames}
-        </p>
-        <p className="mt-3 max-w-[360px] text-[13px] leading-5 text-[#667089]">
-          {template.description}
-        </p>
+      <div className="flex min-w-0 gap-4 md:border-r md:border-[#e2e5ea] md:pr-7">
+        <img
+          src={planCover}
+          alt=""
+          className="h-[92px] w-[70px] shrink-0 rounded-[7px] object-cover"
+        />
+        <div className="min-w-0">
+          <p className="text-[18px] font-semibold">{plan.name}</p>
+          <p className="mt-1.5 text-[12px] font-medium text-[#b27413]">
+            {template.bookNames}
+          </p>
+          <p className="mt-3 line-clamp-2 max-w-[360px] text-[12px] leading-5 text-[#667089]">
+            {template.description}
+          </p>
+        </div>
       </div>
 
       <div>

@@ -16,9 +16,11 @@ import com.koino.backend.dto.battle.BattleStateResponse;
 import com.koino.backend.dto.battle.CreateBattleRequest;
 import com.koino.backend.dto.battle.CreateBattleChallengeRequest;
 import com.koino.backend.dto.battle.BattleChallengeResponse;
+import com.koino.backend.dto.battle.BattleMatchmakingResponse;
 import com.koino.backend.model.User;
 import com.koino.backend.service.BattleSpaceService;
 import com.koino.backend.service.BattleChallengeService;
+import com.koino.backend.service.BattleMatchmakingService;
 
 import jakarta.validation.Valid;
 
@@ -27,13 +29,48 @@ import jakarta.validation.Valid;
 public class BattleSpaceController {
     private final BattleSpaceService battleSpaceService;
     private final BattleChallengeService challengeService;
+    private final BattleMatchmakingService matchmakingService;
 
     public BattleSpaceController(
         BattleSpaceService battleSpaceService,
-        BattleChallengeService challengeService
+        BattleChallengeService challengeService,
+        BattleMatchmakingService matchmakingService
     ) {
         this.battleSpaceService = battleSpaceService;
         this.challengeService = challengeService;
+        this.matchmakingService = matchmakingService;
+    }
+
+    @PostMapping("/matchmaking")
+    public BattleMatchmakingResponse startMatchmaking(
+        @AuthenticationPrincipal User user,
+        @Valid @RequestBody CreateBattleRequest request
+    ) {
+        return matchmakingService.enter(user.getUserId(), request.mode());
+    }
+
+    @GetMapping("/matchmaking/{ticketId}")
+    public BattleMatchmakingResponse matchmakingState(
+        @AuthenticationPrincipal User user,
+        @PathVariable String ticketId
+    ) {
+        return matchmakingService.heartbeat(user.getUserId(), ticketId);
+    }
+
+    @PostMapping("/matchmaking/{ticketId}/bot")
+    public BattleStateResponse useBot(
+        @AuthenticationPrincipal User user,
+        @PathVariable String ticketId
+    ) {
+        return matchmakingService.useBot(user.getUserId(), ticketId);
+    }
+
+    @PostMapping("/matchmaking/{ticketId}/cancel")
+    public BattleMatchmakingResponse cancelMatchmaking(
+        @AuthenticationPrincipal User user,
+        @PathVariable String ticketId
+    ) {
+        return matchmakingService.cancel(user.getUserId(), ticketId);
     }
 
     @PostMapping("/challenges")

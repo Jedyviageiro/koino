@@ -15,6 +15,29 @@ export function createBattle(mode) {
   })
 }
 
+export function startMatchmaking(mode) {
+  return apiRequest('/battles/matchmaking', {
+    method: 'POST',
+    body: JSON.stringify({ mode }),
+  })
+}
+
+export function getMatchmaking(ticketId) {
+  return apiRequest(`/battles/matchmaking/${ticketId}`)
+}
+
+export function getMatchmakingBot(ticketId) {
+  return apiRequest(`/battles/matchmaking/${ticketId}/bot`, {
+    method: 'POST',
+  })
+}
+
+export function cancelMatchmaking(ticketId) {
+  return apiRequest(`/battles/matchmaking/${ticketId}/cancel`, {
+    method: 'POST',
+  })
+}
+
 export function getBattle(battleId) {
   return apiRequest(`/battles/${battleId}`)
 }

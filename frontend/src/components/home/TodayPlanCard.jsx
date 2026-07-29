@@ -6,6 +6,7 @@ import {
   Clock3,
   LockKeyhole,
 } from 'lucide-react'
+import planCover from '@/assets/images/plans-cover.png'
 
 function getReadingTitle(task) {
   const passage = task?.passages?.[0]
@@ -64,9 +65,11 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
     <div className="flex flex-col gap-6">
       <section className="min-h-[245px] rounded-[12px] border border-[#e4e4e2] bg-white px-6 py-5">
         <div className="flex items-start gap-4 sm:gap-[27px]">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-[linear-gradient(135deg,#fbf2e4,#fdf8f1)] text-[#9b650c]">
-            <BookOpen className="h-6 w-6" strokeWidth={1.35} />
-          </span>
+          <img
+            src={planCover}
+            alt=""
+            className="h-12 w-12 shrink-0 rounded-[10px] object-cover"
+          />
           <div className="min-w-0 flex-1 pt-1">
             <h2 className="text-[16px] font-bold leading-none">Today&apos;s Plan</h2>
             <p className="mt-2 text-[13px] text-[#626b84]">

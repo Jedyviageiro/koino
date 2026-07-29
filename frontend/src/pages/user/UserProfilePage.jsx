@@ -4,13 +4,12 @@ import {
   Check,
   Copy,
   LoaderCircle,
-  MapPin,
   Swords,
   UserPlus,
 } from 'lucide-react'
 import HomeSidebar from '@/components/home/HomeSidebar.jsx'
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
-import BattleRankBadge from '@/components/battle/BattleRankBadge.jsx'
+import ProfileOverview from '@/components/community/ProfileOverview.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
@@ -26,6 +25,7 @@ function UserProfilePage({ username, onNavigate }) {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [working, setWorking] = useState(false)
+  const [copied, setCopied] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -77,12 +77,26 @@ function UserProfilePage({ username, onNavigate }) {
     }
   }
 
+  async function copyProfileLink() {
+    await navigator.clipboard.writeText(window.location.href)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1800)
+  }
+
+  function challenge() {
+    onNavigate(`/battle-space?challenge=${profile.userId}`)
+  }
+
   const content = (
-    <main className="min-w-0 px-[18px] pb-14 pt-6 sm:px-7 lg:px-9 lg:pt-8">
-      <div className="mx-auto max-w-[1050px]">
-        {!signedIn && (
-          <header className="mb-8 flex items-center justify-between">
-            <button type="button" onClick={() => onNavigate('/')} className="w-20">
+    <main className="min-w-0 px-[18px] pb-14 pt-5 sm:px-7 lg:px-9 lg:pt-7">
+      <div className="mx-auto max-w-[1080px]">
+        {!signedIn ? (
+          <header className="mb-6 flex items-center justify-between border-b border-[#e4e7eb] pb-5">
+            <button
+              type="button"
+              onClick={() => onNavigate('/')}
+              className="w-20"
+            >
               <img src={koinoLogo} alt="Koino" className="w-full" />
             </button>
             <button
@@ -93,6 +107,14 @@ function UserProfilePage({ username, onNavigate }) {
               Sign in
             </button>
           </header>
+        ) : (
+          <button
+            type="button"
+            onClick={() => onNavigate('/community')}
+            className="mb-5 text-[9px] text-[#727b88] transition-colors hover:text-[#9b681d]"
+          >
+            Community <span className="px-1.5">&rsaquo;</span> @{username}
+          </button>
         )}
 
         {loading ? (
@@ -100,130 +122,84 @@ function UserProfilePage({ username, onNavigate }) {
             <LoaderCircle className="h-6 w-6 animate-spin text-[#d58c20]" />
           </div>
         ) : profile ? (
-          <>
-            <header className="flex flex-col gap-5 border-b border-[#e5e8ec] pb-7 sm:flex-row sm:items-start">
+          <article className="overflow-hidden rounded-[10px] border border-[#e3e6ea] bg-white">
+            <header className="flex flex-col gap-5 px-5 pb-6 pt-6 sm:flex-row sm:items-start sm:px-7">
               <CommunityAvatar author={profile} size="xl" />
-              <div className="min-w-0 flex-1">
-                <h1 className="font-sans text-[25px] font-semibold">
+              <div className="min-w-0 flex-1 sm:pt-1">
+                <h1 className="font-serif text-[25px] font-semibold text-[#171a1f]">
                   {profile.fullname}
                 </h1>
-                <p className="mt-1 text-[10px] text-[#737c8b]">
+                <p className="mt-1 text-[10px] text-[#727b89]">
                   @{profile.username}
                 </p>
-                <p className="mt-3 flex items-center gap-1.5 text-[9px] text-[#858c98]">
+                <p className="mt-3 flex items-center gap-1.5 text-[9px] text-[#858d99]">
                   <CalendarDays className="h-3 w-3" />
                   Joined {formatMonth(profile.joinedAt)}
                 </p>
-                {profile.bio && (
-                  <p className="mt-3 max-w-[520px] text-[10px] leading-5 text-[#5f6877]">
-                    {profile.bio}
-                  </p>
-                )}
               </div>
-              {profile.friendshipStatus !== 'SELF' && (
-                <div className="flex gap-2">
+
+              <div className="flex flex-wrap gap-2">
+                {profile.friendshipStatus !== 'SELF' && (
                   <FriendButton
                     status={profile.friendshipStatus}
                     working={working}
                     onClick={friendAction}
                   />
-                  {profile.friendshipStatus === 'FRIENDS' && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onNavigate(`/battle-space?challenge=${profile.userId}`)
-                      }
-                      className="flex h-10 items-center gap-2 rounded-[7px] bg-[#171a1f] px-4 text-[9px] font-semibold text-white"
-                    >
-                      <Swords className="h-3.5 w-3.5" />
-                      Challenge
-                    </button>
+                )}
+                {profile.friendshipStatus === 'FRIENDS' && (
+                  <button
+                    type="button"
+                    onClick={challenge}
+                    className="flex h-10 items-center gap-2 rounded-[7px] bg-[#15191f] px-4 text-[9px] font-semibold text-white"
+                  >
+                    <Swords className="h-3.5 w-3.5" />
+                    Challenge
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={copyProfileLink}
+                  className="flex h-10 items-center gap-2 rounded-[7px] border border-[#dfe3e8] px-3 text-[9px] font-semibold"
+                >
+                  {copied ? (
+                    <Check className="h-3.5 w-3.5" />
+                  ) : (
+                    <Copy className="h-3.5 w-3.5" />
                   )}
-                </div>
-              )}
+                  {copied ? 'Copied' : 'Share'}
+                </button>
+              </div>
             </header>
 
-            <div className="grid grid-cols-2 border-b border-[#e5e8ec] sm:grid-cols-4">
-              <Metric value={profile.postsCount} label="Posts" />
-              <Metric value={profile.friendsCount} label="Friends" />
-              <Metric value={profile.battle?.elo || 200} label="ELO" />
-              <Metric value={`${profile.battle?.winRate || 0}%`} label="Win rate" />
-            </div>
+            <ProfileOverview
+              profile={profile}
+              onViewPlan={
+                profile.friendshipStatus === 'SELF'
+                  ? () => onNavigate('/plans')
+                  : undefined
+              }
+              onChallenge={
+                profile.friendshipStatus === 'FRIENDS' ? challenge : undefined
+              }
+              className="border-t border-[#e6e8eb] [&>div:first-child]:border-t-0 [&>div:last-child]:px-5 [&>div:last-child]:pb-6 sm:[&>div:last-child]:px-7"
+            />
 
-            <div className="grid gap-6 py-7 lg:grid-cols-[1.1fr_1fr_0.85fr]">
-              <section className="border-b border-[#e6e8eb] pb-6 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
-                <h2 className="font-sans text-[12px] font-semibold">
-                  Current reading plan
-                </h2>
-                {profile.currentPlan ? (
-                  <>
-                    <p className="mt-4 text-[14px] font-semibold">
-                      {profile.currentPlan.name}
-                    </p>
-                    <p className="mt-2 text-[9px] leading-5 text-[#737c89]">
-                      {profile.currentPlan.description}
-                    </p>
-                    <p className="mt-4 text-[9px] font-medium text-[#9a671d]">
-                      {profile.currentPlan.durationDays} days ·{' '}
-                      {profile.currentPlan.estimatedMinutesPerDay} minutes/day
-                    </p>
-                  </>
-                ) : (
-                  <p className="mt-4 text-[9px] text-[#858c98]">
-                    No active plan is shared right now.
-                  </p>
-                )}
-              </section>
-
-              <section className="border-b border-[#e6e8eb] pb-6 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
-                <h2 className="font-sans text-[12px] font-semibold">
-                  Battle Space
-                </h2>
-                <div className="mt-4">
-                  <BattleRankBadge rank={profile.battle?.rank || 'Novice'} />
-                </div>
-                <p className="mt-3 text-[19px] font-semibold">
-                  {profile.battle?.elo || 200}{' '}
-                  <span className="text-[9px] font-normal text-[#7b8390]">
-                    ELO
-                  </span>
-                </p>
-                <p className="mt-2 text-[9px] text-[#737c89]">
-                  {profile.battle?.wins || 0} wins across{' '}
-                  {profile.battle?.battles || 0} battles
-                </p>
-              </section>
-
-              <section>
-                <h2 className="font-sans text-[12px] font-semibold">
-                  About {profile.fullname.split(/\s+/)[0]}
-                </h2>
-                <p className="mt-4 text-[9px] leading-5 text-[#737c89]">
-                  {profile.bio || 'Growing in faith with the Koino community.'}
-                </p>
-                {profile.location && (
-                  <p className="mt-4 flex items-center gap-1.5 text-[9px] text-[#858c98]">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {profile.location}
-                  </p>
-                )}
-              </section>
-            </div>
-
-            <footer className="mt-5 flex items-center justify-between border-t border-[#e5e8ec] pt-5">
-              <p className="text-[8px] text-[#9299a4]">
-                Public Koino profile
-              </p>
+            <footer className="mx-5 flex items-center justify-between border-t border-[#e5e8ec] py-5 sm:mx-7">
+              <p className="text-[8px] text-[#9299a4]">Public Koino profile</p>
               <button
                 type="button"
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
+                onClick={copyProfileLink}
                 className="flex h-9 items-center gap-2 rounded-[7px] border border-[#e1e4e8] px-3 text-[9px] font-semibold"
               >
-                <Copy className="h-3.5 w-3.5" />
-                Copy profile link
+                {copied ? (
+                  <Check className="h-3.5 w-3.5" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+                {copied ? 'Link copied' : 'Copy profile link'}
               </button>
             </footer>
-          </>
+          </article>
         ) : null}
       </div>
     </main>
@@ -257,6 +233,14 @@ function UserProfilePage({ username, onNavigate }) {
 
 function FriendButton({ status, working, onClick }) {
   const disabled = ['FRIENDS', 'PENDING_OUTGOING'].includes(status)
+  const label = {
+    FRIENDS: 'Friends',
+    PENDING_OUTGOING: 'Request sent',
+    PENDING_INCOMING: 'Accept request',
+    NONE: 'Add friend',
+    SIGNED_OUT: 'Add friend',
+  }[status] || 'Add friend'
+
   return (
     <button
       type="button"
@@ -271,23 +255,8 @@ function FriendButton({ status, working, onClick }) {
       ) : (
         <UserPlus className="h-3.5 w-3.5" />
       )}
-      {status === 'FRIENDS'
-        ? 'Friends'
-        : status === 'PENDING_OUTGOING'
-          ? 'Request sent'
-          : status === 'PENDING_INCOMING'
-            ? 'Accept request'
-            : 'Add friend'}
+      {label}
     </button>
-  )
-}
-
-function Metric({ value, label }) {
-  return (
-    <div className="border-r border-[#e5e8ec] px-4 py-5 text-center last:border-r-0">
-      <p className="text-[15px] font-semibold">{value}</p>
-      <p className="mt-1 text-[8px] text-[#858c98]">{label}</p>
-    </div>
   )
 }
 

@@ -10,8 +10,11 @@ import BattleResultModal from '@/components/battle/BattleResultModal.jsx'
 import BattleRulesModal from '@/components/battle/BattleRulesModal.jsx'
 import {
   answerBattleQuestion,
-  createBattle,
   createBattleChallenge,
+  startMatchmaking,
+  getMatchmaking,
+  getMatchmakingBot,
+  cancelMatchmaking,
   getBattleChallenge,
   acceptBattleChallenge,
   cancelBattleChallenge,
@@ -41,6 +44,7 @@ function BattleSpacePage({ onNavigate }) {
   const [confirmLeave, setConfirmLeave] = useState(false)
   const [challengeProfile, setChallengeProfile] = useState(null)
   const [activeChallenge, setActiveChallenge] = useState(null)
+  const [matchmakingTicket, setMatchmakingTicket] = useState(null)
   const matchingRequestRef = useRef(0)
   const feedbackTimerRef = useRef(null)
 
@@ -129,16 +133,21 @@ function BattleSpacePage({ onNavigate }) {
           setActiveChallenge(challenge)
           return
         }
-        const minimumSearchTime = modeName === 'LIGHTNING' ? 420 : 700
-        const [created] = await Promise.all([
-          createBattle(modeName),
-          new Promise((resolve) =>
-            window.setTimeout(resolve, minimumSearchTime),
-          ),
-        ])
-        if (matchingRequestRef.current !== requestId) return
-        setBattle(created)
-        setView('battle')
+        const ticket = await startMatchmaking(modeName)
+        if (matchingRequestRef.current !== requestId) {
+          if (ticket.status === 'WAITING') {
+            await cancelMatchmaking(ticket.ticketId)
+          }
+          return
+        }
+        setMatchmakingTicket(ticket)
+        if (ticket.status === 'MATCHED' && ticket.battleId) {
+          const created = await getBattle(ticket.battleId)
+          if (matchingRequestRef.current !== requestId) return
+          setBattle(created)
+          setMatchmakingTicket(null)
+          setView('battle')
+        }
       } catch (requestError) {
         if (matchingRequestRef.current !== requestId) return
         setView('lobby')
@@ -150,6 +159,13 @@ function BattleSpacePage({ onNavigate }) {
 
   async function cancelMatching() {
     matchingRequestRef.current += 1
+    if (matchmakingTicket?.status === 'WAITING') {
+      try {
+        await cancelMatchmaking(matchmakingTicket.ticketId)
+      } catch {
+        // Heartbeat expiry also removes abandoned searches.
+      }
+    }
     if (activeChallenge?.status === 'PENDING') {
       try {
         await cancelBattleChallenge(activeChallenge.challengeId)
@@ -158,9 +174,58 @@ function BattleSpacePage({ onNavigate }) {
       }
     }
     setActiveChallenge(null)
+    setMatchmakingTicket(null)
     setView('lobby')
     setMatchingMode(null)
   }
+
+  useEffect(() => {
+    if (matchmakingTicket?.status !== 'WAITING') return undefined
+    let active = true
+    let usingBot = false
+    const startedAt = Date.now()
+
+    async function refreshMatchmaking() {
+      try {
+        const latest = await getMatchmaking(matchmakingTicket.ticketId)
+        if (!active) return
+        setMatchmakingTicket(latest)
+        if (latest.status === 'MATCHED' && latest.battleId) {
+          const currentBattle = await getBattle(latest.battleId)
+          if (!active) return
+          setBattle(currentBattle)
+          setMatchmakingTicket(null)
+          setView('battle')
+          return
+        }
+        if (latest.status !== 'WAITING') {
+          setMatchmakingTicket(null)
+          setView('lobby')
+          return
+        }
+        if (!usingBot && Date.now() - startedAt >= 7000) {
+          usingBot = true
+          const currentBattle = await getMatchmakingBot(latest.ticketId)
+          if (!active) return
+          setBattle(currentBattle)
+          setMatchmakingTicket(null)
+          setView('battle')
+        }
+      } catch (requestError) {
+        if (active) {
+          setMatchmakingTicket(null)
+          setView('lobby')
+          setError(requestError.message || 'Unable to find an opponent.')
+        }
+      }
+    }
+
+    const timer = window.setInterval(refreshMatchmaking, 1400)
+    return () => {
+      active = false
+      window.clearInterval(timer)
+    }
+  }, [matchmakingTicket?.status, matchmakingTicket?.ticketId])
 
   useEffect(() => {
     if (activeChallenge?.status !== 'PENDING') return undefined
@@ -204,6 +269,23 @@ function BattleSpacePage({ onNavigate }) {
   }, [activeChallenge?.challengeId, activeChallenge?.status])
 
   useEffect(() => {
+    if (matchmakingTicket?.status !== 'WAITING') return undefined
+    function cancelOnPageExit() {
+      const token = getAuthToken()
+      fetch(
+        `${API_BASE_URL}/battles/matchmaking/${matchmakingTicket.ticketId}/cancel`,
+        {
+          method: 'POST',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          keepalive: true,
+        },
+      ).catch(() => {})
+    }
+    window.addEventListener('pagehide', cancelOnPageExit)
+    return () => window.removeEventListener('pagehide', cancelOnPageExit)
+  }, [matchmakingTicket?.status, matchmakingTicket?.ticketId])
+
+  useEffect(() => {
     if (activeChallenge?.status !== 'PENDING') return undefined
     function cancelOnPageExit() {
       const token = getAuthToken()
@@ -226,6 +308,13 @@ function BattleSpacePage({ onNavigate }) {
 
   const guardedNavigate = useCallback(
     async (path) => {
+      if (matchmakingTicket?.status === 'WAITING') {
+        try {
+          await cancelMatchmaking(matchmakingTicket.ticketId)
+        } catch {
+          // Heartbeat expiry also removes abandoned searches.
+        }
+      }
       if (activeChallenge?.status === 'PENDING') {
         try {
           await cancelBattleChallenge(activeChallenge.challengeId)
@@ -235,7 +324,7 @@ function BattleSpacePage({ onNavigate }) {
       }
       onNavigate(path)
     },
-    [activeChallenge, onNavigate],
+    [activeChallenge, matchmakingTicket, onNavigate],
   )
 
   async function answer(selectedOption) {

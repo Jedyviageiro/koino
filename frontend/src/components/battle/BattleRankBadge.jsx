@@ -14,17 +14,31 @@ const rankDetails = {
   'Super Grandmaster': { image: supergrandmaster, threshold: '2,600+' },
 }
 
-function BattleRankBadge({ rank, compact = false }) {
+function BattleRankBadge({ rank, compact = false, size = 'default' }) {
   const details = rankDetails[rank] || rankDetails.Novice
+  const imageSize =
+    size === 'large'
+      ? 'h-12 w-12'
+      : compact
+        ? 'h-4 w-4'
+        : 'h-6 w-6'
 
   return (
-    <span className="inline-flex items-center gap-1.5 text-[#9a671d]">
+    <span className="inline-flex min-w-0 items-center gap-2 text-[#9a671d]">
       <img
         src={details.image}
         alt=""
-        className={compact ? 'h-4 w-4 object-contain' : 'h-6 w-6 object-contain'}
+        className={`${imageSize} shrink-0 object-contain`}
       />
-      <span className={compact ? 'text-[9px]' : 'text-[11px] font-semibold'}>
+      <span
+        className={
+          compact
+            ? 'text-[9px]'
+            : size === 'large'
+              ? 'text-[11px] font-semibold'
+              : 'text-[11px] font-semibold'
+        }
+      >
         {rank}
       </span>
     </span>
