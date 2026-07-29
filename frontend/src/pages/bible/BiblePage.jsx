@@ -30,7 +30,7 @@ function BiblePage({ onNavigate }) {
   const [selectedBook, setSelectedBook] = useState(null)
   const [selectedChapter, setSelectedChapter] = useState(null)
   const [selectedVerseIndex, setSelectedVerseIndex] = useState(0)
-  const [textSize, setTextSize] = useState(1)
+  const [textSize, setTextSize] = useState(0)
   const [bookmarkColors, setBookmarkColors] = useState(new Map())
   const [bookmarkTarget, setBookmarkTarget] = useState(null)
   const [bookmarkSaving, setBookmarkSaving] = useState(false)
@@ -356,11 +356,11 @@ function BiblePage({ onNavigate }) {
         activePath="/bible"
       />
 
-      <main className="min-w-0 px-[18px] pb-12 pt-7 sm:px-7 lg:px-9 lg:pt-8">
-        <div className="mx-auto max-w-[1100px]">
-          <header className="mb-5">
-            <h1 className="text-[30px] font-semibold leading-tight">Bible</h1>
-            <p className="mt-1.5 text-[14px] text-[#667089]">
+      <main className="min-w-0 px-[18px] pb-10 pt-6 sm:px-7 lg:px-8 lg:pt-7">
+        <div className="mx-auto max-w-[1180px]">
+          <header className="mb-4">
+            <h1 className="text-[26px] font-semibold leading-tight">Bible</h1>
+            <p className="mt-1 text-[12px] text-[#667089]">
               Read, study, and grow in God&apos;s Word.
             </p>
           </header>

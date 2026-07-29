@@ -1,7 +1,7 @@
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const controlClass =
-  'h-10 w-full rounded-[8px] border border-[#dfe3e9] bg-white px-3 text-[12px] font-medium text-[#20242b] outline-none transition-colors focus:border-[#e8a33d]'
+  'h-9 w-full rounded-[7px] border border-[#dfe3e9] bg-white px-2.5 text-[11px] font-medium text-[#20242b] outline-none transition-colors focus:border-[#e8a33d]'
 
 function BibleToolbar({
   versions,
@@ -25,9 +25,9 @@ function BibleToolbar({
   onToday,
 }) {
   return (
-    <section className="grid gap-4 rounded-[8px] border border-[#dfe3e9] bg-white p-5 md:grid-cols-2 md:items-end xl:grid-cols-[200px_145px_minmax(130px,1fr)_90px_90px_auto]">
+    <section className="grid gap-3 rounded-[8px] border border-[#dfe3e9] bg-white p-4 md:grid-cols-2 md:items-end xl:grid-cols-[185px_135px_minmax(125px,1fr)_78px_78px_auto]">
       <label className="block">
-        <span className="mb-1.5 block text-[11px] font-medium text-[#565e6e]">
+        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
           Version
         </span>
         <select
@@ -45,7 +45,7 @@ function BibleToolbar({
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[11px] font-medium text-[#565e6e]">
+        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
           Testament
         </span>
         <select
@@ -60,7 +60,7 @@ function BibleToolbar({
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[11px] font-medium text-[#565e6e]">
+        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
           Book
         </span>
         <select
@@ -78,7 +78,7 @@ function BibleToolbar({
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[11px] font-medium text-[#565e6e]">
+        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
           Chapter
         </span>
         <select
@@ -96,7 +96,7 @@ function BibleToolbar({
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[11px] font-medium text-[#565e6e]">
+        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
           Verse
         </span>
         <select
@@ -118,7 +118,7 @@ function BibleToolbar({
           type="button"
           onClick={onPrevious}
           disabled={loading}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-[#dfe3e9] bg-white hover:bg-[#faf8f5] disabled:opacity-40"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] border border-[#dfe3e9] bg-white hover:bg-[#faf8f5] disabled:opacity-40"
           aria-label="Previous chapter"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -127,7 +127,7 @@ function BibleToolbar({
           type="button"
           onClick={onNext}
           disabled={loading}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-[#dfe3e9] bg-white hover:bg-[#faf8f5] disabled:opacity-40"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] border border-[#dfe3e9] bg-white hover:bg-[#faf8f5] disabled:opacity-40"
           aria-label="Next chapter"
         >
           <ChevronRight className="h-4 w-4" />
@@ -136,7 +136,7 @@ function BibleToolbar({
           type="button"
           onClick={onToday}
           disabled={!todayAvailable || loading}
-          className="flex h-10 min-w-[144px] items-center justify-center gap-2 rounded-[8px] border border-[#dfe3e9] bg-white px-4 text-[12px] font-medium hover:bg-[#faf8f5] disabled:cursor-not-allowed disabled:opacity-45"
+          className="flex h-9 min-w-[132px] items-center justify-center gap-2 rounded-[7px] border border-[#dfe3e9] bg-white px-3 text-[10px] font-medium hover:bg-[#faf8f5] disabled:cursor-not-allowed disabled:opacity-45"
         >
           <CalendarDays className="h-4 w-4" />
           Today&apos;s Reading

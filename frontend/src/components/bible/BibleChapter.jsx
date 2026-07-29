@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { Bookmark, Ellipsis, Share2, Type } from 'lucide-react'
 
 const textSizes = [
-  'text-[14px] leading-7',
-  'text-[16px] leading-8',
-  'text-[18px] leading-9',
+  'text-[14px] leading-6',
+  'text-[16px] leading-7',
+  'text-[18px] leading-8',
 ]
 
 function BibleChapter({
@@ -39,13 +39,13 @@ function BibleChapter({
   }, [selectedIndex])
 
   return (
-    <section className="mt-6">
+    <section className="mt-5">
       <header className="flex items-end justify-between gap-5">
         <div>
-          <h2 className="text-[26px] font-semibold">
+          <h2 className="text-[22px] font-semibold">
             {book?.title || 'Bible'} {chapter?.chapterNumber || ''}
           </h2>
-          <p className="mt-1 text-[13px] text-[#667089]">
+          <p className="mt-1 text-[11px] text-[#667089]">
             {versionName || 'King James Version'}
           </p>
         </div>
@@ -53,34 +53,34 @@ function BibleChapter({
           <button
             type="button"
             onClick={onTextSize}
-            className="flex h-9 w-9 items-center justify-center rounded-[7px] hover:bg-[#f5f3ef]"
+            className="flex h-8 w-8 items-center justify-center rounded-[7px] hover:bg-[#f5f3ef]"
             aria-label="Change text size"
           >
-            <Type className="h-[18px] w-[18px]" />
+            <Type className="h-4 w-4" />
           </button>
           <button
             type="button"
             onClick={() => onBookmark(selectedVerse)}
             disabled={!selectedVerse}
-            className={`flex h-9 w-9 items-center justify-center rounded-[7px] transition-colors disabled:opacity-40 ${
+            className={`flex h-8 w-8 items-center justify-center rounded-[7px] transition-colors disabled:opacity-40 ${
               bookmarked
                 ? 'bg-[#fbf4ea] text-[#b27413]'
                 : 'hover:bg-[#f5f3ef]'
             }`}
             aria-label={bookmarked ? 'Edit verse bookmark' : 'Bookmark selected verse'}
           >
-            <Bookmark className={`h-[18px] w-[18px] ${bookmarked ? 'fill-current' : ''}`} />
+            <Bookmark className={`h-4 w-4 ${bookmarked ? 'fill-current' : ''}`} />
           </button>
           <div className="relative">
             <button
               type="button"
               onClick={() => setMoreOpen((current) => !current)}
               disabled={!selectedVerse}
-              className="flex h-9 w-9 items-center justify-center rounded-[7px] hover:bg-[#f5f3ef] disabled:opacity-40"
+              className="flex h-8 w-8 items-center justify-center rounded-[7px] hover:bg-[#f5f3ef] disabled:opacity-40"
               aria-label="More verse options"
               aria-expanded={moreOpen}
             >
-              <Ellipsis className="h-[18px] w-[18px]" />
+              <Ellipsis className="h-4 w-4" />
             </button>
             {moreOpen && (
               <div className="absolute right-0 top-10 z-20 w-[180px] rounded-[7px] border border-[#e0e3e7] bg-white p-1.5 shadow-[0_12px_30px_rgba(27,31,38,0.12)]">
@@ -102,7 +102,7 @@ function BibleChapter({
       </header>
 
       <div className="mt-4 overflow-hidden rounded-[8px] border border-[#dfe3e9] bg-white">
-        <div className="bible-chapter-scroll h-[500px] overflow-y-auto px-5 py-4 sm:px-7">
+        <div className="bible-chapter-scroll h-[460px] overflow-y-auto px-4 py-3 sm:px-6">
           {loading ? (
             <div className="space-y-5 py-2">
               {Array.from({ length: 8 }, (_, index) => (
@@ -135,7 +135,7 @@ function BibleChapter({
                         setMoreOpen(false)
                         onSelectVerse(index)
                       }}
-                      className={`grid w-full grid-cols-[28px_minmax(0,1fr)] gap-4 rounded-[7px] px-2 py-2 text-left transition-colors ${
+                      className={`grid w-full grid-cols-[25px_minmax(0,1fr)] gap-3 rounded-[7px] px-2 py-1.5 text-left transition-colors ${
                         selected && !highlightColor ? 'bg-[#fdf7ee]' : 'hover:bg-[#fafafa]'
                       }`}
                       style={
@@ -145,7 +145,7 @@ function BibleChapter({
                       }
                     >
                       <span
-                        className={`pt-1 text-[12px] ${
+                        className={`pt-1 text-[11px] ${
                           selected ? 'font-semibold text-[#b27413]' : 'text-[#697184]'
                         }`}
                       >
@@ -162,10 +162,10 @@ function BibleChapter({
           )}
         </div>
 
-        <footer className="grid gap-4 border-t border-[#e3e6ea] bg-[#fefefe] px-5 py-4 sm:grid-cols-[190px_minmax(220px,1fr)_120px] sm:items-center sm:px-7">
+        <footer className="grid gap-3 border-t border-[#e3e6ea] bg-[#fefefe] px-4 py-3 sm:grid-cols-[175px_minmax(220px,1fr)_110px] sm:items-center sm:px-6">
           <div>
-            <p className="text-[11px] text-[#697184]">You&apos;re reading</p>
-            <p className="mt-1 text-[13px] font-semibold">
+            <p className="text-[9px] text-[#697184]">You&apos;re reading</p>
+            <p className="mt-1 text-[11px] font-semibold">
               {book?.title} {chapter?.chapterNumber}
             </p>
           </div>
@@ -175,7 +175,7 @@ function BibleChapter({
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="text-[12px] text-[#59647a] sm:text-right">
+          <p className="text-[10px] text-[#59647a] sm:text-right">
             {verses.length ? selectedIndex + 1 : 0} of {verses.length} verses
           </p>
         </footer>
