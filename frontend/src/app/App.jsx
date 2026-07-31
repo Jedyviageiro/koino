@@ -22,6 +22,7 @@ import ChatPage from '@/pages/chat/ChatPage.jsx'
 import ChallengeToast from '@/components/common/ChallengeToast.jsx'
 import WatchMiniPlayer from '@/components/watch/WatchMiniPlayer.jsx'
 import ChatMessageToast from '@/components/chat/ChatMessageToast.jsx'
+import MobileExperienceGate from '@/components/common/MobileExperienceGate.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 import {
   AUTH_LOGOUT_EVENT,
@@ -61,6 +62,15 @@ function storedWatchVideo() {
   }
 }
 
+function isPhoneViewport() {
+  const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+  const isPhonePortrait = window.matchMedia('(max-width: 767px)').matches
+  const isPhoneLandscape = window.matchMedia(
+    '(max-height: 500px) and (max-width: 950px)',
+  ).matches
+  return hasCoarsePointer && (isPhonePortrait || isPhoneLandscape)
+}
+
 function App() {
   const [locationKey, setLocationKey] = useState(
     () => `${window.location.pathname}${window.location.search}`,
@@ -70,6 +80,25 @@ function App() {
   const [statusReturnPath] = useState(
     () => sessionStorage.getItem(STATUS_RETURN_PATH_KEY) || '/home',
   )
+  const [phoneViewport, setPhoneViewport] = useState(isPhoneViewport)
+
+  useEffect(() => {
+    const mediaQueries = [
+      window.matchMedia('(pointer: coarse)'),
+      window.matchMedia('(max-width: 767px)'),
+      window.matchMedia('(max-height: 500px) and (max-width: 950px)'),
+    ]
+    const handleViewportChange = () => setPhoneViewport(isPhoneViewport())
+
+    mediaQueries.forEach((query) => {
+      query.addEventListener('change', handleViewportChange)
+    })
+    return () => {
+      mediaQueries.forEach((query) => {
+        query.removeEventListener('change', handleViewportChange)
+      })
+    }
+  }, [])
 
   useEffect(() => {
     function handlePopState() {
@@ -92,11 +121,13 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const pageTitle = path.startsWith('/u/')
+    const pageTitle = phoneViewport
+      ? 'Desktop experience'
+      : path.startsWith('/u/')
       ? 'Koino profile'
       : PAGE_TITLES[path] || 'Koino'
     document.title = pageTitle === 'Koino' ? 'Koino' : `${pageTitle} | Koino`
-  }, [locationKey, path])
+  }, [locationKey, path, phoneViewport])
 
   useEffect(() => {
     const checkSession = () => getAuthToken()
@@ -151,6 +182,10 @@ function App() {
     sessionStorage.removeItem(STATUS_RETURN_PATH_KEY)
     window.history.replaceState({}, '', nextPath)
     setLocationKey(nextPath)
+  }
+
+  if (phoneViewport) {
+    return <MobileExperienceGate />
   }
 
   let page

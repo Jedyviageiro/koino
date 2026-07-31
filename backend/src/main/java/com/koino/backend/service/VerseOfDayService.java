@@ -11,6 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.koino.backend.dto.bible.VerseOfDayResponse;
 import com.koino.backend.model.User;
@@ -74,7 +75,7 @@ public class VerseOfDayService {
         String monthDay,
         VerseText verse,
         String theme,
-        String holiday
+        JsonNode holiday
     ) {}
 
     private record VerseText(String reference, String text) {}

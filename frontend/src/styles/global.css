@@ -39,6 +39,198 @@ body,
   margin: 0;
 }
 
+.mobile-gate {
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+  background: #fbfbfa;
+  color: #181a17;
+}
+
+.mobile-gate__content {
+  display: flex;
+  width: min(100%, 430px);
+  margin: 0 auto;
+  padding: 34px 24px 28px;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.mobile-gate__brand {
+  margin-bottom: 28px;
+}
+
+.mobile-gate__brand > span {
+  font-size: 24px;
+}
+
+.mobile-gate__devices {
+  position: relative;
+  display: flex;
+  width: 212px;
+  height: 126px;
+  margin-bottom: 24px;
+  align-items: center;
+  justify-content: center;
+  color: #252824;
+}
+
+.mobile-gate__monitor {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.mobile-gate__device-logo {
+  position: absolute;
+  top: 45px;
+  font-family: var(--font-title);
+  font-size: 13px;
+}
+
+.mobile-gate__phone {
+  position: absolute;
+  right: 16px;
+  bottom: 5px;
+  display: grid;
+  width: 50px;
+  height: 76px;
+  place-items: center;
+  border-radius: 8px;
+  background: #e9e8e5;
+  box-shadow: 0 8px 20px rgb(27 29 25 / 12%);
+}
+
+.mobile-gate__blocked-line {
+  position: absolute;
+  width: 29px;
+  height: 2px;
+  rotate: 45deg;
+  border-radius: 999px;
+  background: #9b6b20;
+}
+
+.mobile-gate__eyebrow {
+  margin: 0 0 17px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #f2eee7;
+  color: #706b64;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.mobile-gate h1 {
+  max-width: 340px;
+  margin: 0;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.mobile-gate__rule {
+  width: 42px;
+  height: 1px;
+  margin: 21px 0;
+  background: #d9c9ad;
+}
+
+.mobile-gate__message {
+  max-width: 350px;
+  margin: 0;
+  color: #6f746c;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.mobile-gate__notice {
+  display: flex;
+  width: 100%;
+  margin-top: 27px;
+  padding: 17px;
+  gap: 14px;
+  align-items: center;
+  border: 1px solid #e8e5df;
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+  box-shadow: 0 8px 26px rgb(28 30 26 / 6%);
+}
+
+.mobile-gate__notice-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  place-items: center;
+  border-radius: 50%;
+  background: #f4f1eb;
+  color: #9b6b20;
+}
+
+.mobile-gate__notice strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.mobile-gate__notice p {
+  margin: 0;
+  color: #777c75;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.mobile-gate__footer {
+  display: flex;
+  min-height: 58px;
+  padding: 14px 20px;
+  gap: 9px;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #ebe9e5;
+  color: #858981;
+  font-size: 12px;
+}
+
+@media (max-height: 700px) {
+  .mobile-gate__content {
+    padding-top: 22px;
+  }
+
+  .mobile-gate__brand {
+    margin-bottom: 16px;
+  }
+
+  .mobile-gate__devices {
+    height: 98px;
+    margin-bottom: 14px;
+    scale: 0.82;
+  }
+
+  .mobile-gate__eyebrow {
+    margin-bottom: 12px;
+  }
+
+  .mobile-gate h1 {
+    font-size: 29px;
+  }
+
+  .mobile-gate__rule {
+    margin: 14px 0;
+  }
+
+  .mobile-gate__notice {
+    margin-top: 18px;
+  }
+}
+
 @keyframes auth-panel-in {
   from {
     opacity: 0;
