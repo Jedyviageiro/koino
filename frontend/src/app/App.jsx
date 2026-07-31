@@ -267,9 +267,13 @@ function App() {
       <div key={locationKey} className="app-route">
         {page}
       </div>
-      <ChallengeToast onNavigate={navigate} routePath={locationKey} />
-      <ChatMessageToast onNavigate={navigate} />
-      {watchVideo && !path.startsWith('/watch') && (
+      {path !== '/status' && (
+        <>
+          <ChallengeToast onNavigate={navigate} routePath={locationKey} />
+          <ChatMessageToast onNavigate={navigate} />
+        </>
+      )}
+      {watchVideo && path !== '/status' && !path.startsWith('/watch') && (
         <WatchMiniPlayer
           video={watchVideo}
           onClose={closeWatchVideo}

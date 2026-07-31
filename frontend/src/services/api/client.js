@@ -35,20 +35,28 @@ function notifyServiceUnavailable() {
 }
 
 function friendlyErrorMessage(payload, status) {
-  if (typeof payload === 'object' && payload?.message) {
-    return payload.message
-  }
-  if (
-    typeof payload === 'string' &&
-    payload.trim() &&
-    !/<(?:html|body|head|title|h1)\b/i.test(payload)
-  ) {
-    return payload
-  }
   if (status >= 500) {
     return 'Koino is temporarily unavailable. We are working to restore it.'
   }
-  return `The request could not be completed (${status}).`
+  const message =
+    typeof payload === 'object' && payload?.message
+      ? payload.message
+      : typeof payload === 'string'
+        ? payload.trim()
+        : ''
+  const exposesInternalDetails =
+    /(?:exception|stack\s*trace|org\.springframework|java\.|hibernate|jdbc|sqlstate|constraint|at\s+com\.koino|expected\s+\d+.*resolved\s+\d+)/i.test(
+      message,
+    )
+
+  if (
+    message &&
+    !exposesInternalDetails &&
+    !/<(?:html|body|head|title|h1)\b/i.test(message)
+  ) {
+    return message
+  }
+  return 'The request could not be completed. Please check your details and try again.'
 }
 
 export async function apiRequest(
