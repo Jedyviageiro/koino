@@ -12,11 +12,3 @@ export const COUNTRY_OPTIONS = [
   { code: 'CA', label: 'Canada' },
   { code: 'AU', label: 'Australia' },
 ]
-
-export function countryFlag(countryCode) {
-  const code = countryCode?.trim().toUpperCase()
-  if (!/^[A-Z]{2}$/.test(code || '')) return ''
-  return [...code]
-    .map((letter) => String.fromCodePoint(127397 + letter.charCodeAt(0)))
-    .join('')
-}

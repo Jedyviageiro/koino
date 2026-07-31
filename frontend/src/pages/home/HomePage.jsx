@@ -7,12 +7,15 @@ import HomeRail from '@/components/home/HomeRail.jsx'
 import TodayPlanCard from '@/components/home/TodayPlanCard.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
-import { getHomeData } from '@/features/home/homeService.js'
+import {
+  getCachedHomeData,
+  getHomeData,
+} from '@/features/home/homeService.js'
 
 function HomePage({ onNavigate }) {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(getCachedHomeData)
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => !getCachedHomeData())
   const session = getAuthSession()
 
   const loadHome = useCallback(async () => {

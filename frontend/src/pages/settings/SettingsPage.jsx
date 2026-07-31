@@ -23,7 +23,7 @@ import {
   uploadProfilePicture,
 } from '@/features/settings/settingsService.js'
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
-import { COUNTRY_OPTIONS, countryFlag } from '@/utils/country.js'
+import CountrySelect from '@/components/settings/CountrySelect.jsx'
 
 const timeZones = [
   { value: 'Africa/Maputo', label: '(GMT+02:00) Maputo' },
@@ -361,19 +361,12 @@ function SettingsPage({ onNavigate }) {
                 <div className="grid gap-5 sm:grid-cols-[0.7fr_1.3fr]">
                   <label className="text-[11px] font-medium">
                     Country
-                    <select
-                      name="countryCode"
+                    <CountrySelect
                       value={form.countryCode || ''}
-                      onChange={changeField}
-                      className="mt-2 h-11 w-full rounded-[7px] border border-[#dfe3e8] bg-white px-3.5 text-[12px] font-normal outline-none focus:border-[#e8a33d]"
-                    >
-                      {COUNTRY_OPTIONS.map((country) => (
-                        <option key={country.code || 'none'} value={country.code}>
-                          {country.code ? `${countryFlag(country.code)} ` : ''}
-                          {country.label}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(countryCode) =>
+                        setForm((current) => ({ ...current, countryCode }))
+                      }
+                    />
                   </label>
                   <label className="text-[11px] font-medium">
                     Location

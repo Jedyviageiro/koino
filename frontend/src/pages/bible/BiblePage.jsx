@@ -19,6 +19,17 @@ import { createCommunityPost } from '@/features/community/communityService.js'
 
 const isOldTestament = (book) => book.orderIndex <= 39
 
+const BOOK_ALIASES = new Map([
+  ['psalm', 'psalms'],
+  ['song of songs', 'song of solomon'],
+  ['canticles', 'song of solomon'],
+])
+
+function normalizedBookTitle(title) {
+  const normalized = title?.trim().toLowerCase().replace(/\s+/g, ' ') || ''
+  return BOOK_ALIASES.get(normalized) || normalized
+}
+
 function BiblePage({ onNavigate }) {
   const [books, setBooks] = useState([])
   const [versions, setVersions] = useState([])
@@ -62,11 +73,16 @@ function BiblePage({ onNavigate }) {
           ? browserData.bookmarks[0]
           : null
         const todayPassage = browserData.todayTask?.passages?.[0]
+        const requestedBookEntry = browserData.books.find(
+          (book) =>
+            normalizedBookTitle(book.title) ===
+            normalizedBookTitle(requestedBook),
+        )
         const initialBook =
           browserData.books.find(
             (book) => book.title === initialBookmark?.book,
           ) ||
-          browserData.books.find((book) => book.title === requestedBook) ||
+          requestedBookEntry ||
           browserData.books.find(
             (book) => book.bookId === todayPassage?.bookId,
           ) ||
@@ -82,7 +98,7 @@ function BiblePage({ onNavigate }) {
         const preferredChapter =
           initialBookmark?.book === initialBook.title
             ? initialBookmark.chapterNumber
-            : requestedBook === initialBook.title &&
+            : requestedBookEntry?.bookId === initialBook.bookId &&
                 Number.isInteger(requestedChapter) &&
                 requestedChapter > 0
               ? requestedChapter

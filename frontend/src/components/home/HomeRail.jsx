@@ -26,19 +26,29 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
           <SunMedium className="h-4 w-4 text-[#d89127]" strokeWidth={1.7} />
           Verse of the Day
         </p>
-        <blockquote className="mt-3 text-[11px] font-medium leading-5 text-[#252a32]">
-          &ldquo;{verseOfDay?.text || 'Be still, and know that I am God.'}&rdquo;
-        </blockquote>
-        <p className="mt-2 text-[9px] font-semibold text-[#b77718]">
-          {verseOfDay?.reference || 'Psalm 46:10'}
-        </p>
-        <button
-          type="button"
-          onClick={() => onNavigate(verseLink(verseOfDay?.reference))}
-          className="mt-3 inline-flex h-8 items-center gap-2 text-[9px] font-medium text-[#4f5764]"
-        >
-          View in Bible <span aria-hidden="true">&rarr;</span>
-        </button>
+        {verseOfDay ? (
+          <>
+            <blockquote className="mt-3 text-[11px] font-medium leading-5 text-[#252a32]">
+              &ldquo;{verseOfDay.text}&rdquo;
+            </blockquote>
+            <p className="mt-2 text-[9px] font-semibold text-[#b77718]">
+              {verseOfDay.reference}
+            </p>
+            <button
+              type="button"
+              onClick={() => onNavigate(verseLink(verseOfDay.reference))}
+              className="mt-3 inline-flex h-8 items-center gap-2 text-[9px] font-medium text-[#4f5764]"
+            >
+              View in Bible <span aria-hidden="true">&rarr;</span>
+            </button>
+          </>
+        ) : (
+          <div className="mt-3 space-y-2" aria-label="Loading verse of the day">
+            <div className="auth-skeleton h-3.5 w-full rounded-[4px]" />
+            <div className="auth-skeleton h-3.5 w-4/5 rounded-[4px]" />
+            <div className="auth-skeleton h-3 w-20 rounded-[4px]" />
+          </div>
+        )}
       </section>
 
       <section className="self-start rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">

@@ -68,50 +68,12 @@ body,
   font-size: 24px;
 }
 
-.mobile-gate__devices {
-  position: relative;
-  display: flex;
-  width: 212px;
-  height: 126px;
-  margin-bottom: 24px;
-  align-items: center;
-  justify-content: center;
-  color: #252824;
-}
-
-.mobile-gate__monitor {
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-
-.mobile-gate__device-logo {
-  position: absolute;
-  top: 45px;
-  font-family: var(--font-title);
-  font-size: 13px;
-}
-
-.mobile-gate__phone {
-  position: absolute;
-  right: 16px;
-  bottom: 5px;
-  display: grid;
-  width: 50px;
-  height: 76px;
-  place-items: center;
-  border-radius: 8px;
-  background: #e9e8e5;
-  box-shadow: 0 8px 20px rgb(27 29 25 / 12%);
-}
-
-.mobile-gate__blocked-line {
-  position: absolute;
-  width: 29px;
-  height: 2px;
-  rotate: 45deg;
-  border-radius: 999px;
-  background: #9b6b20;
+.mobile-gate__art {
+  display: block;
+  width: min(100%, 290px);
+  height: 190px;
+  margin-bottom: 22px;
+  object-fit: contain;
 }
 
 .mobile-gate__eyebrow {
@@ -208,10 +170,9 @@ body,
     margin-bottom: 16px;
   }
 
-  .mobile-gate__devices {
-    height: 98px;
+  .mobile-gate__art {
+    height: 145px;
     margin-bottom: 14px;
-    scale: 0.82;
   }
 
   .mobile-gate__eyebrow {

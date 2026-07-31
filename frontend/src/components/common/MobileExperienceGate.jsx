@@ -1,5 +1,6 @@
-import { CalendarDays, Heart, Monitor, Smartphone } from 'lucide-react'
+import { CalendarDays, Heart } from 'lucide-react'
 import BrandMark from '@/components/common/BrandMark.jsx'
+import mobileNoticeArt from '@/assets/images/koino-mobile-notice-art.svg'
 
 function MobileExperienceGate() {
   return (
@@ -10,16 +11,11 @@ function MobileExperienceGate() {
           iconClassName="h-10 w-10"
         />
 
-        <div className="mobile-gate__devices" aria-hidden="true">
-          <div className="mobile-gate__monitor">
-            <Monitor size={92} strokeWidth={1.25} />
-            <span className="mobile-gate__device-logo">Koino</span>
-          </div>
-          <div className="mobile-gate__phone">
-            <Smartphone size={58} strokeWidth={1.3} />
-            <span className="mobile-gate__blocked-line" />
-          </div>
-        </div>
+        <img
+          src={mobileNoticeArt}
+          alt="Koino desktop experience"
+          className="mobile-gate__art"
+        />
 
         <p className="mobile-gate__eyebrow">Desktop experience required</p>
         <h1>Koino isn&apos;t available on mobile yet.</h1>

@@ -1,5 +1,11 @@
 import { apiRequest } from '@/services/api/client.js'
 
+let cachedHomeData = null
+
+export function getCachedHomeData() {
+  return cachedHomeData
+}
+
 export async function getHomeData() {
   const [plan, task, progress, streak, notifications, bookmarks, verseOfDay] =
     await Promise.all([
@@ -12,7 +18,7 @@ export async function getHomeData() {
       apiRequest('/verse-of-day'),
     ])
 
-  return {
+  cachedHomeData = {
     plan,
     task,
     progress,
@@ -21,6 +27,7 @@ export async function getHomeData() {
     bookmarks,
     verseOfDay,
   }
+  return cachedHomeData
 }
 
 export function markNotificationRead(notificationId) {
