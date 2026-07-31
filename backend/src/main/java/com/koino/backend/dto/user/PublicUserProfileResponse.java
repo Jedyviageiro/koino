@@ -11,6 +11,7 @@ public record PublicUserProfileResponse(
     LocalDateTime joinedAt,
     String bio,
     String location,
+    String countryCode,
     String friendshipStatus,
     Long friendshipId,
     long friendsCount,

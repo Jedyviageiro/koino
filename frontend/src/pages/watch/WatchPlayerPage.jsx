@@ -48,7 +48,7 @@ function QueueItem({ video, active, onSelect }) {
   )
 }
 
-function WatchPlayerPage({ onNavigate }) {
+function WatchPlayerPage({ onNavigate, onVideoActive }) {
   const session = getAuthSession()
   const topRef = useRef(null)
   const [videos, setVideos] = useState([])
@@ -76,6 +76,7 @@ function WatchPlayerPage({ onNavigate }) {
           catalog[0]
         setVideos(catalog)
         setSelectedVideo(initialVideo || null)
+        if (initialVideo) onVideoActive?.(initialVideo)
       })
       .catch((requestError) => {
         if (active) {
@@ -89,7 +90,7 @@ function WatchPlayerPage({ onNavigate }) {
     return () => {
       active = false
     }
-  }, [onNavigate])
+  }, [onNavigate, onVideoActive])
 
   const queue = useMemo(() => {
     if (!selectedVideo) return []
@@ -108,6 +109,7 @@ function WatchPlayerPage({ onNavigate }) {
 
   function selectVideo(video) {
     setSelectedVideo(video)
+    onVideoActive?.(video)
     window.history.replaceState(
       {},
       '',

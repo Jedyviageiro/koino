@@ -1,6 +1,7 @@
 import { MapPin, Swords, Trophy } from 'lucide-react'
 import BattleRankBadge from '@/components/battle/BattleRankBadge.jsx'
 import planCover from '@/assets/images/plans-cover.png'
+import { countryFlag } from '@/utils/country.js'
 
 function ProfileStats({ profile }) {
   const peakElo = Math.max(
@@ -153,6 +154,11 @@ function ProfileAboutCard({ profile }) {
       {profile.location && (
         <p className="mt-3 flex items-center gap-1.5 text-[8px] text-[#858d9a]">
           <MapPin className="h-3.5 w-3.5" />
+          {countryFlag(profile.countryCode) && (
+            <span aria-label={profile.countryCode}>
+              {countryFlag(profile.countryCode)}
+            </span>
+          )}
           {profile.location}
         </p>
       )}

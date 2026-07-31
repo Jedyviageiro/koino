@@ -6,6 +6,7 @@ import {
 } from '@/components/common/AppPageLayout.jsx'
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
+import UserProfileModal from '@/components/community/UserProfileModal.jsx'
 import {
   getChatFriends,
   getConversation,
@@ -26,6 +27,7 @@ function ChatPage({ onNavigate }) {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
+  const [profileUserId, setProfileUserId] = useState(null)
   const endRef = useRef(null)
 
   const selectedFriend = friends.find((friend) => friend.userId === selectedId)
@@ -218,15 +220,22 @@ function ChatPage({ onNavigate }) {
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </button>
-                <CommunityAvatar author={selectedFriend} size="md" />
-                <div className="min-w-0">
-                  <p className="truncate text-[11px] font-semibold">
-                    {selectedFriend.fullname}
-                  </p>
-                  <p className="mt-0.5 text-[8px] text-[#818996]">
-                    @{selectedFriend.username}
-                  </p>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setProfileUserId(selectedFriend.userId)}
+                  className="flex min-w-0 items-center gap-3 rounded-[7px] p-1 text-left transition-colors hover:bg-[#f5f6f7]"
+                  aria-label={`View ${selectedFriend.fullname}'s profile`}
+                >
+                  <CommunityAvatar author={selectedFriend} size="md" />
+                  <span className="min-w-0">
+                    <span className="block truncate text-[11px] font-semibold">
+                      {selectedFriend.fullname}
+                    </span>
+                    <span className="mt-0.5 block text-[8px] text-[#818996]">
+                      @{selectedFriend.username}
+                    </span>
+                  </span>
+                </button>
               </header>
 
               <div className="min-h-0 flex-1 overflow-y-auto bg-[#fdfdfd] px-4 py-5 sm:px-6">
@@ -326,6 +335,16 @@ function ChatPage({ onNavigate }) {
           title="Chat unavailable"
           message={error}
           onClose={() => setError('')}
+        />
+      )}
+      {profileUserId && (
+        <UserProfileModal
+          userId={profileUserId}
+          onClose={() => setProfileUserId(null)}
+          onNavigate={onNavigate}
+          onChallenge={(profile) =>
+            onNavigate(`/battle-space?challenge=${profile.userId}`)
+          }
         />
       )}
     </AppPageLayout>

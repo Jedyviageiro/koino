@@ -1,4 +1,4 @@
-import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
+import BrandMark from '@/components/common/BrandMark.jsx'
 import formImage from '@/assets/images/Form-img.png'
 
 function OnboardingSkeleton({ overlay = false }) {
@@ -127,9 +127,9 @@ function AuthLayout({
                   onNavigate('/')
                 }}
                 aria-label="Koino home"
-                className="mb-8 block w-20 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8a33d]"
+                className="mb-8 inline-flex focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8a33d]"
               >
-                <img src={koinoLogo} alt="Koino" className="h-auto w-full" />
+                <BrandMark iconClassName="h-7 w-7" />
               </a>
 
               <div className="animate-[auth-panel-in_240ms_ease-out]">

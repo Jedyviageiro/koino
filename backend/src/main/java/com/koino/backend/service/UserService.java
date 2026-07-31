@@ -182,6 +182,15 @@ public class UserService {
         if (userRepository.existsByEmailAndUserIdNot(email, userId)) {
             throw new IllegalArgumentException("Email already exists");
         }
+        String username = request.username().trim().toLowerCase(Locale.ROOT);
+        if (
+            userRepository.existsByUsernameIgnoreCaseAndUserIdNot(
+                username,
+                userId
+            )
+        ) {
+            throw new IllegalArgumentException("Username already in use");
+        }
 
         try {
             ZoneId.of(request.timeZone());
@@ -194,15 +203,26 @@ public class UserService {
 
         user.setFullname(request.fullname().trim());
         user.setEmail(email);
+        user.setUsername(username);
         user.setTimeZone(request.timeZone());
         user.setLanguage(request.language());
         user.setUpdatedAt(LocalDateTime.now());
-        user = ensureUsername(userRepository.save(user));
-        userProfileRepository.findByUserUserId(userId).ifPresent(profile -> {
-            profile.setBio(cleanOptional(request.bio()));
-            profile.setLocation(cleanOptional(request.location()));
-            userProfileRepository.save(profile);
-        });
+        user = userRepository.save(user);
+        User savedUser = user;
+        UserProfile profile = userProfileRepository
+            .findByUserUserId(userId)
+            .orElseGet(() -> {
+                UserProfile created = new UserProfile();
+                created.setUser(savedUser);
+                return created;
+            });
+        profile.setBio(cleanOptional(request.bio()));
+        profile.setLocation(cleanOptional(request.location()));
+        String countryCode = cleanOptional(request.countryCode());
+        profile.setCountryCode(
+            countryCode == null ? null : countryCode.toUpperCase(Locale.ROOT)
+        );
+        userProfileRepository.save(profile);
         return toSettingsResponse(user);
     }
 
@@ -280,7 +300,8 @@ public class UserService {
             user.getProfilePictureUrl(),
             user.getUsername(),
             profile == null ? null : profile.getBio(),
-            profile == null ? null : profile.getLocation()
+            profile == null ? null : profile.getLocation(),
+            profile == null ? null : profile.getCountryCode()
         );
     }
 

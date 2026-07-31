@@ -200,6 +200,7 @@ public class FriendshipService {
             profileUser.getCreatedAt(),
             details == null ? null : details.getBio(),
             details == null ? null : details.getLocation(),
+            details == null ? null : details.getCountryCode(),
             relationship(viewerId, profileUser, friendship),
             friendship == null ? null : friendship.getFriendshipId(),
             friendshipRepository

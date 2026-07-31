@@ -16,3 +16,18 @@ export function deactivateAccount() {
     method: 'PATCH',
   })
 }
+
+export function uploadProfilePicture(file) {
+  const body = new FormData()
+  body.append('file', file)
+  return apiRequest('/users/me/profile-picture', {
+    method: 'PUT',
+    body,
+  })
+}
+
+export function removeProfilePicture() {
+  return apiRequest('/users/me/profile-picture', {
+    method: 'DELETE',
+  })
+}

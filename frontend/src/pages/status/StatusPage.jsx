@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CloudOff, RefreshCw } from 'lucide-react'
-import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
+import BrandMark from '@/components/common/BrandMark.jsx'
 import { API_BASE_URL } from '@/config/env.js'
 
 function StatusPage({ returnPath = '/home', onRecover }) {
@@ -27,10 +27,9 @@ function StatusPage({ returnPath = '/home', onRecover }) {
   return (
     <main className="flex min-h-svh items-center justify-center bg-[#fbfcfe] px-6 py-12 text-[#16191f]">
       <section className="w-full max-w-[520px] text-center">
-        <img
-          src={koinoLogo}
-          alt="Koino"
-          className="mx-auto h-auto w-[92px]"
+        <BrandMark
+          className="justify-center"
+          iconClassName="h-8 w-8"
         />
         <span className="mx-auto mt-12 flex h-16 w-16 items-center justify-center rounded-full bg-[#f6efe4] text-[#9a6829]">
           <CloudOff className="h-7 w-7" strokeWidth={1.5} />

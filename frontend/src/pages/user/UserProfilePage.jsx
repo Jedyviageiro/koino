@@ -14,7 +14,7 @@ import {
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
 import ProfileOverview from '@/components/community/ProfileOverview.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
-import koinoLogo from '@/assets/brand/logos/koino-wordmark.png'
+import BrandMark from '@/components/common/BrandMark.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import {
   acceptFriend,
@@ -97,9 +97,9 @@ function UserProfilePage({ username, onNavigate }) {
             <button
               type="button"
               onClick={() => onNavigate('/')}
-              className="w-20"
+              className="inline-flex"
             >
-              <img src={koinoLogo} alt="Koino" className="w-full" />
+              <BrandMark iconClassName="h-7 w-7" />
             </button>
             <button
               type="button"

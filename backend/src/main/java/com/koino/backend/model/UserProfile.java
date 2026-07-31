@@ -30,6 +30,9 @@ public class UserProfile {
     @Column(length = 100)
     private String location;
 
+    @Column(length = 2)
+    private String countryCode;
+
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;

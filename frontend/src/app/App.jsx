@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import LoginPage from '@/pages/auth/login/LoginPage.jsx'
 import RegisterPage from '@/pages/auth/register/RegisterPage.jsx'
 import OnboardingPage from '@/pages/onboarding/OnboardingPage.jsx'
@@ -20,28 +20,78 @@ import BookmarksPage from '@/pages/bookmarks/BookmarksPage.jsx'
 import UserProfilePage from '@/pages/user/UserProfilePage.jsx'
 import ChatPage from '@/pages/chat/ChatPage.jsx'
 import ChallengeToast from '@/components/common/ChallengeToast.jsx'
+import WatchMiniPlayer from '@/components/watch/WatchMiniPlayer.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
+import {
+  AUTH_LOGOUT_EVENT,
+  getAuthToken,
+} from '@/features/auth/authStorage.js'
+
+const WATCH_PLAYER_KEY = 'koino.watch.player'
+
+function storedWatchVideo() {
+  try {
+    return JSON.parse(sessionStorage.getItem(WATCH_PLAYER_KEY)) || null
+  } catch {
+    sessionStorage.removeItem(WATCH_PLAYER_KEY)
+    return null
+  }
+}
 
 function App() {
-  const [path, setPath] = useState(window.location.pathname)
+  const [locationKey, setLocationKey] = useState(
+    () => `${window.location.pathname}${window.location.search}`,
+  )
+  const path = window.location.pathname
+  const [watchVideo, setWatchVideo] = useState(storedWatchVideo)
   const [statusReturnPath] = useState(
     () => sessionStorage.getItem(STATUS_RETURN_PATH_KEY) || '/home',
   )
 
   useEffect(() => {
     function handlePopState() {
-      setPath(window.location.pathname)
+      setLocationKey(`${window.location.pathname}${window.location.search}`)
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem(WATCH_PLAYER_KEY)
+      setWatchVideo(null)
+      window.history.replaceState({}, '', '/')
+      setLocationKey('/')
     }
 
     window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
+    window.addEventListener(AUTH_LOGOUT_EVENT, handleLogout)
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+      window.removeEventListener(AUTH_LOGOUT_EVENT, handleLogout)
+    }
   }, [])
+
+  useEffect(() => {
+    const checkSession = () => getAuthToken()
+    const timer = window.setInterval(checkSession, 5000)
+    document.addEventListener('visibilitychange', checkSession)
+    return () => {
+      window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', checkSession)
+    }
+  }, [])
+
+  const rememberWatchVideo = useCallback((video) => {
+    setWatchVideo(video)
+    sessionStorage.setItem(WATCH_PLAYER_KEY, JSON.stringify(video))
+  }, [])
+
+  function closeWatchVideo() {
+    setWatchVideo(null)
+    sessionStorage.removeItem(WATCH_PLAYER_KEY)
+  }
 
   function navigate(nextPath) {
     const nextUrl = new URL(nextPath, window.location.origin)
     if (
-      nextUrl.pathname === path &&
-      nextUrl.search === window.location.search
+      `${nextUrl.pathname}${nextUrl.search}` === locationKey
     ) {
       return
     }
@@ -50,7 +100,7 @@ function App() {
 
     function updateRoute() {
       window.history.pushState({}, '', `${nextUrl.pathname}${nextUrl.search}`)
-      setPath(nextUrl.pathname)
+      setLocationKey(`${nextUrl.pathname}${nextUrl.search}`)
     }
 
     if (document.startViewTransition) {
@@ -70,7 +120,7 @@ function App() {
   function recover(nextPath) {
     sessionStorage.removeItem(STATUS_RETURN_PATH_KEY)
     window.history.replaceState({}, '', nextPath)
-    setPath(nextPath)
+    setLocationKey(nextPath)
   }
 
   let page
@@ -101,7 +151,12 @@ function App() {
   } else if (path === '/chat') {
     page = <ChatPage onNavigate={navigate} />
   } else if (path === '/watch/player') {
-    page = <WatchPlayerPage onNavigate={navigate} />
+    page = (
+      <WatchPlayerPage
+        onNavigate={navigate}
+        onVideoActive={rememberWatchVideo}
+      />
+    )
   } else if (path === '/watch') {
     page = <WatchPage onNavigate={navigate} />
   } else if (path === '/settings') {
@@ -129,10 +184,21 @@ function App() {
 
   return (
     <>
-      <div key={path} className="app-route">
+      <div key={locationKey} className="app-route">
         {page}
       </div>
-      <ChallengeToast onNavigate={navigate} routePath={path} />
+      <ChallengeToast onNavigate={navigate} routePath={locationKey} />
+      {watchVideo && !path.startsWith('/watch') && (
+        <WatchMiniPlayer
+          video={watchVideo}
+          onClose={closeWatchVideo}
+          onMaximize={() =>
+            navigate(
+              `/watch/player?video=${encodeURIComponent(watchVideo.catalogKey)}`,
+            )
+          }
+        />
+      )}
     </>
   )
 }

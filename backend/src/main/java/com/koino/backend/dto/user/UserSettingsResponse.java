@@ -9,5 +9,6 @@ public record UserSettingsResponse(
     String profilePictureUrl,
     String username,
     String bio,
-    String location
+    String location,
+    String countryCode
 ) {}

@@ -1,5 +1,9 @@
 import { API_BASE_URL } from '@/config/env.js'
-import { getAuthToken } from '@/features/auth/authStorage.js'
+import {
+  clearAuthSession,
+  getAuthToken,
+  notifyLoggedOut,
+} from '@/features/auth/authStorage.js'
 
 export const STATUS_RETURN_PATH_KEY = 'koino.status.returnPath'
 let serviceRedirectStarted = false
@@ -86,6 +90,15 @@ export async function apiRequest(
   }
 
   if (!response.ok) {
+    if (authenticated && token && [401, 403].includes(response.status)) {
+      clearAuthSession()
+      notifyLoggedOut()
+      throw new ApiError(
+        'Your session expired. Please log in again.',
+        response.status,
+        payload,
+      )
+    }
     if (response.status >= 500) {
       notifyServiceUnavailable()
     }
