@@ -144,8 +144,18 @@ function App() {
   }, [])
 
   const rememberWatchVideo = useCallback((video) => {
-    setWatchVideo(video)
-    sessionStorage.setItem(WATCH_PLAYER_KEY, JSON.stringify(video))
+    if (!getAuthToken()) return
+    setWatchVideo((current) => {
+      const sameVideo = current?.catalogKey === video.catalogKey
+      const next = {
+        ...(sameVideo ? current : {}),
+        ...video,
+        playbackSeconds:
+          video.playbackSeconds ?? (sameVideo ? current.playbackSeconds : 0),
+      }
+      sessionStorage.setItem(WATCH_PLAYER_KEY, JSON.stringify(next))
+      return next
+    })
   }, [])
 
   function closeWatchVideo() {
@@ -224,6 +234,7 @@ function App() {
       <WatchPlayerPage
         onNavigate={navigate}
         onVideoActive={rememberWatchVideo}
+        playbackVideo={watchVideo}
       />
     )
   } else if (path === '/watch') {
@@ -262,6 +273,9 @@ function App() {
         <WatchMiniPlayer
           video={watchVideo}
           onClose={closeWatchVideo}
+          onProgress={(playbackSeconds) =>
+            rememberWatchVideo({ ...watchVideo, playbackSeconds })
+          }
           onMaximize={() =>
             navigate(
               `/watch/player?video=${encodeURIComponent(watchVideo.catalogKey)}`,

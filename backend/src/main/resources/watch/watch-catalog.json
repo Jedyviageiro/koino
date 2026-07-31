@@ -308,5 +308,155 @@
     "youtubeVideoId": "hc3-aai3kIw",
     "sortOrder": 5,
     "featured": false
+  },
+  {
+    "catalogKey": "myles-purpose-power-prayer",
+    "category": "PRAYER",
+    "title": "Understanding the Purpose and Power of Prayer",
+    "creator": "Myles Munroe",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Myles+Munroe+Understanding+the+Purpose+and+Power+of+Prayer",
+    "youtubeVideoId": "t60ZrnnNqMY",
+    "sortOrder": 1,
+    "featured": false
+  },
+  {
+    "catalogKey": "myles-principles-prayer",
+    "category": "PRAYER",
+    "title": "The Principles of Prayer",
+    "creator": "Myles Munroe",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Myles+Munroe+Principles+of+Prayer",
+    "youtubeVideoId": "lilm4vNpi3Y",
+    "sortOrder": 2,
+    "featured": false
+  },
+  {
+    "catalogKey": "david-simplest-way-pray",
+    "category": "PRAYER",
+    "title": "Finally! The Simplest Way to Pray and See Results",
+    "creator": "David Diga Hernandez",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=David+Diga+Hernandez+Finally+The+Simplest+Way+to+Pray+and+See+Results",
+    "youtubeVideoId": "I9zLHVOo6Iw",
+    "sortOrder": 3,
+    "featured": false
+  },
+  {
+    "catalogKey": "david-three-prayer-things",
+    "category": "PRAYER",
+    "title": "Once I Learned These 3 Things My Prayer Life Became Stronger",
+    "creator": "David Diga Hernandez",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=David+Diga+Hernandez+Once+I+Learned+These+3+Things+My+Prayer+Life+Became+Stronger",
+    "youtubeVideoId": "cPXIljAssIw",
+    "sortOrder": 4,
+    "featured": false
+  },
+  {
+    "catalogKey": "benny-prayer-teaching",
+    "category": "PRAYER",
+    "title": "Teachings on Prayer",
+    "creator": "Benny Hinn",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Benny+Hinn+Prayer+Teaching",
+    "youtubeVideoId": "ywGNRQv-h0E",
+    "sortOrder": 5,
+    "featured": false
+  },
+  {
+    "catalogKey": "myles-power-forgiveness",
+    "category": "FORGIVENESS",
+    "title": "The Power of Forgiveness",
+    "creator": "Myles Munroe",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Myles+Munroe+The+Power+of+Forgiveness",
+    "youtubeVideoId": "YTmekoHjOVo",
+    "sortOrder": 1,
+    "featured": false
+  },
+  {
+    "catalogKey": "benny-forgiveness-healing",
+    "category": "FORGIVENESS",
+    "title": "Forgiveness Opens the Door to Healing",
+    "creator": "Benny Hinn",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Benny+Hinn+Forgiveness",
+    "youtubeVideoId": "ohS7Eu2h7_A",
+    "sortOrder": 2,
+    "featured": false
+  },
+  {
+    "catalogKey": "david-truly-forgive",
+    "category": "FORGIVENESS",
+    "title": "How to Truly Forgive",
+    "creator": "David Diga Hernandez",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=David+Diga+Hernandez+Forgiveness",
+    "youtubeVideoId": "wS3ggxQNzWA",
+    "sortOrder": 3,
+    "featured": false
+  },
+  {
+    "catalogKey": "morris-complete-healing-forgiveness",
+    "category": "FORGIVENESS",
+    "title": "Complete Healing and Forgiveness",
+    "creator": "Morris Cerullo",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Morris+Cerullo+Complete+Healing+and+Forgiveness",
+    "youtubeVideoId": "plNany3pvUc",
+    "sortOrder": 4,
+    "featured": false
+  },
+  {
+    "catalogKey": "myles-kingdom-economics",
+    "category": "FINANCES",
+    "title": "Understanding Kingdom Economics",
+    "creator": "Myles Munroe",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Myles+Munroe+Kingdom+Economics",
+    "youtubeVideoId": "mDx0LHq-_4o",
+    "sortOrder": 1,
+    "featured": false
+  },
+  {
+    "catalogKey": "myles-purpose-wealth",
+    "category": "FINANCES",
+    "title": "God's Purpose for Wealth",
+    "creator": "Myles Munroe",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Myles+Munroe+Purpose+for+Wealth",
+    "youtubeVideoId": "SZ7GasMDTuk",
+    "sortOrder": 2,
+    "featured": false
+  },
+  {
+    "catalogKey": "myles-financial-prosperity",
+    "category": "FINANCES",
+    "title": "Principles of Financial Prosperity",
+    "creator": "Myles Munroe",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Myles+Munroe+Financial+Prosperity",
+    "youtubeVideoId": "_J1DJKHcAyk",
+    "sortOrder": 3,
+    "featured": false
+  },
+  {
+    "catalogKey": "benny-finances-teaching",
+    "category": "FINANCES",
+    "title": "Teachings on Finances",
+    "creator": "Benny Hinn",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Benny+Hinn+Teachings+on+Finances",
+    "youtubeVideoId": "M2Gv3ixbN2k",
+    "sortOrder": 4,
+    "featured": false
+  },
+  {
+    "catalogKey": "morris-financial-breakthrough",
+    "category": "FINANCES",
+    "title": "Financial Freedom Breakthrough",
+    "creator": "Morris Cerullo",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Morris+Cerullo+Financial+Freedom+Breakthrough",
+    "youtubeVideoId": "En5pHnfe_zI",
+    "sortOrder": 5,
+    "featured": false
+  },
+  {
+    "catalogKey": "morris-financial-famine",
+    "category": "FINANCES",
+    "title": "Financial Freedom in Financial Famine",
+    "creator": "Morris Cerullo",
+    "youtubeUrl": "https://www.youtube.com/results?search_query=Morris+Cerullo+Financial+Freedom+in+Financial+Famine",
+    "youtubeVideoId": "wQdKZJQqiFQ",
+    "sortOrder": 6,
+    "featured": false
   }
 ]

@@ -7,6 +7,9 @@ import {
   Play,
   SunMedium,
   TvMinimalPlay,
+  HandHeart,
+  HeartHandshake,
+  CircleDollarSign,
 } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
@@ -43,6 +46,24 @@ const categoryMetadata = {
     label: 'Bible Study',
     description: 'Go deeper into Scripture',
     icon: BookOpen,
+  },
+  PRAYER: {
+    value: 'PRAYER',
+    label: 'Prayer',
+    description: 'Grow a steady life of prayer',
+    icon: HandHeart,
+  },
+  FORGIVENESS: {
+    value: 'FORGIVENESS',
+    label: 'Forgiveness',
+    description: 'Grace, healing, and restoration',
+    icon: HeartHandshake,
+  },
+  FINANCES: {
+    value: 'FINANCES',
+    label: 'Finances',
+    description: 'Biblical stewardship and provision',
+    icon: CircleDollarSign,
   },
 }
 

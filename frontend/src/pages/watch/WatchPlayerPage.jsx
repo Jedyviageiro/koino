@@ -8,6 +8,7 @@ import {
 } from '@/components/common/AppPageLayout.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getWatchCatalog } from '@/features/watch/watchService.js'
+import YouTubeEmbed from '@/components/watch/YouTubeEmbed.jsx'
 
 const categoryLabels = {
   TEACHING_PREACHING: 'Teaching & Preaching',
@@ -15,6 +16,9 @@ const categoryLabels = {
   DEVOTIONALS: 'Devotional',
   TESTIMONIES: 'Testimony',
   BIBLE_STUDY: 'Bible Study',
+  PRAYER: 'Prayer',
+  FORGIVENESS: 'Forgiveness',
+  FINANCES: 'Finances',
 }
 
 function QueueItem({ video, active, onSelect }) {
@@ -49,9 +53,10 @@ function QueueItem({ video, active, onSelect }) {
   )
 }
 
-function WatchPlayerPage({ onNavigate, onVideoActive }) {
+function WatchPlayerPage({ onNavigate, onVideoActive, playbackVideo }) {
   const session = getAuthSession()
   const topRef = useRef(null)
+  const initialPlaybackRef = useRef(playbackVideo)
   const [videos, setVideos] = useState([])
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -71,10 +76,18 @@ function WatchPlayerPage({ onNavigate, onVideoActive }) {
     getWatchCatalog()
       .then((catalog) => {
         if (!active) return
-        const initialVideo =
+        const catalogVideo =
           catalog.find((video) => video.catalogKey === requestedVideo) ||
           catalog.find((video) => video.featured) ||
           catalog[0]
+        const savedVideo = initialPlaybackRef.current
+        const initialVideo = catalogVideo && {
+          ...catalogVideo,
+          playbackSeconds:
+            savedVideo?.catalogKey === catalogVideo.catalogKey
+              ? savedVideo.playbackSeconds || 0
+              : 0,
+        }
         setVideos(catalog)
         setSelectedVideo(initialVideo || null)
         if (initialVideo) onVideoActive?.(initialVideo)
@@ -144,13 +157,15 @@ function WatchPlayerPage({ onNavigate, onVideoActive }) {
             <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_290px]">
               <section className="min-w-0">
                 <div className="aspect-video overflow-hidden rounded-[8px] bg-black">
-                  <iframe
+                  <YouTubeEmbed
                     key={selectedVideo.youtubeVideoId}
-                    src={`https://www.youtube-nocookie.com/embed/${selectedVideo.youtubeVideoId}?rel=0&modestbranding=1&playsinline=1`}
+                    videoId={selectedVideo.youtubeVideoId}
                     title={`${selectedVideo.creator} - ${selectedVideo.title}`}
-                    className="h-full w-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
+                    startSeconds={selectedVideo.playbackSeconds}
+                    autoplay={Boolean(selectedVideo.playbackSeconds)}
+                    onProgress={(playbackSeconds) =>
+                      onVideoActive?.({ ...selectedVideo, playbackSeconds })
+                    }
                   />
                 </div>
 

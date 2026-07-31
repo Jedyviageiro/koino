@@ -5,5 +5,8 @@ public enum WatchCategory {
     WORSHIP,
     DEVOTIONALS,
     TESTIMONIES,
-    BIBLE_STUDY
+    BIBLE_STUDY,
+    PRAYER,
+    FORGIVENESS,
+    FINANCES
 }
