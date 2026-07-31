@@ -14,3 +14,13 @@ export function sendChatMessage(recipientId, body) {
     body: JSON.stringify({ recipientId, body }),
   })
 }
+
+export function setChatTyping(friendId, typing) {
+  return apiRequest(`/chat/typing/${friendId}?typing=${typing}`, {
+    method: 'POST',
+  })
+}
+
+export function getChatTyping(friendId) {
+  return apiRequest(`/chat/typing/${friendId}`)
+}

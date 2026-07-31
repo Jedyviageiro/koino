@@ -4,7 +4,7 @@ import {
   Check,
   Flame,
   Search,
-  Sparkles,
+  SunMedium,
 } from 'lucide-react'
 import { SectionTitle } from '@/components/common/AppPageLayout.jsx'
 
@@ -14,21 +14,31 @@ const quickActions = [
   { label: 'My Bookmarks', icon: Bookmark, path: '/bookmarks' },
 ]
 
-function HomeRail({ streak, bookmarkCount, onNavigate }) {
+function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
   const currentStreak = streak?.currentStreak || 0
   const recentDays = streak?.recentDays || []
   const streakProgress = Math.min(currentStreak, 7) / 7
 
   return (
     <div className="flex flex-col gap-7">
-      <section className="flex min-h-[105px] items-center gap-4 rounded-[12px] border border-[#eee5db] bg-[linear-gradient(105deg,#fdf9f3,#fbf7f2)] px-5 py-5">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-[#fcf3e5] text-[#a66b0b]">
-          <Sparkles className="h-6 w-6" strokeWidth={1.45} />
-        </span>
-        <div>
-          <h2 className="text-[14px] font-bold">Keep the habit.</h2>
-          <p className="mt-1.5 text-[12px] text-[#69728a]">Small steps, deep roots.</p>
-        </div>
+      <section className="rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
+        <p className="flex items-center gap-2 text-[10px] font-semibold text-[#252a32]">
+          <SunMedium className="h-4 w-4 text-[#d89127]" strokeWidth={1.7} />
+          Verse of the Day
+        </p>
+        <blockquote className="mt-3 text-[11px] font-medium leading-5 text-[#252a32]">
+          &ldquo;{verseOfDay?.text || 'Be still, and know that I am God.'}&rdquo;
+        </blockquote>
+        <p className="mt-2 text-[9px] font-semibold text-[#b77718]">
+          {verseOfDay?.reference || 'Psalm 46:10'}
+        </p>
+        <button
+          type="button"
+          onClick={() => onNavigate(verseLink(verseOfDay?.reference))}
+          className="mt-3 inline-flex h-8 items-center gap-2 text-[9px] font-medium text-[#4f5764]"
+        >
+          View in Bible <span aria-hidden="true">&rarr;</span>
+        </button>
       </section>
 
       <section className="self-start rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
@@ -102,6 +112,17 @@ function HomeRail({ streak, bookmarkCount, onNavigate }) {
       </section>
     </div>
   )
+}
+
+function verseLink(reference) {
+  const match = reference?.match(/^(.+?)\s+(\d+):(\d+)/)
+  if (!match) return '/bible'
+  const query = new URLSearchParams({
+    book: match[1],
+    chapter: match[2],
+    verse: match[3],
+  })
+  return `/bible?${query}`
 }
 
 export default HomeRail

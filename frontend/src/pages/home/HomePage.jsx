@@ -100,6 +100,7 @@ function HomePage({ onNavigate }) {
           <HomeRail
             streak={data?.streak}
             bookmarkCount={data?.bookmarks?.length || 0}
+            verseOfDay={data?.verseOfDay}
             onNavigate={onNavigate}
           />
         </div>

@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.koino.backend.dto.chat.ChatFriendResponse;
 import com.koino.backend.dto.chat.ChatMessageRequest;
 import com.koino.backend.dto.chat.ChatMessageResponse;
+import com.koino.backend.dto.chat.ChatTypingResponse;
 import com.koino.backend.model.User;
 import com.koino.backend.service.ChatService;
 
@@ -48,5 +50,22 @@ public class ChatController {
         @Valid @RequestBody ChatMessageRequest request
     ) {
         return chatService.send(user.getUserId(), request);
+    }
+
+    @PostMapping("/typing/{friendId}")
+    public ChatTypingResponse setTyping(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long friendId,
+        @RequestParam(defaultValue = "true") boolean typing
+    ) {
+        return chatService.setTyping(user.getUserId(), friendId, typing);
+    }
+
+    @GetMapping("/typing/{friendId}")
+    public ChatTypingResponse isTyping(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long friendId
+    ) {
+        return chatService.isTyping(user.getUserId(), friendId);
     }
 }

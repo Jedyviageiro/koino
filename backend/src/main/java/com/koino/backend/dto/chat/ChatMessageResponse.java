@@ -8,5 +8,6 @@ public record ChatMessageResponse(
     Long recipientId,
     String body,
     Instant sentAt,
+    Instant deliveredAt,
     Instant readAt
 ) {}

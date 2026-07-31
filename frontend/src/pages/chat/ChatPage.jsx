@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowLeft, LoaderCircle, MessageCircle, Search, Send } from 'lucide-react'
+import {
+  ArrowLeft,
+  Check,
+  CheckCheck,
+  LoaderCircle,
+  MessageCircle,
+  Search,
+  Send,
+} from 'lucide-react'
 import {
   AppPageLayout,
   PageHeader,
@@ -9,8 +17,10 @@ import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import UserProfileModal from '@/components/community/UserProfileModal.jsx'
 import {
   getChatFriends,
+  getChatTyping,
   getConversation,
   sendChatMessage,
+  setChatTyping,
 } from '@/features/chat/chatService.js'
 import {
   getAuthSession,
@@ -20,7 +30,12 @@ import {
 function ChatPage({ onNavigate }) {
   const session = getAuthSession()
   const [friends, setFriends] = useState([])
-  const [selectedId, setSelectedId] = useState(null)
+  const [selectedId, setSelectedId] = useState(() => {
+    const requested = Number(
+      new URLSearchParams(window.location.search).get('friend'),
+    )
+    return Number.isFinite(requested) && requested > 0 ? requested : null
+  })
   const [messages, setMessages] = useState([])
   const [query, setQuery] = useState('')
   const [draft, setDraft] = useState('')
@@ -28,6 +43,7 @@ function ChatPage({ onNavigate }) {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
   const [profileUserId, setProfileUserId] = useState(null)
+  const [friendTyping, setFriendTyping] = useState(false)
   const endRef = useRef(null)
 
   const selectedFriend = friends.find((friend) => friend.userId === selectedId)
@@ -74,8 +90,14 @@ function ChatPage({ onNavigate }) {
 
     async function refreshConversation() {
       try {
-        const result = await getConversation(selectedId)
-        if (active) setMessages(result)
+        const [result, typing] = await Promise.all([
+          getConversation(selectedId),
+          getChatTyping(selectedId),
+        ])
+        if (active) {
+          setMessages(result)
+          setFriendTyping(typing.typing)
+        }
       } catch (requestError) {
         if (active) {
           setError(requestError.message || 'Unable to load this conversation.')
@@ -84,12 +106,26 @@ function ChatPage({ onNavigate }) {
     }
 
     refreshConversation()
-    const timer = window.setInterval(refreshConversation, 3000)
+    const timer = window.setInterval(refreshConversation, 1500)
     return () => {
       active = false
       window.clearInterval(timer)
     }
   }, [selectedId])
+
+  const composing = Boolean(draft.trim())
+  useEffect(() => {
+    if (!selectedId || !composing) return undefined
+    setChatTyping(selectedId, true).catch(() => {})
+    const timer = window.setInterval(
+      () => setChatTyping(selectedId, true).catch(() => {}),
+      2500,
+    )
+    return () => {
+      window.clearInterval(timer)
+      setChatTyping(selectedId, false).catch(() => {})
+    }
+  }, [composing, selectedId])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
@@ -119,6 +155,12 @@ function ChatPage({ onNavigate }) {
       setSending(false)
     }
   }
+
+  const lastReadSentMessageId = [...messages]
+    .reverse()
+    .find(
+      (message) => message.senderId === session?.id && message.readAt,
+    )?.messageId
 
   return (
     <AppPageLayout
@@ -257,7 +299,12 @@ function ChatPage({ onNavigate }) {
                             className={`flex ${mine ? 'justify-end' : 'justify-start'}`}
                           >
                             <div
-                              className={`max-w-[78%] rounded-[10px] px-3.5 py-2.5 ${
+                              className={`flex max-w-[78%] flex-col ${
+                                mine ? 'items-end' : 'items-start'
+                              }`}
+                            >
+                            <div
+                              className={`rounded-[10px] px-3.5 py-2.5 ${
                                 mine
                                   ? 'bg-[#17634e] text-white'
                                   : 'bg-[#f0f1f2] text-[#292e36]'
@@ -267,12 +314,23 @@ function ChatPage({ onNavigate }) {
                                 {message.body}
                               </p>
                               <p
-                                className={`mt-1 text-right text-[7px] ${
+                                className={`mt-1 flex items-center justify-end gap-1 text-right text-[7px] ${
                                   mine ? 'text-white/70' : 'text-[#858d99]'
                                 }`}
                               >
                                 {formatMessageTime(message.sentAt)}
+                                {mine && (
+                                  message.deliveredAt ? (
+                                    <CheckCheck className="h-3 w-3" />
+                                  ) : (
+                                    <Check className="h-3 w-3" />
+                                  )
+                                )}
                               </p>
+                            </div>
+                            {mine && message.messageId === lastReadSentMessageId && (
+                              <ReadAvatar friend={selectedFriend} />
+                            )}
                             </div>
                           </div>
                         )
@@ -280,6 +338,22 @@ function ChatPage({ onNavigate }) {
                     </div>
                   </div>
                 ))}
+                {friendTyping && (
+                  <div className="mt-2 flex justify-start" aria-live="polite">
+                    <div className="flex h-8 items-center gap-1 rounded-[10px] bg-[#f0f1f2] px-3">
+                      {[0, 1, 2].map((index) => (
+                        <span
+                          key={index}
+                          className="h-1.5 w-1.5 rounded-full bg-[#808895] animate-[chat-typing_900ms_ease-in-out_infinite]"
+                          style={{ animationDelay: `${index * 140}ms` }}
+                        />
+                      ))}
+                      <span className="sr-only">
+                        {selectedFriend.fullname} is typing
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <div ref={endRef} />
               </div>
 
@@ -348,6 +422,27 @@ function ChatPage({ onNavigate }) {
         />
       )}
     </AppPageLayout>
+  )
+}
+
+function ReadAvatar({ friend }) {
+  if (friend.profilePictureUrl) {
+    return (
+      <img
+        src={friend.profilePictureUrl}
+        alt={`${friend.fullname} read this message`}
+        referrerPolicy="no-referrer"
+        className="ml-auto mt-1.5 h-4 w-4 rounded-full object-cover ring-2 ring-white/60"
+      />
+    )
+  }
+  return (
+    <span
+      className="ml-auto mt-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white/85 text-[6px] font-bold text-[#17634e]"
+      title={`${friend.fullname} read this message`}
+    >
+      {friend.fullname?.[0]?.toUpperCase()}
+    </span>
   )
 }
 

@@ -53,6 +53,8 @@ public class ChatMessage {
 
     private Instant readAt;
 
+    private Instant deliveredAt;
+
     @PrePersist
     void initialize() {
         if (sentAt == null) {

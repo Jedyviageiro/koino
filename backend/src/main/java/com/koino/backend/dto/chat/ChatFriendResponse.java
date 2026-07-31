@@ -8,6 +8,8 @@ public record ChatFriendResponse(
     String fullname,
     String profilePictureUrl,
     String lastMessage,
+    Long lastMessageId,
+    Long lastMessageSenderId,
     Instant lastMessageAt,
     long unreadCount
 ) {}

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.koino.backend.dto.chat.ChatFriendResponse;
 import com.koino.backend.dto.chat.ChatMessageRequest;
 import com.koino.backend.dto.chat.ChatMessageResponse;
+import com.koino.backend.dto.chat.ChatTypingResponse;
 import com.koino.backend.model.ChatMessage;
 import com.koino.backend.model.Friendship;
 import com.koino.backend.model.FriendshipStatus;
@@ -26,6 +29,8 @@ public class ChatService {
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ConcurrentMap<String, Instant> typingUntil =
+        new ConcurrentHashMap<>();
 
     public ChatService(
         ChatMessageRepository messageRepository,
@@ -39,7 +44,7 @@ public class ChatService {
         this.userService = userService;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ChatFriendResponse> friends(Long userId) {
         List<Friendship> friendships =
             friendshipRepository.findForUserByStatus(
@@ -49,6 +54,8 @@ public class ChatService {
         List<ChatMessage> messages = messageRepository.findAllForUser(userId);
         Map<Long, ChatMessage> latestByFriend = new HashMap<>();
         Map<Long, Long> unreadByFriend = new HashMap<>();
+        List<ChatMessage> delivered = new ArrayList<>();
+        Instant deliveredAt = Instant.now();
         for (ChatMessage message : messages) {
             Long friendId = message.getSender().getUserId().equals(userId)
                 ? message.getRecipient().getUserId()
@@ -58,7 +65,13 @@ public class ChatService {
                 && message.getReadAt() == null) {
                 unreadByFriend.merge(friendId, 1L, Long::sum);
             }
+            if (message.getRecipient().getUserId().equals(userId)
+                && message.getDeliveredAt() == null) {
+                message.setDeliveredAt(deliveredAt);
+                delivered.add(message);
+            }
         }
+        if (!delivered.isEmpty()) messageRepository.saveAll(delivered);
 
         List<ChatFriendResponse> result = new ArrayList<>();
         for (Friendship friendship : friendships) {
@@ -73,6 +86,8 @@ public class ChatService {
                 friend.getFullname(),
                 friend.getProfilePictureUrl(),
                 latest == null ? null : latest.getBody(),
+                latest == null ? null : latest.getMessageId(),
+                latest == null ? null : latest.getSender().getUserId(),
                 latest == null ? null : latest.getSentAt(),
                 unreadByFriend.getOrDefault(friend.getUserId(), 0L)
             ));
@@ -102,6 +117,9 @@ public class ChatService {
         for (ChatMessage message : messages) {
             if (message.getRecipient().getUserId().equals(userId)
                 && message.getReadAt() == null) {
+                if (message.getDeliveredAt() == null) {
+                    message.setDeliveredAt(readAt);
+                }
                 message.setReadAt(readAt);
                 changed = true;
             }
@@ -123,6 +141,36 @@ public class ChatService {
         message.setRecipient(recipient);
         message.setBody(request.body().trim());
         return toResponse(messageRepository.save(message));
+    }
+
+    @Transactional(readOnly = true)
+    public ChatTypingResponse setTyping(
+        Long senderId,
+        Long recipientId,
+        boolean typing
+    ) {
+        ensureFriends(senderId, recipientId);
+        String key = typingKey(senderId, recipientId);
+        if (typing) {
+            typingUntil.put(key, Instant.now().plusSeconds(4));
+        } else {
+            typingUntil.remove(key);
+        }
+        return new ChatTypingResponse(typing);
+    }
+
+    @Transactional(readOnly = true)
+    public ChatTypingResponse isTyping(Long userId, Long friendId) {
+        ensureFriends(userId, friendId);
+        String key = typingKey(friendId, userId);
+        Instant expiresAt = typingUntil.get(key);
+        boolean typing = expiresAt != null && expiresAt.isAfter(Instant.now());
+        if (!typing) typingUntil.remove(key);
+        return new ChatTypingResponse(typing);
+    }
+
+    private String typingKey(Long senderId, Long recipientId) {
+        return senderId + ":" + recipientId;
     }
 
     private void ensureFriends(Long firstId, Long secondId) {
@@ -153,6 +201,7 @@ public class ChatService {
             message.getRecipient().getUserId(),
             message.getBody(),
             message.getSentAt(),
+            message.getDeliveredAt(),
             message.getReadAt()
         );
     }

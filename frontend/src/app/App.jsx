@@ -21,6 +21,7 @@ import UserProfilePage from '@/pages/user/UserProfilePage.jsx'
 import ChatPage from '@/pages/chat/ChatPage.jsx'
 import ChallengeToast from '@/components/common/ChallengeToast.jsx'
 import WatchMiniPlayer from '@/components/watch/WatchMiniPlayer.jsx'
+import ChatMessageToast from '@/components/chat/ChatMessageToast.jsx'
 import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 import {
   AUTH_LOGOUT_EVENT,
@@ -217,6 +218,7 @@ function App() {
         {page}
       </div>
       <ChallengeToast onNavigate={navigate} routePath={locationKey} />
+      <ChatMessageToast onNavigate={navigate} />
       {watchVideo && !path.startsWith('/watch') && (
         <WatchMiniPlayer
           video={watchVideo}

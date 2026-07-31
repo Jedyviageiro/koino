@@ -13,44 +13,38 @@ import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getWatchCatalog } from '@/features/watch/watchService.js'
 
-const categories = [
-  {
-    value: 'ALL',
-    label: 'All',
-    description: 'The full Koino video library',
-    icon: Play,
-  },
-  {
+const categoryMetadata = {
+  TEACHING_PREACHING: {
     value: 'TEACHING_PREACHING',
     label: 'Teaching & Preaching',
     description: 'Biblical teaching and ministry',
     icon: Mic2,
   },
-  {
+  WORSHIP: {
     value: 'WORSHIP',
     label: 'Worship',
     description: 'Songs for prayer and praise',
     icon: Music2,
   },
-  {
+  DEVOTIONALS: {
     value: 'DEVOTIONALS',
     label: 'Devotionals',
     description: 'Quiet moments for each day',
     icon: SunMedium,
   },
-  {
+  TESTIMONIES: {
     value: 'TESTIMONIES',
     label: 'Testimonies',
     description: 'Stories of faith and courage',
     icon: MessageCircleHeart,
   },
-  {
+  BIBLE_STUDY: {
     value: 'BIBLE_STUDY',
     label: 'Bible Study',
     description: 'Go deeper into Scripture',
     icon: BookOpen,
   },
-]
+}
 
 function VideoArtwork({ video, className = '' }) {
   if (video.youtubeVideoId) {
@@ -119,6 +113,30 @@ function WatchPage({ onNavigate }) {
     [selectedCategory, videos],
   )
 
+  const categories = useMemo(() => {
+    const available = [...new Set(videos.map((video) => video.category))]
+    return [
+      {
+        value: 'ALL',
+        label: 'All',
+        description: 'The full Koino video library',
+        icon: Play,
+      },
+      ...available.map((value) =>
+        categoryMetadata[value] || {
+          value,
+          label: value
+            .toLowerCase()
+            .split('_')
+            .map((word) => word[0].toUpperCase() + word.slice(1))
+            .join(' '),
+          description: 'More to watch inside Koino',
+          icon: TvMinimalPlay,
+        },
+      ),
+    ]
+  }, [videos])
+
   const categoryCounts = useMemo(
     () =>
       new Map(
@@ -130,7 +148,7 @@ function WatchPage({ onNavigate }) {
                 .length,
         ]),
       ),
-    [videos],
+    [categories, videos],
   )
 
   function openVideo(video) {

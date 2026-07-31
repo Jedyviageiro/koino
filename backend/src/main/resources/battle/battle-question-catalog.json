@@ -63,5 +63,609 @@
   {"catalogKey":"core-057","prompt":"Which name is associated with the goat sent into the wilderness on the Day of Atonement?","options":["Molech","Azazel","Dagon","Nehushtan"],"correctOption":1,"difficulty":6,"category":"Torah","reference":"Leviticus 16:8-10","explanation":"One lot was for the Lord and the other for Azazel."},
   {"catalogKey":"core-058","prompt":"Which Psalm is arranged in twenty-two alphabetic sections of eight verses each?","options":["Psalm 22","Psalm 78","Psalm 119","Psalm 150"],"correctOption":2,"difficulty":6,"category":"Wisdom","reference":"Psalm 119","explanation":"Psalm 119 is an extended alphabetic acrostic with 176 verses."},
   {"catalogKey":"core-059","prompt":"Which companion did Paul leave sick at Miletus?","options":["Trophimus","Tychicus","Epaphras","Aristarchus"],"correctOption":0,"difficulty":6,"category":"Letters","reference":"2 Timothy 4:20","explanation":"Paul says he left Trophimus ill at Miletus."},
-  {"catalogKey":"core-060","prompt":"Which Old Testament passages did Jesus quote in response to all three wilderness temptations?","options":["Psalms","Isaiah","Deuteronomy","Proverbs"],"correctOption":2,"difficulty":6,"category":"Gospels","reference":"Matthew 4:4,7,10","explanation":"Jesus answered each temptation with words from Deuteronomy."}
+  {"catalogKey":"core-060","prompt":"Which Old Testament passages did Jesus quote in response to all three wilderness temptations?","options":["Psalms","Isaiah","Deuteronomy","Proverbs"],"correctOption":2,"difficulty":6,"category":"Gospels","reference":"Matthew 4:4,7,10","explanation":"Jesus answered each temptation with words from Deuteronomy."},
+
+  {
+    "catalogKey":"core-061",
+    "prompt":"How many sockets of silver were made for the tabernacle from the atonement money collected in the census?",
+    "options":["96","100","120","144"],
+    "correctOption":1,
+    "difficulty":7,
+    "category":"Torah",
+    "reference":"Exodus 38:25-27",
+    "explanation":"One hundred silver sockets were cast from the census silver."
+  },
+  {
+    "catalogKey":"core-062",
+    "prompt":"Which judge was left-handed and assassinated King Eglon of Moab?",
+    "options":["Shamgar","Ehud","Jephthah","Othniel"],
+    "correctOption":1,
+    "difficulty":7,
+    "category":"Judges",
+    "reference":"Judges 3:15-22",
+    "explanation":"Ehud, a left-handed Benjamite, killed Eglon."
+  },
+  {
+    "catalogKey":"core-063",
+    "prompt":"Who was King Saul's great-grandfather?",
+    "options":["Abiel","Ner","Kish","Jehiel"],
+    "correctOption":3,
+    "difficulty":7,
+    "category":"History",
+    "reference":"1 Samuel 9:1; 1 Chronicles 9:35-39",
+    "explanation":"Jehiel was the ancestor of Kish, Saul's father."
+  },
+  {
+    "catalogKey":"core-064",
+    "prompt":"Which prophet was taken by the Spirit from Babylon to Jerusalem in a vision?",
+    "options":["Daniel","Jeremiah","Ezekiel","Zechariah"],
+    "correctOption":2,
+    "difficulty":7,
+    "category":"Prophets",
+    "reference":"Ezekiel 8:3",
+    "explanation":"Ezekiel was transported in a vision to Jerusalem."
+  },
+  {
+    "catalogKey":"core-065",
+    "prompt":"What was the name of David's mighty man who killed 800 men at one time?",
+    "options":["Abishai","Benaiah","Jashobeam","Eleazar"],
+    "correctOption":2,
+    "difficulty":7,
+    "category":"History",
+    "reference":"2 Samuel 23:8",
+    "explanation":"Jashobeam is credited with killing 800 men."
+  },
+  {
+    "catalogKey":"core-066",
+    "prompt":"Who interpreted the writing on the wall for King Belshazzar?",
+    "options":["Ezra","Daniel","Nehemiah","Zechariah"],
+    "correctOption":1,
+    "difficulty":7,
+    "category":"Prophets",
+    "reference":"Daniel 5",
+    "explanation":"Daniel interpreted 'Mene, Mene, Tekel, Upharsin.'"
+  },
+  {
+    "catalogKey":"core-067",
+    "prompt":"Which king of Judah was struck with leprosy after unlawfully burning incense?",
+    "options":["Hezekiah","Uzziah","Amaziah","Ahaz"],
+    "correctOption":1,
+    "difficulty":7,
+    "category":"Kings",
+    "reference":"2 Chronicles 26:16-21",
+    "explanation":"King Uzziah became leprous after entering the temple."
+  },
+  {
+    "catalogKey":"core-068",
+    "prompt":"Who was the father of John the Baptist?",
+    "options":["Joachim","Zechariah","Simeon","Eli"],
+    "correctOption":1,
+    "difficulty":7,
+    "category":"Gospels",
+    "reference":"Luke 1:5",
+    "explanation":"John's father was the priest Zechariah."
+  },
+  {
+    "catalogKey":"core-069",
+    "prompt":"Who fell asleep in the upper room while Paul was preaching and died after falling from the window?",
+    "options":["Eutychus","Tychicus","Onesimus","Silas"],
+    "correctOption":0,
+    "difficulty":7,
+    "category":"Acts",
+    "reference":"Acts 20:9-12",
+    "explanation":"Eutychus fell from the third story but was restored to life."
+  },
+  {
+    "catalogKey":"core-070",
+    "prompt":"What was the name of the island where Paul was bitten by a viper?",
+    "options":["Cyprus","Patmos","Crete","Malta"],
+    "correctOption":3,
+    "difficulty":7,
+    "category":"Acts",
+    "reference":"Acts 28:1-6",
+    "explanation":"Paul was shipwrecked on Malta."
+  },
+  {
+    "catalogKey":"core-071",
+    "prompt":"Who succeeded Moses as Israel's leader?",
+    "options":["Caleb","Eleazar","Joshua","Phinehas"],
+    "correctOption":2,
+    "difficulty":7,
+    "category":"Torah",
+    "reference":"Deuteronomy 31:7-8",
+    "explanation":"Joshua was appointed by God to succeed Moses."
+  },
+  {
+    "catalogKey":"core-072",
+    "prompt":"Which prophet married Gomer as a sign to Israel?",
+    "options":["Joel","Amos","Hosea","Micah"],
+    "correctOption":2,
+    "difficulty":7,
+    "category":"Prophets",
+    "reference":"Hosea 1:2-3",
+    "explanation":"God commanded Hosea to marry Gomer."
+  },
+  {
+    "catalogKey":"core-073",
+    "prompt":"Which tribe received no territorial inheritance because the Lord was their inheritance?",
+    "options":["Judah","Benjamin","Levi","Ephraim"],
+    "correctOption":2,
+    "difficulty":7,
+    "category":"Torah",
+    "reference":"Numbers 18:20",
+    "explanation":"The Levites received cities instead of tribal land."
+  },
+  {
+    "catalogKey":"core-074",
+    "prompt":"Which king was told to stretch himself over a child three times, and the child came back to life?",
+    "options":["Elijah","Elisha","Isaiah","Nathan"],
+    "correctOption":0,
+    "difficulty":7,
+    "category":"Prophets",
+    "reference":"1 Kings 17:21-22",
+    "explanation":"Elijah raised the widow's son."
+  },
+  {
+    "catalogKey":"core-075",
+    "prompt":"What was the name of the high priest during Jesus' trial before the Sanhedrin?",
+    "options":["Annas","Caiaphas","Zadok","Abiathar"],
+    "correctOption":1,
+    "difficulty":7,
+    "category":"Gospels",
+    "reference":"Matthew 26:57",
+    "explanation":"Jesus was brought before Caiaphas."
+  },
+  {
+    "catalogKey":"core-076",
+    "prompt":"Which disciple replaced Judas Iscariot among the Twelve?",
+    "options":["Barnabas","Matthias","Silas","Justus"],
+    "correctOption":1,
+    "difficulty":8,
+    "category":"Acts",
+    "reference":"Acts 1:26",
+    "explanation":"Matthias was chosen by lot."
+  },
+  {
+    "catalogKey":"core-077",
+    "prompt":"Which city did Abraham purchase the cave of Machpelah from Ephron the Hittite?",
+    "options":["Hebron","Bethel","Shechem","Beersheba"],
+    "correctOption":0,
+    "difficulty":8,
+    "category":"Torah",
+    "reference":"Genesis 23",
+    "explanation":"The cave near Hebron became the family burial site."
+  },
+  {
+    "catalogKey":"core-078",
+    "prompt":"Who carried the ark into battle against the Philistines before it was captured?",
+    "options":["Hophni and Phinehas","Samuel and Eli","Nathan and Gad","Abner and Joab"],
+    "correctOption":0,
+    "difficulty":8,
+    "category":"History",
+    "reference":"1 Samuel 4:4",
+    "explanation":"Eli's sons accompanied the ark."
+  },
+  {
+    "catalogKey":"core-079",
+    "prompt":"Which church is described as having a little strength yet keeping Christ's word?",
+    "options":["Smyrna","Philadelphia","Thyatira","Pergamum"],
+    "correctOption":1,
+    "difficulty":8,
+    "category":"Revelation",
+    "reference":"Revelation 3:8",
+    "explanation":"Philadelphia received this commendation."
+  },
+  {
+    "catalogKey":"core-080",
+    "prompt":"What was the name of the servant whose ear Peter cut off?",
+    "options":["Malchus","Barsabbas","Crispus","Sosthenes"],
+    "correctOption":0,
+    "difficulty":8,
+    "category":"Gospels",
+    "reference":"John 18:10",
+    "explanation":"The servant's name was Malchus."
+  },
+  {
+    "catalogKey":"core-081",
+    "prompt":"Who was the mother of King Lemuel, whose sayings appear in Proverbs 31?",
+    "options":["Bathsheba","Naamah","Her name is not given","Abigail"],
+    "correctOption":2,
+    "difficulty":8,
+    "category":"Wisdom",
+    "reference":"Proverbs 31:1",
+    "explanation":"The text never names King Lemuel's mother."
+  },
+  {
+    "catalogKey":"core-082",
+    "prompt":"Which prophet saw a flying scroll measuring twenty cubits by ten cubits?",
+    "options":["Ezekiel","Zechariah","Haggai","Joel"],
+    "correctOption":1,
+    "difficulty":8,
+    "category":"Prophets",
+    "reference":"Zechariah 5:1-2",
+    "explanation":"This was one of Zechariah's night visions."
+  },
+  {
+    "catalogKey":"core-083",
+    "prompt":"Who persuaded David to number Israel?",
+    "options":["Joab","Absalom","Satan","Ahithophel"],
+    "correctOption":2,
+    "difficulty":8,
+    "category":"History",
+    "reference":"1 Chronicles 21:1",
+    "explanation":"Chronicles states that Satan incited David."
+  },
+  {
+    "catalogKey":"core-084",
+    "prompt":"How many stones did David choose from the brook before facing Goliath?",
+    "options":["Three","Five","Seven","Ten"],
+    "correctOption":1,
+    "difficulty":8,
+    "category":"History",
+    "reference":"1 Samuel 17:40",
+    "explanation":"David selected five smooth stones."
+  },
+  {
+    "catalogKey":"core-085",
+    "prompt":"Which king humbled himself after reading the Book of the Law discovered in the temple?",
+    "options":["Hezekiah","Josiah","Jehoshaphat","Manasseh"],
+    "correctOption":1,
+    "difficulty":8,
+    "category":"Kings",
+    "reference":"2 Kings 22:11",
+    "explanation":"Josiah tore his clothes after hearing the Law."
+  },
+  {
+    "catalogKey":"core-086",
+    "prompt":"Who was the father of Bezalel, the chief craftsman of the tabernacle?",
+    "options":["Uri","Hur","Caleb","Amminadab"],
+    "correctOption":0,
+    "difficulty":8,
+    "category":"Torah",
+    "reference":"Exodus 31:2",
+    "explanation":"Bezalel was the son of Uri."
+  },
+  {
+    "catalogKey":"core-087",
+    "prompt":"Which Roman governor succeeded Felix and heard Paul's defense?",
+    "options":["Festus","Gallio","Pilate","Lysias"],
+    "correctOption":0,
+    "difficulty":8,
+    "category":"Acts",
+    "reference":"Acts 25:1",
+    "explanation":"Porcius Festus replaced Felix."
+  },
+  {
+    "catalogKey":"core-088",
+    "prompt":"Which disciple was known as 'the twin'?",
+    "options":["Andrew","Thomas","Philip","Bartholomew"],
+    "correctOption":1,
+    "difficulty":8,
+    "category":"Gospels",
+    "reference":"John 11:16",
+    "explanation":"Thomas was also called Didymus, meaning 'Twin.'"
+  },
+  {
+    "catalogKey":"core-089",
+    "prompt":"Which prophet confronted King David after his sin with Bathsheba?",
+    "options":["Nathan","Gad","Samuel","Ahijah"],
+    "correctOption":0,
+    "difficulty":8,
+    "category":"History",
+    "reference":"2 Samuel 12:1",
+    "explanation":"Nathan confronted David with the parable of the ewe lamb."
+  },
+  {
+    "catalogKey":"core-090",
+    "prompt":"What was the name of the man who carried Jesus' cross?",
+    "options":["Joseph of Arimathea","Simon of Cyrene","Nicodemus","Bartimaeus"],
+    "correctOption":1,
+    "difficulty":8,
+    "category":"Gospels",
+    "reference":"Mark 15:21",
+    "explanation":"Simon of Cyrene was compelled to carry Jesus' cross."
+  },
+
+  {
+    "catalogKey":"core-091",
+    "prompt":"Who was the mother of King Lemuel according to Proverbs?",
+    "options":["Bathsheba","Abigail","Her name is not given","Naamah"],
+    "correctOption":2,
+    "difficulty":9,
+    "category":"Wisdom",
+    "reference":"Proverbs 31:1",
+    "explanation":"The text never identifies King Lemuel's mother by name."
+  },
+  {
+    "catalogKey":"core-092",
+    "prompt":"Which son of David attempted to seize the throne before Solomon was crowned?",
+    "options":["Absalom","Adonijah","Amnon","Chileab"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Kings",
+    "reference":"1 Kings 1:5",
+    "explanation":"Adonijah declared himself king while David was still alive."
+  },
+  {
+    "catalogKey":"core-093",
+    "prompt":"Who was the father of Hur, the grandfather of Bezalel?",
+    "options":["Caleb","Uri","Jephunneh","Hezron"],
+    "correctOption":0,
+    "difficulty":9,
+    "category":"Torah",
+    "reference":"1 Chronicles 2:18-20",
+    "explanation":"Hur was the son of Caleb."
+  },
+  {
+    "catalogKey":"core-094",
+    "prompt":"How many chapters are there in the Book of Zechariah?",
+    "options":["12","13","14","15"],
+    "correctOption":2,
+    "difficulty":9,
+    "category":"Prophets",
+    "reference":"Zechariah",
+    "explanation":"Zechariah contains 14 chapters."
+  },
+  {
+    "catalogKey":"core-095",
+    "prompt":"Which prophet married a prostitute as a prophetic sign?",
+    "options":["Amos","Joel","Hosea","Micah"],
+    "correctOption":2,
+    "difficulty":9,
+    "category":"Prophets",
+    "reference":"Hosea 1:2",
+    "explanation":"God instructed Hosea to marry Gomer."
+  },
+  {
+    "catalogKey":"core-096",
+    "prompt":"Who was the commander of King Saul's army?",
+    "options":["Joab","Abner","Amasa","Benaiah"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"History",
+    "reference":"1 Samuel 14:50",
+    "explanation":"Abner, Saul's cousin, commanded his army."
+  },
+  {
+    "catalogKey":"core-097",
+    "prompt":"Which king of Judah was only eight years old when he began to reign?",
+    "options":["Joash","Josiah","Manasseh","Uzziah"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Kings",
+    "reference":"2 Kings 22:1",
+    "explanation":"Josiah became king at eight years old."
+  },
+  {
+    "catalogKey":"core-098",
+    "prompt":"Which disciple first brought Nathanael to Jesus?",
+    "options":["Peter","Philip","Andrew","John"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Gospels",
+    "reference":"John 1:45",
+    "explanation":"Philip invited Nathanael to meet Jesus."
+  },
+  {
+    "catalogKey":"core-099",
+    "prompt":"Which prophet saw a basket of summer fruit?",
+    "options":["Amos","Joel","Micah","Nahum"],
+    "correctOption":0,
+    "difficulty":9,
+    "category":"Prophets",
+    "reference":"Amos 8:1-2",
+    "explanation":"The basket symbolized that Israel's end had come."
+  },
+  {
+    "catalogKey":"core-100",
+    "prompt":"Who was the father of King Hezekiah?",
+    "options":["Ahaz","Jotham","Uzziah","Amaziah"],
+    "correctOption":0,
+    "difficulty":9,
+    "category":"Kings",
+    "reference":"2 Kings 18:1",
+    "explanation":"Hezekiah was the son of Ahaz."
+  },
+  {
+    "catalogKey":"core-101",
+    "prompt":"Which city did Jonah flee toward instead of Nineveh?",
+    "options":["Tyre","Tarshish","Sidon","Damascus"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Prophets",
+    "reference":"Jonah 1:3",
+    "explanation":"Jonah attempted to flee to Tarshish."
+  },
+  {
+    "catalogKey":"core-102",
+    "prompt":"What was the name of Moses' father-in-law?",
+    "options":["Reuel/Jethro","Laban","Nahor","Hobab"],
+    "correctOption":0,
+    "difficulty":9,
+    "category":"Torah",
+    "reference":"Exodus 3:1",
+    "explanation":"Moses' father-in-law is called Jethro (also Reuel)."
+  },
+  {
+    "catalogKey":"core-103",
+    "prompt":"Which king rebuilt Jericho during the reign of Ahab?",
+    "options":["Hiel","Omri","Zimri","Jehu"],
+    "correctOption":0,
+    "difficulty":9,
+    "category":"Kings",
+    "reference":"1 Kings 16:34",
+    "explanation":"Hiel rebuilt Jericho at the cost of his sons."
+  },
+  {
+    "catalogKey":"core-104",
+    "prompt":"Who interpreted Nebuchadnezzar's dream of the great tree?",
+    "options":["Daniel","Shadrach","Jeremiah","Ezekiel"],
+    "correctOption":0,
+    "difficulty":9,
+    "category":"Prophets",
+    "reference":"Daniel 4",
+    "explanation":"Daniel interpreted the dream."
+  },
+  {
+    "catalogKey":"core-105",
+    "prompt":"Which woman hid the Israelite spies in Jericho?",
+    "options":["Deborah","Rahab","Jael","Ruth"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"History",
+    "reference":"Joshua 2",
+    "explanation":"Rahab protected the spies."
+  },
+  {
+    "catalogKey":"core-106",
+    "prompt":"Which tribe settled east of the Jordan together with Reuben?",
+    "options":["Benjamin","Half-Manasseh","Judah","Issachar"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Torah",
+    "reference":"Numbers 32",
+    "explanation":"Reuben, Gad and half the tribe of Manasseh settled east of the Jordan."
+  },
+  {
+    "catalogKey":"core-107",
+    "prompt":"What was the name of Lydia's hometown?",
+    "options":["Philippi","Thyatira","Ephesus","Pergamum"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Acts",
+    "reference":"Acts 16:14",
+    "explanation":"Lydia was from Thyatira."
+  },
+  {
+    "catalogKey":"core-108",
+    "prompt":"Who was the first martyr recorded in Acts?",
+    "options":["James","Stephen","Philip","Barnabas"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Acts",
+    "reference":"Acts 7",
+    "explanation":"Stephen became the first Christian martyr."
+  },
+  {
+    "catalogKey":"core-109",
+    "prompt":"Which prophet challenged the prophets of Baal on Mount Carmel?",
+    "options":["Elisha","Elijah","Nathan","Amos"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"Prophets",
+    "reference":"1 Kings 18",
+    "explanation":"Elijah confronted the prophets of Baal."
+  },
+  {
+    "catalogKey":"core-110",
+    "prompt":"Who was the mother of Samuel?",
+    "options":["Abigail","Hannah","Elizabeth","Naomi"],
+    "correctOption":1,
+    "difficulty":9,
+    "category":"History",
+    "reference":"1 Samuel 1",
+    "explanation":"Samuel was born to Hannah."
+  },
+  {
+    "catalogKey":"core-111",
+    "prompt":"Which king was struck down by an angel and eaten by worms?",
+    "options":["Herod Antipas","Herod Agrippa I","Herod the Great","Archelaus"],
+    "correctOption":1,
+    "difficulty":10,
+    "category":"Acts",
+    "reference":"Acts 12:23",
+    "explanation":"Herod Agrippa I accepted divine praise and was struck down."
+  },
+  {
+    "catalogKey":"core-112",
+    "prompt":"Who restored Eutychus to life after his fall?",
+    "options":["Peter","Paul","Barnabas","Silas"],
+    "correctOption":1,
+    "difficulty":10,
+    "category":"Acts",
+    "reference":"Acts 20:10",
+    "explanation":"Paul embraced Eutychus and he was restored."
+  },
+  {
+    "catalogKey":"core-113",
+    "prompt":"Which king of Israel reigned only seven days?",
+    "options":["Zimri","Shallum","Jehoahaz","Pekahiah"],
+    "correctOption":0,
+    "difficulty":10,
+    "category":"Kings",
+    "reference":"1 Kings 16:15",
+    "explanation":"Zimri reigned only seven days."
+  },
+  {
+    "catalogKey":"core-114",
+    "prompt":"Who was the father of John Mark?",
+    "options":["Barnabas","His father is not named","Aristobulus","Simon"],
+    "correctOption":1,
+    "difficulty":10,
+    "category":"Acts",
+    "reference":"Acts 12:12",
+    "explanation":"Only his mother Mary is identified."
+  },
+  {
+    "catalogKey":"core-115",
+    "prompt":"Which prophet predicted that Josiah would destroy Jeroboam's altar centuries before Josiah was born?",
+    "options":["Ahijah","An unnamed man of God from Judah","Elijah","Iddo"],
+    "correctOption":1,
+    "difficulty":10,
+    "category":"Prophets",
+    "reference":"1 Kings 13:1-2",
+    "explanation":"An unnamed prophet from Judah foretold Josiah by name."
+  },
+  {
+    "catalogKey":"core-116",
+    "prompt":"Which gate of Jerusalem did Nehemiah inspect first during his nighttime survey?",
+    "options":["Fish Gate","Valley Gate","Sheep Gate","Dung Gate"],
+    "correctOption":1,
+    "difficulty":10,
+    "category":"History",
+    "reference":"Nehemiah 2:13",
+    "explanation":"Nehemiah began at the Valley Gate."
+  },
+  {
+    "catalogKey":"core-117",
+    "prompt":"Which Levite stopped a plague by making atonement with incense?",
+    "options":["Eleazar","Phinehas","Aaron","Korah"],
+    "correctOption":2,
+    "difficulty":10,
+    "category":"Torah",
+    "reference":"Numbers 16:46-48",
+    "explanation":"Aaron stood between the living and the dead."
+  },
+  {
+    "catalogKey":"core-118",
+    "prompt":"How many men of Gideon's army remained after God reduced their number?",
+    "options":["300","500","700","1000"],
+    "correctOption":0,
+    "difficulty":10,
+    "category":"Judges",
+    "reference":"Judges 7:7",
+    "explanation":"God used only 300 men."
+  },
+  {
+    "catalogKey":"core-119",
+    "prompt":"Which Roman centurion said, 'Truly this was the Son of God' after Jesus died?",
+    "options":["Cornelius","Longinus","His name is not given","Julius"],
+    "correctOption":2,
+    "difficulty":10,
+    "category":"Gospels",
+    "reference":"Matthew 27:54",
+    "explanation":"The centurion is never named in Scripture."
+  },
+  {
+    "catalogKey":"core-120",
+    "prompt":"Which Old Testament book never explicitly mentions the name of God?",
+    "options":["Song of Solomon","Ruth","Esther","Ecclesiastes"],
+    "correctOption":2,
+    "difficulty":10,
+    "category":"History",
+    "reference":"Book of Esther",
+    "explanation":"Esther never explicitly mentions God's name, though His providence is evident throughout."
+  }
+
 ]
+

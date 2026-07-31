@@ -85,10 +85,10 @@ function HomeSidebar({
       <button
         type="button"
         onClick={() => onNavigate('/home')}
-        className="mx-5 mt-7 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4b5563]"
+        className="mt-7 self-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4b5563]"
         aria-label="Koino home"
       >
-        <BrandMark iconClassName="h-7 w-7" />
+        <BrandMark iconClassName="h-6 w-6" />
       </button>
 
       <nav className="mt-9 space-y-1 px-3" aria-label="Main navigation">

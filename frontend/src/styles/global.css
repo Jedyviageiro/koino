@@ -301,3 +301,17 @@ html[data-route-transition="onboarding"]::view-transition-new(auth-visual) {
     opacity: 1;
   }
 }
+
+@keyframes chat-typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}

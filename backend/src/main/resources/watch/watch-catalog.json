@@ -100,6 +100,66 @@
     "featured": false
   },
   {
+    "catalogKey": "forrest-frank-your-ways-better",
+    "category": "WORSHIP",
+    "title": "YOUR WAY'S BETTER",
+    "creator": "Forrest Frank",
+    "youtubeUrl": "https://www.youtube.com/watch?v=T1LRsp8qBY0",
+    "youtubeVideoId": "T1LRsp8qBY0",
+    "sortOrder": 6,
+    "featured": false
+  },
+  {
+    "catalogKey": "forrest-frank-jesus-is-alive",
+    "category": "WORSHIP",
+    "title": "JESUS IS ALIVE",
+    "creator": "Forrest Frank",
+    "youtubeUrl": "https://www.youtube.com/watch?v=6tmU5b3iPUg",
+    "youtubeVideoId": "6tmU5b3iPUg",
+    "sortOrder": 7,
+    "featured": false
+  },
+  {
+    "catalogKey": "forrest-frank-sunshine",
+    "category": "WORSHIP",
+    "title": "SUNSHINE",
+    "creator": "Forrest Frank",
+    "youtubeUrl": "https://www.youtube.com/watch?v=WKZ6rPecMxs",
+    "youtubeVideoId": "WKZ6rPecMxs",
+    "sortOrder": 8,
+    "featured": false
+  },
+  {
+    "catalogKey": "bethel-jenn-johnson-in-christ-alone",
+    "category": "WORSHIP",
+    "title": "In Christ Alone",
+    "creator": "Bethel Music & Jenn Johnson",
+    "youtubeUrl": "https://www.youtube.com/watch?v=Z5Fmm4-dBEE",
+    "youtubeVideoId": "Z5Fmm4-dBEE",
+    "sortOrder": 9,
+    "featured": false
+  },
+  {
+    "catalogKey": "joe-mettle-give-me-oil",
+    "category": "WORSHIP",
+    "title": "Give Me Oil",
+    "creator": "Joe Mettle feat. Sandra Boakye-Duah",
+    "youtubeUrl": "https://www.youtube.com/watch?v=PDtYGOzhYSg",
+    "youtubeVideoId": "PDtYGOzhYSg",
+    "sortOrder": 10,
+    "featured": false
+  },
+  {
+    "catalogKey": "elevation-worship-trust-in-god",
+    "category": "WORSHIP",
+    "title": "Trust In God",
+    "creator": "Elevation Worship feat. Chris Brown & Isaiah Templeton",
+    "youtubeUrl": "https://www.youtube.com/watch?v=QS04WbSnxok",
+    "youtubeVideoId": "QS04WbSnxok",
+    "sortOrder": 11,
+    "featured": false
+  },
+  {
     "catalogKey": "david-morning-prayer",
     "category": "DEVOTIONALS",
     "title": "Morning Prayer",
