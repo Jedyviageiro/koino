@@ -15,6 +15,7 @@ import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
 import ProfileOverview from '@/components/community/ProfileOverview.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import BrandMark from '@/components/common/BrandMark.jsx'
+import AppHeaderActions from '@/components/common/AppHeaderActions.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import {
   acceptFriend,
@@ -110,9 +111,17 @@ function UserProfilePage({ username, onNavigate }) {
             </button>
           </header>
         ) : (
-          <PageBackLink onClick={() => onNavigate('/community')}>
-            Community / @{username}
-          </PageBackLink>
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <PageBackLink
+              onClick={() => onNavigate('/community')}
+              className="mb-0"
+            >
+              Community / @{username}
+            </PageBackLink>
+            <div className="flex items-center gap-2">
+              <AppHeaderActions onNavigate={onNavigate} />
+            </div>
+          </div>
         )}
 
         {loading ? (

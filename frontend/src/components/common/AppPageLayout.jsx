@@ -1,5 +1,9 @@
+import { createContext, useContext } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import HomeSidebar from '@/components/home/HomeSidebar.jsx'
+import AppHeaderActions from '@/components/common/AppHeaderActions.jsx'
+
+const PageLayoutContext = createContext(null)
 
 function AppPageLayout({
   children,
@@ -21,22 +25,35 @@ function AppPageLayout({
   )
 
   if (!showSidebar) {
-    return <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12]">{content}</div>
+    return (
+      <PageLayoutContext.Provider value={{ onNavigate }}>
+        <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12]">{content}</div>
+      </PageLayoutContext.Provider>
+    )
   }
 
   return (
-    <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
-      <HomeSidebar
-        name={name || 'Koino Reader'}
-        onNavigate={onNavigate}
-        activePath={activePath}
-      />
-      {content}
-    </div>
+    <PageLayoutContext.Provider value={{ onNavigate }}>
+      <div className="min-h-svh bg-[#fbfcfe] text-[#0d0f12] lg:grid lg:grid-cols-[164px_minmax(0,1fr)]">
+        <HomeSidebar
+          name={name || 'Koino Reader'}
+          onNavigate={onNavigate}
+          activePath={activePath}
+        />
+        {content}
+      </div>
+    </PageLayoutContext.Provider>
   )
 }
 
 function PageHeader({ title, subtitle, actions, eyebrow, className = '' }) {
+  const layout = useContext(PageLayoutContext)
+  const resolvedActions = layout?.onNavigate ? (
+    <>
+      {actions}
+      <AppHeaderActions onNavigate={layout.onNavigate} />
+    </>
+  ) : actions
   return (
     <header
       className={`mb-7 flex min-h-[58px] items-start justify-between gap-4 ${className}`}
@@ -56,7 +73,9 @@ function PageHeader({ title, subtitle, actions, eyebrow, className = '' }) {
           </p>
         )}
       </div>
-      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+      {resolvedActions && (
+        <div className="flex shrink-0 items-center gap-2">{resolvedActions}</div>
+      )}
     </header>
   )
 }

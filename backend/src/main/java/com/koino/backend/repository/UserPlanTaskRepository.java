@@ -61,4 +61,19 @@ public interface UserPlanTaskRepository extends JpaRepository<UserPlanTask, Long
     );
 
     boolean existsByActivePlanActivePlanIdAndIsCompletedFalse(Long activePlanId);
+
+    @Query("""
+        select task
+        from UserPlanTask task
+        where task.isCompleted = false
+          and task.activePlan.isCompleted = false
+          and task.activePlan.user.active = true
+          and task.dayNumber = (
+              select min(candidate.dayNumber)
+              from UserPlanTask candidate
+              where candidate.activePlan = task.activePlan
+                and candidate.isCompleted = false
+          )
+        """)
+    List<UserPlanTask> findCurrentIncompleteTasksForReminders();
 }

@@ -24,6 +24,7 @@ import com.koino.backend.service.BattleChallengeService;
 import com.koino.backend.service.BattleSpaceService;
 import com.koino.backend.service.NotificationService;
 import com.koino.backend.service.UserService;
+import com.koino.backend.service.GmailService.EmailService;
 
 class BattleChallengeServiceTests {
 
@@ -88,7 +89,8 @@ class BattleChallengeServiceTests {
             mock(UserRepository.class),
             battles,
             notifications,
-            userService
+            userService,
+            mock(EmailService.class)
         );
     }
 

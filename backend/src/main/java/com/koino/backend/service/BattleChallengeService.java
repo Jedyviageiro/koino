@@ -16,6 +16,7 @@ import com.koino.backend.model.User;
 import com.koino.backend.repository.BattleChallengeRepository;
 import com.koino.backend.repository.FriendshipRepository;
 import com.koino.backend.repository.UserRepository;
+import com.koino.backend.service.GmailService.EmailService;
 
 @Service
 public class BattleChallengeService {
@@ -28,6 +29,7 @@ public class BattleChallengeService {
     private final BattleSpaceService battleSpaceService;
     private final NotificationService notificationService;
     private final UserService userService;
+    private final EmailService emailService;
 
     public BattleChallengeService(
         BattleChallengeRepository challengeRepository,
@@ -35,7 +37,8 @@ public class BattleChallengeService {
         UserRepository userRepository,
         BattleSpaceService battleSpaceService,
         NotificationService notificationService,
-        UserService userService
+        UserService userService,
+        EmailService emailService
     ) {
         this.challengeRepository = challengeRepository;
         this.friendshipRepository = friendshipRepository;
@@ -43,6 +46,7 @@ public class BattleChallengeService {
         this.battleSpaceService = battleSpaceService;
         this.notificationService = notificationService;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -108,6 +112,12 @@ public class BattleChallengeService {
             "BATTLE_CHALLENGE",
             challenge.getChallengeId()
         );
+        if (addressee.isEmailVerified()) {
+            emailService.sendBattleChallengeReminder(
+                addressee,
+                challenger.getFullname()
+            );
+        }
         return toResponse(challenge, challengerId);
     }
 

@@ -9,6 +9,7 @@ import {
   AppPageLayout,
   PageBackLink,
 } from '@/components/common/AppPageLayout.jsx'
+import AppHeaderActions from '@/components/common/AppHeaderActions.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getTodayDevotional } from '@/features/devotional/devotionalService.js'
 
@@ -88,9 +89,17 @@ function DevotionalPage({ onNavigate }) {
           <DevotionalSkeleton />
         ) : (
           <article>
-            <PageBackLink onClick={() => onNavigate('/plans')}>
-              Back to Plans
-            </PageBackLink>
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <PageBackLink
+                onClick={() => onNavigate('/plans')}
+                className="mb-0"
+              >
+                Back to Plans
+              </PageBackLink>
+              <div className="flex items-center gap-2">
+                <AppHeaderActions onNavigate={onNavigate} />
+              </div>
+            </div>
 
             <header>
               <p className="text-[11px] font-semibold text-[#c27c11]">

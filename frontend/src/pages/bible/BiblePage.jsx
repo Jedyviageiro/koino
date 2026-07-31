@@ -370,6 +370,9 @@ function BiblePage({ onNavigate }) {
             selectedBookId={selectedBook?.bookId}
             selectedChapterId={selectedChapter?.chapterId}
             selectedVerseNumber={verses[selectedVerseIndex]?.verseNumber}
+            focusBook={
+              new URLSearchParams(window.location.search).get('focus') === 'book'
+            }
             todayAvailable={Boolean(todayTask?.passages?.length)}
             loading={loading}
             onTestamentChange={changeTestament}

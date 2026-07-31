@@ -29,6 +29,28 @@ import {
 
 const WATCH_PLAYER_KEY = 'koino.watch.player'
 
+const PAGE_TITLES = {
+  '/': 'Sign in',
+  '/register': 'Create account',
+  '/verify-email': 'Verify email',
+  '/forgot-password': 'Forgot password',
+  '/reset-password': 'Reset password',
+  '/onboarding': 'Onboarding',
+  '/home': 'Home',
+  '/plans': 'Plans',
+  '/reading': 'Reading',
+  '/devotional': 'Devotional',
+  '/bible': 'Bible',
+  '/bookmarks': 'Bookmarks',
+  '/community': 'Community',
+  '/chat': 'Chat',
+  '/watch': 'Watch',
+  '/watch/player': 'Now playing',
+  '/settings': 'Settings',
+  '/battle-space': 'Battle Space',
+  '/status': 'Service status',
+}
+
 function storedWatchVideo() {
   try {
     return JSON.parse(sessionStorage.getItem(WATCH_PLAYER_KEY)) || null
@@ -67,6 +89,13 @@ function App() {
       window.removeEventListener(AUTH_LOGOUT_EVENT, handleLogout)
     }
   }, [])
+
+  useEffect(() => {
+    const pageTitle = path.startsWith('/u/')
+      ? 'Koino profile'
+      : PAGE_TITLES[path] || 'Koino'
+    document.title = pageTitle === 'Koino' ? 'Koino' : `${pageTitle} | Koino`
+  }, [locationKey, path])
 
   useEffect(() => {
     const checkSession = () => getAuthToken()

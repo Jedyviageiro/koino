@@ -51,6 +51,8 @@ public class UserPlanTask {
     private boolean isCompleted = false;
     private Instant completedAt;
 
+    private LocalDate lastReminderSentOn;
+
     @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer currentVerseIndex = 0;
 

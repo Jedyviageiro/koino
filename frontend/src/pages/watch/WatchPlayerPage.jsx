@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Bell, Play, Search } from 'lucide-react'
+import { Play } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
+import AppHeaderActions from '@/components/common/AppHeaderActions.jsx'
 import {
   AppPageLayout,
   PageBackLink,
@@ -130,24 +131,7 @@ function WatchPlayerPage({ onNavigate, onVideoActive }) {
               Back to Watch
             </PageBackLink>
             <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => onNavigate('/bible')}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e2e5e9] bg-white"
-                aria-label="Search"
-                title="Search"
-              >
-                <Search className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => onNavigate('/home?notifications=open')}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e2e5e9] bg-white"
-                aria-label="Notifications"
-                title="Notifications"
-              >
-                <Bell className="h-4 w-4" />
-              </button>
+              <AppHeaderActions onNavigate={onNavigate} />
             </div>
           </header>
 

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Bell, Search } from 'lucide-react'
 import {
   AppPageLayout,
   PageHeader,
@@ -152,26 +151,6 @@ function ReadingPage({ onNavigate }) {
           title="Make space for the Word"
           subtitle="Read slowly, reflect, and continue when you are ready."
           className="mb-6"
-          actions={
-            <>
-            <button
-              type="button"
-              onClick={() => onNavigate('/bible')}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e1e4e9] bg-white hover:bg-[#f7f8fa]"
-              aria-label="Search"
-            >
-              <Search className="h-[18px] w-[18px]" />
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate('/home?notifications=open')}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e1e4e9] bg-white hover:bg-[#f7f8fa]"
-              aria-label="Notifications"
-            >
-              <Bell className="h-[18px] w-[18px]" />
-            </button>
-            </>
-          }
         />
 
         {!data ? (

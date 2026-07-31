@@ -13,6 +13,7 @@ function BibleToolbar({
   selectedBookId,
   selectedChapterId,
   selectedVerseNumber,
+  focusBook,
   todayAvailable,
   loading,
   onTestamentChange,
@@ -64,6 +65,7 @@ function BibleToolbar({
           Book
         </span>
         <select
+          autoFocus={focusBook}
           className={controlClass}
           value={selectedBookId || ''}
           onChange={(event) => onBookChange(Number(event.target.value))}

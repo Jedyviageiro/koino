@@ -32,6 +32,7 @@ public class EmailService {
     private final String provider;
     private final String resendApiKey;
     private final RestClient resendClient;
+    private final String appUrl;
 
     public EmailService(
         JavaMailSender mailSender,
@@ -39,12 +40,14 @@ public class EmailService {
         @Value("${app.mail.provider:smtp}") String provider,
         @Value("${app.mail.resend-api-key:}") String resendApiKey,
         @Value("${app.mail.resend-api-url:https://api.resend.com}")
-            String resendApiUrl
+            String resendApiUrl,
+        @Value("${app.frontend-url}") String frontendUrl
     ) {
         this.mailSender = mailSender;
         this.from = from;
         this.provider = provider.trim().toLowerCase();
         this.resendApiKey = resendApiKey.trim();
+        this.appUrl = frontendUrl.replaceAll("/+$", "") + "/";
         this.resendClient = RestClient.builder()
             .baseUrl(resendApiUrl)
             .build();
@@ -88,6 +91,56 @@ public class EmailService {
                 "Choose a New Password",
                 resetUrl,
                 "This link expires in " + expiration.toMinutes() + " minutes."
+            )
+        );
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendReadingReminder(User user) {
+        sendAppNotification(
+            user,
+            "Your Koino reading is waiting",
+            "A quiet moment with the Word is still available today.",
+            "Open Koino"
+        );
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendFriendRequestReminder(User user, String requesterName) {
+        sendAppNotification(
+            user,
+            requesterName + " added you on Koino",
+            "Open Koino to review the friend request.",
+            "Open Koino"
+        );
+    }
+
+    @Async("mailTaskExecutor")
+    public void sendBattleChallengeReminder(User user, String challengerName) {
+        sendAppNotification(
+            user,
+            challengerName + " challenged you on Koino",
+            "Your friend is waiting in Battle Space. Open Koino to respond.",
+            "Open Koino"
+        );
+    }
+
+    private void sendAppNotification(
+        User user,
+        String subject,
+        String message,
+        String action
+    ) {
+        sendHtml(
+            user.getEmail(),
+            subject,
+            template(
+                subject,
+                "Hello " + escape(user.getFullname()) + ",",
+                message,
+                action,
+                appUrl,
+                "This link opens the Koino app."
             )
         );
     }
