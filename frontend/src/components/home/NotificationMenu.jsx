@@ -24,7 +24,8 @@ function NotificationMenu({
   actioningId,
 }) {
   const menuRef = useRef(null)
-  const unreadCount = notifications.filter((item) => !item.read).length
+  const activeNotifications = notifications.filter((item) => !item.read)
+  const unreadCount = activeNotifications.length
 
   useEffect(() => {
     if (!open) return undefined
@@ -74,7 +75,7 @@ function NotificationMenu({
             )}
           </header>
           <div className="max-h-[330px] overflow-y-auto p-1.5">
-            {notifications.length === 0 ? (
+            {activeNotifications.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <Bell className="mx-auto h-5 w-5 text-[#9aa1ac]" />
                 <p className="mt-2 text-[10px] text-[#7a8290]">
@@ -82,7 +83,7 @@ function NotificationMenu({
                 </p>
               </div>
             ) : (
-              notifications.map((notification) => {
+              activeNotifications.map((notification) => {
                 const actionable = ['FRIEND_REQUEST', 'BATTLE_CHALLENGE']
                   .includes(notification.type)
                 return (

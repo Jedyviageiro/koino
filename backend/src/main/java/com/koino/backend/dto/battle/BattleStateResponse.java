@@ -20,6 +20,7 @@ public record BattleStateResponse(
     Integer ratingBefore,
     Integer ratingChange,
     Integer ratingAfter,
-    String result
+    String result,
+    Long opponentUserId
 ) {
 }

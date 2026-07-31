@@ -26,14 +26,15 @@ export function getAuthSession() {
 }
 
 export function getAuthToken() {
-  const token = getAuthSession()?.token || null
-  if (!token) return null
-  if (isJwtExpired(token)) {
-    clearAuthSession()
-    window.queueMicrotask(notifyLoggedOut)
-    return null
-  }
-  return token
+  return getAuthSession()?.token || null
+}
+
+export function getRefreshToken() {
+  return getAuthSession()?.refreshToken || null
+}
+
+export function isAuthTokenExpired(token = getAuthToken()) {
+  return !token || isJwtExpired(token)
 }
 
 export function clearAuthSession() {

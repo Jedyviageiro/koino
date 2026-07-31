@@ -23,7 +23,7 @@ function PlayerAvatar({ entry }) {
   )
 }
 
-function BattleRail({ lobby, selectedMode }) {
+function BattleRail({ lobby, selectedMode, onOpenProfile }) {
   const { profile } = lobby
   const rating =
     profile.ratings.find((item) => item.mode === selectedMode) ||
@@ -65,10 +65,14 @@ function BattleRail({ lobby, selectedMode }) {
         </div>
         <div className="mt-4 space-y-2">
           {leaderboard.slice(0, 6).map((entry) => (
-            <div
+            <button
+              type="button"
               key={`${entry.position}-${entry.userId}`}
+              onClick={() => onOpenProfile(entry.userId)}
               className={`grid grid-cols-[18px_28px_minmax(0,1fr)_auto] items-center gap-2 rounded-[6px] px-2 py-1.5 ${
-                entry.currentUser ? 'bg-[#fff7ea]' : ''
+                entry.currentUser
+                  ? 'bg-[#fff7ea]'
+                  : 'hover:bg-[#f7f8f9]'
               }`}
             >
               <span className="text-[9px] font-semibold text-[#737986]">
@@ -85,7 +89,7 @@ function BattleRail({ lobby, selectedMode }) {
               <span className="text-[9px] font-semibold tabular-nums text-[#6a707b]">
                 {entry.elo.toLocaleString()}
               </span>
-            </div>
+            </button>
           ))}
         </div>
       </section>

@@ -47,7 +47,7 @@ class BattleChallengeServiceTests {
         challenge.setExpiresAt(Instant.now().plusSeconds(60));
         challenge.setChallengerLastSeenAt(Instant.now());
 
-        when(challenges.findById("challenge-1"))
+        when(challenges.findByIdForUpdate("challenge-1"))
             .thenReturn(Optional.of(challenge));
         when(challenges.save(any(BattleChallenge.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));

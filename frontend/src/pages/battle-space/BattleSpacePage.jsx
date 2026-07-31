@@ -8,6 +8,7 @@ import BattleMatchmaking from '@/components/battle/BattleMatchmaking.jsx'
 import BattleArena from '@/components/battle/BattleArena.jsx'
 import BattleResultModal from '@/components/battle/BattleResultModal.jsx'
 import BattleRulesModal from '@/components/battle/BattleRulesModal.jsx'
+import UserProfileModal from '@/components/community/UserProfileModal.jsx'
 import {
   answerBattleQuestion,
   createBattleChallenge,
@@ -45,8 +46,12 @@ function BattleSpacePage({ onNavigate }) {
   const [challengeProfile, setChallengeProfile] = useState(null)
   const [activeChallenge, setActiveChallenge] = useState(null)
   const [matchmakingTicket, setMatchmakingTicket] = useState(null)
+  const [profileUserId, setProfileUserId] = useState(null)
   const matchingRequestRef = useRef(0)
   const feedbackTimerRef = useRef(null)
+  const finishingBattleRef = useRef(null)
+  const battleId = battle?.battleId
+  const battleStatus = battle?.status
 
   const loadLobby = useCallback(async () => {
     const data = await getBattleLobby()
@@ -264,7 +269,7 @@ function BattleSpacePage({ onNavigate }) {
     }
 
     refreshChallenge()
-    const timer = window.setInterval(refreshChallenge, 3000)
+    const timer = window.setInterval(refreshChallenge, 1000)
     return () => {
       active = false
       window.clearInterval(timer)
@@ -359,6 +364,14 @@ function BattleSpacePage({ onNavigate }) {
       setAnswering(false)
       if (/time is up/i.test(requestError.message)) {
         await endForTime()
+      } else if (/battle has ended/i.test(requestError.message)) {
+        try {
+          setBattle(await getBattle(battle.battleId))
+          setFeedback(null)
+          setError('')
+        } catch {
+          // The next poll will reconcile the terminal battle state.
+        }
       } else {
         setError(requestError.message || 'Unable to submit your answer.')
       }
@@ -366,16 +379,33 @@ function BattleSpacePage({ onNavigate }) {
   }
 
   const endForTime = useCallback(async () => {
-    if (!battle?.battleId || battle.status !== 'ACTIVE') return
+    if (
+      !battleId ||
+      battleStatus !== 'ACTIVE' ||
+      finishingBattleRef.current === battleId
+    ) return
+    finishingBattleRef.current = battleId
     window.clearTimeout(feedbackTimerRef.current)
     try {
-      setBattle(await finishBattle(battle.battleId))
+      const completed = await finishBattle(battleId)
+      setBattle(completed)
+      setError('')
       setFeedback(null)
       setAnswering(false)
     } catch (requestError) {
-      setError(requestError.message || 'Unable to finish this battle.')
+      try {
+        const latest = await getBattle(battleId)
+        setBattle(latest)
+        if (latest.status === 'ACTIVE') {
+          setError(requestError.message || 'Unable to finish this battle.')
+        }
+      } catch {
+        setError(requestError.message || 'Unable to finish this battle.')
+      }
+    } finally {
+      finishingBattleRef.current = null
     }
-  }, [battle])
+  }, [battleId, battleStatus])
 
   useEffect(() => {
     if (
@@ -416,9 +446,42 @@ function BattleSpacePage({ onNavigate }) {
       await loadLobby()
       setBattle(null)
       setMatchingMode(null)
+      setActiveChallenge(null)
+      setChallengeProfile(null)
     } catch (requestError) {
       setError(requestError.message || 'Unable to refresh Battle Space.')
     }
+  }
+
+  async function rematch() {
+    const finishedBattle = battle
+    if (!finishedBattle) return
+    const mode = lobby?.modes.find(
+      (item) => item.mode === finishedBattle.mode,
+    )
+    if (!mode) return
+    setBattle(null)
+    setFeedback(null)
+    setAnswering(false)
+    if (
+      finishedBattle.opponentType === 'USER' &&
+      finishedBattle.opponentUserId
+    ) {
+      const opponent = {
+        userId: finishedBattle.opponentUserId,
+        fullname: finishedBattle.opponentName,
+      }
+      setChallengeProfile(opponent)
+      setMatchingMode(mode)
+      setView('matching')
+      const challenge = await createBattleChallenge(
+        opponent.userId,
+        finishedBattle.mode,
+      )
+      setActiveChallenge(challenge)
+      return
+    }
+    await beginMatch(finishedBattle.mode)
   }
 
   const selectedRating = lobby?.profile.ratings.find(
@@ -447,6 +510,7 @@ function BattleSpacePage({ onNavigate }) {
               onStart={beginMatch}
               onHelp={() => setShowRules(true)}
               challengeProfile={challengeProfile}
+              onOpenProfile={setProfileUserId}
             />
           )}
           {view === 'matching' && matchingMode && (
@@ -523,11 +587,23 @@ function BattleSpacePage({ onNavigate }) {
         <BattleResultModal
           battle={battle}
           rank={resultRank}
-          onNext={() => {
-            setBattle(null)
-            beginMatch(battle.mode)
-          }}
+          onRematch={() => rematch().catch((requestError) => {
+            setError(requestError.message || 'Unable to request a rematch.')
+          })}
           onLobby={returnToLobby}
+        />
+      )}
+
+      {profileUserId && (
+        <UserProfileModal
+          userId={profileUserId}
+          onClose={() => setProfileUserId(null)}
+          onNavigate={guardedNavigate}
+          onChallenge={(profile) => {
+            setProfileUserId(null)
+            setChallengeProfile(profile)
+            setView('lobby')
+          }}
         />
       )}
 

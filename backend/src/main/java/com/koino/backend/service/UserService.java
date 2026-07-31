@@ -166,6 +166,11 @@ public class UserService {
         return userRepository.existsByEmail(normalizeEmail(email));
     }
 
+    public User findByEmail(String email) {
+        if (email == null || email.isBlank()) return null;
+        return userRepository.findByEmail(normalizeEmail(email));
+    }
+
     @Transactional
     public UserSettingsResponse getSettings(Long userId) {
         User user = ensureUsername(findUser(userId));

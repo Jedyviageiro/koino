@@ -23,7 +23,7 @@ import ChallengeToast from '@/components/common/ChallengeToast.jsx'
 import WatchMiniPlayer from '@/components/watch/WatchMiniPlayer.jsx'
 import ChatMessageToast from '@/components/chat/ChatMessageToast.jsx'
 import MobileExperienceGate from '@/components/common/MobileExperienceGate.jsx'
-import { STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
+import { apiRequest, STATUS_RETURN_PATH_KEY } from '@/services/api/client.js'
 import {
   AUTH_LOGOUT_EVENT,
   getAuthToken,
@@ -130,12 +130,16 @@ function App() {
   }, [locationKey, path, phoneViewport])
 
   useEffect(() => {
-    const checkSession = () => getAuthToken()
-    const timer = window.setInterval(checkSession, 5000)
-    document.addEventListener('visibilitychange', checkSession)
+    const keepSessionCurrent = () => {
+      if (document.visibilityState === 'visible' && getAuthToken()) {
+        apiRequest('/users/me').catch(() => {})
+      }
+    }
+    const timer = window.setInterval(keepSessionCurrent, 60000)
+    document.addEventListener('visibilitychange', keepSessionCurrent)
     return () => {
       window.clearInterval(timer)
-      document.removeEventListener('visibilitychange', checkSession)
+      document.removeEventListener('visibilitychange', keepSessionCurrent)
     }
   }, [])
 

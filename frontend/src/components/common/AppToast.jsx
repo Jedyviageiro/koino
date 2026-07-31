@@ -9,7 +9,7 @@ function AppToast({ icon: Icon, title, message, onOpen, onClose }) {
 
   return (
     <aside
-      className="fixed right-4 top-[150px] z-[85] w-[min(350px,calc(100vw-32px))] rounded-[8px] border border-[#dde3e8] bg-white p-3.5 shadow-[0_18px_48px_rgba(30,34,42,0.16)] animate-[auth-panel-in_220ms_ease-out]"
+      className="fixed right-4 top-5 z-[85] w-[min(350px,calc(100vw-32px))] rounded-[8px] border border-[#dde3e8] bg-white p-3.5 shadow-[0_18px_48px_rgba(30,34,42,0.16)] animate-[auth-panel-in_220ms_ease-out]"
       role="status"
       aria-live="polite"
     >

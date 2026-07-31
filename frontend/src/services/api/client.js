@@ -2,11 +2,16 @@ import { API_BASE_URL } from '@/config/env.js'
 import {
   clearAuthSession,
   getAuthToken,
+  getAuthSession,
+  getRefreshToken,
+  isAuthTokenExpired,
   notifyLoggedOut,
+  saveAuthSession,
 } from '@/features/auth/authStorage.js'
 
 export const STATUS_RETURN_PATH_KEY = 'koino.status.returnPath'
 let serviceRedirectStarted = false
+let refreshRequest = null
 
 export class ApiError extends Error {
   constructor(message, status, payload = null) {
@@ -48,10 +53,22 @@ function friendlyErrorMessage(payload, status) {
 
 export async function apiRequest(
   path,
-  { authenticated = true, headers, ...options } = {},
+  { authenticated = true, headers, _retried = false, ...options } = {},
 ) {
   const requestHeaders = new Headers(headers)
-  const token = authenticated ? getAuthToken() : null
+  let token = authenticated ? getAuthToken() : null
+
+  if (
+    authenticated &&
+    token &&
+    !isAuthTokenExpired(token) &&
+    !getRefreshToken()
+  ) {
+    token = await upgradeLegacySession(token)
+  }
+  if (authenticated && token && isAuthTokenExpired(token)) {
+    token = await refreshAccessToken()
+  }
 
   if (token) {
     requestHeaders.set('Authorization', `Bearer ${token}`)
@@ -90,14 +107,20 @@ export async function apiRequest(
   }
 
   if (!response.ok) {
-    if (authenticated && token && [401, 403].includes(response.status)) {
-      clearAuthSession()
-      notifyLoggedOut()
-      throw new ApiError(
-        'Your session expired. Please log in again.',
-        response.status,
-        payload,
-      )
+    if (authenticated && token && response.status === 401 && !_retried) {
+      const refreshedToken = await refreshAccessToken(token)
+      if (refreshedToken && refreshedToken !== token) {
+        return apiRequest(path, {
+          authenticated,
+          headers,
+          _retried: true,
+          ...options,
+        })
+      }
+      expireSession(response.status, payload)
+    }
+    if (authenticated && response.status === 401) {
+      expireSession(response.status, payload)
     }
     if (response.status >= 500) {
       notifyServiceUnavailable()
@@ -107,4 +130,68 @@ export async function apiRequest(
   }
 
   return payload
+}
+
+async function upgradeLegacySession(token) {
+  if (!refreshRequest) {
+    refreshRequest = fetch(`${API_BASE_URL}/users/token/upgrade`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(async (response) => {
+        if (!response.ok) expireSession(response.status)
+        const upgraded = await response.json()
+        saveAuthSession({ ...getAuthSession(), ...upgraded })
+        return upgraded.token
+      })
+      .finally(() => {
+        refreshRequest = null
+      })
+  }
+  return refreshRequest
+}
+
+async function refreshAccessToken(rejectedToken = null) {
+  const currentToken = getAuthToken()
+  if (
+    rejectedToken &&
+    currentToken &&
+    currentToken !== rejectedToken &&
+    !isAuthTokenExpired(currentToken)
+  ) {
+    return currentToken
+  }
+  const refreshToken = getRefreshToken()
+  if (!refreshToken) expireSession(401)
+  if (!refreshRequest) {
+    refreshRequest = fetch(`${API_BASE_URL}/users/token/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    })
+      .then(async (response) => {
+        if (!response.ok) expireSession(response.status)
+        const refreshed = await response.json()
+        saveAuthSession({ ...getAuthSession(), ...refreshed })
+        return refreshed.token
+      })
+      .catch((error) => {
+        if (error instanceof ApiError) throw error
+        throw new ApiError('We could not renew your session.', 0, error)
+      })
+      .finally(() => {
+        refreshRequest = null
+      })
+  }
+  return refreshRequest
+}
+
+function expireSession(status = 401, payload = null) {
+  clearAuthSession()
+  notifyLoggedOut()
+  throw new ApiError(
+    'Your session expired. Please log in again.',
+    status,
+    payload,
+  )
 }

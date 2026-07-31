@@ -60,6 +60,14 @@ function HomePage({ onNavigate }) {
     return () => window.clearTimeout(refreshTimer)
   }, [data, loadHome, loading])
 
+  useEffect(() => {
+    const refreshBookmarks = () => loadHome()
+    window.addEventListener('koino:bookmarks-changed', refreshBookmarks)
+    return () => {
+      window.removeEventListener('koino:bookmarks-changed', refreshBookmarks)
+    }
+  }, [loadHome])
+
   const firstName = session?.fullname?.trim().split(/\s+/)[0] || 'Friend'
   const hour = new Date().getHours()
   const greeting =

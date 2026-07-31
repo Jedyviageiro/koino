@@ -41,9 +41,7 @@ function AppHeaderActions({ onNavigate }) {
     if (!notification.read) {
       const updated = await markNotificationRead(notification.notificationId)
       setNotifications((current) =>
-        current.map((item) =>
-          item.notificationId === updated.notificationId ? updated : item,
-        ),
+        current.filter((item) => item.notificationId !== updated.notificationId),
       )
     }
     setOpen(false)
@@ -57,10 +55,8 @@ function AppHeaderActions({ onNavigate }) {
       if (accepted) await acceptFriend(notification.referenceId)
       else await removeFriendship(notification.referenceId)
       setNotifications((current) =>
-        current.map((item) =>
-          item.notificationId === notification.notificationId
-            ? { ...item, read: true, referenceId: null }
-            : item,
+        current.filter(
+          (item) => item.notificationId !== notification.notificationId,
         ),
       )
     } finally {

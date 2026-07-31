@@ -77,6 +77,7 @@ public class SecurityConfig {
                     "/api/users/email-exists",
                     "/api/users/login",
                     "/api/users/login/google",
+                    "/api/users/token/refresh",
                     "/api/users/google/config",
                     "/api/users/register",
                     "/api/users/verify-email/**",

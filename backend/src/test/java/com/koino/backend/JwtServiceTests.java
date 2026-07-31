@@ -18,7 +18,11 @@ class JwtServiceTests {
         "a-test-secret-that-is-at-least-thirty-two-bytes-long".getBytes()
     );
 
-    private final JwtService jwtService = new JwtService(SECRET, Duration.ofHours(1));
+    private final JwtService jwtService = new JwtService(
+        SECRET,
+        Duration.ofHours(1),
+        Duration.ofDays(30)
+    );
 
     @Test
     void generatesAndValidatesTokenForUser() {
@@ -42,6 +46,19 @@ class JwtServiceTests {
 
         assertThat(jwtService.isValid(token, anotherUser)).isFalse();
         assertThat(jwtService.isValid(tamperedToken, owner)).isFalse();
+    }
+
+    @Test
+    void refreshTokenRenewsOnlyAsRefreshCredential() {
+        User user = user(42L, "reader@koino.local", "Koino Reader");
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        assertThat(jwtService.isRefreshTokenValid(refreshToken, user)).isTrue();
+        assertThat(jwtService.isValid(refreshToken, user)).isFalse();
+        assertThat(jwtService.isRefreshTokenValid(
+            jwtService.generateToken(user),
+            user
+        )).isFalse();
     }
 
     private User user(Long id, String email, String fullname) {

@@ -40,7 +40,7 @@ import com.koino.backend.repository.UserRepository;
 @Service
 public class BattleSpaceService {
     private static final int MINIMUM_ELO = 200;
-    private static final int INITIAL_QUESTION_POOL_SIZE = 12;
+    private static final int INITIAL_QUESTION_POOL_SIZE = 80;
     private static final List<String> OPPONENT_NAMES = List.of(
         "Miriam K.",
         "Caleb J.",
@@ -195,14 +195,14 @@ public class BattleSpaceService {
         int difficulty = difficultyFor(elo);
         int minimumDifficulty = Math.max(1, difficulty - 1);
         int maximumDifficulty = Math.min(6, difficulty + 1);
-        List<BattleQuestion> available =
+        List<BattleQuestion> candidates =
             new ArrayList<>(questionRepository.findRandomForDifficulty(
                 minimumDifficulty,
                 maximumDifficulty,
                 PageRequest.of(0, INITIAL_QUESTION_POOL_SIZE)
             ));
-        if (available.isEmpty()) {
-            available = new ArrayList<>(
+        if (candidates.isEmpty()) {
+            candidates = new ArrayList<>(
                 questionRepository.findRandomForDifficulty(
                     1,
                     6,
@@ -210,12 +210,42 @@ public class BattleSpaceService {
                 )
             );
         }
+        List<BattleQuestion> available = distinctUsableQuestions(candidates);
         if (available.isEmpty()) {
             throw new IllegalStateException(
                 "No battle questions are available right now"
             );
         }
         return available;
+    }
+
+    private List<BattleQuestion> distinctUsableQuestions(
+        List<BattleQuestion> candidates
+    ) {
+        Set<String> prompts = new HashSet<>();
+        return candidates.stream()
+            .filter(this::isUsableQuestion)
+            .filter(question -> prompts.add(normalizePrompt(question.getPrompt())))
+            .toList();
+    }
+
+    private boolean isUsableQuestion(BattleQuestion question) {
+        return List.of(
+            question.getOptionA(),
+            question.getOptionB(),
+            question.getOptionC(),
+            question.getOptionD()
+        ).stream().noneMatch(option ->
+            option == null || option.matches("(?i).*\\b(?:AI|IA)\\b.*")
+        );
+    }
+
+    private String normalizePrompt(String prompt) {
+        return prompt == null
+            ? ""
+            : prompt.toLowerCase(java.util.Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", " ")
+                .trim();
     }
 
     private void configureBattle(
@@ -516,15 +546,28 @@ public class BattleSpaceService {
                 "No battle questions are available right now"
             );
         }
-        final List<BattleQuestion> questionCandidates = candidates;
+        final List<BattleQuestion> questionCandidates =
+            distinctUsableQuestions(candidates);
+        if (questionCandidates.isEmpty()) {
+            throw new IllegalStateException(
+                "No battle questions are available right now"
+            );
+        }
 
         Set<Long> usedQuestionIds = new HashSet<>();
+        Set<String> usedPrompts = new HashSet<>();
         for (BattleSessionQuestion existing : battle.getQuestions()) {
             usedQuestionIds.add(existing.getQuestion().getQuestionId());
+            usedPrompts.add(normalizePrompt(
+                existing.getQuestion().getPrompt()
+            ));
         }
         BattleQuestion next = questionCandidates.stream()
             .filter(candidate ->
                 !usedQuestionIds.contains(candidate.getQuestionId())
+                    && !usedPrompts.contains(normalizePrompt(
+                        candidate.getPrompt()
+                    ))
             )
             .findFirst()
             .orElseGet(() -> questionCandidates.get(Math.floorMod(
@@ -753,7 +796,10 @@ public class BattleSpaceService {
             complete ? battle.getPlayerEloBefore() : null,
             complete ? battle.getRatingChange() : null,
             complete ? battle.getPlayerEloAfter() : null,
-            result
+            result,
+            battle.getOpponentUser() == null
+                ? null
+                : battle.getOpponentUser().getUserId()
         );
     }
 

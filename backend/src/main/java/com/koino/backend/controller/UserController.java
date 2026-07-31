@@ -24,6 +24,7 @@ import com.koino.backend.dto.auth.RegisterRequest;
 import com.koino.backend.dto.auth.RegisterResponse;
 import com.koino.backend.dto.auth.ResetPasswordTokenRequest;
 import com.koino.backend.dto.auth.ResetPasswordTokenResponse;
+import com.koino.backend.dto.auth.RefreshTokenRequest;
 import com.koino.backend.dto.auth.SaveNewPasswordRequest;
 import com.koino.backend.dto.auth.EmailVerificationConfirmRequest;
 import com.koino.backend.dto.auth.EmailVerificationRequest;
@@ -102,6 +103,7 @@ public class UserController {
             return ResponseEntity.ok(new LoginResponse(
                 user.getUserId(),
                 jwtService.generateToken(user),
+                jwtService.generateRefreshToken(user),
                 user.getEmail(),
                 user.getFullname(),
                 user.getProfilePictureUrl()
@@ -119,6 +121,7 @@ public class UserController {
             return ResponseEntity.ok(new LoginResponse(
                 user.getUserId(),
                 token,
+                jwtService.generateRefreshToken(user),
                 user.getEmail(),
                 user.getFullname(),
                 user.getProfilePictureUrl()
@@ -127,6 +130,44 @@ public class UserController {
         } catch(IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/token/refresh")
+    public ResponseEntity<?> refreshToken(
+        @Valid @RequestBody RefreshTokenRequest request
+    ) {
+        User user;
+        try {
+            user = userService.findByEmail(
+                jwtService.extractEmail(request.refreshToken())
+            );
+        } catch (RuntimeException exception) {
+            user = null;
+        }
+        if (user == null
+            || !jwtService.isRefreshTokenValid(request.refreshToken(), user)) {
+            return ResponseEntity.status(401).body("Session expired");
+        }
+        return ResponseEntity.ok(new LoginResponse(
+            user.getUserId(),
+            jwtService.generateToken(user),
+            jwtService.generateRefreshToken(user),
+            user.getEmail(),
+            user.getFullname(),
+            user.getProfilePictureUrl()
+        ));
+    }
+
+    @PostMapping("/token/upgrade")
+    public LoginResponse upgradeSession(@AuthenticationPrincipal User user) {
+        return new LoginResponse(
+            user.getUserId(),
+            jwtService.generateToken(user),
+            jwtService.generateRefreshToken(user),
+            user.getEmail(),
+            user.getFullname(),
+            user.getProfilePictureUrl()
+        );
     }
 
     @PostMapping("/register")

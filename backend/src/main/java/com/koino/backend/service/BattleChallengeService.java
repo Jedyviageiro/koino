@@ -222,7 +222,8 @@ public class BattleChallengeService {
         Long userId,
         String challengeId
     ) {
-        BattleChallenge challenge = challengeRepository.findById(challengeId)
+        BattleChallenge challenge = challengeRepository
+            .findByIdForUpdate(challengeId)
             .orElseThrow(() -> new IllegalArgumentException(
                 "Battle challenge not found"
             ));

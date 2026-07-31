@@ -56,11 +56,18 @@ export function addVerseBookmark(verseId, highlightColor) {
   return apiRequest(`/users/me/bookmarks/${verseId}`, {
     method: 'PUT',
     body: JSON.stringify({ highlightColor }),
+  }).then((bookmark) => {
+    window.dispatchEvent(new CustomEvent('koino:bookmarks-changed'))
+    return bookmark
   })
 }
 
 export function removeVerseBookmark(verseId) {
   return apiRequest(`/users/me/bookmarks/${verseId}`, { method: 'DELETE' })
+    .then((result) => {
+      window.dispatchEvent(new CustomEvent('koino:bookmarks-changed'))
+      return result
+    })
 }
 
 export function getVerseBookmarks() {

@@ -32,6 +32,7 @@ function BattleLobby({
   onStart,
   onHelp,
   challengeProfile,
+  onOpenProfile,
 }) {
   const mode =
     lobby.modes.find((item) => item.mode === selectedMode) || lobby.modes[0]
@@ -177,7 +178,11 @@ function BattleLobby({
           </section>
         </div>
 
-        <BattleRail lobby={lobby} selectedMode={selectedMode} />
+        <BattleRail
+          lobby={lobby}
+          selectedMode={selectedMode}
+          onOpenProfile={onOpenProfile}
+        />
       </div>
     </div>
   )

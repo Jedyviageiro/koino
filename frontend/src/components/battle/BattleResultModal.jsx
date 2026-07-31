@@ -2,7 +2,7 @@ import { ArrowRight, Minus, Trophy, TrendingDown, TrendingUp } from 'lucide-reac
 import ModalShell from '@/components/common/ModalShell.jsx'
 import BattleRankBadge from './BattleRankBadge.jsx'
 
-function BattleResultModal({ battle, rank, onNext, onLobby }) {
+function BattleResultModal({ battle, rank, onRematch, onLobby }) {
   const won = battle.result === 'WIN'
   const draw = battle.result === 'DRAW'
   const Icon = draw ? Minus : won ? TrendingUp : TrendingDown
@@ -67,10 +67,10 @@ function BattleResultModal({ battle, rank, onNext, onLobby }) {
         <div className="mt-auto grid gap-2">
           <button
             type="button"
-            onClick={onNext}
+            onClick={onRematch}
             className="flex h-10 items-center justify-center gap-2 rounded-[7px] bg-[#e8a33d] text-[10px] font-semibold text-white hover:bg-[#d8922e]"
           >
-            Next opponent
+            Rematch
             <ArrowRight className="h-3.5 w-3.5" />
           </button>
           <button
