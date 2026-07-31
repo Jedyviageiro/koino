@@ -27,7 +27,10 @@ function loadYouTubeApi() {
     const script = document.createElement('script')
     script.src = 'https://www.youtube.com/iframe_api'
     script.async = true
-    script.onerror = () => reject(new Error('YouTube player failed to load'))
+    script.onerror = () => {
+      youtubeApiPromise = null
+      reject(new Error('YouTube player failed to load'))
+    }
     document.head.appendChild(script)
   })
 
@@ -50,6 +53,7 @@ const YouTubeEmbed = forwardRef(function YouTubeEmbed(
   const progressRef = useRef(onProgress)
   const initialStartRef = useRef(Math.max(0, Number(startSeconds) || 0))
   const [failed, setFailed] = useState(false)
+  const [playerError, setPlayerError] = useState(false)
 
   progressRef.current = onProgress
 
@@ -68,7 +72,7 @@ const YouTubeEmbed = forwardRef(function YouTubeEmbed(
       .then((YT) => {
         if (!active || !mountRef.current) return
         playerRef.current = new YT.Player(mountRef.current, {
-          host: 'https://www.youtube-nocookie.com',
+          host: 'https://www.youtube.com',
           videoId,
           playerVars: {
             autoplay: autoplay ? 1 : 0,
@@ -77,6 +81,7 @@ const YouTubeEmbed = forwardRef(function YouTubeEmbed(
             rel: 0,
             modestbranding: 1,
             start: Math.floor(initialStart),
+            origin: window.location.origin,
           },
           events: {
             onReady: () => {
@@ -90,6 +95,9 @@ const YouTubeEmbed = forwardRef(function YouTubeEmbed(
               if (event.data === YT.PlayerState.ENDED) {
                 progressRef.current?.(0)
               }
+            },
+            onError: () => {
+              if (active) setPlayerError(true)
             },
           },
         })
@@ -109,11 +117,26 @@ const YouTubeEmbed = forwardRef(function YouTubeEmbed(
     }
   }, [autoplay, videoId])
 
+  if (playerError) {
+    return (
+      <div className={`flex h-full w-full items-center justify-center bg-[#111317] px-8 text-center ${className}`}>
+        <div>
+          <p className="text-[12px] font-semibold text-white">
+            This video cannot play inside Koino right now.
+          </p>
+          <p className="mt-2 text-[9px] leading-4 text-white/60">
+            Try another video from the queue while this one becomes available.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   if (failed) {
     const start = Math.floor(initialStartRef.current)
     return (
       <iframe
-        src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&playsinline=1&start=${start}`}
+        src={`https://www.youtube.com/embed/${videoId}?rel=0&playsinline=1&start=${start}&origin=${encodeURIComponent(window.location.origin)}`}
         title={title}
         className={`h-full w-full border-0 ${className}`}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -91,6 +91,7 @@ function WatchMiniPlayer({ video, onClose, onMaximize, onProgress }) {
     >
       <div className="relative aspect-video bg-black">
         <YouTubeEmbed
+          key={video.youtubeVideoId}
           ref={playerRef}
           videoId={video.youtubeVideoId}
           title={`${video.creator} - ${video.title}`}

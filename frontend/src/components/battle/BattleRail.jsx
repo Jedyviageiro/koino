@@ -69,7 +69,7 @@ function BattleRail({ lobby, selectedMode, onOpenProfile }) {
               type="button"
               key={`${entry.position}-${entry.userId}`}
               onClick={() => onOpenProfile(entry.userId)}
-              className={`grid grid-cols-[18px_28px_minmax(0,1fr)_auto] items-center gap-2 rounded-[6px] px-2 py-1.5 ${
+              className={`grid w-full grid-cols-[18px_28px_minmax(0,1fr)_44px] items-center gap-2 rounded-[6px] px-2 py-1.5 text-left ${
                 entry.currentUser
                   ? 'bg-[#fff7ea]'
                   : 'hover:bg-[#f7f8f9]'
@@ -86,7 +86,7 @@ function BattleRail({ lobby, selectedMode, onOpenProfile }) {
                 </p>
                 <BattleRankBadge rank={entry.rank} compact />
               </div>
-              <span className="text-[9px] font-semibold tabular-nums text-[#6a707b]">
+              <span className="justify-self-end text-right text-[9px] font-semibold tabular-nums text-[#6a707b]">
                 {entry.elo.toLocaleString()}
               </span>
             </button>

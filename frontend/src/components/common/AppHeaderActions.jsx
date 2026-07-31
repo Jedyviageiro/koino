@@ -38,15 +38,21 @@ function AppHeaderActions({ onNavigate }) {
   }
 
   async function readNotification(notification) {
-    if (!notification.read) {
-      const updated = await markNotificationRead(notification.notificationId)
-      setNotifications((current) =>
-        current.filter((item) => item.notificationId !== updated.notificationId),
-      )
-    }
+    setNotifications((current) =>
+      current.filter(
+        (item) => item.notificationId !== notification.notificationId,
+      ),
+    )
     setOpen(false)
     if (notification.type === 'PLAN_READY') onNavigate('/plans')
     if (notification.type === 'READING_REMINDER') onNavigate('/devotional')
+    if (!notification.read) {
+      try {
+        await markNotificationRead(notification.notificationId)
+      } catch {
+        await refresh().catch(() => {})
+      }
+    }
   }
 
   async function respond(notification, accepted) {
