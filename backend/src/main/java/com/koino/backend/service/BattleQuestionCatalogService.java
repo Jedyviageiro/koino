@@ -22,6 +22,8 @@ import jakarta.annotation.PostConstruct;
 
 @Service
 public class BattleQuestionCatalogService {
+    private static final int MAX_CATALOG_DIFFICULTY = 10;
+    private static final int MAX_MATCH_DIFFICULTY = 6;
     private static final Logger LOGGER =
         LoggerFactory.getLogger(BattleQuestionCatalogService.class);
     private static final String CORE_CATALOG =
@@ -133,7 +135,10 @@ public class BattleQuestionCatalogService {
                 statement.setString(5, entry.options().get(2));
                 statement.setString(6, entry.options().get(3));
                 statement.setInt(7, entry.correctOption());
-                statement.setInt(8, entry.difficulty());
+                statement.setInt(
+                    8,
+                    Math.min(entry.difficulty(), MAX_MATCH_DIFFICULTY)
+                );
                 statement.setString(9, entry.category());
                 statement.setString(10, entry.reference());
                 statement.setString(11, entry.explanation());
@@ -229,7 +234,7 @@ public class BattleQuestionCatalogService {
                 || correctOption < 0
                 || correctOption > 3
                 || difficulty < 1
-                || difficulty > 6
+                || difficulty > MAX_CATALOG_DIFFICULTY
                 || explanation == null) {
                 throw new IllegalArgumentException(
                     "Invalid Battle Space question"

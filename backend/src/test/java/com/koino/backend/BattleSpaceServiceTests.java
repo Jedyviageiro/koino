@@ -2,11 +2,33 @@ package com.koino.backend;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.InputStream;
+
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.koino.backend.service.BattleQuestionCatalogService.QuestionCatalogEntry;
 import com.koino.backend.service.BattleSpaceService;
 
 class BattleSpaceServiceTests {
+    @Test
+    void loadsTheCompleteCoreQuestionCatalog() throws Exception {
+        try (InputStream stream = getClass().getResourceAsStream(
+            "/battle/battle-question-catalog.json"
+        )) {
+            assertThat(stream).isNotNull();
+            QuestionCatalogEntry[] entries = new ObjectMapper().readValue(
+                stream,
+                QuestionCatalogEntry[].class
+            );
+
+            assertThat(entries).hasSize(120);
+            assertThat(entries)
+                .extracting(QuestionCatalogEntry::difficulty)
+                .contains(1, 6, 10);
+        }
+    }
+
     @Test
     void mapsEloToProgressiveDifficultyAndRanks() {
         assertThat(BattleSpaceService.difficultyFor(200)).isEqualTo(1);
