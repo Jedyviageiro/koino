@@ -24,10 +24,13 @@ public class VerseOfDayService {
 
     private final List<VerseEntry> entries;
 
-    public VerseOfDayService(ObjectMapper objectMapper) {
+    public VerseOfDayService() {
         ClassPathResource resource = new ClassPathResource(RESOURCE_PATH);
         try (InputStream input = resource.getInputStream()) {
-            entries = objectMapper.readValue(input, new TypeReference<>() {});
+            entries = new ObjectMapper().readValue(
+                input,
+                new TypeReference<>() {}
+            );
         } catch (Exception exception) {
             throw new IllegalStateException(
                 "Could not load the verse-of-the-day catalog",
