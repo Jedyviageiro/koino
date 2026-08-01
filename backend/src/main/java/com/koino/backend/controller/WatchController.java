@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.koino.backend.dto.watch.WatchVideoResponse;
@@ -19,7 +20,9 @@ public class WatchController {
     }
 
     @GetMapping("/videos")
-    public List<WatchVideoResponse> getVideos() {
-        return watchCatalogService.getCatalog();
+    public List<WatchVideoResponse> getVideos(
+        @RequestParam(defaultValue = "en") String language
+    ) {
+        return watchCatalogService.getCatalog(language);
     }
 }

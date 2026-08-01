@@ -11,4 +11,8 @@ public interface WatchVideoRepository extends JpaRepository<WatchVideo, Long> {
     Optional<WatchVideo> findByCatalogKey(String catalogKey);
 
     List<WatchVideo> findAllByOrderByCategoryAscSortOrderAsc();
+
+    List<WatchVideo> findAllByContentLanguageOrderByCategoryAscSortOrderAsc(
+        String contentLanguage
+    );
 }

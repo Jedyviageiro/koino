@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import LoginPage from '@/pages/auth/login/LoginPage.jsx'
 import RegisterPage from '@/pages/auth/register/RegisterPage.jsx'
 import OnboardingPage from '@/pages/onboarding/OnboardingPage.jsx'
@@ -31,26 +32,14 @@ import {
 
 const WATCH_PLAYER_KEY = 'koino.watch.player'
 
-const PAGE_TITLES = {
-  '/': 'Sign in',
-  '/register': 'Create account',
-  '/verify-email': 'Verify email',
-  '/forgot-password': 'Forgot password',
-  '/reset-password': 'Reset password',
-  '/onboarding': 'Onboarding',
-  '/home': 'Home',
-  '/plans': 'Plans',
-  '/reading': 'Reading',
-  '/devotional': 'Devotional',
-  '/bible': 'Bible',
-  '/bookmarks': 'Bookmarks',
-  '/community': 'Community',
-  '/chat': 'Chat',
-  '/watch': 'Watch',
-  '/watch/player': 'Now playing',
-  '/settings': 'Settings',
-  '/battle-space': 'Battle Space',
-  '/status': 'Service status',
+const PAGE_TITLE_KEYS = {
+  '/': 'signIn', '/register': 'register', '/verify-email': 'verifyEmail',
+  '/forgot-password': 'forgotPassword', '/reset-password': 'resetPassword',
+  '/onboarding': 'onboarding', '/home': 'home', '/plans': 'plans',
+  '/reading': 'reading', '/devotional': 'devotional', '/bible': 'bible',
+  '/bookmarks': 'bookmarks', '/community': 'community', '/chat': 'chat',
+  '/watch': 'watch', '/watch/player': 'nowPlaying', '/settings': 'settings',
+  '/battle-space': 'battle', '/status': 'status',
 }
 
 function storedWatchVideo() {
@@ -72,6 +61,7 @@ function isPhoneViewport() {
 }
 
 function App() {
+  const { t, i18n } = useTranslation()
   const [locationKey, setLocationKey] = useState(
     () => `${window.location.pathname}${window.location.search}`,
   )
@@ -122,12 +112,16 @@ function App() {
 
   useEffect(() => {
     const pageTitle = phoneViewport
-      ? 'Desktop experience'
+      ? t('titles.desktop')
       : path.startsWith('/u/')
-      ? 'Koino profile'
-      : PAGE_TITLES[path] || 'Koino'
-    document.title = pageTitle === 'Koino' ? 'Koino' : `${pageTitle} | Koino`
-  }, [locationKey, path, phoneViewport])
+      ? t('titles.profile')
+      : PAGE_TITLE_KEYS[path]
+        ? t(`titles.${PAGE_TITLE_KEYS[path]}`)
+        : t('common.appName')
+    document.title = pageTitle === t('common.appName')
+      ? t('common.appName')
+      : `${pageTitle} | ${t('common.appName')}`
+  }, [locationKey, path, phoneViewport, i18n.resolvedLanguage, t])
 
   useEffect(() => {
     const keepSessionCurrent = () => {

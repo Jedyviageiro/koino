@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Bookmark, BookOpen, Trash2 } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
@@ -18,6 +19,7 @@ function formatBookmarkedAt(value) {
 }
 
 function BookmarksPage({ onNavigate }) {
+  const { t } = useTranslation()
   const session = getAuthSession()
   const [bookmarks, setBookmarks] = useState([])
   const [loading, setLoading] = useState(true)
@@ -80,8 +82,8 @@ function BookmarksPage({ onNavigate }) {
       activePath="/bookmarks"
     >
           <PageHeader
-            title="Bookmarks"
-            subtitle="Return to the verses you saved along the way."
+            title={t('pages.bookmarks.title')}
+            subtitle={t('pages.bookmarks.subtitle')}
           />
 
           <section>

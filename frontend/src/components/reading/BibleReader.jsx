@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Bookmark,
   Check,
@@ -28,6 +29,7 @@ function BibleReader({
   onBookmark,
   onComplete,
 }) {
+  const { t } = useTranslation()
   const verseRefs = useRef(new Map())
   const scrollRef = useRef(null)
   const scrollFrameRef = useRef(null)
@@ -113,7 +115,7 @@ function BibleReader({
 
       <div className="px-5 py-5 sm:px-7 lg:px-8">
         <div>
-          <p className="text-[10px] font-semibold uppercase text-[#b27413]">Today&apos;s Reading</p>
+          <p className="text-[10px] font-semibold uppercase text-[#b27413]">{t('pages.reading.today')}</p>
           <h1 className="mt-2 text-[29px] font-semibold leading-tight">{reference}</h1>
           <p className="mt-1.5 text-[11px] text-[#59647a]">{task.readingAssignment} - KJV</p>
           <div className="mt-4 flex flex-wrap gap-3">
@@ -129,7 +131,7 @@ function BibleReader({
 
         <div className="mt-5 pt-1">
           <div className="flex items-center justify-between text-[12px] text-[#4e5a72]">
-            <span className="font-medium">Reading progress</span>
+            <span className="font-medium">{t('pages.reading.progress')}</span>
             <span>Verse {currentIndex} of {total}</span>
           </div>
           <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#e9ecf1]">

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   AppPageLayout,
   PageHeader,
@@ -11,6 +12,7 @@ import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getPlansPageData } from '@/features/plans/plansService.js'
 
 function PlansPage({ onNavigate }) {
+  const { t } = useTranslation()
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const session = getAuthSession()
@@ -86,12 +88,12 @@ function PlansPage({ onNavigate }) {
       activePath="/plans"
     >
           <PageHeader
-            title="Plans"
-            subtitle="Stay consistent with God's Word through intentional reading plans."
+            title={t('pages.plans.title')}
+            subtitle={t('pages.plans.subtitle')}
           />
 
           <section>
-            <SectionTitle>My Current Plan</SectionTitle>
+            <SectionTitle>{t('pages.plans.current')}</SectionTitle>
             {data?.needsOnboarding ? (
               <div className="rounded-[8px] border border-[#e5dfd6] bg-white px-6 py-8">
                 <h2 className="text-[18px] font-semibold">
@@ -126,7 +128,7 @@ function PlansPage({ onNavigate }) {
 
           {!data?.needsOnboarding && (
             <section className="mt-7">
-              <SectionTitle>Your Reading Route</SectionTitle>
+              <SectionTitle>{t('pages.plans.route')}</SectionTitle>
               <div className="space-y-2.5">
                 {data
                   ? visiblePlans.map(({ template, index, existingPlan }) => (

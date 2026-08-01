@@ -2,8 +2,10 @@ import { useCallback, useState } from 'react'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import RegisterForm from '@/components/auth/register/RegisterForm.jsx'
+import { useTranslation } from 'react-i18next'
 
 function RegisterPage({ onNavigate }) {
+  const { t } = useTranslation()
   const [status, setStatus] = useState(null)
   const closeStatus = useCallback(() => {
     if (status?.type === 'success') {
@@ -36,8 +38,8 @@ function RegisterPage({ onNavigate }) {
     <>
       <AuthLayout
         mode="register"
-        title="Create your account."
-        subtitle="Start your journey of faith with Koino."
+        title={t('auth.registerTitle')}
+        subtitle={t('auth.registerSubtitle')}
         onNavigate={onNavigate}
       >
         <RegisterForm

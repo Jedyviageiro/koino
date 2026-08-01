@@ -99,14 +99,18 @@ public class UserController {
         @Valid @RequestBody GoogleLoginRequest request
     ) {
         try {
-            User user = googleIdentityService.authenticate(request.credential());
+            User user = googleIdentityService.authenticate(
+                request.credential(),
+                request.language()
+            );
             return ResponseEntity.ok(new LoginResponse(
                 user.getUserId(),
                 jwtService.generateToken(user),
                 jwtService.generateRefreshToken(user),
                 user.getEmail(),
                 user.getFullname(),
-                user.getProfilePictureUrl()
+                user.getProfilePictureUrl(),
+                user.getLanguage()
             ));
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
@@ -124,7 +128,8 @@ public class UserController {
                 jwtService.generateRefreshToken(user),
                 user.getEmail(),
                 user.getFullname(),
-                user.getProfilePictureUrl()
+                user.getProfilePictureUrl(),
+                user.getLanguage()
             ));
 
         } catch(IllegalArgumentException e){
@@ -154,7 +159,8 @@ public class UserController {
             jwtService.generateRefreshToken(user),
             user.getEmail(),
             user.getFullname(),
-            user.getProfilePictureUrl()
+            user.getProfilePictureUrl(),
+            user.getLanguage()
         ));
     }
 
@@ -166,7 +172,8 @@ public class UserController {
             jwtService.generateRefreshToken(user),
             user.getEmail(),
             user.getFullname(),
-            user.getProfilePictureUrl()
+            user.getProfilePictureUrl(),
+            user.getLanguage()
         );
     }
 
@@ -176,7 +183,8 @@ public class UserController {
     ){
         try{
             User user = userService.createPendingUser(
-                request.fullname(), request.email(), request.password()
+                request.fullname(), request.email(), request.password(),
+                request.language()
             );
             emailVerificationService.sendVerification(user);
             return ResponseEntity.ok(new RegisterResponse(

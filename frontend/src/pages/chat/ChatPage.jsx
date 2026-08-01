@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
   Check,
@@ -28,6 +29,7 @@ import {
 } from '@/features/auth/authStorage.js'
 
 function ChatPage({ onNavigate }) {
+  const { t } = useTranslation()
   const session = getAuthSession()
   const [friends, setFriends] = useState([])
   const [selectedId, setSelectedId] = useState(() => {
@@ -169,8 +171,8 @@ function ChatPage({ onNavigate }) {
       activePath="/chat"
     >
       <PageHeader
-        title="Chat"
-        subtitle="Private conversations with your Koino friends."
+        title={t('pages.chat.title')}
+        subtitle={t('pages.chat.subtitle')}
       />
 
       <section className="grid min-h-[620px] overflow-hidden rounded-[8px] border border-[#dfe3e8] bg-white md:grid-cols-[280px_minmax(0,1fr)]">

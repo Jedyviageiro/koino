@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { LoaderCircle } from 'lucide-react'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import { PasswordField } from '@/components/auth/shared/AuthField.jsx'
@@ -7,6 +8,7 @@ import { isStrongPassword } from '@/features/auth/passwordPolicy.js'
 import { resetPassword } from '@/features/auth/authService.js'
 
 function ResetPasswordPage({ onNavigate }) {
+  const { t } = useTranslation()
   const token = new URLSearchParams(window.location.search).get('token') || ''
   const [password, setPassword] = useState('')
   const [confirmation, setConfirmation] = useState('')
@@ -21,7 +23,7 @@ function ResetPasswordPage({ onNavigate }) {
       await resetPassword(token, password, confirmation)
       setStatus({
         type: 'success',
-        message: 'Your password was updated. You can now log in.',
+        message: t('auth.passwordUpdated'),
       })
     } catch (error) {
       setStatus({ type: 'error', message: error.message })
@@ -33,8 +35,8 @@ function ResetPasswordPage({ onNavigate }) {
   return (
     <AuthLayout
       mode="login"
-      title="Choose a new password."
-      subtitle="Use a strong password you have not used before."
+      title={t('auth.newPasswordTitle')}
+      subtitle={t('auth.newPasswordSubtitle')}
       onNavigate={onNavigate}
       hideSwitcher
     >
@@ -59,7 +61,7 @@ function ResetPasswordPage({ onNavigate }) {
           }`}
           aria-live="polite"
         >
-          {!matches && confirmation ? 'Passwords do not match.' : status.message}
+          {!matches && confirmation ? t('auth.passwordsMismatch') : status.message}
         </div>
         <button
           type="submit"
@@ -67,7 +69,7 @@ function ResetPasswordPage({ onNavigate }) {
           className="flex h-[47px] w-full items-center justify-center gap-2 rounded-[11px] bg-[#e8a33d] text-[12px] font-semibold text-white disabled:bg-[#f2dfbf]"
         >
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-          {loading ? 'Updating' : 'Update Password'}
+          {loading ? t('auth.updating') : t('auth.updatePassword')}
         </button>
         {status.type === 'success' && (
           <button
@@ -75,7 +77,7 @@ function ResetPasswordPage({ onNavigate }) {
             onClick={() => onNavigate('/')}
             className="mt-4 h-9 w-full text-[10px] font-semibold text-[#555b66]"
           >
-            Continue to Login
+            {t('auth.continueToLogin')}
           </button>
         )}
       </form>

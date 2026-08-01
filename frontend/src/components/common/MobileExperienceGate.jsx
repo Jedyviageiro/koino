@@ -1,8 +1,10 @@
 import { CalendarDays, Heart } from 'lucide-react'
 import BrandMark from '@/components/common/BrandMark.jsx'
 import mobileNoticeArt from '@/assets/images/koino-mobile-notice-art.svg'
+import { useTranslation } from 'react-i18next'
 
 function MobileExperienceGate() {
+  const { t } = useTranslation()
   return (
     <main className="mobile-gate">
       <div className="mobile-gate__content">
@@ -17,12 +19,11 @@ function MobileExperienceGate() {
           className="mobile-gate__art"
         />
 
-        <p className="mobile-gate__eyebrow">Desktop experience required</p>
-        <h1>Koino isn&apos;t available on mobile yet.</h1>
+        <p className="mobile-gate__eyebrow">{t('mobile.eyebrow')}</p>
+        <h1>{t('mobile.title')}</h1>
         <div className="mobile-gate__rule" aria-hidden="true" />
         <p className="mobile-gate__message">
-          We&apos;re crafting the best possible experience for you. For now,
-          please use a tablet, laptop, or desktop.
+          {t('mobile.message')}
         </p>
 
         <section className="mobile-gate__notice">
@@ -30,15 +31,15 @@ function MobileExperienceGate() {
             <CalendarDays size={25} strokeWidth={1.7} />
           </span>
           <div>
-            <strong>Coming soon</strong>
-            <p>We&apos;re working to bring Koino to your mobile device.</p>
+            <strong>{t('mobile.coming')}</strong>
+            <p>{t('mobile.comingMessage')}</p>
           </div>
         </section>
       </div>
 
       <footer className="mobile-gate__footer">
         <Heart size={20} strokeWidth={1.5} aria-hidden="true" />
-        <span>Thank you for your understanding</span>
+        <span>{t('mobile.thanks')}</span>
       </footer>
     </main>
   )

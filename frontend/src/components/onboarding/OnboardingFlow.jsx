@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
   ArrowRight,
@@ -25,6 +26,7 @@ import { completeOnboarding } from '@/features/onboarding/onboardingService.js'
 
 const steps = [
   {
+    translationKey: 'journey',
     eyebrow: 'Your journey',
     title: 'Welcome to Koino.',
     subtitle: 'Tell us where you are today so your first plan meets you there.',
@@ -32,18 +34,21 @@ const steps = [
     icon: Compass,
     options: [
       {
+        translationKey: 'new',
         value: 'NEW_TO_FAITH',
         title: 'Just starting out',
         description: 'New to the Bible and ready to learn',
         icon: Clock3,
       },
       {
+        translationKey: 'deepen',
         value: 'DEEPEN_UNDERSTANDING',
         title: 'Deepen my understanding',
         description: 'Build on what I already know',
         icon: TrendingUp,
       },
       {
+        translationKey: 'habit',
         value: 'BUILD_READING_HABIT',
         title: 'Build a daily habit',
         description: 'Create a consistent reading rhythm',
@@ -52,6 +57,7 @@ const steps = [
     ],
   },
   {
+    translationKey: 'start',
     eyebrow: 'Starting point',
     title: 'Where would you like to begin?',
     subtitle: 'Choose the part of Scripture that will open your first plan.',
@@ -59,6 +65,7 @@ const steps = [
     icon: BookMarked,
     options: [
       {
+        translationKey: 'gospels',
         value: 'GOSPELS',
         title: 'The Gospels',
         description: 'Life and teachings of Jesus',
@@ -66,6 +73,7 @@ const steps = [
         icon: BookOpen,
       },
       {
+        translationKey: 'old',
         value: 'OLD_TESTAMENT',
         title: 'The Old Testament',
         description: 'Foundations, history, and wisdom',
@@ -73,6 +81,7 @@ const steps = [
         icon: Library,
       },
       {
+        translationKey: 'new',
         value: 'NEW_TESTAMENT',
         title: 'The New Testament',
         description: 'Letters and the early Church',
@@ -82,6 +91,7 @@ const steps = [
     ],
   },
   {
+    translationKey: 'rhythm',
     eyebrow: 'Daily rhythm',
     title: 'When do you read best?',
     subtitle: 'Choose the moment when you are most likely to find some peace.',
@@ -89,18 +99,21 @@ const steps = [
     icon: Sunrise,
     options: [
       {
+        translationKey: 'morning',
         value: 'MORNING',
         title: 'Early morning',
         description: 'Begin the day with a clear mind',
         icon: Sunrise,
       },
       {
+        translationKey: 'afternoon',
         value: 'AFTERNOON',
         title: 'During the day',
         description: 'Pause, read, and reset',
         icon: Sun,
       },
       {
+        translationKey: 'evening',
         value: 'EVENING',
         title: 'In the evening',
         description: 'Close the day with reflection',
@@ -109,6 +122,7 @@ const steps = [
     ],
   },
   {
+    translationKey: 'pace',
     eyebrow: 'Your schedule',
     title: 'What is your typical work pace?',
     subtitle: 'Your daily routine helps us place reading where it can last.',
@@ -116,12 +130,14 @@ const steps = [
     icon: CalendarDays,
     options: [
       {
+        translationKey: 'steady',
         value: 'STEADY_NINE_TO_FIVE',
         title: 'Steady 9-to-5',
         description: 'A regular schedule with predictable hours',
         icon: BriefcaseBusiness,
       },
       {
+        translationKey: 'flexible',
         value: 'FLEXIBLE',
         title: 'I have a flexible schedule',
         description: 'My hours vary from day to day',
@@ -130,6 +146,7 @@ const steps = [
     ],
   },
   {
+    translationKey: 'capacity',
     eyebrow: 'Reading capacity',
     title: 'How much time can you set aside?',
     subtitle: 'Choose an honest daily target. You can always adjust it later.',
@@ -137,18 +154,21 @@ const steps = [
     icon: Gauge,
     options: [
       {
+        translationKey: 'ten',
         value: 10,
         title: '10 minutes',
         description: 'A gentle daily commitment',
         icon: Feather,
       },
       {
+        translationKey: 'twenty',
         value: 20,
         title: '20 minutes',
         description: 'A steady amount of focused time',
         icon: Gauge,
       },
       {
+        translationKey: 'thirty',
         value: 30,
         title: '30+ minutes',
         description: 'Room to read and reflect more deeply',
@@ -166,10 +186,10 @@ const initialAnswers = {
   dailyCapacityMinutes: 10,
 }
 
-function Progress({ current }) {
+function Progress({ current, items, label }) {
   return (
-    <div className="flex flex-1 items-center justify-center" aria-label={`Step ${current + 1} of ${steps.length}`}>
-      {steps.map((step, index) => {
+    <div className="flex flex-1 items-center justify-center" aria-label={label}>
+      {items.map((step, index) => {
         const complete = index < current
         const active = index === current
 
@@ -248,12 +268,31 @@ function Choice({ option, selected, onSelect, detailed = false }) {
 }
 
 function OnboardingFlow({ onFailure, onComplete }) {
+  const { t } = useTranslation()
   const [stepIndex, setStepIndex] = useState(0)
   const [answers, setAnswers] = useState(initialAnswers)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showCreatingPlan, setShowCreatingPlan] = useState(false)
 
-  const step = steps[stepIndex]
+  const localizedSteps = useMemo(() => steps.map((item) => {
+    const base = `onboarding.steps.${item.translationKey}`
+    return {
+      ...item,
+      eyebrow: t(`${base}.eyebrow`),
+      title: t(`${base}.title`),
+      subtitle: t(`${base}.subtitle`),
+      options: item.options.map((option) => {
+        const optionBase = `${base}.options.${option.translationKey}`
+        return {
+          ...option,
+          title: t(`${optionBase}.title`),
+          description: t(`${optionBase}.description`),
+          detail: option.detail ? t(`${optionBase}.detail`) : undefined,
+        }
+      }),
+    }
+  }), [t])
+  const step = localizedSteps[stepIndex]
   const StepIcon = step.icon
   const isLastStep = stepIndex === steps.length - 1
 
@@ -274,7 +313,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
     } catch (error) {
       setShowCreatingPlan(false)
       onFailure(
-        error.message || 'Unable to save your preferences. Please try again.',
+        error.message || t('onboarding.failureMessage'),
       )
     } finally {
       setIsSubmitting(false)
@@ -298,19 +337,26 @@ function OnboardingFlow({ onFailure, onComplete }) {
           onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
           disabled={stepIndex === 0 || isSubmitting}
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#555b64] transition-colors hover:bg-[#f2f3f4] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#e8a33d]"
-          aria-label="Previous step"
-          title="Previous step"
+          aria-label={t('onboarding.previous')}
+          title={t('onboarding.previous')}
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.9} />
         </button>
-        <Progress current={stepIndex} />
+        <Progress
+          current={stepIndex}
+          items={localizedSteps}
+          label={t('onboarding.progress', {
+            current: stepIndex + 1,
+            total: localizedSteps.length,
+          })}
+        />
         <button
           type="button"
           onClick={continueFlow}
           disabled={isLastStep || isSubmitting}
           className="w-10 text-right text-[11px] font-medium text-[#7d838d] transition-colors hover:text-[#b27413] disabled:invisible focus-visible:outline-2 focus-visible:outline-[#e8a33d]"
         >
-          Skip
+          {t('common.skip')}
         </button>
       </header>
 
@@ -356,11 +402,11 @@ function OnboardingFlow({ onFailure, onComplete }) {
           {isSubmitting ? (
             <>
               <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
-              Creating your plan
+              {t('onboarding.creating')}
             </>
           ) : (
             <>
-              {isLastStep ? 'Finish' : 'Continue'}
+              {isLastStep ? t('common.finish') : t('common.continue')}
               {isLastStep ? (
                 <Check className="h-4 w-4" strokeWidth={2} />
               ) : (
@@ -371,7 +417,7 @@ function OnboardingFlow({ onFailure, onComplete }) {
         </button>
 
         <div className="mt-5 flex justify-center gap-2 lg:mt-3" aria-hidden="true">
-          {steps.map((item, index) => (
+          {localizedSteps.map((item, index) => (
             <span
               key={item.field}
               className={`h-1.5 w-1.5 rounded-full transition-colors duration-300 ${

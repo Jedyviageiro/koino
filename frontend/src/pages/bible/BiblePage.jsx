@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import BibleChapter from '@/components/bible/BibleChapter.jsx'
 import BibleToolbar from '@/components/bible/BibleToolbar.jsx'
 import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
@@ -31,6 +32,7 @@ function normalizedBookTitle(title) {
 }
 
 function BiblePage({ onNavigate }) {
+  const { t, i18n } = useTranslation()
   const [books, setBooks] = useState([])
   const [versions, setVersions] = useState([])
   const [selectedVersion, setSelectedVersion] = useState('KJV')
@@ -116,7 +118,10 @@ function BiblePage({ onNavigate }) {
           throw new Error(`No chapters are available for ${initialBook.title}.`)
         }
 
+        const preferredVersion = String(i18n.resolvedLanguage || '')
+          .toLowerCase().startsWith('pt') ? 'NVI' : 'KJV'
         const initialVersion =
+          browserData.versions.find((version) => version.code === preferredVersion) ||
           browserData.versions.find((version) => version.code === 'KJV') ||
           browserData.versions[0]
         if (!initialVersion) {
@@ -173,7 +178,7 @@ function BiblePage({ onNavigate }) {
     return () => {
       active = false
     }
-  }, [onNavigate])
+  }, [i18n.resolvedLanguage, onNavigate])
 
   const testamentBooks = useMemo(
     () =>
@@ -371,8 +376,8 @@ function BiblePage({ onNavigate }) {
       activePath="/bible"
     >
           <PageHeader
-            title="Bible"
-            subtitle="Read, study, and grow in God's Word."
+            title={t('pages.bible.title')}
+            subtitle={t('pages.bible.subtitle')}
             className="mb-5"
           />
 
@@ -453,7 +458,7 @@ function BiblePage({ onNavigate }) {
       {error && (
         <StatusModal
           type="error"
-          title="Bible unavailable"
+          title={t('pages.bible.unavailable')}
           message={error}
           onClose={() => {
             setError('')

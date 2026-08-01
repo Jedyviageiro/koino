@@ -1,5 +1,6 @@
 import { apiRequest } from '@/services/api/client.js'
 import { saveAuthSession } from './authStorage.js'
+import { apiLanguage, changeAppLanguage } from '@/i18n/index.js'
 
 export async function login(credentials) {
   const session = await apiRequest('/users/login', {
@@ -9,6 +10,7 @@ export async function login(credentials) {
   })
 
   saveAuthSession(session)
+  await changeAppLanguage(session.language || 'en')
   const onboarding = await apiRequest('/onboarding/status')
   const authenticatedSession = {
     ...session,
@@ -22,7 +24,10 @@ export async function register(details) {
   return apiRequest('/users/register', {
     method: 'POST',
     authenticated: false,
-    body: JSON.stringify(details),
+    body: JSON.stringify({
+      ...details,
+      language: apiLanguage() === 'pt-BR' ? 'pt' : 'en',
+    }),
   })
 }
 
@@ -46,9 +51,13 @@ export async function loginWithGoogle(credential) {
   const session = await apiRequest('/users/login/google', {
     method: 'POST',
     authenticated: false,
-    body: JSON.stringify({ credential }),
+    body: JSON.stringify({
+      credential,
+      language: apiLanguage() === 'pt-BR' ? 'pt' : 'en',
+    }),
   })
   saveAuthSession(session)
+  await changeAppLanguage(session.language || 'en')
   const onboarding = await apiRequest('/onboarding/status')
   const authenticatedSession = {
     ...session,

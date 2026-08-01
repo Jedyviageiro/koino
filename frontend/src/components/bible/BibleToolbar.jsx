@@ -6,6 +6,8 @@ import {
   Hash,
   Library,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { localizedBibleBook } from '@/i18n/bibleBooks.js'
 
 const controlClass =
   'h-9 w-full appearance-none rounded-[7px] border border-[#dfe3e9] bg-white pl-8 pr-2 text-[10px] font-medium text-[#20242b] outline-none transition-colors focus:border-[#e8a33d]'
@@ -32,10 +34,11 @@ function BibleToolbar({
   onNext,
   onToday,
 }) {
+  const { t, i18n } = useTranslation()
   return (
     <section className="grid gap-2 rounded-[8px] border border-[#dfe3e9] bg-white p-3 md:grid-cols-2 xl:grid-cols-[92px_150px_minmax(135px,1fr)_74px_74px_auto] xl:items-center">
       <label className="relative block">
-        <span className="sr-only">Version</span>
+        <span className="sr-only">{t('pages.bible.version')}</span>
         <BookOpen className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           className={controlClass}
@@ -52,7 +55,7 @@ function BibleToolbar({
       </label>
 
       <label className="relative block">
-        <span className="sr-only">Testament</span>
+        <span className="sr-only">{t('pages.bible.testament')}</span>
         <Library className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           className={controlClass}
@@ -60,13 +63,13 @@ function BibleToolbar({
           onChange={(event) => onTestamentChange(event.target.value)}
           disabled={loading}
         >
-          <option value="OLD">Old Testament</option>
-          <option value="NEW">New Testament</option>
+          <option value="OLD">{t('pages.bible.oldTestament')}</option>
+          <option value="NEW">{t('pages.bible.newTestament')}</option>
         </select>
       </label>
 
       <label className="relative block">
-        <span className="sr-only">Book</span>
+        <span className="sr-only">{t('pages.bible.book')}</span>
         <BookOpen className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           autoFocus={focusBook}
@@ -77,14 +80,14 @@ function BibleToolbar({
         >
           {books.map((book) => (
             <option key={book.bookId} value={book.bookId}>
-              {book.title}
+              {localizedBibleBook(book.title, i18n.resolvedLanguage)}
             </option>
           ))}
         </select>
       </label>
 
       <label className="relative block">
-        <span className="sr-only">Chapter</span>
+        <span className="sr-only">{t('pages.bible.chapter')}</span>
         <Hash className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           className={controlClass}
@@ -101,7 +104,7 @@ function BibleToolbar({
       </label>
 
       <label className="relative block">
-        <span className="sr-only">Verse</span>
+        <span className="sr-only">{t('pages.bible.verse')}</span>
         <span className="pointer-events-none absolute left-2.5 top-2.5 text-[10px] font-semibold text-[#707886]">V</span>
         <select
           className={controlClass}

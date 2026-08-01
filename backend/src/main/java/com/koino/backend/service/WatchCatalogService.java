@@ -3,6 +3,7 @@ package com.koino.backend.service;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.sql.DataSource;
@@ -61,6 +62,7 @@ public class WatchCatalogService implements ApplicationRunner {
                 video.setYoutubeVideoId(entry.youtubeVideoId());
                 video.setSortOrder(entry.sortOrder());
                 video.setFeatured(entry.featured());
+                video.setContentLanguage(normalizeLanguage(entry.contentLanguage()));
                 videoRepository.save(video);
             }
         } catch (RuntimeException exception) {
@@ -142,8 +144,11 @@ public class WatchCatalogService implements ApplicationRunner {
     }
 
     @Transactional(readOnly = true)
-    public List<WatchVideoResponse> getCatalog() {
-        return videoRepository.findAllByOrderByCategoryAscSortOrderAsc()
+    public List<WatchVideoResponse> getCatalog(String language) {
+        return videoRepository
+            .findAllByContentLanguageOrderByCategoryAscSortOrderAsc(
+                normalizeLanguage(language)
+            )
             .stream()
             .map(this::toResponse)
             .toList();
@@ -181,7 +186,15 @@ public class WatchCatalogService implements ApplicationRunner {
             video.getYoutubeVideoId(),
             video.getSortOrder(),
             video.isFeatured()
+            ,video.getContentLanguage()
         );
+    }
+
+    private String normalizeLanguage(String language) {
+        return language != null
+                && language.toLowerCase(Locale.ROOT).startsWith("pt")
+            ? "pt"
+            : "en";
     }
 
     private record WatchCatalogEntry(
@@ -192,7 +205,8 @@ public class WatchCatalogService implements ApplicationRunner {
         String youtubeUrl,
         String youtubeVideoId,
         int sortOrder,
-        boolean featured
+        boolean featured,
+        String contentLanguage
     ) {
     }
 

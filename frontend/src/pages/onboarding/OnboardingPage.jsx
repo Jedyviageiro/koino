@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow.jsx'
+import { useTranslation } from 'react-i18next'
 import { getAuthToken } from '@/features/auth/authStorage.js'
 
 function OnboardingPage({ onNavigate }) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -37,7 +39,7 @@ function OnboardingPage({ onNavigate }) {
       {error && (
         <StatusModal
           type="error"
-          title="Onboarding failed"
+          title={t('onboarding.failed')}
           message={error}
           onClose={() => setError('')}
         />

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { BookOpen, Bookmark, Ellipsis, Share2, Type } from 'lucide-react'
+import { localizedBibleBook } from '@/i18n/bibleBooks.js'
 
 const textSizes = [
   'text-[13px] leading-6',
@@ -21,6 +23,7 @@ function BibleChapter({
   onBookmark,
   onShare,
 }) {
+  const { i18n } = useTranslation()
   const verseRefs = useRef(new Map())
   const scrollRef = useRef(null)
   const scrollFrameRef = useRef(null)
@@ -97,7 +100,8 @@ function BibleChapter({
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             <BookOpen className="h-5 w-5 text-[#e29a2f]" strokeWidth={1.6} />
             <h2 className="mt-5 text-[27px] font-semibold leading-tight">
-              {book?.title || 'Bible'} {chapter?.chapterNumber || ''}
+              {localizedBibleBook(book?.title || 'Bible', i18n.resolvedLanguage)}{' '}
+              {chapter?.chapterNumber || ''}
             </h2>
             <p className="mt-2 text-[10px] text-[#687183]">
               {versionName || 'King James Version'}

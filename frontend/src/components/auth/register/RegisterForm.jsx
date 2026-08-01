@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { LoaderCircle, Mail, UserRound } from 'lucide-react'
 import { AuthField, PasswordField } from '@/components/auth/shared/AuthField.jsx'
 import { register } from '@/features/auth/authService.js'
@@ -7,6 +8,7 @@ import PasswordRules from '@/components/auth/shared/PasswordRules.jsx'
 import { isStrongPassword } from '@/features/auth/passwordPolicy.js'
 
 function RegisterForm({ onNavigate, onSuccess, onFailure }) {
+  const { t } = useTranslation()
   const [fullname, setFullname] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -35,7 +37,7 @@ function RegisterForm({ onNavigate, onSuccess, onFailure }) {
     } catch (requestError) {
       onFailure(
         requestError.message ||
-          'Unable to create your account. Please try again.',
+          t('auth.registerError'),
       )
     } finally {
       setIsSubmitting(false)
@@ -50,7 +52,7 @@ function RegisterForm({ onNavigate, onSuccess, onFailure }) {
             icon={UserRound}
             value={fullname}
             onChange={(event) => setFullname(event.target.value)}
-            placeholder="Full name"
+            placeholder={t('auth.fullName')}
             autoComplete="name"
             minLength={2}
             disabled={isSubmitting}
@@ -61,7 +63,7 @@ function RegisterForm({ onNavigate, onSuccess, onFailure }) {
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="Email address"
+            placeholder={t('auth.email')}
             autoComplete="email"
             disabled={isSubmitting}
             validationState={emailValidationState}
@@ -71,7 +73,7 @@ function RegisterForm({ onNavigate, onSuccess, onFailure }) {
             className="h-4 px-1 text-[9px] font-medium leading-4 text-[#c73434]"
             aria-live="polite"
           >
-            {emailState === 'exists' ? 'email already in use' : ''}
+            {emailState === 'exists' ? t('auth.emailInUse') : ''}
           </div>
           <PasswordField
             value={password}
@@ -84,7 +86,7 @@ function RegisterForm({ onNavigate, onSuccess, onFailure }) {
             onChange={(event) => setPasswordConfirmation(event.target.value)}
             autoComplete="new-password"
             disabled={isSubmitting}
-            placeholder="Confirm password"
+            placeholder={t('auth.confirmPassword')}
           />
           <PasswordRules password={password} />
         </div>
@@ -105,18 +107,18 @@ function RegisterForm({ onNavigate, onSuccess, onFailure }) {
           {isSubmitting && (
             <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
           )}
-          {isSubmitting ? 'Creating account' : 'Create Account'}
+          {isSubmitting ? t('auth.creatingAccount') : t('auth.createAccount')}
         </button>
       </form>
 
       <p className="mt-5 text-center text-[10px] text-[#777b84]">
-        Already have an account?{' '}
+        {t('auth.haveAccount')}{' '}
         <button
           type="button"
           onClick={() => onNavigate('/')}
           className="font-semibold text-[#111114] hover:text-[#b27413]"
         >
-          Sign In
+          {t('auth.signIn')}
         </button>
       </p>
     </>

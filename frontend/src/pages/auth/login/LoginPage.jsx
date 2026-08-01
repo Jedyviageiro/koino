@@ -2,8 +2,10 @@ import { useCallback, useState } from 'react'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import LoginForm from '@/components/auth/login/LoginForm.jsx'
+import { useTranslation } from 'react-i18next'
 
 function LoginPage({ onNavigate }) {
+  const { t } = useTranslation()
   const [error, setError] = useState('')
   const closeError = useCallback(() => setError(''), [])
 
@@ -11,8 +13,8 @@ function LoginPage({ onNavigate }) {
     <>
       <AuthLayout
         mode="login"
-        title="Log in to your account."
-        subtitle="Enter your details to continue."
+        title={t('auth.loginTitle')}
+        subtitle={t('auth.loginSubtitle')}
         onNavigate={onNavigate}
       >
         <LoginForm onNavigate={onNavigate} onFailure={setError} />
@@ -21,7 +23,7 @@ function LoginPage({ onNavigate }) {
       {error && (
         <StatusModal
           type="error"
-          title="Login failed"
+          title={t('auth.loginFailed')}
           message={error}
           onClose={closeError}
         />

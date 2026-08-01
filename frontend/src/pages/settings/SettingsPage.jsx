@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Camera,
   Copy,
@@ -24,6 +25,7 @@ import {
 } from '@/features/settings/settingsService.js'
 import CommunityAvatar from '@/components/community/CommunityAvatar.jsx'
 import CountrySelect from '@/components/settings/CountrySelect.jsx'
+import { changeAppLanguage, normalizeLocale } from '@/i18n/index.js'
 
 const timeZones = [
   { value: 'Africa/Maputo', label: '(GMT+02:00) Maputo' },
@@ -32,18 +34,18 @@ const timeZones = [
   { value: 'America/New_York', label: '(GMT-05:00) New York' },
 ]
 
-const languages = [
-  { value: 'en', label: 'English' },
-  { value: 'pt', label: 'Portuguese' },
-]
-
 function SettingsPage({ onNavigate }) {
+  const { t, i18n } = useTranslation()
+  const languages = [
+    { value: 'en', label: t('settings.english') },
+    { value: 'pt', label: t('settings.portuguese') },
+  ]
   const session = getAuthSession()
   const [form, setForm] = useState({
     fullname: session?.fullname || '',
     email: session?.email || '',
     timeZone: 'Africa/Maputo',
-    language: 'en',
+    language: normalizeLocale(i18n.resolvedLanguage) === 'pt-BR' ? 'pt' : 'en',
     username: '',
     bio: '',
     location: '',
@@ -168,7 +170,9 @@ function SettingsPage({ onNavigate }) {
         email: updated.email,
         username: updated.username,
         profilePictureUrl: updated.profilePictureUrl,
+        language: updated.language,
       })
+      await changeAppLanguage(updated.language)
       setStatus({
         type: 'success',
         title: 'Settings saved',
@@ -210,8 +214,8 @@ function SettingsPage({ onNavigate }) {
       activePath="/settings"
     >
           <PageHeader
-            title="Settings"
-            subtitle="Manage your profile and account information."
+            title={t('settings.title')}
+            subtitle={t('settings.subtitle')}
           />
 
           <form
@@ -219,10 +223,10 @@ function SettingsPage({ onNavigate }) {
             className="rounded-[8px] border border-[#dfe3e8] bg-white px-6 py-6"
           >
             <h2 className="font-sans text-[15px] font-semibold">
-              Profile Information
+              {t('settings.profile')}
             </h2>
             <p className="mt-1 text-[11px] text-[#6d7584]">
-              Update your personal information.
+              {t('settings.profileSubtitle')}
             </p>
 
             {loading ? (
@@ -239,9 +243,9 @@ function SettingsPage({ onNavigate }) {
                 <div className="flex items-center gap-4 rounded-[7px] border border-[#e5e7ea] p-4">
                   <CommunityAvatar author={form} size="xl" />
                   <div className="min-w-0">
-                    <p className="text-[11px] font-semibold">Profile photo</p>
+                    <p className="text-[11px] font-semibold">{t('settings.photo')}</p>
                     <p className="mt-1 text-[9px] text-[#747d8a]">
-                      JPG, PNG, or WebP. Maximum 5 MB.
+                      {t('settings.photoHelp')}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <label className="flex h-9 cursor-pointer items-center gap-2 rounded-[7px] bg-[#e8a33d] px-3 text-[9px] font-semibold text-white">
@@ -250,7 +254,7 @@ function SettingsPage({ onNavigate }) {
                         ) : (
                           <Camera className="h-3.5 w-3.5" />
                         )}
-                        Change photo
+                        {t('settings.changePhoto')}
                         <input
                           type="file"
                           accept="image/jpeg,image/png,image/webp"
@@ -267,14 +271,14 @@ function SettingsPage({ onNavigate }) {
                           className="flex h-9 items-center gap-2 rounded-[7px] border border-[#dfe3e8] px-3 text-[9px] font-semibold text-[#606977]"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
-                          Remove
+                          {t('settings.remove')}
                         </button>
                       )}
                     </div>
                   </div>
                 </div>
                 <label className="text-[11px] font-medium">
-                  Full Name
+                  {t('settings.fullName')}
                   <input
                     name="fullname"
                     value={form.fullname}
@@ -286,7 +290,7 @@ function SettingsPage({ onNavigate }) {
                   />
                 </label>
                 <label className="text-[11px] font-medium">
-                  Username
+                  {t('settings.username')}
                   <div className="mt-2 flex h-11 items-center rounded-[7px] border border-[#dfe3e8] bg-white focus-within:border-[#e8a33d]">
                     <span className="pl-3.5 text-[12px] text-[#8a919c]">@</span>
                     <input
@@ -305,7 +309,7 @@ function SettingsPage({ onNavigate }) {
                   </span>
                 </label>
                 <label className="text-[11px] font-medium">
-                  Email
+                  {t('settings.email')}
                   <input
                     name="email"
                     type="email"
@@ -317,7 +321,7 @@ function SettingsPage({ onNavigate }) {
                   />
                 </label>
                 <label className="text-[11px] font-medium">
-                  Time Zone
+                  {t('settings.timeZone')}
                   <select
                     name="timeZone"
                     value={form.timeZone}
@@ -332,7 +336,7 @@ function SettingsPage({ onNavigate }) {
                   </select>
                 </label>
                 <label className="text-[11px] font-medium">
-                  Language
+                  {t('settings.language')}
                   <select
                     name="language"
                     value={form.language}
@@ -347,7 +351,7 @@ function SettingsPage({ onNavigate }) {
                   </select>
                 </label>
                 <label className="text-[11px] font-medium">
-                  About You
+                  {t('settings.bio')}
                   <textarea
                     name="bio"
                     value={form.bio || ''}
@@ -360,7 +364,7 @@ function SettingsPage({ onNavigate }) {
                 </label>
                 <div className="grid gap-5 sm:grid-cols-[0.7fr_1.3fr]">
                   <label className="text-[11px] font-medium">
-                    Country
+                    {t('settings.country')}
                     <CountrySelect
                       value={form.countryCode || ''}
                       onChange={(countryCode) =>
@@ -369,7 +373,7 @@ function SettingsPage({ onNavigate }) {
                     />
                   </label>
                   <label className="text-[11px] font-medium">
-                    Location
+                    {t('settings.location')}
                     <input
                       name="location"
                       value={form.location || ''}
@@ -390,7 +394,7 @@ function SettingsPage({ onNavigate }) {
                 className="flex h-11 min-w-[145px] items-center justify-center gap-2 rounded-[7px] bg-[#e8a33d] px-5 text-[11px] font-semibold text-white transition-colors hover:bg-[#d8922e] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {saving && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                {saving ? 'Saving' : 'Save Changes'}
+                {saving ? t('common.saving') : t('common.save')}
               </button>
             </div>
           </form>

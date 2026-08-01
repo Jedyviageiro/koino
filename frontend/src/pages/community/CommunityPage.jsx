@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MessageCircleMore } from 'lucide-react'
 import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import CommunityComposer from '@/components/community/CommunityComposer.jsx'
@@ -25,6 +26,7 @@ const filters = [
 ]
 
 function CommunityPage({ onNavigate }) {
+  const { t } = useTranslation()
   const session = getAuthSession()
   const [user, setUser] = useState({
     userId: session?.userId,
@@ -141,8 +143,8 @@ function CommunityPage({ onNavigate }) {
       activePath="/community"
     >
           <PageHeader
-            title="Community"
-            subtitle="Share Scripture, ask questions, and encourage one another."
+            title={t('pages.community.title')}
+            subtitle={t('pages.community.subtitle')}
             className="mb-5"
           />
 

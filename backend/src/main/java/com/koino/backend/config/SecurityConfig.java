@@ -73,6 +73,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers(
                     "/api/health",
+                    "/api/i18n/locale",
                     "/api/bible/**",
                     "/api/users/email-exists",
                     "/api/users/login",
@@ -121,7 +122,7 @@ public class SecurityConfig {
             "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
         ));
         configuration.setAllowedHeaders(List.of(
-            "Authorization", "Content-Type", "Accept"
+            "Authorization", "Content-Type", "Accept", "X-Koino-Language"
         ));
         configuration.setExposedHeaders(List.of("Location"));
         configuration.setAllowCredentials(false);

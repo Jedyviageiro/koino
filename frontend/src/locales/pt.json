@@ -1,0 +1,61 @@
+{
+  "common": {
+    "appName": "Koino",
+    "loading": "A carregar",
+    "continue": "Continuar",
+    "finish": "Concluir",
+    "skip": "Ignorar",
+    "cancel": "Cancelar",
+    "save": "Guardar alterações",
+    "saving": "A guardar",
+    "back": "Voltar",
+    "close": "Fechar",
+    "errorTitle": "Algo correu mal",
+    "genericError": "Não foi possível concluir o pedido. Verifique os dados e tente novamente."
+  },
+  "navigation": {
+    "label": "Navegação principal",
+    "home": "Início",
+    "plans": "Planos",
+    "bible": "Bíblia",
+    "watch": "Assistir",
+    "community": "Comunidade",
+    "chat": "Conversas",
+    "battle": "Espaço de Batalha",
+    "settings": "Definições",
+    "logout": "Terminar sessão",
+    "searchBible": "Pesquisar na Bíblia"
+  },
+  "titles": {
+    "signIn":"Iniciar sessão","register":"Criar conta","verifyEmail":"Confirmar email","forgotPassword":"Recuperar palavra-passe","resetPassword":"Nova palavra-passe","onboarding":"Primeiros passos","home":"Início","plans":"Planos","reading":"Leitura","devotional":"Devocional","bible":"Bíblia","bookmarks":"Marcadores","community":"Comunidade","chat":"Conversas","watch":"Assistir","nowPlaying":"A reproduzir","settings":"Definições","battle":"Espaço de Batalha","status":"Estado do serviço","profile":"Perfil Koino","desktop":"Experiência para computador"
+  },
+  "auth": {
+    "loginTitle":"Entre na sua conta.","loginSubtitle":"Introduza os seus dados para continuar.","registerTitle":"Crie a sua conta.","registerSubtitle":"Comece a sua jornada de fé com a Koino.","email":"Endereço de email","fullName":"Nome completo","password":"Palavra-passe","confirmPassword":"Confirmar palavra-passe","forgotPassword":"Esqueceu-se da palavra-passe?","login":"Entrar","loggingIn":"A entrar","createAccount":"Criar conta","creatingAccount":"A criar conta","or":"ou","noAccount":"Ainda não tem uma conta?","haveAccount":"Já tem uma conta?","signUp":"Registar","signIn":"Entrar","emailInUse":"Este email já está em uso","loginFailed":"Falha ao iniciar sessão","loginError":"Não foi possível iniciar sessão. Tente novamente.","registerError":"Não foi possível criar a conta. Tente novamente.","resetTitle":"Recupere a sua palavra-passe.","resetSubtitle":"Enviaremos uma ligação segura para o seu email.","newPasswordTitle":"Escolha uma nova palavra-passe.","newPasswordSubtitle":"Use uma palavra-passe forte que ainda não tenha utilizado.","showPassword":"Mostrar palavra-passe","hidePassword":"Ocultar palavra-passe","sending":"A enviar","sendReset":"Enviar ligação de recuperação","backToLogin":"Voltar ao início de sessão","updating":"A atualizar","updatePassword":"Atualizar palavra-passe","continueToLogin":"Continuar para o início de sessão","passwordsMismatch":"As palavras-passe não coincidem.","passwordUpdated":"A sua palavra-passe foi atualizada. Já pode iniciar sessão."
+  },
+  "onboarding": {
+    "previous":"Passo anterior","progress":"Passo {{current}} de {{total}}","creating":"A criar o seu plano","failed":"Não foi possível concluir","failureMessage":"Não foi possível guardar as suas preferências. Tente novamente.",
+    "steps": {
+      "journey":{"eyebrow":"A sua jornada","title":"Bem-vindo à Koino.","subtitle":"Diga-nos onde está hoje para criarmos um primeiro plano adequado a si.","options":{"new":{"title":"Estou a começar","description":"Sou novo na Bíblia e quero aprender"},"deepen":{"title":"Aprofundar o meu conhecimento","description":"Quero desenvolver o que já sei"},"habit":{"title":"Criar um hábito diário","description":"Quero manter um ritmo de leitura consistente"}}},
+      "start":{"eyebrow":"Ponto de partida","title":"Por onde gostaria de começar?","subtitle":"Escolha a parte das Escrituras que dará início ao seu primeiro plano.","options":{"gospels":{"title":"Os Evangelhos","description":"A vida e os ensinamentos de Jesus","detail":"Comece pela história no centro da fé cristã."},"old":{"title":"O Antigo Testamento","description":"Fundamentos, história e sabedoria","detail":"Conheça as promessas e histórias que moldam a nossa fé."},"new":{"title":"O Novo Testamento","description":"Cartas e a Igreja primitiva","detail":"Descubra a vida cristã e o início da Igreja."}}},
+      "rhythm":{"eyebrow":"Ritmo diário","title":"Quando prefere ler?","subtitle":"Escolha o momento em que tem mais probabilidade de encontrar tranquilidade.","options":{"morning":{"title":"De manhã cedo","description":"Comece o dia com a mente clara"},"afternoon":{"title":"Durante o dia","description":"Faça uma pausa, leia e recomece"},"evening":{"title":"À noite","description":"Termine o dia com reflexão"}}},
+      "pace":{"eyebrow":"A sua rotina","title":"Como é o seu ritmo de trabalho?","subtitle":"A sua rotina ajuda-nos a encaixar uma leitura que consiga manter.","options":{"steady":{"title":"Horário regular","description":"Uma rotina previsível com horas definidas"},"flexible":{"title":"Tenho um horário flexível","description":"As minhas horas variam de dia para dia"}}},
+      "capacity":{"eyebrow":"Tempo de leitura","title":"Quanto tempo pode reservar?","subtitle":"Escolha uma meta diária realista. Poderá ajustá-la mais tarde.","options":{"ten":{"title":"10 minutos","description":"Um compromisso diário leve"},"twenty":{"title":"20 minutos","description":"Um período consistente de leitura focada"},"thirty":{"title":"30+ minutos","description":"Tempo para ler e refletir com profundidade"}}}
+    }
+  },
+  "pages": {
+    "home":{"subtitle":"Vamos aproximar-nos de Deus juntos.","morning":"Bom dia","afternoon":"Boa tarde","evening":"Boa noite"},
+    "plans":{"title":"Planos","subtitle":"Permaneça constante na Palavra de Deus com planos de leitura intencionais.","current":"O meu plano atual","route":"O seu percurso de leitura"},
+    "bible":{"title":"Bíblia","subtitle":"Leia, estude e cresça na Palavra de Deus.","version":"Versão","testament":"Testamento","book":"Livro","chapter":"Capítulo","verse":"Versículo","oldTestament":"Antigo Testamento","newTestament":"Novo Testamento","unavailable":"Bíblia indisponível"},
+    "reading":{"today":"Leitura de hoje","progress":"Progresso da leitura","unavailable":"Leitura indisponível"},
+    "community":{"title":"Comunidade","subtitle":"Partilhe as Escrituras, faça perguntas e encoraje outras pessoas."},
+    "chat":{"title":"Conversas","subtitle":"Conversas privadas com os seus amigos na Koino."},
+    "bookmarks":{"title":"Marcadores","subtitle":"Volte aos versículos que guardou ao longo do caminho."}
+  },
+  "watch": {
+    "title":"Assistir","subtitle":"Veja vídeos que inspiram, ensinam e fortalecem a sua fé.","contentLanguage":"Idioma do conteúdo","english":"Inglês","portuguese":"Português","all":"Todos","allDescription":"Toda a biblioteca de vídeos da Koino","featured":"Em destaque","categories":"Categorias","insideTitle":"Assista dentro da Koino","insideDescription":"Cada item abre no leitor da Koino, com fila integrada e reprodução incorporada do YouTube.","emptyTitle":"Os vídeos em português chegam em breve","emptyDescription":"Escolha Inglês para ver o catálogo atual da Koino. O conteúdo em português aparecerá aqui quando estiver pronto.","unavailable":"Conteúdo indisponível",
+    "categoriesMap":{"TEACHING_PREACHING":{"label":"Ensino e Pregação","description":"Ensino bíblico e ministério"},"WORSHIP":{"label":"Adoração","description":"Canções para oração e louvor"},"DEVOTIONALS":{"label":"Devocionais","description":"Momentos tranquilos para cada dia"},"TESTIMONIES":{"label":"Testemunhos","description":"Histórias de fé e coragem"},"BIBLE_STUDY":{"label":"Estudo Bíblico","description":"Aprofunde-se nas Escrituras"},"PRAYER":{"label":"Oração","description":"Desenvolva uma vida constante de oração"},"FORGIVENESS":{"label":"Perdão","description":"Graça, cura e restauração"},"FINANCES":{"label":"Finanças","description":"Mordomia e provisão segundo a Bíblia"}}
+  },
+  "settings":{"title":"Definições","subtitle":"Gira o seu perfil e os dados da conta.","profile":"Informações do perfil","profileSubtitle":"Atualize os seus dados pessoais.","photo":"Fotografia de perfil","photoHelp":"JPG, PNG ou WebP. Máximo de 5 MB.","changePhoto":"Alterar fotografia","remove":"Remover","fullName":"Nome completo","username":"Nome de utilizador","email":"Email","timeZone":"Fuso horário","language":"Idioma","english":"English","portuguese":"Português (Brasil)","bio":"Sobre si","country":"País","location":"Localização","deactivate":"Desativar conta"},
+  "mobile":{"eyebrow":"É necessário um computador","title":"A Koino ainda não está disponível no telemóvel.","message":"Por enquanto, utilize um tablet, portátil ou computador.","coming":"Em breve","comingMessage":"Estamos a preparar a experiência Koino para dispositivos móveis.","thanks":"Obrigado pela compreensão"},
+  "errors":{"service":"A Koino está temporariamente indisponível. Estamos a trabalhar para repor o serviço.","connect":"Não foi possível ligar à Koino. Tente novamente em breve.","session":"A sua sessão expirou. Inicie sessão novamente."}
+}

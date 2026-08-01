@@ -49,9 +49,16 @@ public class UserService {
         return createUser(fullname, email, password, true);
     }
 
-    public User createPendingUser(String fullname, String email, String password) {
+    public User createPendingUser(
+        String fullname,
+        String email,
+        String password,
+        String language
+    ) {
         com.koino.backend.utils.PasswordPolicy.requireStrong(password);
-        return createUser(fullname, email, password, false);
+        User user = createUser(fullname, email, password, false);
+        user.setLanguage(normalizeLanguage(language));
+        return userRepository.save(user);
     }
 
     private User createUser(
@@ -101,7 +108,12 @@ public class UserService {
     }
 
     @Transactional
-    public User loginGoogleUser(String email, String fullname, String pictureUrl) {
+    public User loginGoogleUser(
+        String email,
+        String fullname,
+        String pictureUrl,
+        String language
+    ) {
         String normalizedEmail = normalizeEmail(email);
         User user = userRepository.findByEmail(normalizedEmail);
         if (user == null) {
@@ -117,6 +129,7 @@ public class UserService {
             ));
             user.setUsername(generateUsername(user.getFullname()));
             user.setCreatedAt(LocalDateTime.now());
+            user.setLanguage(normalizeLanguage(language));
         }
         if (!user.isActive()) {
             throw new IllegalArgumentException("This account is deactivated");
@@ -130,6 +143,12 @@ public class UserService {
         user = userRepository.save(user);
         recordLogin(user, LocalDate.now());
         return user;
+    }
+
+    private String normalizeLanguage(String language) {
+        return language != null && language.toLowerCase(Locale.ROOT).startsWith("pt")
+            ? "pt"
+            : "en";
     }
 
     @Transactional

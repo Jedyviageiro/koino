@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   CircleCheck,
   CircleX,
@@ -88,9 +89,11 @@ function PasswordField({
   autoComplete,
   disabled = false,
   autoFocus = false,
-  placeholder = 'Password',
+  placeholder,
 }) {
+  const { t } = useTranslation()
   const [visible, setVisible] = useState(false)
+  const resolvedPlaceholder = placeholder || t('auth.password')
 
   return (
     <div className="flex h-[49px] items-center rounded-[11px] border border-[#dedfe3] bg-white px-3">
@@ -105,8 +108,8 @@ function PasswordField({
         type={visible ? 'text' : 'password'}
         value={value}
         onChange={onChange}
-        placeholder={placeholder}
-        aria-label={placeholder}
+        placeholder={resolvedPlaceholder}
+        aria-label={resolvedPlaceholder}
         autoComplete={autoComplete}
         required
         minLength={6}
@@ -119,8 +122,8 @@ function PasswordField({
         type="button"
         onClick={() => setVisible((current) => !current)}
         className="flex h-7 w-7 shrink-0 items-center justify-center text-[#92959c] hover:text-[#555860] focus-visible:outline-2 focus-visible:outline-[#e8a33d]"
-        aria-label={visible ? 'Hide password' : 'Show password'}
-        title={visible ? 'Hide password' : 'Show password'}
+        aria-label={visible ? t('auth.hidePassword') : t('auth.showPassword')}
+        title={visible ? t('auth.hidePassword') : t('auth.showPassword')}
       >
         {visible ? (
           <EyeOff className="h-4 w-4" strokeWidth={1.7} />

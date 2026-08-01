@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { LoaderCircle, Mail } from 'lucide-react'
 import AuthLayout from '@/components/auth/shared/AuthLayout.jsx'
 import { AuthField } from '@/components/auth/shared/AuthField.jsx'
 import { requestPasswordReset } from '@/features/auth/authService.js'
 
 function ForgotPasswordPage({ onNavigate }) {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -26,8 +28,8 @@ function ForgotPasswordPage({ onNavigate }) {
   return (
     <AuthLayout
       mode="login"
-      title="Reset your password."
-      subtitle="We will email you a secure reset link."
+      title={t('auth.resetTitle')}
+      subtitle={t('auth.resetSubtitle')}
       onNavigate={onNavigate}
       hideSwitcher
     >
@@ -37,7 +39,7 @@ function ForgotPasswordPage({ onNavigate }) {
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="Email address"
+          placeholder={t('auth.email')}
           autoComplete="email"
           maxLength={254}
           autoFocus
@@ -51,14 +53,14 @@ function ForgotPasswordPage({ onNavigate }) {
           className="flex h-[47px] w-full items-center justify-center gap-2 rounded-[11px] bg-[#e8a33d] text-[12px] font-semibold text-white disabled:bg-[#f2dfbf]"
         >
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-          {loading ? 'Sending' : 'Send Reset Link'}
+          {loading ? t('auth.sending') : t('auth.sendReset')}
         </button>
         <button
           type="button"
           onClick={() => onNavigate('/')}
           className="mt-4 h-9 w-full text-[10px] font-semibold text-[#555b66]"
         >
-          Back to Login
+          {t('auth.backToLogin')}
         </button>
       </form>
     </AuthLayout>

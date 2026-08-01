@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   BookOpen,
   MessageCircleHeart,
@@ -15,54 +16,47 @@ import StatusModal from '@/components/auth/shared/StatusModal.jsx'
 import { AppPageLayout, PageHeader } from '@/components/common/AppPageLayout.jsx'
 import { getAuthSession, getAuthToken } from '@/features/auth/authStorage.js'
 import { getWatchCatalog } from '@/features/watch/watchService.js'
+import { normalizeLocale } from '@/i18n/index.js'
 
 const categoryMetadata = {
   TEACHING_PREACHING: {
     value: 'TEACHING_PREACHING',
-    label: 'Teaching & Preaching',
-    description: 'Biblical teaching and ministry',
+    translationKey: 'TEACHING_PREACHING',
     icon: Mic2,
   },
   WORSHIP: {
     value: 'WORSHIP',
-    label: 'Worship',
-    description: 'Songs for prayer and praise',
+    translationKey: 'WORSHIP',
     icon: Music2,
   },
   DEVOTIONALS: {
     value: 'DEVOTIONALS',
-    label: 'Devotionals',
-    description: 'Quiet moments for each day',
+    translationKey: 'DEVOTIONALS',
     icon: SunMedium,
   },
   TESTIMONIES: {
     value: 'TESTIMONIES',
-    label: 'Testimonies',
-    description: 'Stories of faith and courage',
+    translationKey: 'TESTIMONIES',
     icon: MessageCircleHeart,
   },
   BIBLE_STUDY: {
     value: 'BIBLE_STUDY',
-    label: 'Bible Study',
-    description: 'Go deeper into Scripture',
+    translationKey: 'BIBLE_STUDY',
     icon: BookOpen,
   },
   PRAYER: {
     value: 'PRAYER',
-    label: 'Prayer',
-    description: 'Grow a steady life of prayer',
+    translationKey: 'PRAYER',
     icon: HandHeart,
   },
   FORGIVENESS: {
     value: 'FORGIVENESS',
-    label: 'Forgiveness',
-    description: 'Grace, healing, and restoration',
+    translationKey: 'FORGIVENESS',
     icon: HeartHandshake,
   },
   FINANCES: {
     value: 'FINANCES',
-    label: 'Finances',
-    description: 'Biblical stewardship and provision',
+    translationKey: 'FINANCES',
     icon: CircleDollarSign,
   },
 }
@@ -88,7 +82,13 @@ function VideoArtwork({ video, className = '' }) {
 }
 
 function WatchPage({ onNavigate }) {
+  const { t, i18n } = useTranslation()
   const session = getAuthSession()
+  const [contentLanguage, setContentLanguage] = useState(() =>
+    normalizeLocale(session?.language || i18n.resolvedLanguage) === 'pt-BR'
+      ? 'pt'
+      : 'en',
+  )
   const [videos, setVideos] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('ALL')
   const [selectedVideo, setSelectedVideo] = useState(null)
@@ -102,7 +102,7 @@ function WatchPage({ onNavigate }) {
     }
 
     let active = true
-    getWatchCatalog()
+    getWatchCatalog(contentLanguage)
       .then((catalog) => {
         if (!active) return
         setVideos(catalog)
@@ -114,7 +114,7 @@ function WatchPage({ onNavigate }) {
       })
       .catch((requestError) => {
         if (active) {
-          setError(requestError.message || 'Unable to load Watch.')
+          setError(requestError.message || t('watch.unavailable'))
         }
       })
       .finally(() => {
@@ -124,7 +124,7 @@ function WatchPage({ onNavigate }) {
     return () => {
       active = false
     }
-  }, [onNavigate])
+  }, [contentLanguage, onNavigate, t])
 
   const visibleVideos = useMemo(
     () =>
@@ -139,24 +139,28 @@ function WatchPage({ onNavigate }) {
     return [
       {
         value: 'ALL',
-        label: 'All',
-        description: 'The full Koino video library',
+        label: t('watch.all'),
+        description: t('watch.allDescription'),
         icon: Play,
       },
       ...available.map((value) =>
-        categoryMetadata[value] || {
+        categoryMetadata[value] ? {
+          ...categoryMetadata[value],
+          label: t(`watch.categoriesMap.${value}.label`),
+          description: t(`watch.categoriesMap.${value}.description`),
+        } : {
           value,
           label: value
             .toLowerCase()
             .split('_')
             .map((word) => word[0].toUpperCase() + word.slice(1))
             .join(' '),
-          description: 'More to watch inside Koino',
+          description: t('watch.insideDescription'),
           icon: TvMinimalPlay,
         },
       ),
     ]
-  }, [videos])
+  }, [t, videos])
 
   const categoryCounts = useMemo(
     () =>
@@ -183,8 +187,21 @@ function WatchPage({ onNavigate }) {
       activePath="/watch"
     >
           <PageHeader
-            title="Watch"
-            subtitle="Watch videos that inspire, teach, and strengthen your faith."
+            title={t('watch.title')}
+            subtitle={t('watch.subtitle')}
+            actions={(
+              <label className="flex h-9 items-center gap-2 rounded-[7px] border border-[#dfe3e8] bg-white px-3 text-[10px] font-medium text-[#4f5866]">
+                <span>{t('watch.contentLanguage')}</span>
+                <select
+                  value={contentLanguage}
+                  onChange={(event) => setContentLanguage(event.target.value)}
+                  className="bg-transparent font-semibold text-[#81571d] outline-none"
+                >
+                  <option value="pt">{t('watch.portuguese')}</option>
+                  <option value="en">{t('watch.english')}</option>
+                </select>
+              </label>
+            )}
             className="mb-5"
           />
 
@@ -196,7 +213,7 @@ function WatchPage({ onNavigate }) {
           ) : (
             <div className="grid items-start gap-7 xl:grid-cols-[minmax(0,1fr)_280px]">
               <div className="min-w-0">
-                {selectedVideo && (
+                {selectedVideo ? (
                   <section>
                     <div className="aspect-video overflow-hidden rounded-[8px] bg-black">
                       <iframe
@@ -210,7 +227,7 @@ function WatchPage({ onNavigate }) {
                     </div>
                     <div className="mt-4">
                       <p className="text-[10px] font-semibold uppercase text-[#b27413]">
-                        Featured
+                        {t('watch.featured')}
                       </p>
                       <h2 className="mt-1.5 text-[24px] font-semibold leading-tight">
                         {selectedVideo.title}
@@ -219,6 +236,12 @@ function WatchPage({ onNavigate }) {
                         {selectedVideo.creator}
                       </p>
                     </div>
+                  </section>
+                ) : (
+                  <section className="flex min-h-[330px] flex-col items-center justify-center rounded-[8px] border border-[#e2e4e8] bg-white px-8 text-center">
+                    <TvMinimalPlay className="h-9 w-9 text-[#d2953d]" strokeWidth={1.4} />
+                    <h2 className="mt-4 text-[18px] font-semibold">{t('watch.emptyTitle')}</h2>
+                    <p className="mt-2 max-w-[430px] text-[11px] leading-5 text-[#737b89]">{t('watch.emptyDescription')}</p>
                   </section>
                 )}
 
@@ -270,7 +293,7 @@ function WatchPage({ onNavigate }) {
               <aside className="space-y-4 xl:sticky xl:top-6">
                 <section className="rounded-[8px] border border-[#dfe3e8] bg-white p-4">
                   <h2 className="font-sans text-[13px] font-semibold">
-                    Categories
+                    {t('watch.categories')}
                   </h2>
                   <div className="mt-3 space-y-1">
                     {categories.slice(1).map((category) => {
@@ -308,11 +331,10 @@ function WatchPage({ onNavigate }) {
 
                 <section className="rounded-[8px] border border-[#dfe3e8] bg-white p-4">
                   <h2 className="font-sans text-[13px] font-semibold">
-                    Watch inside Koino
+                    {t('watch.insideTitle')}
                   </h2>
                   <p className="mt-2 text-[10px] leading-5 text-[#747c8a]">
-                    Every catalog item now opens in the Koino player with an
-                    in-app queue, using YouTube&apos;s embedded playback.
+                    {t('watch.insideDescription')}
                   </p>
                 </section>
               </aside>
@@ -321,7 +343,7 @@ function WatchPage({ onNavigate }) {
       {error && (
         <StatusModal
           type="error"
-          title="Watch unavailable"
+          title={t('watch.unavailable')}
           message={error}
           onClose={() => setError('')}
         />

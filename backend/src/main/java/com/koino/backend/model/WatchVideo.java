@@ -51,4 +51,11 @@ public class WatchVideo {
 
     @Column(nullable = false)
     private boolean featured;
+
+    @Column(
+        nullable = false,
+        length = 8,
+        columnDefinition = "varchar(8) default 'en'"
+    )
+    private String contentLanguage = "en";
 }

@@ -11,6 +11,7 @@ public record WatchVideoResponse(
     String youtubeUrl,
     String youtubeVideoId,
     int sortOrder,
-    boolean featured
+    boolean featured,
+    String contentLanguage
 ) {
 }

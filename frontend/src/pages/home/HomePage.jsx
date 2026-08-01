@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   AppPageLayout,
   PageHeader,
@@ -13,6 +14,7 @@ import {
 } from '@/features/home/homeService.js'
 
 function HomePage({ onNavigate }) {
+  const { t } = useTranslation()
   const [data, setData] = useState(getCachedHomeData)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(() => !getCachedHomeData())
@@ -70,8 +72,11 @@ function HomePage({ onNavigate }) {
 
   const firstName = session?.fullname?.trim().split(/\s+/)[0] || 'Friend'
   const hour = new Date().getHours()
-  const greeting =
-    hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+  const greeting = hour < 12
+    ? t('pages.home.morning')
+    : hour < 18
+      ? t('pages.home.afternoon')
+      : t('pages.home.evening')
   const today = new Intl.DateTimeFormat('en', {
     weekday: 'long',
     month: 'long',
@@ -86,7 +91,7 @@ function HomePage({ onNavigate }) {
     >
         <PageHeader
           title={`${greeting}, ${firstName}`}
-          subtitle="Let's grow closer to God together."
+          subtitle={t('pages.home.subtitle')}
           eyebrow={<span className="lg:hidden">{today}</span>}
           className="mb-6"
         />
@@ -119,7 +124,7 @@ function HomePage({ onNavigate }) {
       {error && (
         <StatusModal
           type="error"
-          title="Something went wrong"
+          title={t('common.errorTitle')}
           message={error}
           onClose={() => setError('')}
         />

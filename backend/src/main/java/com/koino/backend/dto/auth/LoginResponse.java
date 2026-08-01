@@ -6,7 +6,8 @@ public record LoginResponse(
     String refreshToken,
     String email,
     String fullname,
-    String profilePictureUrl
+    String profilePictureUrl,
+    String language
 ) {
     
 }

@@ -1,3 +1,4 @@
 # JVM crash diagnostics
 hs_err_pid*.log
 replay_pid*.log
+backend/data/licensed-bibles/

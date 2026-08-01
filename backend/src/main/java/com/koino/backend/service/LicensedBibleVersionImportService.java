@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,40 @@ public class LicensedBibleVersionImportService implements CommandLineRunner {
     private static final String FLAT_SOURCE_FILE = "bible-niv.txt";
     private static final String FLAT_REFERENCE_MANIFEST =
         "niv-reference-manifest.json";
+    private static final String PORTABLE_JSON_FILE = "bible.json";
+    private static final Map<String, String> PORTUGUESE_BOOK_NAMES = Map.ofEntries(
+        Map.entry("genesis", "Genesis"), Map.entry("exodo", "Exodus"),
+        Map.entry("levitico", "Leviticus"), Map.entry("numeros", "Numbers"),
+        Map.entry("deuteronomio", "Deuteronomy"), Map.entry("josue", "Joshua"),
+        Map.entry("juizes", "Judges"), Map.entry("rute", "Ruth"),
+        Map.entry("1 reis", "1 Kings"), Map.entry("2 reis", "2 Kings"),
+        Map.entry("1 cronicas", "1 Chronicles"), Map.entry("2 cronicas", "2 Chronicles"),
+        Map.entry("esdras", "Ezra"), Map.entry("neemias", "Nehemiah"),
+        Map.entry("ester", "Esther"), Map.entry("jo", "Job"),
+        Map.entry("salmos", "Psalms"), Map.entry("proverbios", "Proverbs"),
+        Map.entry("eclesiastes", "Ecclesiastes"), Map.entry("canticos", "Song of Solomon"),
+        Map.entry("cantico dos canticos", "Song of Solomon"), Map.entry("isaias", "Isaiah"),
+        Map.entry("lamentacoes", "Lamentations"), Map.entry("ezequiel", "Ezekiel"),
+        Map.entry("oseias", "Hosea"), Map.entry("amos", "Amos"),
+        Map.entry("obadias", "Obadiah"), Map.entry("jonas", "Jonah"),
+        Map.entry("miqueias", "Micah"), Map.entry("naum", "Nahum"),
+        Map.entry("habacuque", "Habakkuk"), Map.entry("sofonias", "Zephaniah"),
+        Map.entry("ageu", "Haggai"), Map.entry("zacarias", "Zechariah"),
+        Map.entry("malaquias", "Malachi"), Map.entry("mateus", "Matthew"),
+        Map.entry("marcos", "Mark"), Map.entry("lucas", "Luke"),
+        Map.entry("joao", "John"), Map.entry("atos", "Acts"),
+        Map.entry("romanos", "Romans"), Map.entry("1 corintios", "1 Corinthians"),
+        Map.entry("2 corintios", "2 Corinthians"), Map.entry("galatas", "Galatians"),
+        Map.entry("efesios", "Ephesians"), Map.entry("filipenses", "Philippians"),
+        Map.entry("colossenses", "Colossians"), Map.entry("1 tessalonicenses", "1 Thessalonians"),
+        Map.entry("2 tessalonicenses", "2 Thessalonians"), Map.entry("1 timoteo", "1 Timothy"),
+        Map.entry("2 timoteo", "2 Timothy"), Map.entry("tito", "Titus"),
+        Map.entry("filemom", "Philemon"), Map.entry("hebreus", "Hebrews"),
+        Map.entry("tiago", "James"), Map.entry("1 pedro", "1 Peter"),
+        Map.entry("2 pedro", "2 Peter"), Map.entry("1 joao", "1 John"),
+        Map.entry("2 joao", "2 John"), Map.entry("3 joao", "3 John"),
+        Map.entry("judas", "Jude"), Map.entry("apocalipse", "Revelation")
+    );
     private static final Set<String> MERGED_CONTINUATION_REFERENCES = Set.of(
         "Exodus|30:24",
         "Numbers|31:33",
@@ -180,11 +215,50 @@ public class LicensedBibleVersionImportService implements CommandLineRunner {
     }
 
     private Map<String, String> loadTranslations() throws Exception {
+        Path portableJson = sourceDirectory.resolve(PORTABLE_JSON_FILE);
+        if (Files.isRegularFile(portableJson)) {
+            return loadPortableJsonTranslations(portableJson);
+        }
         Path flatSource = sourceDirectory.resolve(FLAT_SOURCE_FILE);
         if (Files.isRegularFile(flatSource)) {
             return loadFlatTextTranslations(flatSource);
         }
         return loadJsonTranslations();
+    }
+
+    private Map<String, String> loadPortableJsonTranslations(Path source)
+        throws Exception {
+        List<PortableBibleVerse> verses;
+        try (InputStream input = Files.newInputStream(source)) {
+            verses = objectMapper.readValue(input, new TypeReference<>() {});
+        }
+        Map<String, String> translations = new HashMap<>();
+        for (PortableBibleVerse verse : verses) {
+            if (verse.book() == null || verse.text() == null
+                || verse.chapter() < 1 || verse.verse() < 1) {
+                throw new IllegalStateException(
+                    "Licensed Bible JSON contains an invalid verse"
+                );
+            }
+            String key = referenceKey(
+                canonicalBookName(verse.book()),
+                verse.chapter(),
+                verse.verse()
+            );
+            if (translations.putIfAbsent(key, verse.text()) != null) {
+                throw new IllegalStateException(
+                    "Licensed Bible JSON contains duplicate reference " + key
+                );
+            }
+        }
+        return translations;
+    }
+
+    private String canonicalBookName(String book) {
+        String normalized = Normalizer.normalize(book.trim(), Normalizer.Form.NFD)
+            .replaceAll("\\p{M}+", "")
+            .toLowerCase(Locale.ROOT);
+        return PORTUGUESE_BOOK_NAMES.getOrDefault(normalized, book.trim());
     }
 
     private Map<String, String> loadFlatTextTranslations(Path source)
@@ -361,5 +435,12 @@ public class LicensedBibleVersionImportService implements CommandLineRunner {
         String book,
         List<Integer> chapterVerseCounts,
         List<String> omitted
+    ) {}
+
+    private record PortableBibleVerse(
+        String book,
+        int chapter,
+        int verse,
+        String text
     ) {}
 }

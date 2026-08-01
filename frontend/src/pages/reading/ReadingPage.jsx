@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AppPageLayout } from '@/components/common/AppPageLayout.jsx'
 import BibleReader from '@/components/reading/BibleReader.jsx'
 import BookmarkModal from '@/components/reading/BookmarkModal.jsx'
@@ -14,6 +15,7 @@ import {
 } from '@/features/reading/readingService.js'
 
 function ReadingPage({ onNavigate }) {
+  const { t } = useTranslation()
   const [data, setData] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(1)
   const [textSize, setTextSize] = useState(1)
@@ -204,7 +206,7 @@ function ReadingPage({ onNavigate }) {
       {error && (
         <StatusModal
           type="error"
-          title="Reading unavailable"
+          title={t('pages.reading.unavailable')}
           message={error}
           onClose={() => {
             setError('')

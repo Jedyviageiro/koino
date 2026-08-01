@@ -8,6 +8,7 @@ import {
   notifyLoggedOut,
   saveAuthSession,
 } from '@/features/auth/authStorage.js'
+import i18n, { apiLanguage } from '@/i18n/index.js'
 
 export const STATUS_RETURN_PATH_KEY = 'koino.status.returnPath'
 let serviceRedirectStarted = false
@@ -36,7 +37,7 @@ function notifyServiceUnavailable() {
 
 function friendlyErrorMessage(payload, status) {
   if (status >= 500) {
-    return 'Koino is temporarily unavailable. We are working to restore it.'
+    return i18n.t('errors.service')
   }
   const message =
     typeof payload === 'object' && payload?.message
@@ -56,7 +57,7 @@ function friendlyErrorMessage(payload, status) {
   ) {
     return message
   }
-  return 'The request could not be completed. Please check your details and try again.'
+  return i18n.t('common.genericError')
 }
 
 export async function apiRequest(
@@ -64,6 +65,7 @@ export async function apiRequest(
   { authenticated = true, headers, _retried = false, ...options } = {},
 ) {
   const requestHeaders = new Headers(headers)
+  requestHeaders.set('X-Koino-Language', apiLanguage())
   let token = authenticated ? getAuthToken() : null
 
   if (
@@ -94,7 +96,7 @@ export async function apiRequest(
   } catch (error) {
     notifyServiceUnavailable()
     throw new ApiError(
-      'We could not connect to Koino. Please try again shortly.',
+      i18n.t('errors.connect'),
       0,
       error,
     )
@@ -198,7 +200,7 @@ function expireSession(status = 401, payload = null) {
   clearAuthSession()
   notifyLoggedOut()
   throw new ApiError(
-    'Your session expired. Please log in again.',
+    i18n.t('errors.session'),
     status,
     payload,
   )

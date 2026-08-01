@@ -36,7 +36,7 @@ public class GoogleIdentityService {
         this.decoder = googleDecoder;
     }
 
-    public User authenticate(String credential) {
+    public User authenticate(String credential, String language) {
         if (clientId == null || clientId.isBlank()) {
             throw new IllegalStateException("Google sign-in is unavailable");
         }
@@ -56,7 +56,8 @@ public class GoogleIdentityService {
             User user = userService.loginGoogleUser(
                 email,
                 jwt.getClaimAsString("name"),
-                jwt.getClaimAsString("picture")
+                jwt.getClaimAsString("picture"),
+                language
             );
             return profilePictureService.importGoogleAvatar(
                 user,

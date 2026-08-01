@@ -7,6 +7,9 @@ import '@fontsource/poppins/latin-700.css'
 import '@/styles/global.css'
 import App from '@/app/App.jsx'
 import AppErrorBoundary from '@/components/common/AppErrorBoundary.jsx'
+import { initializeI18n } from '@/i18n/index.js'
+
+await initializeI18n()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
