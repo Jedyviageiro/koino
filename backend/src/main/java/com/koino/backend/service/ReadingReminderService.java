@@ -57,13 +57,7 @@ public class ReadingReminderService {
 
             task.setLastReminderSentOn(localDate);
             taskRepository.save(task);
-            notificationService.create(
-                user,
-                "Today's reading is waiting",
-                "Take a few quiet minutes to continue your plan.",
-                "READING_REMINDER",
-                task.getTaskId().toString()
-            );
+            notificationService.createReadingReminder(user, task.getTaskId());
             if (user.isEmailVerified()) {
                 emailService.sendReadingReminder(user);
             }

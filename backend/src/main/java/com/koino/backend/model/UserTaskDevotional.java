@@ -57,6 +57,9 @@ public class UserTaskDevotional {
     @Column(nullable = false)
     private String modelName;
 
+    @Column(length = 8)
+    private String language;
+
     @Column(nullable = false)
     private Instant generatedAt;
 }

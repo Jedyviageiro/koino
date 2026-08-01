@@ -1,671 +1,2882 @@
 [
-  {"catalogKey":"core-001","prompt":"Who built the ark?","options":["Moses","Noah","Abraham","David"],"correctOption":1,"difficulty":1,"category":"People","reference":"Genesis 6:14","explanation":"God instructed Noah to build the ark."},
-  {"catalogKey":"core-002","prompt":"Who defeated Goliath?","options":["Saul","Jonathan","David","Samuel"],"correctOption":2,"difficulty":1,"category":"People","reference":"1 Samuel 17","explanation":"David defeated Goliath with a sling and a stone."},
-  {"catalogKey":"core-003","prompt":"In which town was Jesus born?","options":["Nazareth","Jerusalem","Bethany","Bethlehem"],"correctOption":3,"difficulty":1,"category":"Jesus","reference":"Matthew 2:1","explanation":"Jesus was born in Bethlehem of Judea."},
-  {"catalogKey":"core-004","prompt":"How many apostles did Jesus appoint?","options":["7","10","12","14"],"correctOption":2,"difficulty":1,"category":"Jesus","reference":"Mark 3:14","explanation":"Jesus appointed twelve apostles."},
-  {"catalogKey":"core-005","prompt":"Who was swallowed by a great fish?","options":["Jonah","Elijah","Elisha","Isaiah"],"correctOption":0,"difficulty":1,"category":"Prophets","reference":"Jonah 1:17","explanation":"The Lord appointed a great fish to swallow Jonah."},
-  {"catalogKey":"core-006","prompt":"What is the first book of the Bible?","options":["Exodus","Genesis","Psalms","Matthew"],"correctOption":1,"difficulty":1,"category":"Bible","reference":"Genesis 1:1","explanation":"Genesis is the first book of the Bible."},
-  {"catalogKey":"core-007","prompt":"Who led Israel out of Egypt?","options":["Aaron","Joshua","Moses","Joseph"],"correctOption":2,"difficulty":1,"category":"People","reference":"Exodus 12-14","explanation":"God used Moses to lead Israel out of Egypt."},
-  {"catalogKey":"core-008","prompt":"What did Jesus turn water into at Cana?","options":["Oil","Wine","Milk","Honey"],"correctOption":1,"difficulty":1,"category":"Miracles","reference":"John 2:1-11","explanation":"At Cana, Jesus turned water into wine."},
-  {"catalogKey":"core-009","prompt":"Who baptized Jesus?","options":["Peter","John the Baptist","James","Andrew"],"correctOption":1,"difficulty":1,"category":"Jesus","reference":"Matthew 3:13","explanation":"John baptized Jesus in the Jordan."},
-  {"catalogKey":"core-010","prompt":"On which day did Jesus rise from the dead?","options":["The same day","The second day","The third day","The seventh day"],"correctOption":2,"difficulty":1,"category":"Jesus","reference":"1 Corinthians 15:4","explanation":"Christ was raised on the third day."},
-
-  {"catalogKey":"core-011","prompt":"Who interpreted Pharaoh's dreams in Egypt?","options":["Daniel","Joseph","Moses","Aaron"],"correctOption":1,"difficulty":2,"category":"People","reference":"Genesis 41","explanation":"Joseph interpreted Pharaoh's dreams about coming abundance and famine."},
-  {"catalogKey":"core-012","prompt":"Which judge was known for extraordinary strength?","options":["Gideon","Jephthah","Samson","Ehud"],"correctOption":2,"difficulty":2,"category":"Judges","reference":"Judges 13-16","explanation":"God gave Samson extraordinary strength."},
-  {"catalogKey":"core-013","prompt":"Who was the first king of Israel?","options":["David","Saul","Solomon","Samuel"],"correctOption":1,"difficulty":2,"category":"Kings","reference":"1 Samuel 10","explanation":"Samuel anointed Saul as Israel's first king."},
-  {"catalogKey":"core-014","prompt":"Which disciple walked on water toward Jesus?","options":["John","Thomas","Peter","Matthew"],"correctOption":2,"difficulty":2,"category":"Apostles","reference":"Matthew 14:29","explanation":"Peter stepped out of the boat and walked toward Jesus."},
-  {"catalogKey":"core-015","prompt":"Who climbed a sycamore tree to see Jesus?","options":["Nicodemus","Zacchaeus","Bartimaeus","Jairus"],"correctOption":1,"difficulty":2,"category":"Gospels","reference":"Luke 19:4","explanation":"Zacchaeus climbed a sycamore tree because he was short."},
-  {"catalogKey":"core-016","prompt":"Which city had walls that fell after Israel marched around them?","options":["Ai","Jericho","Hebron","Bethel"],"correctOption":1,"difficulty":2,"category":"Places","reference":"Joshua 6","explanation":"Jericho's walls fell after Israel obeyed God's instructions."},
-  {"catalogKey":"core-017","prompt":"Who became queen and saved her people from destruction?","options":["Ruth","Deborah","Esther","Hannah"],"correctOption":2,"difficulty":2,"category":"Women","reference":"Esther 4-8","explanation":"Queen Esther interceded for the Jewish people."},
-  {"catalogKey":"core-018","prompt":"What was Paul's name before he was commonly called Paul?","options":["Simon","Saul","Silas","Stephen"],"correctOption":1,"difficulty":2,"category":"Apostles","reference":"Acts 13:9","explanation":"Acts identifies Saul as also being called Paul."},
-  {"catalogKey":"core-019","prompt":"Who was raised from the dead after four days in a tomb?","options":["Jairus","Lazarus","Stephen","Tabitha"],"correctOption":1,"difficulty":2,"category":"Miracles","reference":"John 11","explanation":"Jesus called Lazarus out of the tomb."},
-  {"catalogKey":"core-020","prompt":"What fruit of the Spirit appears first in Galatians 5:22?","options":["Joy","Peace","Love","Patience"],"correctOption":2,"difficulty":2,"category":"Letters","reference":"Galatians 5:22","explanation":"Paul begins the list with love."},
-
-  {"catalogKey":"core-021","prompt":"Which prophet confronted the prophets of Baal on Mount Carmel?","options":["Elisha","Elijah","Isaiah","Jeremiah"],"correctOption":1,"difficulty":3,"category":"Prophets","reference":"1 Kings 18","explanation":"Elijah challenged the prophets of Baal on Mount Carmel."},
-  {"catalogKey":"core-022","prompt":"Who succeeded Moses as leader of Israel?","options":["Caleb","Aaron","Joshua","Eleazar"],"correctOption":2,"difficulty":3,"category":"People","reference":"Joshua 1:1-2","explanation":"God commissioned Joshua after Moses died."},
-  {"catalogKey":"core-023","prompt":"Which couple lied about the price of land they sold?","options":["Aquila and Priscilla","Ananias and Sapphira","Felix and Drusilla","Herod and Herodias"],"correctOption":1,"difficulty":3,"category":"Acts","reference":"Acts 5:1-10","explanation":"Ananias and Sapphira lied about the sale proceeds."},
-  {"catalogKey":"core-024","prompt":"Who asked Jesus, 'What is truth?'","options":["Herod Antipas","Caiaphas","Pontius Pilate","Nicodemus"],"correctOption":2,"difficulty":3,"category":"Gospels","reference":"John 18:38","explanation":"Pilate asked Jesus this question during the trial."},
-  {"catalogKey":"core-025","prompt":"Which prophet saw a valley of dry bones?","options":["Ezekiel","Daniel","Hosea","Joel"],"correctOption":0,"difficulty":3,"category":"Prophets","reference":"Ezekiel 37","explanation":"Ezekiel received the vision of the dry bones."},
-  {"catalogKey":"core-026","prompt":"Who was chosen to replace Judas Iscariot among the Twelve?","options":["Barnabas","Matthias","Silas","Philip"],"correctOption":1,"difficulty":3,"category":"Acts","reference":"Acts 1:26","explanation":"The lot fell to Matthias."},
-  {"catalogKey":"core-027","prompt":"Which church is told it had left its first love?","options":["Smyrna","Pergamum","Ephesus","Laodicea"],"correctOption":2,"difficulty":3,"category":"Revelation","reference":"Revelation 2:4","explanation":"The message to Ephesus says it had abandoned its first love."},
-  {"catalogKey":"core-028","prompt":"Who said, 'Here am I; send me'?","options":["Jeremiah","Samuel","Isaiah","Amos"],"correctOption":2,"difficulty":3,"category":"Prophets","reference":"Isaiah 6:8","explanation":"Isaiah answered God's call in his temple vision."},
-  {"catalogKey":"core-029","prompt":"At whose feet did Paul study according to Acts?","options":["Nicodemus","Gamaliel","Annas","Apollos"],"correctOption":1,"difficulty":3,"category":"Acts","reference":"Acts 22:3","explanation":"Paul said he was educated at the feet of Gamaliel."},
-  {"catalogKey":"core-030","prompt":"Which Gospel opens by calling Jesus 'the Word'?","options":["Matthew","Mark","Luke","John"],"correctOption":3,"difficulty":3,"category":"Gospels","reference":"John 1:1","explanation":"John opens with the Word who was with God and was God."},
-
-  {"catalogKey":"core-031","prompt":"Who found the Book of the Law during Josiah's reign?","options":["Hilkiah","Shaphan","Huldah","Jehoiada"],"correctOption":0,"difficulty":4,"category":"Kings","reference":"2 Kings 22:8","explanation":"Hilkiah the high priest found the Book of the Law."},
-  {"catalogKey":"core-032","prompt":"Which prophet married Gomer?","options":["Amos","Micah","Hosea","Joel"],"correctOption":2,"difficulty":4,"category":"Prophets","reference":"Hosea 1:3","explanation":"Hosea married Gomer as the Lord commanded."},
-  {"catalogKey":"core-033","prompt":"Who was the seller of purple cloth converted in Philippi?","options":["Damaris","Lydia","Priscilla","Phoebe"],"correctOption":1,"difficulty":4,"category":"Acts","reference":"Acts 16:14","explanation":"Lydia was a seller of purple cloth from Thyatira."},
-  {"catalogKey":"core-034","prompt":"Which king saw the handwriting on the wall?","options":["Nebuchadnezzar","Darius","Cyrus","Belshazzar"],"correctOption":3,"difficulty":4,"category":"Daniel","reference":"Daniel 5","explanation":"Belshazzar saw the mysterious writing during his feast."},
-  {"catalogKey":"core-035","prompt":"Who killed the Moabite king Eglon?","options":["Shamgar","Ehud","Othniel","Barak"],"correctOption":1,"difficulty":4,"category":"Judges","reference":"Judges 3:21","explanation":"Ehud, a left-handed judge, struck Eglon."},
-  {"catalogKey":"core-036","prompt":"Which New Testament letter mentions the armor of God?","options":["Romans","Ephesians","Colossians","Hebrews"],"correctOption":1,"difficulty":4,"category":"Letters","reference":"Ephesians 6:10-18","explanation":"Paul describes the armor of God in Ephesians 6."},
-  {"catalogKey":"core-037","prompt":"Who explained the Scriptures to Apollos more accurately?","options":["Paul and Silas","Priscilla and Aquila","Barnabas and Mark","Peter and John"],"correctOption":1,"difficulty":4,"category":"Acts","reference":"Acts 18:26","explanation":"Priscilla and Aquila explained the way of God to Apollos."},
-  {"catalogKey":"core-038","prompt":"On what island was Paul shipwrecked?","options":["Crete","Cyprus","Malta","Patmos"],"correctOption":2,"difficulty":4,"category":"Acts","reference":"Acts 28:1","explanation":"The survivors learned that the island was called Malta."},
-  {"catalogKey":"core-039","prompt":"Which king asked God for wisdom to govern?","options":["Hezekiah","Solomon","Josiah","Jehoshaphat"],"correctOption":1,"difficulty":4,"category":"Kings","reference":"1 Kings 3:9","explanation":"Solomon asked for an understanding heart to judge Israel."},
-  {"catalogKey":"core-040","prompt":"Who carried Jesus' cross on the way to Golgotha?","options":["Joseph of Arimathea","Simon of Cyrene","Nicodemus","Barabbas"],"correctOption":1,"difficulty":4,"category":"Gospels","reference":"Luke 23:26","explanation":"The soldiers compelled Simon of Cyrene to carry the cross."},
-
-  {"catalogKey":"core-041","prompt":"Who wrote down Paul's letter to the Romans and greeted its readers?","options":["Tychicus","Tertius","Timothy","Titus"],"correctOption":1,"difficulty":5,"category":"Letters","reference":"Romans 16:22","explanation":"Tertius identifies himself as the one who wrote the letter."},
-  {"catalogKey":"core-042","prompt":"What was the name of Jonathan's son whom David showed kindness?","options":["Ish-bosheth","Mephibosheth","Abinadab","Merib-baal"],"correctOption":1,"difficulty":5,"category":"Kings","reference":"2 Samuel 9","explanation":"David restored Saul's land to Mephibosheth and welcomed him at his table."},
-  {"catalogKey":"core-043","prompt":"Who fell from a third-story window while Paul was speaking?","options":["Eutychus","Trophimus","Aristarchus","Epaphras"],"correctOption":0,"difficulty":5,"category":"Acts","reference":"Acts 20:9","explanation":"Eutychus fell from the window and Paul embraced him alive."},
-  {"catalogKey":"core-044","prompt":"Which prophet was told to name a son Maher-shalal-hash-baz?","options":["Jeremiah","Ezekiel","Isaiah","Hosea"],"correctOption":2,"difficulty":5,"category":"Prophets","reference":"Isaiah 8:3","explanation":"Isaiah and the prophetess named their son Maher-shalal-hash-baz."},
-  {"catalogKey":"core-045","prompt":"Who used Paul's belt to symbolize his coming imprisonment?","options":["Agabus","Silas","Ananias","Philip"],"correctOption":0,"difficulty":5,"category":"Acts","reference":"Acts 21:10-11","explanation":"The prophet Agabus bound his own hands and feet with Paul's belt."},
-  {"catalogKey":"core-046","prompt":"Which lawyer does Paul ask Titus to help on his journey?","options":["Tertullus","Zenas","Sosthenes","Erastus"],"correctOption":1,"difficulty":5,"category":"Letters","reference":"Titus 3:13","explanation":"Paul names Zenas the lawyer together with Apollos."},
-  {"catalogKey":"core-047","prompt":"Beside which river did Ezekiel receive his opening visions?","options":["Jordan","Euphrates","Chebar","Tigris"],"correctOption":2,"difficulty":5,"category":"Prophets","reference":"Ezekiel 1:1","explanation":"Ezekiel was among the exiles by the Chebar canal."},
-  {"catalogKey":"core-048","prompt":"Who warned the Roman commander about a plot against Paul?","options":["Paul's nephew","Luke","Barnabas","Ananias"],"correctOption":0,"difficulty":5,"category":"Acts","reference":"Acts 23:16","explanation":"The son of Paul's sister heard of the ambush and reported it."},
-  {"catalogKey":"core-049","prompt":"Which judge made a vow before fighting the Ammonites?","options":["Gideon","Samson","Jephthah","Barak"],"correctOption":2,"difficulty":5,"category":"Judges","reference":"Judges 11:30","explanation":"Jephthah made a tragic vow before the battle."},
-  {"catalogKey":"core-050","prompt":"Who brought bread and wine and blessed Abram?","options":["Abimelech","Melchizedek","Mamre","Ephron"],"correctOption":1,"difficulty":5,"category":"Genesis","reference":"Genesis 14:18-19","explanation":"Melchizedek, king of Salem and priest of God Most High, blessed Abram."},
-
-  {"catalogKey":"core-051","prompt":"What were the names of the two Hebrew midwives named in Exodus?","options":["Miriam and Zipporah","Shiphrah and Puah","Leah and Rachel","Hoglah and Milcah"],"correctOption":1,"difficulty":6,"category":"Torah","reference":"Exodus 1:15","explanation":"Exodus names Shiphrah and Puah as Hebrew midwives."},
-  {"catalogKey":"core-052","prompt":"From which tribes were Bezalel and Oholiab, respectively?","options":["Judah and Dan","Levi and Benjamin","Ephraim and Judah","Dan and Naphtali"],"correctOption":0,"difficulty":6,"category":"Torah","reference":"Exodus 31:2-6","explanation":"Bezalel was from Judah and Oholiab was from Dan."},
-  {"catalogKey":"core-053","prompt":"Where did the prophetess Huldah live when Josiah's officials consulted her?","options":["The City of David","The second quarter of Jerusalem","The court of the temple","Anathoth"],"correctOption":1,"difficulty":6,"category":"Kings","reference":"2 Kings 22:14","explanation":"Huldah lived in Jerusalem's second quarter."},
-  {"catalogKey":"core-054","prompt":"Which two insurgents did Gamaliel mention in his speech to the council?","options":["Barabbas and Simon","Theudas and Judas the Galilean","Judas and Matthias","Alexander and Hymenaeus"],"correctOption":1,"difficulty":6,"category":"Acts","reference":"Acts 5:36-37","explanation":"Gamaliel cited Theudas and Judas the Galilean as failed movements."},
-  {"catalogKey":"core-055","prompt":"What occupations did Amos identify as his work before prophesying?","options":["Priest and scribe","Shepherd and dresser of sycamore figs","Farmer and fisherman","Tentmaker and merchant"],"correctOption":1,"difficulty":6,"category":"Prophets","reference":"Amos 7:14","explanation":"Amos said he was a herdsman and a dresser of sycamore figs."},
-  {"catalogKey":"core-056","prompt":"Who was instructed to deliver and explain Paul's circumstances to the churches at Ephesus and Colossae?","options":["Epaphras","Onesimus","Tychicus","Archippus"],"correctOption":2,"difficulty":6,"category":"Letters","reference":"Ephesians 6:21; Colossians 4:7","explanation":"Tychicus is commended and sent in both letters."},
-  {"catalogKey":"core-057","prompt":"Which name is associated with the goat sent into the wilderness on the Day of Atonement?","options":["Molech","Azazel","Dagon","Nehushtan"],"correctOption":1,"difficulty":6,"category":"Torah","reference":"Leviticus 16:8-10","explanation":"One lot was for the Lord and the other for Azazel."},
-  {"catalogKey":"core-058","prompt":"Which Psalm is arranged in twenty-two alphabetic sections of eight verses each?","options":["Psalm 22","Psalm 78","Psalm 119","Psalm 150"],"correctOption":2,"difficulty":6,"category":"Wisdom","reference":"Psalm 119","explanation":"Psalm 119 is an extended alphabetic acrostic with 176 verses."},
-  {"catalogKey":"core-059","prompt":"Which companion did Paul leave sick at Miletus?","options":["Trophimus","Tychicus","Epaphras","Aristarchus"],"correctOption":0,"difficulty":6,"category":"Letters","reference":"2 Timothy 4:20","explanation":"Paul says he left Trophimus ill at Miletus."},
-  {"catalogKey":"core-060","prompt":"Which Old Testament passages did Jesus quote in response to all three wilderness temptations?","options":["Psalms","Isaiah","Deuteronomy","Proverbs"],"correctOption":2,"difficulty":6,"category":"Gospels","reference":"Matthew 4:4,7,10","explanation":"Jesus answered each temptation with words from Deuteronomy."},
-
   {
-    "catalogKey":"core-061",
-    "prompt":"How many sockets of silver were made for the tabernacle from the atonement money collected in the census?",
-    "options":["96","100","120","144"],
-    "correctOption":1,
-    "difficulty":7,
-    "category":"Torah",
-    "reference":"Exodus 38:25-27",
-    "explanation":"One hundred silver sockets were cast from the census silver."
+    "catalogKey": "core-001",
+    "prompt": "Who built the ark?",
+    "options": [
+      "Moses",
+      "Noah",
+      "Abraham",
+      "David"
+    ],
+    "correctOption": 1,
+    "difficulty": 1,
+    "category": "People",
+    "reference": "Genesis 6:14",
+    "explanation": "God instructed Noah to build the ark.",
+    "promptPt": "Quem construiu a arca?",
+    "optionsPt": [
+      "Moisés",
+      "Noé",
+      "Abraão",
+      "Davi"
+    ],
+    "categoryPt": "Pessoas",
+    "explanationPt": "Deus instruiu Noé a construir a arca."
   },
   {
-    "catalogKey":"core-062",
-    "prompt":"Which judge was left-handed and assassinated King Eglon of Moab?",
-    "options":["Shamgar","Ehud","Jephthah","Othniel"],
-    "correctOption":1,
-    "difficulty":7,
-    "category":"Judges",
-    "reference":"Judges 3:15-22",
-    "explanation":"Ehud, a left-handed Benjamite, killed Eglon."
+    "catalogKey": "core-002",
+    "prompt": "Who defeated Goliath?",
+    "options": [
+      "Saul",
+      "Jonathan",
+      "David",
+      "Samuel"
+    ],
+    "correctOption": 2,
+    "difficulty": 1,
+    "category": "People",
+    "reference": "1 Samuel 17",
+    "explanation": "David defeated Goliath with a sling and a stone.",
+    "promptPt": "Quem derrotou Golias?",
+    "optionsPt": [
+      "Saul",
+      "Jônatas",
+      "Davi",
+      "Samuel"
+    ],
+    "categoryPt": "Pessoas",
+    "explanationPt": "Davi derrotou Golias com uma funda e uma pedra."
   },
   {
-    "catalogKey":"core-063",
-    "prompt":"Who was King Saul's great-grandfather?",
-    "options":["Abiel","Ner","Kish","Jehiel"],
-    "correctOption":3,
-    "difficulty":7,
-    "category":"History",
-    "reference":"1 Samuel 9:1; 1 Chronicles 9:35-39",
-    "explanation":"Jehiel was the ancestor of Kish, Saul's father."
+    "catalogKey": "core-003",
+    "prompt": "In which town was Jesus born?",
+    "options": [
+      "Nazareth",
+      "Jerusalem",
+      "Bethany",
+      "Bethlehem"
+    ],
+    "correctOption": 3,
+    "difficulty": 1,
+    "category": "Jesus",
+    "reference": "Matthew 2:1",
+    "explanation": "Jesus was born in Bethlehem of Judea.",
+    "promptPt": "Em qual cidade Jesus nasceu?",
+    "optionsPt": [
+      "Nazaré",
+      "Jerusalém",
+      "Betânia",
+      "Belém"
+    ],
+    "categoryPt": "Jesus",
+    "explanationPt": "Jesus nasceu em Belém da Judeia."
   },
   {
-    "catalogKey":"core-064",
-    "prompt":"Which prophet was taken by the Spirit from Babylon to Jerusalem in a vision?",
-    "options":["Daniel","Jeremiah","Ezekiel","Zechariah"],
-    "correctOption":2,
-    "difficulty":7,
-    "category":"Prophets",
-    "reference":"Ezekiel 8:3",
-    "explanation":"Ezekiel was transported in a vision to Jerusalem."
+    "catalogKey": "core-004",
+    "prompt": "How many apostles did Jesus appoint?",
+    "options": [
+      "7",
+      "10",
+      "12",
+      "14"
+    ],
+    "correctOption": 2,
+    "difficulty": 1,
+    "category": "Jesus",
+    "reference": "Mark 3:14",
+    "explanation": "Jesus appointed twelve apostles.",
+    "promptPt": "Quantos apóstolos Jesus escolheu?",
+    "optionsPt": [
+      "7",
+      "10",
+      "12",
+      "14"
+    ],
+    "categoryPt": "Jesus",
+    "explanationPt": "Jesus escolheu doze apóstolos."
   },
   {
-    "catalogKey":"core-065",
-    "prompt":"What was the name of David's mighty man who killed 800 men at one time?",
-    "options":["Abishai","Benaiah","Jashobeam","Eleazar"],
-    "correctOption":2,
-    "difficulty":7,
-    "category":"History",
-    "reference":"2 Samuel 23:8",
-    "explanation":"Jashobeam is credited with killing 800 men."
+    "catalogKey": "core-005",
+    "prompt": "Who was swallowed by a great fish?",
+    "options": [
+      "Jonah",
+      "Elijah",
+      "Elisha",
+      "Isaiah"
+    ],
+    "correctOption": 0,
+    "difficulty": 1,
+    "category": "Prophets",
+    "reference": "Jonah 1:17",
+    "explanation": "The Lord appointed a great fish to swallow Jonah.",
+    "promptPt": "Quem foi engolido por um grande peixe?",
+    "optionsPt": [
+      "Jonas",
+      "Elias",
+      "Eliseu",
+      "Isaías"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "O Senhor providenciou um grande peixe para engolir Jonas."
   },
   {
-    "catalogKey":"core-066",
-    "prompt":"Who interpreted the writing on the wall for King Belshazzar?",
-    "options":["Ezra","Daniel","Nehemiah","Zechariah"],
-    "correctOption":1,
-    "difficulty":7,
-    "category":"Prophets",
-    "reference":"Daniel 5",
-    "explanation":"Daniel interpreted 'Mene, Mene, Tekel, Upharsin.'"
+    "catalogKey": "core-006",
+    "prompt": "What is the first book of the Bible?",
+    "options": [
+      "Exodus",
+      "Genesis",
+      "Psalms",
+      "Matthew"
+    ],
+    "correctOption": 1,
+    "difficulty": 1,
+    "category": "Bible",
+    "reference": "Genesis 1:1",
+    "explanation": "Genesis is the first book of the Bible.",
+    "promptPt": "Qual é o primeiro livro da Bíblia?",
+    "optionsPt": [
+      "Êxodo",
+      "Gênesis",
+      "Salmos",
+      "Mateus"
+    ],
+    "categoryPt": "Bíblia",
+    "explanationPt": "Gênesis é o primeiro livro da Bíblia."
   },
   {
-    "catalogKey":"core-067",
-    "prompt":"Which king of Judah was struck with leprosy after unlawfully burning incense?",
-    "options":["Hezekiah","Uzziah","Amaziah","Ahaz"],
-    "correctOption":1,
-    "difficulty":7,
-    "category":"Kings",
-    "reference":"2 Chronicles 26:16-21",
-    "explanation":"King Uzziah became leprous after entering the temple."
+    "catalogKey": "core-007",
+    "prompt": "Who led Israel out of Egypt?",
+    "options": [
+      "Aaron",
+      "Joshua",
+      "Moses",
+      "Joseph"
+    ],
+    "correctOption": 2,
+    "difficulty": 1,
+    "category": "People",
+    "reference": "Exodus 12-14",
+    "explanation": "God used Moses to lead Israel out of Egypt.",
+    "promptPt": "Quem liderou Israel para fora do Egito?",
+    "optionsPt": [
+      "Arão",
+      "Josué",
+      "Moisés",
+      "José"
+    ],
+    "categoryPt": "Pessoas",
+    "explanationPt": "Deus usou Moisés para liderar Israel para fora do Egito."
   },
   {
-    "catalogKey":"core-068",
-    "prompt":"Who was the father of John the Baptist?",
-    "options":["Joachim","Zechariah","Simeon","Eli"],
-    "correctOption":1,
-    "difficulty":7,
-    "category":"Gospels",
-    "reference":"Luke 1:5",
-    "explanation":"John's father was the priest Zechariah."
+    "catalogKey": "core-008",
+    "prompt": "What did Jesus turn water into at Cana?",
+    "options": [
+      "Oil",
+      "Wine",
+      "Milk",
+      "Honey"
+    ],
+    "correctOption": 1,
+    "difficulty": 1,
+    "category": "Miracles",
+    "reference": "John 2:1-11",
+    "explanation": "At Cana, Jesus turned water into wine.",
+    "promptPt": "Em Caná, Jesus transformou água em quê?",
+    "optionsPt": [
+      "Azeite",
+      "Vinho",
+      "Leite",
+      "Mel"
+    ],
+    "categoryPt": "Milagres",
+    "explanationPt": "Em Caná, Jesus transformou água em vinho."
   },
   {
-    "catalogKey":"core-069",
-    "prompt":"Who fell asleep in the upper room while Paul was preaching and died after falling from the window?",
-    "options":["Eutychus","Tychicus","Onesimus","Silas"],
-    "correctOption":0,
-    "difficulty":7,
-    "category":"Acts",
-    "reference":"Acts 20:9-12",
-    "explanation":"Eutychus fell from the third story but was restored to life."
+    "catalogKey": "core-009",
+    "prompt": "Who baptized Jesus?",
+    "options": [
+      "Peter",
+      "John the Baptist",
+      "James",
+      "Andrew"
+    ],
+    "correctOption": 1,
+    "difficulty": 1,
+    "category": "Jesus",
+    "reference": "Matthew 3:13",
+    "explanation": "John baptized Jesus in the Jordan.",
+    "promptPt": "Quem batizou Jesus?",
+    "optionsPt": [
+      "Pedro",
+      "João Batista",
+      "Tiago",
+      "André"
+    ],
+    "categoryPt": "Jesus",
+    "explanationPt": "João batizou Jesus no Jordão."
   },
   {
-    "catalogKey":"core-070",
-    "prompt":"What was the name of the island where Paul was bitten by a viper?",
-    "options":["Cyprus","Patmos","Crete","Malta"],
-    "correctOption":3,
-    "difficulty":7,
-    "category":"Acts",
-    "reference":"Acts 28:1-6",
-    "explanation":"Paul was shipwrecked on Malta."
+    "catalogKey": "core-010",
+    "prompt": "On which day did Jesus rise from the dead?",
+    "options": [
+      "The same day",
+      "The second day",
+      "The third day",
+      "The seventh day"
+    ],
+    "correctOption": 2,
+    "difficulty": 1,
+    "category": "Jesus",
+    "reference": "1 Corinthians 15:4",
+    "explanation": "Christ was raised on the third day.",
+    "promptPt": "Em qual dia Jesus ressurgiu dentre os mortos?",
+    "optionsPt": [
+      "No mesmo dia",
+      "No segundo dia",
+      "No terceiro dia",
+      "No sétimo dia"
+    ],
+    "categoryPt": "Jesus",
+    "explanationPt": "Cristo ressuscitou ao terceiro dia."
   },
   {
-    "catalogKey":"core-071",
-    "prompt":"Who succeeded Moses as Israel's leader?",
-    "options":["Caleb","Eleazar","Joshua","Phinehas"],
-    "correctOption":2,
-    "difficulty":7,
-    "category":"Torah",
-    "reference":"Deuteronomy 31:7-8",
-    "explanation":"Joshua was appointed by God to succeed Moses."
+    "catalogKey": "core-011",
+    "prompt": "Who interpreted Pharaoh's dreams in Egypt?",
+    "options": [
+      "Daniel",
+      "Joseph",
+      "Moses",
+      "Aaron"
+    ],
+    "correctOption": 1,
+    "difficulty": 2,
+    "category": "People",
+    "reference": "Genesis 41",
+    "explanation": "Joseph interpreted Pharaoh's dreams about coming abundance and famine.",
+    "promptPt": "Quem interpretou os sonhos do Faraó no Egito?",
+    "optionsPt": [
+      "Daniel",
+      "José",
+      "Moisés",
+      "Arão"
+    ],
+    "categoryPt": "Pessoas",
+    "explanationPt": "José interpretou os sonhos do Faraó sobre a futura fartura e fome."
   },
   {
-    "catalogKey":"core-072",
-    "prompt":"Which prophet married Gomer as a sign to Israel?",
-    "options":["Joel","Amos","Hosea","Micah"],
-    "correctOption":2,
-    "difficulty":7,
-    "category":"Prophets",
-    "reference":"Hosea 1:2-3",
-    "explanation":"God commanded Hosea to marry Gomer."
+    "catalogKey": "core-012",
+    "prompt": "Which judge was known for extraordinary strength?",
+    "options": [
+      "Gideon",
+      "Jephthah",
+      "Samson",
+      "Ehud"
+    ],
+    "correctOption": 2,
+    "difficulty": 2,
+    "category": "Judges",
+    "reference": "Judges 13-16",
+    "explanation": "God gave Samson extraordinary strength.",
+    "promptPt": "Qual juiz era conhecido por sua força extraordinária?",
+    "optionsPt": [
+      "Gideão",
+      "Jefté",
+      "Sansão",
+      "Eúde"
+    ],
+    "categoryPt": "Juízes",
+    "explanationPt": "Deus deu a Sansão uma força extraordinária."
   },
   {
-    "catalogKey":"core-073",
-    "prompt":"Which tribe received no territorial inheritance because the Lord was their inheritance?",
-    "options":["Judah","Benjamin","Levi","Ephraim"],
-    "correctOption":2,
-    "difficulty":7,
-    "category":"Torah",
-    "reference":"Numbers 18:20",
-    "explanation":"The Levites received cities instead of tribal land."
+    "catalogKey": "core-013",
+    "prompt": "Who was the first king of Israel?",
+    "options": [
+      "David",
+      "Saul",
+      "Solomon",
+      "Samuel"
+    ],
+    "correctOption": 1,
+    "difficulty": 2,
+    "category": "Kings",
+    "reference": "1 Samuel 10",
+    "explanation": "Samuel anointed Saul as Israel's first king.",
+    "promptPt": "Quem foi o primeiro rei de Israel?",
+    "optionsPt": [
+      "Davi",
+      "Saul",
+      "Salomão",
+      "Samuel"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Samuel ungiu Saul como o primeiro rei de Israel."
   },
   {
-    "catalogKey":"core-074",
-    "prompt":"Which king was told to stretch himself over a child three times, and the child came back to life?",
-    "options":["Elijah","Elisha","Isaiah","Nathan"],
-    "correctOption":0,
-    "difficulty":7,
-    "category":"Prophets",
-    "reference":"1 Kings 17:21-22",
-    "explanation":"Elijah raised the widow's son."
+    "catalogKey": "core-014",
+    "prompt": "Which disciple walked on water toward Jesus?",
+    "options": [
+      "John",
+      "Thomas",
+      "Peter",
+      "Matthew"
+    ],
+    "correctOption": 2,
+    "difficulty": 2,
+    "category": "Apostles",
+    "reference": "Matthew 14:29",
+    "explanation": "Peter stepped out of the boat and walked toward Jesus.",
+    "promptPt": "Qual discípulo andou sobre as águas em direção a Jesus?",
+    "optionsPt": [
+      "João",
+      "Tomé",
+      "Pedro",
+      "Mateus"
+    ],
+    "categoryPt": "Apóstolos",
+    "explanationPt": "Pedro saiu do barco e caminhou em direção a Jesus."
   },
   {
-    "catalogKey":"core-075",
-    "prompt":"What was the name of the high priest during Jesus' trial before the Sanhedrin?",
-    "options":["Annas","Caiaphas","Zadok","Abiathar"],
-    "correctOption":1,
-    "difficulty":7,
-    "category":"Gospels",
-    "reference":"Matthew 26:57",
-    "explanation":"Jesus was brought before Caiaphas."
+    "catalogKey": "core-015",
+    "prompt": "Who climbed a sycamore tree to see Jesus?",
+    "options": [
+      "Nicodemus",
+      "Zacchaeus",
+      "Bartimaeus",
+      "Jairus"
+    ],
+    "correctOption": 1,
+    "difficulty": 2,
+    "category": "Gospels",
+    "reference": "Luke 19:4",
+    "explanation": "Zacchaeus climbed a sycamore tree because he was short.",
+    "promptPt": "Quem subiu em uma figueira-brava para ver Jesus?",
+    "optionsPt": [
+      "Nicodemos",
+      "Zaqueu",
+      "Bartimeu",
+      "Jairo"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Zaqueu subiu em uma figueira-brava porque era baixo."
   },
   {
-    "catalogKey":"core-076",
-    "prompt":"Which disciple replaced Judas Iscariot among the Twelve?",
-    "options":["Barnabas","Matthias","Silas","Justus"],
-    "correctOption":1,
-    "difficulty":8,
-    "category":"Acts",
-    "reference":"Acts 1:26",
-    "explanation":"Matthias was chosen by lot."
+    "catalogKey": "core-016",
+    "prompt": "Which city had walls that fell after Israel marched around them?",
+    "options": [
+      "Ai",
+      "Jericho",
+      "Hebron",
+      "Bethel"
+    ],
+    "correctOption": 1,
+    "difficulty": 2,
+    "category": "Places",
+    "reference": "Joshua 6",
+    "explanation": "Jericho's walls fell after Israel obeyed God's instructions.",
+    "promptPt": "Qual cidade teve muralhas que caíram após Israel marchar ao redor delas?",
+    "optionsPt": [
+      "Ai",
+      "Jericó",
+      "Hebrom",
+      "Betel"
+    ],
+    "categoryPt": "Lugares",
+    "explanationPt": "As muralhas de Jericó caíram depois que Israel obedeceu às instruções de Deus."
   },
   {
-    "catalogKey":"core-077",
-    "prompt":"Which city did Abraham purchase the cave of Machpelah from Ephron the Hittite?",
-    "options":["Hebron","Bethel","Shechem","Beersheba"],
-    "correctOption":0,
-    "difficulty":8,
-    "category":"Torah",
-    "reference":"Genesis 23",
-    "explanation":"The cave near Hebron became the family burial site."
+    "catalogKey": "core-017",
+    "prompt": "Who became queen and saved her people from destruction?",
+    "options": [
+      "Ruth",
+      "Deborah",
+      "Esther",
+      "Hannah"
+    ],
+    "correctOption": 2,
+    "difficulty": 2,
+    "category": "Women",
+    "reference": "Esther 4-8",
+    "explanation": "Queen Esther interceded for the Jewish people.",
+    "promptPt": "Quem se tornou rainha e salvou seu povo da destruição?",
+    "optionsPt": [
+      "Rute",
+      "Débora",
+      "Ester",
+      "Ana"
+    ],
+    "categoryPt": "Mulheres",
+    "explanationPt": "A rainha Ester intercedeu pelo povo judeu."
   },
   {
-    "catalogKey":"core-078",
-    "prompt":"Who carried the ark into battle against the Philistines before it was captured?",
-    "options":["Hophni and Phinehas","Samuel and Eli","Nathan and Gad","Abner and Joab"],
-    "correctOption":0,
-    "difficulty":8,
-    "category":"History",
-    "reference":"1 Samuel 4:4",
-    "explanation":"Eli's sons accompanied the ark."
+    "catalogKey": "core-018",
+    "prompt": "What was Paul's name before he was commonly called Paul?",
+    "options": [
+      "Simon",
+      "Saul",
+      "Silas",
+      "Stephen"
+    ],
+    "correctOption": 1,
+    "difficulty": 2,
+    "category": "Apostles",
+    "reference": "Acts 13:9",
+    "explanation": "Acts identifies Saul as also being called Paul.",
+    "promptPt": "Qual era o nome de Paulo antes de ser comumente chamado de Paulo?",
+    "optionsPt": [
+      "Simão",
+      "Saul",
+      "Silas",
+      "Estêvão"
+    ],
+    "categoryPt": "Apóstolos",
+    "explanationPt": "Atos identifica Saul também sendo chamado de Paulo."
   },
   {
-    "catalogKey":"core-079",
-    "prompt":"Which church is described as having a little strength yet keeping Christ's word?",
-    "options":["Smyrna","Philadelphia","Thyatira","Pergamum"],
-    "correctOption":1,
-    "difficulty":8,
-    "category":"Revelation",
-    "reference":"Revelation 3:8",
-    "explanation":"Philadelphia received this commendation."
+    "catalogKey": "core-019",
+    "prompt": "Who was raised from the dead after four days in a tomb?",
+    "options": [
+      "Jairus",
+      "Lazarus",
+      "Stephen",
+      "Tabitha"
+    ],
+    "correctOption": 1,
+    "difficulty": 2,
+    "category": "Miracles",
+    "reference": "John 11",
+    "explanation": "Jesus called Lazarus out of the tomb.",
+    "promptPt": "Quem foi ressuscitado dos mortos após quatro dias em um túmulo?",
+    "optionsPt": [
+      "Jairo",
+      "Lázaro",
+      "Estêvão",
+      "Tabita"
+    ],
+    "categoryPt": "Milagres",
+    "explanationPt": "Jesus chamou Lázaro para fora do túmulo."
   },
   {
-    "catalogKey":"core-080",
-    "prompt":"What was the name of the servant whose ear Peter cut off?",
-    "options":["Malchus","Barsabbas","Crispus","Sosthenes"],
-    "correctOption":0,
-    "difficulty":8,
-    "category":"Gospels",
-    "reference":"John 18:10",
-    "explanation":"The servant's name was Malchus."
+    "catalogKey": "core-020",
+    "prompt": "What fruit of the Spirit appears first in Galatians 5:22?",
+    "options": [
+      "Joy",
+      "Peace",
+      "Love",
+      "Patience"
+    ],
+    "correctOption": 2,
+    "difficulty": 2,
+    "category": "Letters",
+    "reference": "Galatians 5:22",
+    "explanation": "Paul begins the list with love.",
+    "promptPt": "Qual fruto do Espírito aparece primeiro em Gálatas 5:22?",
+    "optionsPt": [
+      "Alegria",
+      "Paz",
+      "Amor",
+      "Paciência"
+    ],
+    "categoryPt": "Cartas",
+    "explanationPt": "Paulo começa a lista com o amor."
   },
   {
-    "catalogKey":"core-081",
-    "prompt":"Who was the mother of King Lemuel, whose sayings appear in Proverbs 31?",
-    "options":["Bathsheba","Naamah","Her name is not given","Abigail"],
-    "correctOption":2,
-    "difficulty":8,
-    "category":"Wisdom",
-    "reference":"Proverbs 31:1",
-    "explanation":"The text never names King Lemuel's mother."
+    "catalogKey": "core-021",
+    "prompt": "Which prophet confronted the prophets of Baal on Mount Carmel?",
+    "options": [
+      "Elisha",
+      "Elijah",
+      "Isaiah",
+      "Jeremiah"
+    ],
+    "correctOption": 1,
+    "difficulty": 3,
+    "category": "Prophets",
+    "reference": "1 Kings 18",
+    "explanation": "Elijah challenged the prophets of Baal on Mount Carmel.",
+    "promptPt": "Qual profeta confrontou os profetas de Baal no monte Carmelo?",
+    "optionsPt": [
+      "Eliseu",
+      "Elias",
+      "Isaías",
+      "Jeremias"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Elias desafiou os profetas de Baal no monte Carmelo."
   },
   {
-    "catalogKey":"core-082",
-    "prompt":"Which prophet saw a flying scroll measuring twenty cubits by ten cubits?",
-    "options":["Ezekiel","Zechariah","Haggai","Joel"],
-    "correctOption":1,
-    "difficulty":8,
-    "category":"Prophets",
-    "reference":"Zechariah 5:1-2",
-    "explanation":"This was one of Zechariah's night visions."
+    "catalogKey": "core-022",
+    "prompt": "Who succeeded Moses as leader of Israel?",
+    "options": [
+      "Caleb",
+      "Aaron",
+      "Joshua",
+      "Eleazar"
+    ],
+    "correctOption": 2,
+    "difficulty": 3,
+    "category": "People",
+    "reference": "Joshua 1:1-2",
+    "explanation": "God commissioned Joshua after Moses died.",
+    "promptPt": "Quem sucedeu a Moisés como líder de Israel?",
+    "optionsPt": [
+      "Calebe",
+      "Arão",
+      "Josué",
+      "Eleazar"
+    ],
+    "categoryPt": "Pessoas",
+    "explanationPt": "Deus comissionou Josué após a morte de Moisés."
   },
   {
-    "catalogKey":"core-083",
-    "prompt":"Who persuaded David to number Israel?",
-    "options":["Joab","Absalom","Satan","Ahithophel"],
-    "correctOption":2,
-    "difficulty":8,
-    "category":"History",
-    "reference":"1 Chronicles 21:1",
-    "explanation":"Chronicles states that Satan incited David."
+    "catalogKey": "core-023",
+    "prompt": "Which couple lied about the price of land they sold?",
+    "options": [
+      "Aquila and Priscilla",
+      "Ananias and Sapphira",
+      "Felix and Drusilla",
+      "Herod and Herodias"
+    ],
+    "correctOption": 1,
+    "difficulty": 3,
+    "category": "Acts",
+    "reference": "Acts 5:1-10",
+    "explanation": "Ananias and Sapphira lied about the sale proceeds.",
+    "promptPt": "Qual casal mentiu sobre o preço de um terreno que vendeu?",
+    "optionsPt": [
+      "Áquila e Priscila",
+      "Ananias e Safira",
+      "Félix e Drusila",
+      "Herodes e Herodias"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Ananias e Safira mentiram sobre o valor da venda."
   },
   {
-    "catalogKey":"core-084",
-    "prompt":"How many stones did David choose from the brook before facing Goliath?",
-    "options":["Three","Five","Seven","Ten"],
-    "correctOption":1,
-    "difficulty":8,
-    "category":"History",
-    "reference":"1 Samuel 17:40",
-    "explanation":"David selected five smooth stones."
+    "catalogKey": "core-024",
+    "prompt": "Who asked Jesus, 'What is truth?'",
+    "options": [
+      "Herod Antipas",
+      "Caiaphas",
+      "Pontius Pilate",
+      "Nicodemus"
+    ],
+    "correctOption": 2,
+    "difficulty": 3,
+    "category": "Gospels",
+    "reference": "John 18:38",
+    "explanation": "Pilate asked Jesus this question during the trial.",
+    "promptPt": "Quem perguntou a Jesus: 'O que é a verdade?'",
+    "optionsPt": [
+      "Herodes Antipas",
+      "Caifás",
+      "Pôncio Pilatos",
+      "Nicodemos"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Pilatos fez essa pergunta a Jesus durante o julgamento."
   },
   {
-    "catalogKey":"core-085",
-    "prompt":"Which king humbled himself after reading the Book of the Law discovered in the temple?",
-    "options":["Hezekiah","Josiah","Jehoshaphat","Manasseh"],
-    "correctOption":1,
-    "difficulty":8,
-    "category":"Kings",
-    "reference":"2 Kings 22:11",
-    "explanation":"Josiah tore his clothes after hearing the Law."
+    "catalogKey": "core-025",
+    "prompt": "Which prophet saw a valley of dry bones?",
+    "options": [
+      "Ezekiel",
+      "Daniel",
+      "Hosea",
+      "Joel"
+    ],
+    "correctOption": 0,
+    "difficulty": 3,
+    "category": "Prophets",
+    "reference": "Ezekiel 37",
+    "explanation": "Ezekiel received the vision of the dry bones.",
+    "promptPt": "Qual profeta viu um vale de ossos secos?",
+    "optionsPt": [
+      "Ezequiel",
+      "Daniel",
+      "Oseias",
+      "Joel"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Ezequiel recebeu a visão dos ossos secos."
   },
   {
-    "catalogKey":"core-086",
-    "prompt":"Who was the father of Bezalel, the chief craftsman of the tabernacle?",
-    "options":["Uri","Hur","Caleb","Amminadab"],
-    "correctOption":0,
-    "difficulty":8,
-    "category":"Torah",
-    "reference":"Exodus 31:2",
-    "explanation":"Bezalel was the son of Uri."
+    "catalogKey": "core-026",
+    "prompt": "Who was chosen to replace Judas Iscariot among the Twelve?",
+    "options": [
+      "Barnabas",
+      "Matthias",
+      "Silas",
+      "Philip"
+    ],
+    "correctOption": 1,
+    "difficulty": 3,
+    "category": "Acts",
+    "reference": "Acts 1:26",
+    "explanation": "The lot fell to Matthias.",
+    "promptPt": "Quem foi escolhido para substituir Judas Iscariotes entre os Doze?",
+    "optionsPt": [
+      "Barnabé",
+      "Matias",
+      "Silas",
+      "Filipe"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "A sorte caiu sobre Matias."
   },
   {
-    "catalogKey":"core-087",
-    "prompt":"Which Roman governor succeeded Felix and heard Paul's defense?",
-    "options":["Festus","Gallio","Pilate","Lysias"],
-    "correctOption":0,
-    "difficulty":8,
-    "category":"Acts",
-    "reference":"Acts 25:1",
-    "explanation":"Porcius Festus replaced Felix."
+    "catalogKey": "core-027",
+    "prompt": "Which church is told it had left its first love?",
+    "options": [
+      "Smyrna",
+      "Pergamum",
+      "Ephesus",
+      "Laodicea"
+    ],
+    "correctOption": 2,
+    "difficulty": 3,
+    "category": "Revelation",
+    "reference": "Revelation 2:4",
+    "explanation": "The message to Ephesus says it had abandoned its first love.",
+    "promptPt": "A qual igreja é dito que ela havia abandonado o seu primeiro amor?",
+    "optionsPt": [
+      "Esmirna",
+      "Pérgamo",
+      "Éfeso",
+      "Laodicéia"
+    ],
+    "categoryPt": "Apocalipse",
+    "explanationPt": "A mensagem a Éfeso diz que ela havia abandonado o seu primeiro amor."
   },
   {
-    "catalogKey":"core-088",
-    "prompt":"Which disciple was known as 'the twin'?",
-    "options":["Andrew","Thomas","Philip","Bartholomew"],
-    "correctOption":1,
-    "difficulty":8,
-    "category":"Gospels",
-    "reference":"John 11:16",
-    "explanation":"Thomas was also called Didymus, meaning 'Twin.'"
+    "catalogKey": "core-028",
+    "prompt": "Who said, 'Here am I; send me'?",
+    "options": [
+      "Jeremiah",
+      "Samuel",
+      "Isaiah",
+      "Amos"
+    ],
+    "correctOption": 2,
+    "difficulty": 3,
+    "category": "Prophets",
+    "reference": "Isaiah 6:8",
+    "explanation": "Isaiah answered God's call in his temple vision.",
+    "promptPt": "Quem disse: 'Eis-me aqui, envia-me a mim'?",
+    "optionsPt": [
+      "Jeremias",
+      "Samuel",
+      "Isaías",
+      "Amós"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Isaías respondeu ao chamado de Deus em sua visão no templo."
   },
   {
-    "catalogKey":"core-089",
-    "prompt":"Which prophet confronted King David after his sin with Bathsheba?",
-    "options":["Nathan","Gad","Samuel","Ahijah"],
-    "correctOption":0,
-    "difficulty":8,
-    "category":"History",
-    "reference":"2 Samuel 12:1",
-    "explanation":"Nathan confronted David with the parable of the ewe lamb."
+    "catalogKey": "core-029",
+    "prompt": "At whose feet did Paul study according to Acts?",
+    "options": [
+      "Nicodemus",
+      "Gamaliel",
+      "Annas",
+      "Apollos"
+    ],
+    "correctOption": 1,
+    "difficulty": 3,
+    "category": "Acts",
+    "reference": "Acts 22:3",
+    "explanation": "Paul said he was educated at the feet of Gamaliel.",
+    "promptPt": "A aos pés de quem Paulo estudou, de acordo com Atos?",
+    "optionsPt": [
+      "Nicodemos",
+      "Gamaliel",
+      "Anás",
+      "Apolo"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Paulo disse que foi educado aos pés de Gamaliel."
   },
   {
-    "catalogKey":"core-090",
-    "prompt":"What was the name of the man who carried Jesus' cross?",
-    "options":["Joseph of Arimathea","Simon of Cyrene","Nicodemus","Bartimaeus"],
-    "correctOption":1,
-    "difficulty":8,
-    "category":"Gospels",
-    "reference":"Mark 15:21",
-    "explanation":"Simon of Cyrene was compelled to carry Jesus' cross."
-  },
-
-  {
-    "catalogKey":"core-091",
-    "prompt":"Who was the mother of King Lemuel according to Proverbs?",
-    "options":["Bathsheba","Abigail","Her name is not given","Naamah"],
-    "correctOption":2,
-    "difficulty":9,
-    "category":"Wisdom",
-    "reference":"Proverbs 31:1",
-    "explanation":"The text never identifies King Lemuel's mother by name."
-  },
-  {
-    "catalogKey":"core-092",
-    "prompt":"Which son of David attempted to seize the throne before Solomon was crowned?",
-    "options":["Absalom","Adonijah","Amnon","Chileab"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Kings",
-    "reference":"1 Kings 1:5",
-    "explanation":"Adonijah declared himself king while David was still alive."
+    "catalogKey": "core-030",
+    "prompt": "Which Gospel opens by calling Jesus 'the Word'?",
+    "options": [
+      "Matthew",
+      "Mark",
+      "Luke",
+      "John"
+    ],
+    "correctOption": 3,
+    "difficulty": 3,
+    "category": "Gospels",
+    "reference": "John 1:1",
+    "explanation": "John opens with the Word who was with God and was God.",
+    "promptPt": "Qual evangelho começa chamando Jesus de 'o Verbo'?",
+    "optionsPt": [
+      "Mateus",
+      "Marcos",
+      "Lucas",
+      "João"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "João começa com o Verbo que estava com Deus e era Deus."
   },
   {
-    "catalogKey":"core-093",
-    "prompt":"Who was the father of Hur, the grandfather of Bezalel?",
-    "options":["Caleb","Uri","Jephunneh","Hezron"],
-    "correctOption":0,
-    "difficulty":9,
-    "category":"Torah",
-    "reference":"1 Chronicles 2:18-20",
-    "explanation":"Hur was the son of Caleb."
+    "catalogKey": "core-031",
+    "prompt": "Who found the Book of the Law during Josiah's reign?",
+    "options": [
+      "Hilkiah",
+      "Shaphan",
+      "Huldah",
+      "Jehoiada"
+    ],
+    "correctOption": 0,
+    "difficulty": 4,
+    "category": "Kings",
+    "reference": "2 Kings 22:8",
+    "explanation": "Hilkiah the high priest found the Book of the Law.",
+    "promptPt": "Quem encontrou o Livro da Lei durante o reinado de Josias?",
+    "optionsPt": [
+      "Hilquias",
+      "Safã",
+      "Hulda",
+      "Joiada"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "O sumo sacerdote Hilquias encontrou o Livro da Lei."
   },
   {
-    "catalogKey":"core-094",
-    "prompt":"How many chapters are there in the Book of Zechariah?",
-    "options":["12","13","14","15"],
-    "correctOption":2,
-    "difficulty":9,
-    "category":"Prophets",
-    "reference":"Zechariah",
-    "explanation":"Zechariah contains 14 chapters."
+    "catalogKey": "core-032",
+    "prompt": "Which prophet married Gomer?",
+    "options": [
+      "Amos",
+      "Micah",
+      "Hosea",
+      "Joel"
+    ],
+    "correctOption": 2,
+    "difficulty": 4,
+    "category": "Prophets",
+    "reference": "Hosea 1:3",
+    "explanation": "Hosea married Gomer as the Lord commanded.",
+    "promptPt": "Qual profeta se casou com Gômer?",
+    "optionsPt": [
+      "Amós",
+      "Miqueias",
+      "Oseias",
+      "Joel"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Oseias se casou com Gômer conforme o Senhor ordenou."
   },
   {
-    "catalogKey":"core-095",
-    "prompt":"Which prophet married a prostitute as a prophetic sign?",
-    "options":["Amos","Joel","Hosea","Micah"],
-    "correctOption":2,
-    "difficulty":9,
-    "category":"Prophets",
-    "reference":"Hosea 1:2",
-    "explanation":"God instructed Hosea to marry Gomer."
+    "catalogKey": "core-033",
+    "prompt": "Who was the seller of purple cloth converted in Philippi?",
+    "options": [
+      "Damaris",
+      "Lydia",
+      "Priscilla",
+      "Phoebe"
+    ],
+    "correctOption": 1,
+    "difficulty": 4,
+    "category": "Acts",
+    "reference": "Acts 16:14",
+    "explanation": "Lydia was a seller of purple cloth from Thyatira.",
+    "promptPt": "Quem foi a vendedora de tecido púrpura convertida em Filipos?",
+    "optionsPt": [
+      "Dâmaris",
+      "Lídia",
+      "Priscila",
+      "Febe"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Lídia era uma vendedora de tecido púrpura de Tiatira."
   },
   {
-    "catalogKey":"core-096",
-    "prompt":"Who was the commander of King Saul's army?",
-    "options":["Joab","Abner","Amasa","Benaiah"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"History",
-    "reference":"1 Samuel 14:50",
-    "explanation":"Abner, Saul's cousin, commanded his army."
+    "catalogKey": "core-034",
+    "prompt": "Which king saw the handwriting on the wall?",
+    "options": [
+      "Nebuchadnezzar",
+      "Darius",
+      "Cyrus",
+      "Belshazzar"
+    ],
+    "correctOption": 3,
+    "difficulty": 4,
+    "category": "Daniel",
+    "reference": "Daniel 5",
+    "explanation": "Belshazzar saw the mysterious writing during his feast.",
+    "promptPt": "Qual rei viu a escrita na parede?",
+    "optionsPt": [
+      "Nabucodonosor",
+      "Dario",
+      "Ciro",
+      "Belsazar"
+    ],
+    "categoryPt": "Daniel",
+    "explanationPt": "Belsazar viu a escrita misteriosa durante o seu banquete."
   },
   {
-    "catalogKey":"core-097",
-    "prompt":"Which king of Judah was only eight years old when he began to reign?",
-    "options":["Joash","Josiah","Manasseh","Uzziah"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Kings",
-    "reference":"2 Kings 22:1",
-    "explanation":"Josiah became king at eight years old."
+    "catalogKey": "core-035",
+    "prompt": "Who killed the Moabite king Eglon?",
+    "options": [
+      "Shamgar",
+      "Ehud",
+      "Othniel",
+      "Barak"
+    ],
+    "correctOption": 1,
+    "difficulty": 4,
+    "category": "Judges",
+    "reference": "Judges 3:21",
+    "explanation": "Ehud, a left-handed judge, struck Eglon.",
+    "promptPt": "Quem matou Eglom, o rei moabita?",
+    "optionsPt": [
+      "Sangar",
+      "Eúde",
+      "Otniel",
+      "Baraque"
+    ],
+    "categoryPt": "Juízes",
+    "explanationPt": "Eúde, um juiz canhoto, golpeou Eglom."
   },
   {
-    "catalogKey":"core-098",
-    "prompt":"Which disciple first brought Nathanael to Jesus?",
-    "options":["Peter","Philip","Andrew","John"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Gospels",
-    "reference":"John 1:45",
-    "explanation":"Philip invited Nathanael to meet Jesus."
+    "catalogKey": "core-036",
+    "prompt": "Which New Testament letter mentions the armor of God?",
+    "options": [
+      "Romans",
+      "Ephesians",
+      "Colossians",
+      "Hebrews"
+    ],
+    "correctOption": 1,
+    "difficulty": 4,
+    "category": "Letters",
+    "reference": "Ephesians 6:10-18",
+    "explanation": "Paul describes the armor of God in Ephesians 6.",
+    "promptPt": "Qual carta do Novo Testamento menciona a armadura de Deus?",
+    "optionsPt": [
+      "Romanos",
+      "Efésios",
+      "Colossenses",
+      "Hebreus"
+    ],
+    "categoryPt": "Cartas",
+    "explanationPt": "Paulo descreve a armadura de Deus em Efésios 6."
   },
   {
-    "catalogKey":"core-099",
-    "prompt":"Which prophet saw a basket of summer fruit?",
-    "options":["Amos","Joel","Micah","Nahum"],
-    "correctOption":0,
-    "difficulty":9,
-    "category":"Prophets",
-    "reference":"Amos 8:1-2",
-    "explanation":"The basket symbolized that Israel's end had come."
+    "catalogKey": "core-037",
+    "prompt": "Who explained the Scriptures to Apollos more accurately?",
+    "options": [
+      "Paul and Silas",
+      "Priscilla and Aquila",
+      "Barnabas and Mark",
+      "Peter and John"
+    ],
+    "correctOption": 1,
+    "difficulty": 4,
+    "category": "Acts",
+    "reference": "Acts 18:26",
+    "explanation": "Priscilla and Aquila explained the way of God to Apollos.",
+    "promptPt": "Quem explicou as Escrituras a Apolo com mais exatidão?",
+    "optionsPt": [
+      "Paulo e Silas",
+      "Priscila e Áqüila",
+      "Barnabé e Marcos",
+      "Pedro e João"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Priscila e Áqüila explicaram o caminho de Deus a Apolo."
   },
   {
-    "catalogKey":"core-100",
-    "prompt":"Who was the father of King Hezekiah?",
-    "options":["Ahaz","Jotham","Uzziah","Amaziah"],
-    "correctOption":0,
-    "difficulty":9,
-    "category":"Kings",
-    "reference":"2 Kings 18:1",
-    "explanation":"Hezekiah was the son of Ahaz."
+    "catalogKey": "core-038",
+    "prompt": "On what island was Paul shipwrecked?",
+    "options": [
+      "Crete",
+      "Cyprus",
+      "Malta",
+      "Patmos"
+    ],
+    "correctOption": 2,
+    "difficulty": 4,
+    "category": "Acts",
+    "reference": "Acts 28:1",
+    "explanation": "The survivors learned that the island was called Malta.",
+    "promptPt": "Em qual ilha Paulo sofreu um naufrágio?",
+    "optionsPt": [
+      "Creta",
+      "Chipre",
+      "Malta",
+      "Patmos"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Os sobreviventes souberam que a ilha se chamava Malta."
   },
   {
-    "catalogKey":"core-101",
-    "prompt":"Which city did Jonah flee toward instead of Nineveh?",
-    "options":["Tyre","Tarshish","Sidon","Damascus"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Prophets",
-    "reference":"Jonah 1:3",
-    "explanation":"Jonah attempted to flee to Tarshish."
+    "catalogKey": "core-039",
+    "prompt": "Which king asked God for wisdom to govern?",
+    "options": [
+      "Hezekiah",
+      "Solomon",
+      "Josiah",
+      "Jehoshaphat"
+    ],
+    "correctOption": 1,
+    "difficulty": 4,
+    "category": "Kings",
+    "reference": "1 Kings 3:9",
+    "explanation": "Solomon asked for an understanding heart to judge Israel.",
+    "promptPt": "Qual rei pediu sabedoria a Deus para governar?",
+    "optionsPt": [
+      "Ezequias",
+      "Salomão",
+      "Josias",
+      "Josafá"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Salomão pediu um coração entendido para julgar a Israel."
   },
   {
-    "catalogKey":"core-102",
-    "prompt":"What was the name of Moses' father-in-law?",
-    "options":["Reuel/Jethro","Laban","Nahor","Hobab"],
-    "correctOption":0,
-    "difficulty":9,
-    "category":"Torah",
-    "reference":"Exodus 3:1",
-    "explanation":"Moses' father-in-law is called Jethro (also Reuel)."
+    "catalogKey": "core-040",
+    "prompt": "Who carried Jesus' cross on the way to Golgotha?",
+    "options": [
+      "Joseph of Arimathea",
+      "Simon of Cyrene",
+      "Nicodemus",
+      "Barabbas"
+    ],
+    "correctOption": 1,
+    "difficulty": 4,
+    "category": "Gospels",
+    "reference": "Luke 23:26",
+    "explanation": "The soldiers compelled Simon of Cyrene to carry the cross.",
+    "promptPt": "Quem carregou a cruz de Jesus a caminho do Gólgota?",
+    "optionsPt": [
+      "José de Arimateia",
+      "Simão Cireneu",
+      "Nicodemos",
+      "Barrabás"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Os soldados constrangeram a Simão Cireneu a carregar a cruz."
   },
   {
-    "catalogKey":"core-103",
-    "prompt":"Which king rebuilt Jericho during the reign of Ahab?",
-    "options":["Hiel","Omri","Zimri","Jehu"],
-    "correctOption":0,
-    "difficulty":9,
-    "category":"Kings",
-    "reference":"1 Kings 16:34",
-    "explanation":"Hiel rebuilt Jericho at the cost of his sons."
+    "catalogKey": "core-041",
+    "prompt": "Who wrote down Paul's letter to the Romans and greeted its readers?",
+    "options": [
+      "Tychicus",
+      "Tertius",
+      "Timothy",
+      "Titus"
+    ],
+    "correctOption": 1,
+    "difficulty": 5,
+    "category": "Letters",
+    "reference": "Romans 16:22",
+    "explanation": "Tertius identifies himself as the one who wrote the letter.",
+    "promptPt": "Quem registrou a carta de Paulo aos Romanos e saudou os seus leitores?",
+    "optionsPt": [
+      "Tíquico",
+      "Tércio",
+      "Timóteo",
+      "Tito"
+    ],
+    "categoryPt": "Epístolas",
+    "explanationPt": "Tércio identifica-se como o autor daquela carta."
   },
   {
-    "catalogKey":"core-104",
-    "prompt":"Who interpreted Nebuchadnezzar's dream of the great tree?",
-    "options":["Daniel","Shadrach","Jeremiah","Ezekiel"],
-    "correctOption":0,
-    "difficulty":9,
-    "category":"Prophets",
-    "reference":"Daniel 4",
-    "explanation":"Daniel interpreted the dream."
+    "catalogKey": "core-042",
+    "prompt": "What was the name of Jonathan's son whom David showed kindness?",
+    "options": [
+      "Ish-bosheth",
+      "Mephibosheth",
+      "Abinadab",
+      "Merib-baal"
+    ],
+    "correctOption": 1,
+    "difficulty": 5,
+    "category": "Kings",
+    "reference": "2 Samuel 9",
+    "explanation": "David restored Saul's land to Mephibosheth and welcomed him at his table.",
+    "promptPt": "Qual era o nome do filho de Jônatas a quem Davi mostrou bondade?",
+    "optionsPt": [
+      "Is-Bosete",
+      "Mefibosete",
+      "Abinadabe",
+      "Meribe-Baal"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Davi restituiu as terras de Saul a Mefibosete e o recebeu à sua mesa."
   },
   {
-    "catalogKey":"core-105",
-    "prompt":"Which woman hid the Israelite spies in Jericho?",
-    "options":["Deborah","Rahab","Jael","Ruth"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"History",
-    "reference":"Joshua 2",
-    "explanation":"Rahab protected the spies."
+    "catalogKey": "core-043",
+    "prompt": "Who fell from a third-story window while Paul was speaking?",
+    "options": [
+      "Eutychus",
+      "Trophimus",
+      "Aristarchus",
+      "Epaphras"
+    ],
+    "correctOption": 0,
+    "difficulty": 5,
+    "category": "Acts",
+    "reference": "Acts 20:9",
+    "explanation": "Eutychus fell from the window and Paul embraced him alive.",
+    "promptPt": "Quem caiu da janela do terceiro andar enquanto Paulo discursava?",
+    "optionsPt": [
+      "Êutico",
+      "Trófimo",
+      "Aristarco",
+      "Epafras"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Êutico caiu da janela e Paulo o abraçou vivo."
   },
   {
-    "catalogKey":"core-106",
-    "prompt":"Which tribe settled east of the Jordan together with Reuben?",
-    "options":["Benjamin","Half-Manasseh","Judah","Issachar"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Torah",
-    "reference":"Numbers 32",
-    "explanation":"Reuben, Gad and half the tribe of Manasseh settled east of the Jordan."
+    "catalogKey": "core-044",
+    "prompt": "Which prophet was told to name a son Maher-shalal-hash-baz?",
+    "options": [
+      "Jeremiah",
+      "Ezekiel",
+      "Isaiah",
+      "Hosea"
+    ],
+    "correctOption": 2,
+    "difficulty": 5,
+    "category": "Prophets",
+    "reference": "Isaiah 8:3",
+    "explanation": "Isaiah and the prophetess named their son Maher-shalal-hash-baz.",
+    "promptPt": "A qual profeta foi ordenado que desse a um filho o nome de Maer-Salal-Hás-Baz?",
+    "optionsPt": [
+      "Jeremias",
+      "Ezequiel",
+      "Isaías",
+      "Oseias"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Isaías e a profetisa chamaram o seu filho de Maer-Salal-Hás-Baz."
   },
   {
-    "catalogKey":"core-107",
-    "prompt":"What was the name of Lydia's hometown?",
-    "options":["Philippi","Thyatira","Ephesus","Pergamum"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Acts",
-    "reference":"Acts 16:14",
-    "explanation":"Lydia was from Thyatira."
+    "catalogKey": "core-045",
+    "prompt": "Who used Paul's belt to symbolize his coming imprisonment?",
+    "options": [
+      "Agabus",
+      "Silas",
+      "Ananias",
+      "Philip"
+    ],
+    "correctOption": 0,
+    "difficulty": 5,
+    "category": "Acts",
+    "reference": "Acts 21:10-11",
+    "explanation": "The prophet Agabus bound his own hands and feet with Paul's belt.",
+    "promptPt": "Quem utilizou o cinto de Paulo para simbolizar a sua prisão iminente?",
+    "optionsPt": [
+      "Ágabo",
+      "Silas",
+      "Ananias",
+      "Filipe"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "O profeta Ágabo amarrou as suas próprias mãos e pés com o cinto de Paulo."
   },
   {
-    "catalogKey":"core-108",
-    "prompt":"Who was the first martyr recorded in Acts?",
-    "options":["James","Stephen","Philip","Barnabas"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Acts",
-    "reference":"Acts 7",
-    "explanation":"Stephen became the first Christian martyr."
+    "catalogKey": "core-046",
+    "prompt": "Which lawyer does Paul ask Titus to help on his journey?",
+    "options": [
+      "Tertullus",
+      "Zenas",
+      "Sosthenes",
+      "Erastus"
+    ],
+    "correctOption": 1,
+    "difficulty": 5,
+    "category": "Letters",
+    "reference": "Titus 3:13",
+    "explanation": "Paul names Zenas the lawyer together with Apollos.",
+    "promptPt": "Qual jurisperito Paulo pede que Tito ajude em sua viagem?",
+    "optionsPt": [
+      "Tértulo",
+      "Zenas",
+      "Sóstenes",
+      "Erasto"
+    ],
+    "categoryPt": "Epístolas",
+    "explanationPt": "Paulo menciona Zenas, o intérprete da lei, juntamente com Apolo."
   },
   {
-    "catalogKey":"core-109",
-    "prompt":"Which prophet challenged the prophets of Baal on Mount Carmel?",
-    "options":["Elisha","Elijah","Nathan","Amos"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"Prophets",
-    "reference":"1 Kings 18",
-    "explanation":"Elijah confronted the prophets of Baal."
+    "catalogKey": "core-047",
+    "prompt": "Beside which river did Ezekiel receive his opening visions?",
+    "options": [
+      "Jordan",
+      "Euphrates",
+      "Chebar",
+      "Tigris"
+    ],
+    "correctOption": 2,
+    "difficulty": 5,
+    "category": "Prophets",
+    "reference": "Ezekiel 1:1",
+    "explanation": "Ezekiel was among the exiles by the Chebar canal.",
+    "promptPt": "À beira de qual rio Ezequiel recebeu as suas visões iniciais?",
+    "optionsPt": [
+      "Jordão",
+      "Eufrates",
+      "Quebar",
+      "Tigre"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Ezequiel estava entre os exilados junto ao canal Quebar."
   },
   {
-    "catalogKey":"core-110",
-    "prompt":"Who was the mother of Samuel?",
-    "options":["Abigail","Hannah","Elizabeth","Naomi"],
-    "correctOption":1,
-    "difficulty":9,
-    "category":"History",
-    "reference":"1 Samuel 1",
-    "explanation":"Samuel was born to Hannah."
+    "catalogKey": "core-048",
+    "prompt": "Who warned the Roman commander about a plot against Paul?",
+    "options": [
+      "Paul's nephew",
+      "Luke",
+      "Barnabas",
+      "Ananias"
+    ],
+    "correctOption": 0,
+    "difficulty": 5,
+    "category": "Acts",
+    "reference": "Acts 23:16",
+    "explanation": "The son of Paul's sister heard of the ambush and reported it.",
+    "promptPt": "Quem alertou o comandante romano sobre uma conspiração contra Paulo?",
+    "optionsPt": [
+      "O sobrinho de Paulo",
+      "Lucas",
+      "Barnabé",
+      "Ananias"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "O filho da irmã de Paulo soube da emboscada e informou-a."
   },
   {
-    "catalogKey":"core-111",
-    "prompt":"Which king was struck down by an angel and eaten by worms?",
-    "options":["Herod Antipas","Herod Agrippa I","Herod the Great","Archelaus"],
-    "correctOption":1,
-    "difficulty":10,
-    "category":"Acts",
-    "reference":"Acts 12:23",
-    "explanation":"Herod Agrippa I accepted divine praise and was struck down."
+    "catalogKey": "core-049",
+    "prompt": "Which judge made a vow before fighting the Ammonites?",
+    "options": [
+      "Gideon",
+      "Samson",
+      "Jephthah",
+      "Barak"
+    ],
+    "correctOption": 2,
+    "difficulty": 5,
+    "category": "Judges",
+    "reference": "Judges 11:30",
+    "explanation": "Jephthah made a tragic vow before the battle.",
+    "promptPt": "Qual juiz fez um voto antes de lutar contra os amonitas?",
+    "optionsPt": [
+      "Gideão",
+      "Sansão",
+      "Jefté",
+      "Baraque"
+    ],
+    "categoryPt": "Juízes",
+    "explanationPt": "Jefté fez um voto trágico antes da batalha."
   },
   {
-    "catalogKey":"core-112",
-    "prompt":"Who restored Eutychus to life after his fall?",
-    "options":["Peter","Paul","Barnabas","Silas"],
-    "correctOption":1,
-    "difficulty":10,
-    "category":"Acts",
-    "reference":"Acts 20:10",
-    "explanation":"Paul embraced Eutychus and he was restored."
+    "catalogKey": "core-050",
+    "prompt": "Who brought bread and wine and blessed Abram?",
+    "options": [
+      "Abimelech",
+      "Melchizedek",
+      "Mamre",
+      "Ephron"
+    ],
+    "correctOption": 1,
+    "difficulty": 5,
+    "category": "Genesis",
+    "reference": "Genesis 14:18-19",
+    "explanation": "Melchizedek, king of Salem and priest of God Most High, blessed Abram.",
+    "promptPt": "Quem trouxe pão e vinho e abençoou a Abrão?",
+    "optionsPt": [
+      "Abimeleque",
+      "Melquisedeque",
+      "Manre",
+      "Efrom"
+    ],
+    "categoryPt": "Gênesis",
+    "explanationPt": "Melquisedeque, rei de Salém e sacerdote do Deus Altíssimo, abençoou a Abrão."
   },
   {
-    "catalogKey":"core-113",
-    "prompt":"Which king of Israel reigned only seven days?",
-    "options":["Zimri","Shallum","Jehoahaz","Pekahiah"],
-    "correctOption":0,
-    "difficulty":10,
-    "category":"Kings",
-    "reference":"1 Kings 16:15",
-    "explanation":"Zimri reigned only seven days."
+    "catalogKey": "core-051",
+    "prompt": "What were the names of the two Hebrew midwives named in Exodus?",
+    "options": [
+      "Miriam and Zipporah",
+      "Shiphrah and Puah",
+      "Leah and Rachel",
+      "Hoglah and Milcah"
+    ],
+    "correctOption": 1,
+    "difficulty": 6,
+    "category": "Torah",
+    "reference": "Exodus 1:15",
+    "explanation": "Exodus names Shiphrah and Puah as Hebrew midwives.",
+    "promptPt": "Quais eram os nomes das duas parteiras hebreias mencionadas em Êxodo?",
+    "optionsPt": [
+      "Miriã e Zípora",
+      "Sifrá e Puá",
+      "Lia e Raquel",
+      "Hogla e Milca"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "Êxodo menciona Sifrá e Puá como as parteiras hebreias."
   },
   {
-    "catalogKey":"core-114",
-    "prompt":"Who was the father of John Mark?",
-    "options":["Barnabas","His father is not named","Aristobulus","Simon"],
-    "correctOption":1,
-    "difficulty":10,
-    "category":"Acts",
-    "reference":"Acts 12:12",
-    "explanation":"Only his mother Mary is identified."
+    "catalogKey": "core-052",
+    "prompt": "From which tribes were Bezalel and Oholiab, respectively?",
+    "options": [
+      "Judah and Dan",
+      "Levi and Benjamin",
+      "Ephraim and Judah",
+      "Dan and Naphtali"
+    ],
+    "correctOption": 0,
+    "difficulty": 6,
+    "category": "Torah",
+    "reference": "Exodus 31:2-6",
+    "explanation": "Bezalel was from Judah and Oholiab was from Dan.",
+    "promptPt": "De quais tribos eram Bezalel e Aoliabe, respectivamente?",
+    "optionsPt": [
+      "Judá e Dã",
+      "Levi e Benjamim",
+      "Efraim e Judá",
+      "Dã e Naftali"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "Bezalel era da tribo de Judá e Aoliabe da de Dã."
   },
   {
-    "catalogKey":"core-115",
-    "prompt":"Which prophet predicted that Josiah would destroy Jeroboam's altar centuries before Josiah was born?",
-    "options":["Ahijah","An unnamed man of God from Judah","Elijah","Iddo"],
-    "correctOption":1,
-    "difficulty":10,
-    "category":"Prophets",
-    "reference":"1 Kings 13:1-2",
-    "explanation":"An unnamed prophet from Judah foretold Josiah by name."
+    "catalogKey": "core-053",
+    "prompt": "Where did the prophetess Huldah live when Josiah's officials consulted her?",
+    "options": [
+      "The City of David",
+      "The second quarter of Jerusalem",
+      "The court of the temple",
+      "Anathoth"
+    ],
+    "correctOption": 1,
+    "difficulty": 6,
+    "category": "Kings",
+    "reference": "2 Kings 22:14",
+    "explanation": "Huldah lived in Jerusalem's second quarter.",
+    "promptPt": "Onde morava a profetisa Hulda quando os oficiais de Josias a consultaram?",
+    "optionsPt": [
+      "A Cidade de Davi",
+      "O segundo bairro de Jerusalém",
+      "O pátio do templo",
+      "Anatote"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Hulda morava no segundo bairro de Jerusalém."
   },
   {
-    "catalogKey":"core-116",
-    "prompt":"Which gate of Jerusalem did Nehemiah inspect first during his nighttime survey?",
-    "options":["Fish Gate","Valley Gate","Sheep Gate","Dung Gate"],
-    "correctOption":1,
-    "difficulty":10,
-    "category":"History",
-    "reference":"Nehemiah 2:13",
-    "explanation":"Nehemiah began at the Valley Gate."
+    "catalogKey": "core-054",
+    "prompt": "Which two insurgents did Gamaliel mention in his speech to the council?",
+    "options": [
+      "Barabbas and Simon",
+      "Theudas and Judas the Galilean",
+      "Judas and Matthias",
+      "Alexander and Hymenaeus"
+    ],
+    "correctOption": 1,
+    "difficulty": 6,
+    "category": "Acts",
+    "reference": "Acts 5:36-37",
+    "explanation": "Gamaliel cited Theudas and Judas the Galilean as failed movements.",
+    "promptPt": "Quais dois insurgentes Gamaliel mencionou em seu discurso ao conselho?",
+    "optionsPt": [
+      "Barrabás e Simão",
+      "Teudas e Judas, o Galileu",
+      "Judas e Matias",
+      "Alexandre e Himeneu"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Gamaliel citou Teudas e Judas, o Galileu, como movimentos que fracassaram."
   },
   {
-    "catalogKey":"core-117",
-    "prompt":"Which Levite stopped a plague by making atonement with incense?",
-    "options":["Eleazar","Phinehas","Aaron","Korah"],
-    "correctOption":2,
-    "difficulty":10,
-    "category":"Torah",
-    "reference":"Numbers 16:46-48",
-    "explanation":"Aaron stood between the living and the dead."
+    "catalogKey": "core-055",
+    "prompt": "What occupations did Amos identify as his work before prophesying?",
+    "options": [
+      "Priest and scribe",
+      "Shepherd and dresser of sycamore figs",
+      "Farmer and fisherman",
+      "Tentmaker and merchant"
+    ],
+    "correctOption": 1,
+    "difficulty": 6,
+    "category": "Prophets",
+    "reference": "Amos 7:14",
+    "explanation": "Amos said he was a herdsman and a dresser of sycamore figs.",
+    "promptPt": "Quais ocupações Amós identificou como seu trabalho antes de profetizar?",
+    "optionsPt": [
+      "Sacerdote e escriba",
+      "Pastor de ovelhas e cultivador de sicômoros",
+      "Agricultor e pescador",
+      "Fazendeiro de tendas e comerciante"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Amós disse que era pastor de ovelhas e cultivador de sicômoros."
   },
   {
-    "catalogKey":"core-118",
-    "prompt":"How many men of Gideon's army remained after God reduced their number?",
-    "options":["300","500","700","1000"],
-    "correctOption":0,
-    "difficulty":10,
-    "category":"Judges",
-    "reference":"Judges 7:7",
-    "explanation":"God used only 300 men."
+    "catalogKey": "core-056",
+    "prompt": "Who was instructed to deliver and explain Paul's circumstances to the churches at Ephesus and Colossae?",
+    "options": [
+      "Epaphras",
+      "Onesimus",
+      "Tychicus",
+      "Archippus"
+    ],
+    "correctOption": 2,
+    "difficulty": 6,
+    "category": "Letters",
+    "reference": "Ephesians 6:21; Colossians 4:7",
+    "explanation": "Tychicus is commended and sent in both letters.",
+    "promptPt": "Quem foi encarregado de entregar e explicar a situação de Paulo às igrejas de Éfeso e Colossos?",
+    "optionsPt": [
+      "Epafras",
+      "Onésimo",
+      "Tíquico",
+      "Arquipo"
+    ],
+    "categoryPt": "Cartas",
+    "explanationPt": "Tíquico é elogiado e enviado em ambas as cartas."
   },
   {
-    "catalogKey":"core-119",
-    "prompt":"Which Roman centurion said, 'Truly this was the Son of God' after Jesus died?",
-    "options":["Cornelius","Longinus","His name is not given","Julius"],
-    "correctOption":2,
-    "difficulty":10,
-    "category":"Gospels",
-    "reference":"Matthew 27:54",
-    "explanation":"The centurion is never named in Scripture."
+    "catalogKey": "core-057",
+    "prompt": "Which name is associated with the goat sent into the wilderness on the Day of Atonement?",
+    "options": [
+      "Molech",
+      "Azazel",
+      "Dagon",
+      "Nehushtan"
+    ],
+    "correctOption": 1,
+    "difficulty": 6,
+    "category": "Torah",
+    "reference": "Leviticus 16:8-10",
+    "explanation": "One lot was for the Lord and the other for Azazel.",
+    "promptPt": "Qual nome está associado ao bode enviado para o deserto no Dia da Expiação?",
+    "optionsPt": [
+      "Moloque",
+      "Azazel",
+      "Dagom",
+      "Neustã"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "Uma sorte era para o Senhor e a outra para Azazel."
   },
   {
-    "catalogKey":"core-120",
-    "prompt":"Which Old Testament book never explicitly mentions the name of God?",
-    "options":["Song of Solomon","Ruth","Esther","Ecclesiastes"],
-    "correctOption":2,
-    "difficulty":10,
-    "category":"History",
-    "reference":"Book of Esther",
-    "explanation":"Esther never explicitly mentions God's name, though His providence is evident throughout."
+    "catalogKey": "core-058",
+    "prompt": "Which Psalm is arranged in twenty-two alphabetic sections of eight verses each?",
+    "options": [
+      "Psalm 22",
+      "Psalm 78",
+      "Psalm 119",
+      "Psalm 150"
+    ],
+    "correctOption": 2,
+    "difficulty": 6,
+    "category": "Wisdom",
+    "reference": "Psalm 119",
+    "explanation": "Psalm 119 is an extended alphabetic acrostic with 176 verses.",
+    "promptPt": "Qual Salmo é organizado em vinte e duas seções alfabéticas de oito versículos cada?",
+    "optionsPt": [
+      "Salmo 22",
+      "Salmo 78",
+      "Salmo 119",
+      "Salmo 150"
+    ],
+    "categoryPt": "Poéticos",
+    "explanationPt": "O Salmo 119 é um longo acróstico alfabético com 176 versículos."
+  },
+  {
+    "catalogKey": "core-059",
+    "prompt": "Which companion did Paul leave sick at Miletus?",
+    "options": [
+      "Trophimus",
+      "Tychicus",
+      "Epaphras",
+      "Aristarchus"
+    ],
+    "correctOption": 0,
+    "difficulty": 6,
+    "category": "Letters",
+    "reference": "2 Timothy 4:20",
+    "explanation": "Paul says he left Trophimus ill at Miletus.",
+    "promptPt": "Qual companheiro Paulo deixou doente em Mileto?",
+    "optionsPt": [
+      "Trófimo",
+      "Tíquico",
+      "Epafras",
+      "Aristarco"
+    ],
+    "categoryPt": "Cartas",
+    "explanationPt": "Paulo diz que deixou Trófimo doente em Mileto."
+  },
+  {
+    "catalogKey": "core-060",
+    "prompt": "Which Old Testament passages did Jesus quote in response to all three wilderness temptations?",
+    "options": [
+      "Psalms",
+      "Isaiah",
+      "Deuteronomy",
+      "Proverbs"
+    ],
+    "correctOption": 2,
+    "difficulty": 6,
+    "category": "Gospels",
+    "reference": "Matthew 4:4,7,10",
+    "explanation": "Jesus answered each temptation with words from Deuteronomy.",
+    "promptPt": "Quais passagens do Antigo Testamento Jesus citou em resposta às três tentações no deserto?",
+    "optionsPt": [
+      "Salmos",
+      "Isaías",
+      "Deuteronômio",
+      "Provérbios"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Jesus respondeu a cada tentação com palavras de Deuteronômio."
+  },
+  {
+    "catalogKey": "core-061",
+    "prompt": "How many sockets of silver were made for the tabernacle from the atonement money collected in the census?",
+    "options": [
+      "96",
+      "100",
+      "120",
+      "144"
+    ],
+    "correctOption": 1,
+    "difficulty": 7,
+    "category": "Torah",
+    "reference": "Exodus 38:25-27",
+    "explanation": "One hundred silver sockets were cast from the census silver.",
+    "promptPt": "Quantas bases de prata foram feitas para o tabernáculo a partir do dinheiro da expiação arrecadado no censo?",
+    "optionsPt": [
+      "96",
+      "100",
+      "120",
+      "144"
+    ],
+    "categoryPt": "Torah",
+    "explanationPt": "Cem bases de prata foram fundidas com a prata do censo."
+  },
+  {
+    "catalogKey": "core-062",
+    "prompt": "Which judge was left-handed and assassinated King Eglon of Moab?",
+    "options": [
+      "Shamgar",
+      "Ehud",
+      "Jephthah",
+      "Othniel"
+    ],
+    "correctOption": 1,
+    "difficulty": 7,
+    "category": "Judges",
+    "reference": "Judges 3:15-22",
+    "explanation": "Ehud, a left-handed Benjamite, killed Eglon.",
+    "promptPt": "Qual juiz era canhoto e assassinou o rei Eglom de Moabe?",
+    "optionsPt": [
+      "Sansão",
+      "Eúde",
+      "Jefté",
+      "Otniel"
+    ],
+    "categoryPt": "Juízes",
+    "explanationPt": "Eúde, um benjamita canhoto, matou Eglom."
+  },
+  {
+    "catalogKey": "core-063",
+    "prompt": "Who was King Saul's great-grandfather?",
+    "options": [
+      "Abiel",
+      "Ner",
+      "Kish",
+      "Jehiel"
+    ],
+    "correctOption": 3,
+    "difficulty": 7,
+    "category": "History",
+    "reference": "1 Samuel 9:1; 1 Chronicles 9:35-39",
+    "explanation": "Jehiel was the ancestor of Kish, Saul's father.",
+    "promptPt": "Quem era o bisavô do rei Saul?",
+    "optionsPt": [
+      "Abiel",
+      "Ner",
+      "Quis",
+      "Jeiel"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Jeiel era o ancestral de Quis, pai de Saul."
+  },
+  {
+    "catalogKey": "core-064",
+    "prompt": "Which prophet was taken by the Spirit from Babylon to Jerusalem in a vision?",
+    "options": [
+      "Daniel",
+      "Jeremiah",
+      "Ezekiel",
+      "Zechariah"
+    ],
+    "correctOption": 2,
+    "difficulty": 7,
+    "category": "Prophets",
+    "reference": "Ezekiel 8:3",
+    "explanation": "Ezekiel was transported in a vision to Jerusalem.",
+    "promptPt": "Qual profeta foi levado pelo Espírito da Babilônia para Jerusalém em visão?",
+    "optionsPt": [
+      "Daniel",
+      "Jeremias",
+      "Ezequiel",
+      "Zacarias"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Ezequiel foi transportado em visão para Jerusalém."
+  },
+  {
+    "catalogKey": "core-065",
+    "prompt": "What was the name of David's mighty man who killed 800 men at one time?",
+    "options": [
+      "Abishai",
+      "Benaiah",
+      "Jashobeam",
+      "Eleazar"
+    ],
+    "correctOption": 2,
+    "difficulty": 7,
+    "category": "History",
+    "reference": "2 Samuel 23:8",
+    "explanation": "Jashobeam is credited with killing 800 men.",
+    "promptPt": "Qual era o nome do valente de Davi que matou 800 homens de uma só vez?",
+    "optionsPt": [
+      "Abisai",
+      "Benaia",
+      "Jasobeão",
+      "Eleazar"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Jasobeão é creditado por matar 800 homens."
+  },
+  {
+    "catalogKey": "core-066",
+    "prompt": "Who interpreted the writing on the wall for King Belshazzar?",
+    "options": [
+      "Ezra",
+      "Daniel",
+      "Nehemiah",
+      "Zechariah"
+    ],
+    "correctOption": 1,
+    "difficulty": 7,
+    "category": "Prophets",
+    "reference": "Daniel 5",
+    "explanation": "Daniel interpreted 'Mene, Mene, Tekel, Upharsin.'",
+    "promptPt": "Quem interpretou a escrita na parede para o rei Belsazar?",
+    "optionsPt": [
+      "Esdras",
+      "Daniel",
+      "Neemias",
+      "Zacarias"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Daniel interpretou 'Mene, Mene, Tequel, Parsim'."
+  },
+  {
+    "catalogKey": "core-067",
+    "prompt": "Which king of Judah was struck with leprosy after unlawfully burning incense?",
+    "options": [
+      "Hezekiah",
+      "Uzziah",
+      "Amaziah",
+      "Ahaz"
+    ],
+    "correctOption": 1,
+    "difficulty": 7,
+    "category": "Kings",
+    "reference": "2 Chronicles 26:16-21",
+    "explanation": "King Uzziah became leprous after entering the temple.",
+    "promptPt": "Qual rei de Judá foi ferido com lepra após queimar incenso ilicitamente?",
+    "optionsPt": [
+      "Ezequias",
+      "Uzias",
+      "Amazias",
+      "Acaz"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "O rei Uzias ficou leproso após entrar no templo."
+  },
+  {
+    "catalogKey": "core-068",
+    "prompt": "Who was the father of John the Baptist?",
+    "options": [
+      "Joachim",
+      "Zechariah",
+      "Simeon",
+      "Eli"
+    ],
+    "correctOption": 1,
+    "difficulty": 7,
+    "category": "Gospels",
+    "reference": "Luke 1:5",
+    "explanation": "John's father was the priest Zechariah.",
+    "promptPt": "Quem foi o pai de João Batista?",
+    "optionsPt": [
+      "Joaquim",
+      "Zacarias",
+      "Simeão",
+      "Eli"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "O pai de João era o sacerdote Zacarias."
+  },
+  {
+    "catalogKey": "core-069",
+    "prompt": "Who fell asleep in the upper room while Paul was preaching and died after falling from the window?",
+    "options": [
+      "Eutychus",
+      "Tychicus",
+      "Onesimus",
+      "Silas"
+    ],
+    "correctOption": 0,
+    "difficulty": 7,
+    "category": "Acts",
+    "reference": "Acts 20:9-12",
+    "explanation": "Eutychus fell from the third story but was restored to life.",
+    "promptPt": "Quem adormeceu no cenáculo enquanto Paulo pregava e morreu após cair da janela?",
+    "optionsPt": [
+      "Êutico",
+      "Tíquico",
+      "Onésimo",
+      "Silas"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Êutico caiu do terceiro andar, mas foi restaurado à vida."
+  },
+  {
+    "catalogKey": "core-070",
+    "prompt": "What was the name of the island where Paul was bitten by a viper?",
+    "options": [
+      "Cyprus",
+      "Patmos",
+      "Crete",
+      "Malta"
+    ],
+    "correctOption": 3,
+    "difficulty": 7,
+    "category": "Acts",
+    "reference": "Acts 28:1-6",
+    "explanation": "Paul was shipwrecked on Malta.",
+    "promptPt": "Qual era o nome da ilha onde Paulo foi mordido por uma víbora?",
+    "optionsPt": [
+      "Chipre",
+      "Patmos",
+      "Creta",
+      "Malta"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Paulo sofreu naufrágio em Malta."
+  },
+  {
+    "catalogKey": "core-071",
+    "prompt": "Who succeeded Moses as Israel's leader?",
+    "options": [
+      "Caleb",
+      "Eleazar",
+      "Joshua",
+      "Phinehas"
+    ],
+    "correctOption": 2,
+    "difficulty": 7,
+    "category": "Torah",
+    "reference": "Deuteronomy 31:7-8",
+    "explanation": "Joshua was appointed by God to succeed Moses.",
+    "promptPt": "Quem sucedeu a Moisés como líder de Israel?",
+    "optionsPt": [
+      "Calebe",
+      "Eleazar",
+      "Josué",
+      "Finéias"
+    ],
+    "categoryPt": "Torah",
+    "explanationPt": "Josué foi apontado por Deus para suceder a Moisés."
+  },
+  {
+    "catalogKey": "core-072",
+    "prompt": "Which prophet married Gomer as a sign to Israel?",
+    "options": [
+      "Joel",
+      "Amos",
+      "Hosea",
+      "Micah"
+    ],
+    "correctOption": 2,
+    "difficulty": 7,
+    "category": "Prophets",
+    "reference": "Hosea 1:2-3",
+    "explanation": "God commanded Hosea to marry Gomer.",
+    "promptPt": "Qual profeta se casou com Gômer como um sinal para Israel?",
+    "optionsPt": [
+      "Joel",
+      "Amós",
+      "Oséias",
+      "Miquéias"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Deus ordenou que Oséias se casasse com Gômer."
+  },
+  {
+    "catalogKey": "core-073",
+    "prompt": "Which tribe received no territorial inheritance because the Lord was their inheritance?",
+    "options": [
+      "Judah",
+      "Benjamin",
+      "Levi",
+      "Ephraim"
+    ],
+    "correctOption": 2,
+    "difficulty": 7,
+    "category": "Torah",
+    "reference": "Numbers 18:20",
+    "explanation": "The Levites received cities instead of tribal land.",
+    "promptPt": "Qual tribo não recebeu herança territorial porque o Senhor era a herança deles?",
+    "optionsPt": [
+      "Judá",
+      "Benjamim",
+      "Levi",
+      "Efraim"
+    ],
+    "categoryPt": "Torah",
+    "explanationPt": "Os levitas receberam cidades em vez de terras tribais."
+  },
+  {
+    "catalogKey": "core-074",
+    "prompt": "Which king was told to stretch himself over a child three times, and the child came back to life?",
+    "options": [
+      "Elijah",
+      "Elisha",
+      "Isaiah",
+      "Nathan"
+    ],
+    "correctOption": 0,
+    "difficulty": 7,
+    "category": "Prophets",
+    "reference": "1 Kings 17:21-22",
+    "explanation": "Elijah raised the widow's son.",
+    "promptPt": "A qual rei foi dito que se estendesse sobre uma criança três vezes, e a criança voltou à vida?",
+    "optionsPt": [
+      "Elias",
+      "Eliseu",
+      "Isaías",
+      "Natã"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Elias ressuscitou o filho da viúva."
+  },
+  {
+    "catalogKey": "core-075",
+    "prompt": "What was the name of the high priest during Jesus' trial before the Sanhedrin?",
+    "options": [
+      "Annas",
+      "Caiaphas",
+      "Zadok",
+      "Abiathar"
+    ],
+    "correctOption": 1,
+    "difficulty": 7,
+    "category": "Gospels",
+    "reference": "Matthew 26:57",
+    "explanation": "Jesus was brought before Caiaphas.",
+    "promptPt": "Qual era o nome do sumo sacerdote durante o julgamento de Jesus perante o Sinédrio?",
+    "optionsPt": [
+      "Anás",
+      "Caifás",
+      "Zadoque",
+      "Abiatar"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Jesus foi levado perante Caifás."
+  },
+  {
+    "catalogKey": "core-076",
+    "prompt": "Which disciple replaced Judas Iscariot among the Twelve?",
+    "options": [
+      "Barnabas",
+      "Matthias",
+      "Silas",
+      "Justus"
+    ],
+    "correctOption": 1,
+    "difficulty": 8,
+    "category": "Acts",
+    "reference": "Acts 1:26",
+    "explanation": "Matthias was chosen by lot.",
+    "promptPt": "Qual discípulo substituiu Judas Iscariotes entre os Doze?",
+    "optionsPt": [
+      "Barnabé",
+      "Matias",
+      "Silas",
+      "Justo"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Matias foi escolhido por sorteio."
+  },
+  {
+    "catalogKey": "core-077",
+    "prompt": "Which city did Abraham purchase the cave of Machpelah from Ephron the Hittite?",
+    "options": [
+      "Hebron",
+      "Bethel",
+      "Shechem",
+      "Beersheba"
+    ],
+    "correctOption": 0,
+    "difficulty": 8,
+    "category": "Torah",
+    "reference": "Genesis 23",
+    "explanation": "The cave near Hebron became the family burial site.",
+    "promptPt": "De qual cidade Abraão comprou a caverna de Macpela de Efrom, o heteu?",
+    "optionsPt": [
+      "Hebrom",
+      "Betel",
+      "Siquém",
+      "Berseba"
+    ],
+    "categoryPt": "Torah",
+    "explanationPt": "A caverna perto de Hebrom tornou-se o local de sepultamento da família."
+  },
+  {
+    "catalogKey": "core-078",
+    "prompt": "Who carried the ark into battle against the Philistines before it was captured?",
+    "options": [
+      "Hophni and Phinehas",
+      "Samuel and Eli",
+      "Nathan and Gad",
+      "Abner and Joab"
+    ],
+    "correctOption": 0,
+    "difficulty": 8,
+    "category": "History",
+    "reference": "1 Samuel 4:4",
+    "explanation": "Eli's sons accompanied the ark.",
+    "promptPt": "Quem levou a arca para a batalha contra os filisteus antes de ela ser capturada?",
+    "optionsPt": [
+      "Hofni e Fineias",
+      "Samuel e Eli",
+      "Natã e Gade",
+      "Abner e Joabe"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Os filhos de Eli acompanharam a arca."
+  },
+  {
+    "catalogKey": "core-079",
+    "prompt": "Which church is described as having a little strength yet keeping Christ's word?",
+    "options": [
+      "Smyrna",
+      "Philadelphia",
+      "Thyatira",
+      "Pergamum"
+    ],
+    "correctOption": 1,
+    "difficulty": 8,
+    "category": "Revelation",
+    "reference": "Revelation 3:8",
+    "explanation": "Philadelphia received this commendation.",
+    "promptPt": "Qual igreja é descrita como tendo pouca força, mas guardando a palavra de Cristo?",
+    "optionsPt": [
+      "Esmirna",
+      "Filadélfia",
+      "Tiatira",
+      "Pérgamo"
+    ],
+    "categoryPt": "Apocalipse",
+    "explanationPt": "Filadélfia recebeu este elogio."
+  },
+  {
+    "catalogKey": "core-080",
+    "prompt": "What was the name of the servant whose ear Peter cut off?",
+    "options": [
+      "Malchus",
+      "Barsabbas",
+      "Crispus",
+      "Sosthenes"
+    ],
+    "correctOption": 0,
+    "difficulty": 8,
+    "category": "Gospels",
+    "reference": "John 18:10",
+    "explanation": "The servant's name was Malchus.",
+    "promptPt": "Qual era o nome do servo cuja orelha Pedro cortou?",
+    "optionsPt": [
+      "Malco",
+      "Barsabás",
+      "Crispo",
+      "Sóstenes"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "O nome do servo era Malco."
+  },
+  {
+    "catalogKey": "core-081",
+    "prompt": "Who was the mother of King Lemuel, whose sayings appear in Proverbs 31?",
+    "options": [
+      "Bathsheba",
+      "Naamah",
+      "Her name is not given",
+      "Abigail"
+    ],
+    "correctOption": 2,
+    "difficulty": 8,
+    "category": "Wisdom",
+    "reference": "Proverbs 31:1",
+    "explanation": "The text never names King Lemuel's mother.",
+    "promptPt": "Quem foi a mãe do rei Lemuel, cujos provérbios aparecem em Provérbios 31?",
+    "optionsPt": [
+      "Bate-Seba",
+      "Naamá",
+      "O nome dela não é mencionado",
+      "Abigail"
+    ],
+    "categoryPt": "Sabedoria",
+    "explanationPt": "O texto nunca menciona o nome da mãe do rei Lemuel."
+  },
+  {
+    "catalogKey": "core-082",
+    "prompt": "Which prophet saw a flying scroll measuring twenty cubits by ten cubits?",
+    "options": [
+      "Ezekiel",
+      "Zechariah",
+      "Haggai",
+      "Joel"
+    ],
+    "correctOption": 1,
+    "difficulty": 8,
+    "category": "Prophets",
+    "reference": "Zechariah 5:1-2",
+    "explanation": "This was one of Zechariah's night visions.",
+    "promptPt": "Qual profeta viu um rolo voador medindo vinte côvados por dez côvados?",
+    "optionsPt": [
+      "Ezequiel",
+      "Zacarias",
+      "Ageu",
+      "Joel"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Esta foi uma das visões noturnas de Zacarias."
+  },
+  {
+    "catalogKey": "core-083",
+    "prompt": "Who persuaded David to number Israel?",
+    "options": [
+      "Joab",
+      "Absalom",
+      "Satan",
+      "Ahithophel"
+    ],
+    "correctOption": 2,
+    "difficulty": 8,
+    "category": "History",
+    "reference": "1 Chronicles 21:1",
+    "explanation": "Chronicles states that Satan incited David.",
+    "promptPt": "Quem persuadiu Davi a fazer o censo de Israel?",
+    "optionsPt": [
+      "Joabe",
+      "Absalão",
+      "Satanás",
+      "Aitofel"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Crônicas afirma que Satanás incitou Davi."
+  },
+  {
+    "catalogKey": "core-084",
+    "prompt": "How many stones did David choose from the brook before facing Goliath?",
+    "options": [
+      "Three",
+      "Five",
+      "Seven",
+      "Ten"
+    ],
+    "correctOption": 1,
+    "difficulty": 8,
+    "category": "History",
+    "reference": "1 Samuel 17:40",
+    "explanation": "David selected five smooth stones.",
+    "promptPt": "Quantas pedras Davi escolheu no riacho antes de enfrentar Golias?",
+    "optionsPt": [
+      "Três",
+      "Cinco",
+      "Sete",
+      "Dez"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Davi selecionou cinco pedras lisas."
+  },
+  {
+    "catalogKey": "core-085",
+    "prompt": "Which king humbled himself after reading the Book of the Law discovered in the temple?",
+    "options": [
+      "Hezekiah",
+      "Josiah",
+      "Jehoshaphat",
+      "Manasseh"
+    ],
+    "correctOption": 1,
+    "difficulty": 8,
+    "category": "Kings",
+    "reference": "2 Kings 22:11",
+    "explanation": "Josiah tore his clothes after hearing the Law.",
+    "promptPt": "Qual rei se humilhou após ler o Livro da Lei descoberto no templo?",
+    "optionsPt": [
+      "Ezequias",
+      "Josias",
+      "Josafá",
+      "Manassés"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Josias rasgou suas vestes após ouvir a Lei."
+  },
+  {
+    "catalogKey": "core-086",
+    "prompt": "Who was the father of Bezalel, the chief craftsman of the tabernacle?",
+    "options": [
+      "Uri",
+      "Hur",
+      "Caleb",
+      "Amminadab"
+    ],
+    "correctOption": 0,
+    "difficulty": 8,
+    "category": "Torah",
+    "reference": "Exodus 31:2",
+    "explanation": "Bezalel was the son of Uri.",
+    "promptPt": "Quem foi o pai de Bezalel, o artífice principal do tabernáculo?",
+    "optionsPt": [
+      "Uri",
+      "Hur",
+      "Calebe",
+      "Aminadabe"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "Bezalel era filho de Uri."
+  },
+  {
+    "catalogKey": "core-087",
+    "prompt": "Which Roman governor succeeded Felix and heard Paul's defense?",
+    "options": [
+      "Festus",
+      "Gallio",
+      "Pilate",
+      "Lysias"
+    ],
+    "correctOption": 0,
+    "difficulty": 8,
+    "category": "Acts",
+    "reference": "Acts 25:1",
+    "explanation": "Porcius Festus replaced Felix.",
+    "promptPt": "Qual governador romano sucedeu a Félix e ouviu a defesa de Paulo?",
+    "optionsPt": [
+      "Festo",
+      "Galião",
+      "Pilatos",
+      "Lísias"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Pórcio Festo substituiu a Félix."
+  },
+  {
+    "catalogKey": "core-088",
+    "prompt": "Which disciple was known as 'the twin'?",
+    "options": [
+      "Andrew",
+      "Thomas",
+      "Philip",
+      "Bartholomew"
+    ],
+    "correctOption": 1,
+    "difficulty": 8,
+    "category": "Gospels",
+    "reference": "John 11:16",
+    "explanation": "Thomas was also called Didymus, meaning 'Twin.'",
+    "promptPt": "Qual discípulo era conhecido como 'o Dídimo' (ou gêmeo)?",
+    "optionsPt": [
+      "André",
+      "Tomé",
+      "Filipe",
+      "Bartolomeu"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Tomé também era chamado de Dídimo, que significa 'Gêmeo'."
+  },
+  {
+    "catalogKey": "core-089",
+    "prompt": "Which prophet confronted King David after his sin with Bathsheba?",
+    "options": [
+      "Nathan",
+      "Gad",
+      "Samuel",
+      "Ahijah"
+    ],
+    "correctOption": 0,
+    "difficulty": 8,
+    "category": "History",
+    "reference": "2 Samuel 12:1",
+    "explanation": "Nathan confronted David with the parable of the ewe lamb.",
+    "promptPt": "Qual profeta confrontou o rei Davi após o seu pecado com Bate-Seba?",
+    "optionsPt": [
+      "Natã",
+      "Gade",
+      "Samuel",
+      "Aías"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Natã confrontou Davi com a parábola da ovelhinha."
+  },
+  {
+    "catalogKey": "core-090",
+    "prompt": "What was the name of the man who carried Jesus' cross?",
+    "options": [
+      "Joseph of Arimathea",
+      "Simon of Cyrene",
+      "Nicodemus",
+      "Bartimaeus"
+    ],
+    "correctOption": 1,
+    "difficulty": 8,
+    "category": "Gospels",
+    "reference": "Mark 15:21",
+    "explanation": "Simon of Cyrene was compelled to carry Jesus' cross.",
+    "promptPt": "Qual era o nome do homem que carregou a cruz de Jesus?",
+    "optionsPt": [
+      "José de Arimateia",
+      "Simão Cireneu",
+      "Nicodemos",
+      "Bartimeu"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Simão Cireneu foi forçado a carregar a cruz de Jesus."
+  },
+  {
+    "catalogKey": "core-091",
+    "prompt": "Who was the mother of King Lemuel according to Proverbs?",
+    "options": [
+      "Bathsheba",
+      "Abigail",
+      "Her name is not given",
+      "Naamah"
+    ],
+    "correctOption": 2,
+    "difficulty": 9,
+    "category": "Wisdom",
+    "reference": "Proverbs 31:1",
+    "explanation": "The text never identifies King Lemuel's mother by name.",
+    "promptPt": "Quem era a mãe do rei Lemuel, de acordo com Provérbios?",
+    "optionsPt": [
+      "Bate-Seba",
+      "Abigail",
+      "O nome dela não é mencionado",
+      "Naamá"
+    ],
+    "categoryPt": "Sabedoria",
+    "explanationPt": "O texto nunca identifica a mãe do rei Lemuel pelo nome."
+  },
+  {
+    "catalogKey": "core-092",
+    "prompt": "Which son of David attempted to seize the throne before Solomon was crowned?",
+    "options": [
+      "Absalom",
+      "Adonijah",
+      "Amnon",
+      "Chileab"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Kings",
+    "reference": "1 Kings 1:5",
+    "explanation": "Adonijah declared himself king while David was still alive.",
+    "promptPt": "Qual filho de Davi tentou tomar o trono antes de Salomão ser coroado?",
+    "optionsPt": [
+      "Absalão",
+      "Adonias",
+      "Amnom",
+      "Quileabe"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Adonias declarou-se rei enquanto Davi ainda estava vivo."
+  },
+  {
+    "catalogKey": "core-093",
+    "prompt": "Who was the father of Hur, the grandfather of Bezalel?",
+    "options": [
+      "Caleb",
+      "Uri",
+      "Jephunneh",
+      "Hezron"
+    ],
+    "correctOption": 0,
+    "difficulty": 9,
+    "category": "Torah",
+    "reference": "1 Chronicles 2:18-20",
+    "explanation": "Hur was the son of Caleb.",
+    "promptPt": "Quem era o pai de Hur, o avô de Bezalel?",
+    "optionsPt": [
+      "Calebe",
+      "Uri",
+      "Jefoné",
+      "Hesrom"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "Hur era filho de Calebe."
+  },
+  {
+    "catalogKey": "core-094",
+    "prompt": "How many chapters are there in the Book of Zechariah?",
+    "options": [
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "correctOption": 2,
+    "difficulty": 9,
+    "category": "Prophets",
+    "reference": "Zechariah",
+    "explanation": "Zechariah contains 14 chapters.",
+    "promptPt": "Quantos capítulos há no livro de Zacarias?",
+    "optionsPt": [
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Zacarias contém 14 capítulos."
+  },
+  {
+    "catalogKey": "core-095",
+    "prompt": "Which prophet married a prostitute as a prophetic sign?",
+    "options": [
+      "Amos",
+      "Joel",
+      "Hosea",
+      "Micah"
+    ],
+    "correctOption": 2,
+    "difficulty": 9,
+    "category": "Prophets",
+    "reference": "Hosea 1:2",
+    "explanation": "God instructed Hosea to marry Gomer.",
+    "promptPt": "Qual profeta se casou com uma prostituta como sinal profético?",
+    "optionsPt": [
+      "Amós",
+      "Joel",
+      "Oseias",
+      "Miqueias"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Deus ordenou que Oseias se casasse com Gômer."
+  },
+  {
+    "catalogKey": "core-096",
+    "prompt": "Who was the commander of King Saul's army?",
+    "options": [
+      "Joab",
+      "Abner",
+      "Amasa",
+      "Benaiah"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "History",
+    "reference": "1 Samuel 14:50",
+    "explanation": "Abner, Saul's cousin, commanded his army.",
+    "promptPt": "Quem era o comandante do exército do rei Saul?",
+    "optionsPt": [
+      "Joabe",
+      "Abner",
+      "Amasa",
+      "Benaia"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Abner, primo de Saul, comandava o seu exército."
+  },
+  {
+    "catalogKey": "core-097",
+    "prompt": "Which king of Judah was only eight years old when he began to reign?",
+    "options": [
+      "Joash",
+      "Josiah",
+      "Manasseh",
+      "Uzziah"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Kings",
+    "reference": "2 Kings 22:1",
+    "explanation": "Josiah became king at eight years old.",
+    "promptPt": "Qual rei de Judá tinha apenas oito anos de idade quando começou a reinar?",
+    "optionsPt": [
+      "Jeoás",
+      "Josias",
+      "Manassés",
+      "Uzias"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Josias tornou-se rei com oito anos de idade."
+  },
+  {
+    "catalogKey": "core-098",
+    "prompt": "Which disciple first brought Nathanael to Jesus?",
+    "options": [
+      "Peter",
+      "Philip",
+      "Andrew",
+      "John"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Gospels",
+    "reference": "John 1:45",
+    "explanation": "Philip invited Nathanael to meet Jesus.",
+    "promptPt": "Qual discípulo levou Natanael a Jesus pela primeira vez?",
+    "optionsPt": [
+      "Pedro",
+      "Filipe",
+      "André",
+      "João"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "Filipe convidou Natanael para conhecer a Jesus."
+  },
+  {
+    "catalogKey": "core-099",
+    "prompt": "Which prophet saw a basket of summer fruit?",
+    "options": [
+      "Amos",
+      "Joel",
+      "Micah",
+      "Nahum"
+    ],
+    "correctOption": 0,
+    "difficulty": 9,
+    "category": "Prophets",
+    "reference": "Amos 8:1-2",
+    "explanation": "The basket symbolized that Israel's end had come.",
+    "promptPt": "Qual profeta viu um cesto de frutos de verão?",
+    "optionsPt": [
+      "Amós",
+      "Joel",
+      "Miqueias",
+      "Naum"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "O cesto simbolizava que o fim de Israel havia chegado."
+  },
+  {
+    "catalogKey": "core-100",
+    "prompt": "Who was the father of King Hezekiah?",
+    "options": [
+      "Ahaz",
+      "Jotham",
+      "Uzziah",
+      "Amaziah"
+    ],
+    "correctOption": 0,
+    "difficulty": 9,
+    "category": "Kings",
+    "reference": "2 Kings 18:1",
+    "explanation": "Hezekiah was the son of Ahaz.",
+    "promptPt": "Quem foi o pai do rei Ezequias?",
+    "optionsPt": [
+      "Acaz",
+      "Jotão",
+      "Uzias",
+      "Amazias"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Ezequias era filho de Acaz."
+  },
+  {
+    "catalogKey": "core-101",
+    "prompt": "Which city did Jonah flee toward instead of Nineveh?",
+    "options": [
+      "Tyre",
+      "Tarshish",
+      "Sidon",
+      "Damascus"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Prophets",
+    "reference": "Jonah 1:3",
+    "explanation": "Jonah attempted to flee to Tarshish.",
+    "promptPt": "Para qual cidade Jonas fugiu em vez de ir para Nínive?",
+    "optionsPt": [
+      "Tiro",
+      "Társis",
+      "Sidom",
+      "Damasco"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Jonas tentou fugir para Társis."
+  },
+  {
+    "catalogKey": "core-102",
+    "prompt": "What was the name of Moses' father-in-law?",
+    "options": [
+      "Reuel/Jethro",
+      "Laban",
+      "Nahor",
+      "Hobab"
+    ],
+    "correctOption": 0,
+    "difficulty": 9,
+    "category": "Torah",
+    "reference": "Exodus 3:1",
+    "explanation": "Moses' father-in-law is called Jethro (also Reuel).",
+    "promptPt": "Qual era o nome do sogro de Moisés?",
+    "optionsPt": [
+      "Reuel/Jetro",
+      "Labão",
+      "Naor",
+      "Hobabe"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "O sogro de Moisés chama-se Jetro (também Reuel)."
+  },
+  {
+    "catalogKey": "core-103",
+    "prompt": "Which king rebuilt Jericho during the reign of Ahab?",
+    "options": [
+      "Hiel",
+      "Omri",
+      "Zimri",
+      "Jehu"
+    ],
+    "correctOption": 0,
+    "difficulty": 9,
+    "category": "Kings",
+    "reference": "1 Kings 16:34",
+    "explanation": "Hiel rebuilt Jericho at the cost of his sons.",
+    "promptPt": "Qual rei reconstruiu Jericó durante o reinado de Acabe?",
+    "optionsPt": [
+      "Hiel",
+      "Onri",
+      "Zinri",
+      "Jeú"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Hiel reconstruiu Jericó ao custo de seus filhos."
+  },
+  {
+    "catalogKey": "core-104",
+    "prompt": "Who interpreted Nebuchadnezzar's dream of the great tree?",
+    "options": [
+      "Daniel",
+      "Shadrach",
+      "Jeremiah",
+      "Ezekiel"
+    ],
+    "correctOption": 0,
+    "difficulty": 9,
+    "category": "Prophets",
+    "reference": "Daniel 4",
+    "explanation": "Daniel interpreted the dream.",
+    "promptPt": "Quem interpretou o sonho de Nabucodonosor sobre a grande árvore?",
+    "optionsPt": [
+      "Daniel",
+      "Sadraque",
+      "Jeremias",
+      "Ezequiel"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Daniel interpretou o sonho."
+  },
+  {
+    "catalogKey": "core-105",
+    "prompt": "Which woman hid the Israelite spies in Jericho?",
+    "options": [
+      "Deborah",
+      "Rahab",
+      "Jael",
+      "Ruth"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "History",
+    "reference": "Joshua 2",
+    "explanation": "Rahab protected the spies.",
+    "promptPt": "Qual mulher escondeu os espias israelitas em Jericó?",
+    "optionsPt": [
+      "Débora",
+      "Raabe",
+      "Jael",
+      "Rute"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Raabe protegeu os espias."
+  },
+  {
+    "catalogKey": "core-106",
+    "prompt": "Which tribe settled east of the Jordan together with Reuben?",
+    "options": [
+      "Benjamin",
+      "Half-Manasseh",
+      "Judah",
+      "Issachar"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Torah",
+    "reference": "Numbers 32",
+    "explanation": "Reuben, Gad and half the tribe of Manasseh settled east of the Jordan.",
+    "promptPt": "Qual tribo se estabeleceu a leste do Jordão junto com Rúben?",
+    "optionsPt": [
+      "Benjamim",
+      "Meia-Manassés",
+      "Judá",
+      "Issacar"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "Rúben, Gade e a metade da tribo de Manassés se estabeleceram a leste do Jordão."
+  },
+  {
+    "catalogKey": "core-107",
+    "prompt": "What was the name of Lydia's hometown?",
+    "options": [
+      "Philippi",
+      "Thyatira",
+      "Ephesus",
+      "Pergamum"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Acts",
+    "reference": "Acts 16:14",
+    "explanation": "Lydia was from Thyatira.",
+    "promptPt": "Qual era o nome da cidade natal de Lídia?",
+    "optionsPt": [
+      "Filipos",
+      "Tiatira",
+      "Éfeso",
+      "Pérgamo"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Lídia era de Tiatira."
+  },
+  {
+    "catalogKey": "core-108",
+    "prompt": "Who was the first martyr recorded in Acts?",
+    "options": [
+      "James",
+      "Stephen",
+      "Philip",
+      "Barnabas"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Acts",
+    "reference": "Acts 7",
+    "explanation": "Stephen became the first Christian martyr.",
+    "promptPt": "Quem foi o primeiro mártir registrado em Atos?",
+    "optionsPt": [
+      "Tiago",
+      "Estêvão",
+      "Filipe",
+      "Barnabé"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Estêvão tornou-se o primeiro mártir cristão."
+  },
+  {
+    "catalogKey": "core-109",
+    "prompt": "Which prophet challenged the prophets of Baal on Mount Carmel?",
+    "options": [
+      "Elisha",
+      "Elijah",
+      "Nathan",
+      "Amos"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "Prophets",
+    "reference": "1 Kings 18",
+    "explanation": "Elijah confronted the prophets of Baal.",
+    "promptPt": "Qual profeta desafiou os profetas de Baal no monte Carmelo?",
+    "optionsPt": [
+      "Eliseu",
+      "Elias",
+      "Natã",
+      "Amós"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Elias confrontou os profetas de Baal."
+  },
+  {
+    "catalogKey": "core-110",
+    "prompt": "Who was the mother of Samuel?",
+    "options": [
+      "Abigail",
+      "Hannah",
+      "Elizabeth",
+      "Naomi"
+    ],
+    "correctOption": 1,
+    "difficulty": 9,
+    "category": "History",
+    "reference": "1 Samuel 1",
+    "explanation": "Samuel was born to Hannah.",
+    "promptPt": "Quem foi a mãe de Samuel?",
+    "optionsPt": [
+      "Abigail",
+      "Ana",
+      "Isabel",
+      "Noemi"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Samuel nasceu de Ana."
+  },
+  {
+    "catalogKey": "core-111",
+    "prompt": "Which king was struck down by an angel and eaten by worms?",
+    "options": [
+      "Herod Antipas",
+      "Herod Agrippa I",
+      "Herod the Great",
+      "Archelaus"
+    ],
+    "correctOption": 1,
+    "difficulty": 10,
+    "category": "Acts",
+    "reference": "Acts 12:23",
+    "explanation": "Herod Agrippa I accepted divine praise and was struck down.",
+    "promptPt": "Qual rei foi ferido por um anjo e comido por vermes?",
+    "optionsPt": [
+      "Herodes Antipas",
+      "Herodes Agripa I",
+      "Herodes, o Grande",
+      "Arquelau"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Herodes Agripa I aceitou louvor divino e foi ferido."
+  },
+  {
+    "catalogKey": "core-112",
+    "prompt": "Who restored Eutychus to life after his fall?",
+    "options": [
+      "Peter",
+      "Paul",
+      "Barnabas",
+      "Silas"
+    ],
+    "correctOption": 1,
+    "difficulty": 10,
+    "category": "Acts",
+    "reference": "Acts 20:10",
+    "explanation": "Paul embraced Eutychus and he was restored.",
+    "promptPt": "Quem ressuscitou Êutico após sua queda?",
+    "optionsPt": [
+      "Pedro",
+      "Paulo",
+      "Barnabé",
+      "Silas"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Paulo abraçou Êutico e ele foi restaurado."
+  },
+  {
+    "catalogKey": "core-113",
+    "prompt": "Which king of Israel reigned only seven days?",
+    "options": [
+      "Zimri",
+      "Shallum",
+      "Jehoahaz",
+      "Pekahiah"
+    ],
+    "correctOption": 0,
+    "difficulty": 10,
+    "category": "Kings",
+    "reference": "1 Kings 16:15",
+    "explanation": "Zimri reigned only seven days.",
+    "promptPt": "Qual rei de Israel reinou por apenas sete dias?",
+    "optionsPt": [
+      "Zinri",
+      "Salum",
+      "Jeoacaz",
+      "Pecaías"
+    ],
+    "categoryPt": "Reis",
+    "explanationPt": "Zinri reinou por apenas sete dias."
+  },
+  {
+    "catalogKey": "core-114",
+    "prompt": "Who was the father of John Mark?",
+    "options": [
+      "Barnabas",
+      "His father is not named",
+      "Aristobulus",
+      "Simon"
+    ],
+    "correctOption": 1,
+    "difficulty": 10,
+    "category": "Acts",
+    "reference": "Acts 12:12",
+    "explanation": "Only his mother Mary is identified.",
+    "promptPt": "Quem foi o pai de João Marcos?",
+    "optionsPt": [
+      "Barnabé",
+      "O pai dele não é mencionado",
+      "Aristóbulo",
+      "Simão"
+    ],
+    "categoryPt": "Atos",
+    "explanationPt": "Apenas sua mãe Maria é identificada."
+  },
+  {
+    "catalogKey": "core-115",
+    "prompt": "Which prophet predicted that Josiah would destroy Jeroboam's altar centuries before Josiah was born?",
+    "options": [
+      "Ahijah",
+      "An unnamed man of God from Judah",
+      "Elijah",
+      "Iddo"
+    ],
+    "correctOption": 1,
+    "difficulty": 10,
+    "category": "Prophets",
+    "reference": "1 Kings 13:1-2",
+    "explanation": "An unnamed prophet from Judah foretold Josiah by name.",
+    "promptPt": "Qual profeta predisse que Josias destruiria o altar de Jeroboão séculos antes de Josias nascer?",
+    "optionsPt": [
+      "Aías",
+      "Um homem de Deus sem nome vindo de Judá",
+      "Elias",
+      "Ido"
+    ],
+    "categoryPt": "Profetas",
+    "explanationPt": "Um profeta sem nome de Judá predisse Josias pelo nome."
+  },
+  {
+    "catalogKey": "core-116",
+    "prompt": "Which gate of Jerusalem did Nehemiah inspect first during his nighttime survey?",
+    "options": [
+      "Fish Gate",
+      "Valley Gate",
+      "Sheep Gate",
+      "Dung Gate"
+    ],
+    "correctOption": 1,
+    "difficulty": 10,
+    "category": "History",
+    "reference": "Nehemiah 2:13",
+    "explanation": "Nehemiah began at the Valley Gate.",
+    "promptPt": "Qual porta de Jerusalém Neemias inspecionou primeiro durante sua inspeção noturna?",
+    "optionsPt": [
+      "Porta do Peixe",
+      "Porta do Vale",
+      "Porta das Ovelhas",
+      "Porta do Esterco"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Neemias começou pela Porta do Vale."
+  },
+  {
+    "catalogKey": "core-117",
+    "prompt": "Which Levite stopped a plague by making atonement with incense?",
+    "options": [
+      "Eleazar",
+      "Phinehas",
+      "Aaron",
+      "Korah"
+    ],
+    "correctOption": 2,
+    "difficulty": 10,
+    "category": "Torah",
+    "reference": "Numbers 16:46-48",
+    "explanation": "Aaron stood between the living and the dead.",
+    "promptPt": "Qual levita deteve uma praga fazendo expiação com incenso?",
+    "optionsPt": [
+      "Eleazar",
+      "Fineias",
+      "Arão",
+      "Corá"
+    ],
+    "categoryPt": "Torá",
+    "explanationPt": "Arão ficou em pé entre os mortos e os vivos."
+  },
+  {
+    "catalogKey": "core-118",
+    "prompt": "How many men of Gideon's army remained after God reduced their number?",
+    "options": [
+      "300",
+      "500",
+      "700",
+      "1000"
+    ],
+    "correctOption": 0,
+    "difficulty": 10,
+    "category": "Judges",
+    "reference": "Judges 7:7",
+    "explanation": "God used only 300 men.",
+    "promptPt": "Quantos homens do exército de Gideão restaram após Deus reduzir o número deles?",
+    "optionsPt": [
+      "300",
+      "500",
+      "700",
+      "1000"
+    ],
+    "categoryPt": "Juízes",
+    "explanationPt": "Deus usou apenas 300 homens."
+  },
+  {
+    "catalogKey": "core-119",
+    "prompt": "Which Roman centurion said, 'Truly this was the Son of God' after Jesus died?",
+    "options": [
+      "Cornelius",
+      "Longinus",
+      "His name is not given",
+      "Julius"
+    ],
+    "correctOption": 2,
+    "difficulty": 10,
+    "category": "Gospels",
+    "reference": "Matthew 27:54",
+    "explanation": "The centurion is never named in Scripture.",
+    "promptPt": "Qual centurião romano disse: 'Verdadeiramente este era o Filho de Deus' após Jesus morrer?",
+    "optionsPt": [
+      "Cornélio",
+      "Longuinhos",
+      "O nome dele não é dado",
+      "Júlio"
+    ],
+    "categoryPt": "Evangelhos",
+    "explanationPt": "O centurião nunca é nomeado nas Escrituras."
+  },
+  {
+    "catalogKey": "core-120",
+    "prompt": "Which Old Testament book never explicitly mentions the name of God?",
+    "options": [
+      "Song of Solomon",
+      "Ruth",
+      "Esther",
+      "Ecclesiastes"
+    ],
+    "correctOption": 2,
+    "difficulty": 10,
+    "category": "History",
+    "reference": "Book of Esther",
+    "explanation": "Esther never explicitly mentions God's name, though His providence is evident throughout.",
+    "promptPt": "Qual livro do Antigo Testamento nunca menciona explicitamente o nome de Deus?",
+    "optionsPt": [
+      "Cântico dos Cânticos",
+      "Rute",
+      "Ester",
+      "Eclesiastes"
+    ],
+    "categoryPt": "História",
+    "explanationPt": "Ester nunca menciona explicitamente o nome de Deus, embora Sua providência seja evidente por todo o livro."
   }
-
 ]
-

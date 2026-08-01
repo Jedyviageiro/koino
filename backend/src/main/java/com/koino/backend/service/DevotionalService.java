@@ -16,6 +16,7 @@ import com.koino.backend.model.UserTaskDevotional;
 import com.koino.backend.model.Verse;
 import com.koino.backend.repository.UserPlanTaskRepository;
 import com.koino.backend.repository.UserTaskDevotionalRepository;
+import com.koino.backend.repository.BibleVerseTextRepository;
 import com.koino.backend.repository.VerseRepository;
 import com.koino.backend.service.GeminiDevotionalClient.GeneratedDevotional;
 import com.koino.backend.service.LocalDevotionalCatalog.DevotionalTemplate;
@@ -29,6 +30,7 @@ public class DevotionalService {
     private final UserPlanTaskRepository taskRepository;
     private final UserTaskDevotionalRepository devotionalRepository;
     private final VerseRepository verseRepository;
+    private final BibleVerseTextRepository bibleVerseTextRepository;
     private final GeminiDevotionalClient geminiClient;
     private final LocalDevotionalCatalog localCatalog;
 
@@ -36,22 +38,30 @@ public class DevotionalService {
         UserPlanTaskRepository taskRepository,
         UserTaskDevotionalRepository devotionalRepository,
         VerseRepository verseRepository,
+        BibleVerseTextRepository bibleVerseTextRepository,
         GeminiDevotionalClient geminiClient,
         LocalDevotionalCatalog localCatalog
     ) {
         this.taskRepository = taskRepository;
         this.devotionalRepository = devotionalRepository;
         this.verseRepository = verseRepository;
+        this.bibleVerseTextRepository = bibleVerseTextRepository;
         this.geminiClient = geminiClient;
         this.localCatalog = localCatalog;
     }
 
     @Transactional
     public UserTaskDevotionalResponse getOrCreate(Long userId, Long taskId) {
-        return devotionalRepository
-            .findByTaskTaskIdAndTaskActivePlanUserUserId(taskId, userId)
-            .map(this::toResponse)
-            .orElseGet(() -> createOwnedTask(userId, taskId));
+        var existing = devotionalRepository
+            .findByTaskTaskIdAndTaskActivePlanUserUserId(taskId, userId);
+        if (existing.isPresent()
+            && sameLanguage(
+                existing.get(),
+                languageFor(existing.get().getTask())
+            )) {
+            return toResponse(existing.get());
+        }
+        return createOwnedTask(userId, taskId);
     }
 
     @Transactional
@@ -70,9 +80,12 @@ public class DevotionalService {
             .orElseThrow(() -> new IllegalArgumentException("Plan task not found"));
         var existing = devotionalRepository
             .findByTaskTaskIdAndTaskActivePlanUserUserId(taskId, userId);
-        if (existing.isPresent()) {
+        String language = languageFor(task);
+        if (existing.isPresent() && sameLanguage(existing.get(), language)) {
             return toResponse(existing.get());
         }
+        existing.ifPresent(devotionalRepository::delete);
+        devotionalRepository.flush();
         return createForTask(task, true);
     }
 
@@ -90,20 +103,24 @@ public class DevotionalService {
                 task.getTaskId(),
                 task.getActivePlan().getUser().getUserId()
             );
-        if (existing.isPresent()) {
+        String language = languageFor(task);
+        if (existing.isPresent() && sameLanguage(existing.get(), language)) {
             return toResponse(existing.get());
         }
+        existing.ifPresent(devotionalRepository::delete);
+        devotionalRepository.flush();
 
         var reusable = devotionalRepository
-            .findFirstByTaskReadingAssignmentOrderByDevotionalIdAsc(
-                task.getReadingAssignment()
+            .findFirstByTaskReadingAssignmentAndLanguageOrderByDevotionalIdAsc(
+                task.getReadingAssignment(),
+                language
             );
         if (reusable.isPresent()) {
             return toResponse(saveCopy(task, reusable.get()));
         }
-        var localTemplate = localCatalog.findByReadingAssignment(
-            task.getReadingAssignment()
-        );
+        var localTemplate = isPortuguese(language)
+            ? java.util.Optional.<DevotionalTemplate>empty()
+            : localCatalog.findByReadingAssignment(task.getReadingAssignment());
         if (localTemplate.isPresent()) {
             return toResponse(saveLocalCopy(task, localTemplate.get()));
         }
@@ -139,6 +156,7 @@ public class DevotionalService {
         devotional.setApplication(generated.application());
         devotional.setPrayer(generated.prayer());
         devotional.setModelName(generated.model());
+        devotional.setLanguage(language);
         devotional.setGeneratedAt(Instant.now());
         return toResponse(devotionalRepository.save(devotional));
     }
@@ -151,7 +169,16 @@ public class DevotionalService {
             .getChapter()
             .getBook()
             .getTitle();
-        String reflection = """
+        boolean portuguese = isPortuguese(languageFor(task));
+        String reflection = portuguese ? """
+            Comece pelo versículo em destaque e depois leia lentamente toda a
+            passagem indicada. Observe as palavras ou ideias que chamam a sua
+            atenção e pense no que elas revelam dentro da passagem.
+
+            Volte ao texto sem pressa de encontrar uma resposta. Pergunte onde
+            esta verdade toca os seus pensamentos, escolhas, relacionamentos
+            ou necessidades de hoje.
+            """ : """
             Begin with the anchor verse and then read the full assigned passage \
             slowly. Notice the words or ideas that draw your attention, and \
             consider what they reveal within the passage.
@@ -166,17 +193,19 @@ public class DevotionalService {
             task.getReadingAssignment(),
             task.getEstimatedMinutes(),
             scripture.verseCount(),
-            "A Quiet Moment in " + book,
+            portuguese ? "Um Momento Tranquilo em " + book : "A Quiet Moment in " + book,
             scripture.anchorReference(),
             scripture.anchorText(),
-            "Take a quiet moment with today's reading and let Scripture set "
-                + "the pace.",
+            portuguese
+                ? "Reserve um momento tranquilo para a leitura de hoje e deixe a Escritura orientar o seu ritmo."
+                : "Take a quiet moment with today's reading and let Scripture set the pace.",
             reflection,
-            "Choose one phrase from the passage to remember, and carry it into "
-                + "one concrete decision or conversation today.",
-            "Lord, help me listen carefully to Your Word and respond with "
-                + "wisdom. Shape my heart and my actions through what I have "
-                + "read today. Amen.",
+            portuguese
+                ? "Escolha uma frase da passagem para recordar e leve-a para uma decisão ou conversa concreta hoje."
+                : "Choose one phrase from the passage to remember, and carry it into one concrete decision or conversation today.",
+            portuguese
+                ? "Senhor, ajuda-me a ouvir atentamente a Tua Palavra e a responder com sabedoria. Molda o meu coração e as minhas ações através do que li hoje. Amém."
+                : "Lord, help me listen carefully to Your Word and respond with wisdom. Shape my heart and my actions through what I have read today. Amen.",
             Instant.now()
         );
     }
@@ -195,6 +224,7 @@ public class DevotionalService {
         devotional.setApplication(source.getApplication());
         devotional.setPrayer(source.getPrayer());
         devotional.setModelName(source.getModelName());
+        devotional.setLanguage(languageFor(task));
         devotional.setGeneratedAt(Instant.now());
         return devotionalRepository.save(devotional);
     }
@@ -213,6 +243,7 @@ public class DevotionalService {
         devotional.setApplication(source.application());
         devotional.setPrayer(source.prayer());
         devotional.setModelName(source.modelName());
+        devotional.setLanguage(languageFor(task));
         devotional.setGeneratedAt(Instant.now());
         return devotionalRepository.save(devotional);
     }
@@ -242,12 +273,12 @@ public class DevotionalService {
                     + verse.getVerseNumber();
                 if (anchorReference == null) {
                     anchorReference = reference;
-                    anchorText = verse.getText();
+                    anchorText = localizedVerseText(task, verse);
                 }
                 if (scripture.length() < MAX_SCRIPTURE_CHARACTERS) {
                     scripture.append(reference)
                         .append(" ")
-                        .append(verse.getText())
+                        .append(localizedVerseText(task, verse))
                         .append("\n");
                 }
                 verseCount++;
@@ -268,6 +299,9 @@ public class DevotionalService {
     }
 
     private String buildPrompt(UserPlanTask task, ScriptureContext scripture) {
+        String languageInstruction = isPortuguese(languageFor(task))
+            ? "Write every JSON text field in natural Brazilian Portuguese (pt-BR)."
+            : "Write every JSON text field in natural English.";
         return """
             Write a concise Christian devotional grounded only in the supplied
             Bible passage. Use a warm, thoughtful, broadly Christian tone.
@@ -276,16 +310,41 @@ public class DevotionalService {
             420 words. The reflection must contain exactly two short paragraphs
             separated by a blank line. The prayer should be 2-3 sentences and
             written in first person. Return only the requested JSON fields.
+            %s
 
             Reading assignment: %s
             Anchor verse: %s
             Scripture:
             %s
             """.formatted(
+                languageInstruction,
                 task.getReadingAssignment(),
                 scripture.anchorReference(),
                 scripture.fullText()
             );
+    }
+
+    private String localizedVerseText(UserPlanTask task, Verse verse) {
+        String version = isPortuguese(languageFor(task)) ? "NVI" : "NIV";
+        return bibleVerseTextRepository.findByVersionCodeAndVerseVerseId(
+            version,
+            verse.getVerseId()
+        ).map(text -> text.getText()).orElse(verse.getText());
+    }
+
+    private String languageFor(UserPlanTask task) {
+        String language = task.getActivePlan().getUser().getLanguage();
+        return isPortuguese(language) ? "pt" : "en";
+    }
+
+    private boolean sameLanguage(UserTaskDevotional devotional, String language) {
+        String stored = devotional.getLanguage();
+        return (stored == null ? "en" : stored).equals(language);
+    }
+
+    private boolean isPortuguese(String language) {
+        return language != null
+            && language.toLowerCase(java.util.Locale.ROOT).startsWith("pt");
     }
 
     private UserTaskDevotionalResponse toResponse(UserTaskDevotional devotional) {

@@ -1,14 +1,16 @@
 import { Check } from 'lucide-react'
 import { getPasswordChecks } from '@/features/auth/passwordPolicy.js'
+import { useTranslation } from 'react-i18next'
 
 function PasswordRules({ password }) {
+  const { t } = useTranslation()
   const checks = getPasswordChecks(password)
   const rules = [
-    ['length', '8-72 characters'],
-    ['uppercase', 'Uppercase'],
-    ['lowercase', 'Lowercase'],
-    ['number', 'Number'],
-    ['symbol', 'Symbol'],
+    ['length', t('authExtra.rules.length')],
+    ['uppercase', t('authExtra.rules.uppercase')],
+    ['lowercase', t('authExtra.rules.lowercase')],
+    ['number', t('authExtra.rules.number')],
+    ['symbol', t('authExtra.rules.symbol')],
   ]
 
   return (

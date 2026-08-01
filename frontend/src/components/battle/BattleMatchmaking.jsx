@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { BookOpen, Swords, Target, Zap } from 'lucide-react'
 import { PageHeader } from '@/components/common/AppPageLayout.jsx'
+import { useTranslation } from 'react-i18next'
 
 function BattleMatchmaking({
   mode,
   onCancel,
-  title = 'Finding an opponent',
-  message = 'Matching you with a similarly rated Bible challenger.',
-  cancelLabel = 'Cancel search',
+  title,
+  message,
+  cancelLabel,
 }) {
+  const { t } = useTranslation()
   const [seconds, setSeconds] = useState(0)
 
   useEffect(() => {
@@ -22,8 +24,8 @@ function BattleMatchmaking({
   return (
     <div>
       <PageHeader
-        title="Battle Space"
-        eyebrow="Beta"
+        title={t('battle.title')}
+        eyebrow={t('battle.beta')}
         subtitle={`${mode.name} / 1v1 / ${mode.durationSeconds} seconds`}
         className="mb-5"
       />
@@ -38,10 +40,10 @@ function BattleMatchmaking({
           </span>
         </div>
         <h2 className="mt-6 text-[24px] font-semibold">
-          {title}
+          {title || t('battle.finding')}
         </h2>
         <p className="mt-2 max-w-[310px] text-[10px] leading-5 text-[#747b87]">
-          {message}
+          {message || t('battle.matching')}
         </p>
         <p className="mt-5 font-mono text-[19px] font-semibold tabular-nums text-[#aa6e15]">
           00:{String(seconds).padStart(2, '0')}
@@ -51,26 +53,26 @@ function BattleMatchmaking({
           onClick={onCancel}
           className="mt-7 h-9 rounded-[7px] border border-[#dfe2e6] px-5 text-[9px] font-semibold text-[#59616d] hover:bg-[#f7f8f9]"
         >
-          {cancelLabel}
+          {cancelLabel || t('battle.cancelSearch')}
         </button>
       </section>
 
       <div className="mt-4 grid rounded-[8px] border border-[#e2e5e9] bg-white sm:grid-cols-3">
         <Tip
           icon={Zap}
-          title="Be fast"
-          text="Answer confidently before time runs out."
+          title={t('battle.fast')}
+          text={t('battle.fastText')}
         />
         <Tip
           icon={Target}
-          title="Be accurate"
-          text="Correct answers earn battle points."
+          title={t('battle.accurate')}
+          text={t('battle.accurateText')}
           bordered
         />
         <Tip
           icon={BookOpen}
-          title="Grow wiser"
-          text="Every result includes a Bible reference."
+          title={t('battle.wise')}
+          text={t('battle.wiseText')}
         />
       </div>
     </div>

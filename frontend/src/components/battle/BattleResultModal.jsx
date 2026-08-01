@@ -1,8 +1,10 @@
 import { ArrowRight, Minus, Trophy, TrendingDown, TrendingUp } from 'lucide-react'
 import ModalShell from '@/components/common/ModalShell.jsx'
 import BattleRankBadge from './BattleRankBadge.jsx'
+import { useTranslation } from 'react-i18next'
 
 function BattleResultModal({ battle, rank, onRematch, onLobby }) {
+  const { t } = useTranslation()
   const won = battle.result === 'WIN'
   const draw = battle.result === 'DRAW'
   const Icon = draw ? Minus : won ? TrendingUp : TrendingDown
@@ -28,16 +30,18 @@ function BattleResultModal({ battle, rank, onRematch, onLobby }) {
           )}
         </span>
         <h2 id="battle-result-title" className="mt-4 text-[23px] font-semibold">
-          {won ? 'Victory' : draw ? 'Draw' : 'Battle complete'}
+          {won ? t('battle.victory') : draw ? t('battle.draw') : t('battle.complete')}
         </h2>
         <p id="battle-result-message" className="mt-1 text-[9px] text-[#747b86]">
           {won
-            ? `You defeated ${battle.opponentName}.`
+            ? t('battle.defeated', { name: battle.opponentName })
             : draw
-              ? `You matched ${battle.opponentName}.`
-              : `${battle.opponentName} won this round.`}
-          {' '}Final score: {Math.max(0, Math.floor(battle.playerScore / 10))}
-          -{Math.floor(battle.opponentScore / 10)}.
+              ? t('battle.matched', { name: battle.opponentName })
+              : t('battle.opponentWon', { name: battle.opponentName })}
+          {' '}{t('battle.finalScore', {
+            player: Math.max(0, Math.floor(battle.playerScore / 10)),
+            opponent: Math.floor(battle.opponentScore / 10),
+          })}
         </p>
 
         <div className="mt-4 grid grid-cols-[1fr_auto] items-center rounded-[7px] border border-[#e4e6e9] bg-[#fafbfc] px-4 py-3 text-left">
@@ -70,7 +74,7 @@ function BattleResultModal({ battle, rank, onRematch, onLobby }) {
             onClick={onRematch}
             className="flex h-10 items-center justify-center gap-2 rounded-[7px] bg-[#e8a33d] text-[10px] font-semibold text-white hover:bg-[#d8922e]"
           >
-            Rematch
+            {t('battle.rematch')}
             <ArrowRight className="h-3.5 w-3.5" />
           </button>
           <button
@@ -78,7 +82,7 @@ function BattleResultModal({ battle, rank, onRematch, onLobby }) {
             onClick={onLobby}
             className="h-10 rounded-[7px] border border-[#dfe2e6] text-[10px] font-semibold text-[#59616d] hover:bg-[#f7f8f9]"
           >
-            Back to Battle Space
+            {t('battle.backLobby')}
           </button>
         </div>
       </div>

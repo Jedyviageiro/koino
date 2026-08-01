@@ -6,8 +6,10 @@ import {
 } from '@/features/battle/battleService.js'
 import { getAuthToken } from '@/features/auth/authStorage.js'
 import { apiRequest } from '@/services/api/client.js'
+import { useTranslation } from 'react-i18next'
 
 function ChallengeToast({ onNavigate, routePath }) {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState([])
   const [working, setWorking] = useState(false)
   const [error, setError] = useState('')
@@ -67,7 +69,7 @@ function ChallengeToast({ onNavigate, routePath }) {
         )
       }
     } catch (requestError) {
-      setError(requestError.message || 'Unable to respond to this challenge.')
+      setError(requestError.message || t('toasts.challengeError'))
     } finally {
       setWorking(false)
     }
@@ -96,7 +98,7 @@ function ChallengeToast({ onNavigate, routePath }) {
           onClick={() => respond(false)}
           disabled={working}
           className="flex h-7 w-7 shrink-0 items-center justify-center text-[#858d99] hover:text-[#2c3139]"
-          aria-label="Decline challenge"
+          aria-label={t('toasts.declineChallenge')}
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -113,7 +115,7 @@ function ChallengeToast({ onNavigate, routePath }) {
           disabled={working}
           className="h-9 rounded-[7px] border border-[#dde1e6] text-[9px] font-semibold text-[#59616e] disabled:opacity-60"
         >
-          Decline
+          {t('toasts.decline')}
         </button>
         <button
           type="button"
@@ -122,7 +124,7 @@ function ChallengeToast({ onNavigate, routePath }) {
           className="flex h-9 items-center justify-center gap-2 rounded-[7px] bg-[#e8a33d] text-[9px] font-semibold text-white disabled:opacity-60"
         >
           {working && <LoaderCircle className="h-3.5 w-3.5 animate-spin" />}
-          Accept
+          {t('toasts.accept')}
         </button>
       </div>
     </aside>

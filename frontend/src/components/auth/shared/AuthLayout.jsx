@@ -1,5 +1,6 @@
 import BrandMark from '@/components/common/BrandMark.jsx'
 import formImage from '@/assets/images/Form-img.png'
+import { useTranslation } from 'react-i18next'
 
 function OnboardingSkeleton({ overlay = false }) {
   return (
@@ -34,6 +35,7 @@ function OnboardingSkeleton({ overlay = false }) {
 }
 
 function AuthSwitcher({ mode, onNavigate }) {
+  const { t } = useTranslation()
   function goTo(event, path) {
     event.preventDefault()
     onNavigate(path)
@@ -58,7 +60,7 @@ function AuthSwitcher({ mode, onNavigate }) {
           mode === 'login' ? 'text-[#111114]' : 'text-[#777b84]'
         }`}
       >
-        Sign In
+        {t('authExtra.signIn')}
       </a>
       <a
         href="/register"
@@ -67,7 +69,7 @@ function AuthSwitcher({ mode, onNavigate }) {
           mode === 'register' ? 'text-[#111114]' : 'text-[#777b84]'
         }`}
       >
-        Sign Up
+        {t('authExtra.signUp')}
       </a>
     </nav>
   )
@@ -83,6 +85,7 @@ function AuthLayout({
   hideSwitcher = false,
   children,
 }) {
+  const { t } = useTranslation()
   const onboardingActive = onboardingLoading || Boolean(onboardingContent)
 
   return (
@@ -172,10 +175,10 @@ function AuthLayout({
           />
           <div className="absolute inset-x-8 bottom-7 max-w-[460px] text-white">
             <p className="text-[24px] font-semibold leading-[1.2] tracking-normal">
-              Grow in faith, one day at a time.
+              {t('authExtra.growTitle')}
             </p>
             <p className="mt-1.5 text-[12px] leading-5 text-white/85">
-              Your Bible reading, progress, and community in one place.
+              {t('authExtra.growText')}
             </p>
           </div>
         </section>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Check, XCircle } from 'lucide-react'
 import ModalShell from '@/components/common/ModalShell.jsx'
+import { useTranslation } from 'react-i18next'
 
 function StatusModal({
   type,
@@ -9,6 +10,7 @@ function StatusModal({
   onClose,
   autoCloseMs,
 }) {
+  const { t } = useTranslation()
   const isSuccess = type === 'success'
 
   useEffect(() => {
@@ -85,7 +87,7 @@ function StatusModal({
               onClick={onClose}
               className="mt-auto h-11 w-full rounded-[11px] bg-[#e8a33d] text-[12px] font-semibold text-white transition-colors hover:bg-[#d8922e] active:bg-[#bf7416] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8a33d]"
             >
-              Try Again
+              {t('authExtra.tryAgain')}
             </button>
           )}
         </div>

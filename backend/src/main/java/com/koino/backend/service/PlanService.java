@@ -36,24 +36,27 @@ public class PlanService {
     private final UserPlanTaskRepository taskRepository;
     private final UserProfileRepository userProfileRepository;
     private final PlanGenerationService planGenerationService;
+    private final PlanLocalizationService planLocalizationService;
 
     public PlanService(
         PlanTemplateRepository planTemplateRepository,
         UserActivePlanRepositor activePlanRepository,
         UserPlanTaskRepository taskRepository,
         UserProfileRepository userProfileRepository,
-        PlanGenerationService planGenerationService
+        PlanGenerationService planGenerationService,
+        PlanLocalizationService planLocalizationService
     ) {
         this.planTemplateRepository = planTemplateRepository;
         this.activePlanRepository = activePlanRepository;
         this.taskRepository = taskRepository;
         this.userProfileRepository = userProfileRepository;
         this.planGenerationService = planGenerationService;
+        this.planLocalizationService = planLocalizationService;
     }
 
-    public List<PlanTemplateDTO> getAllAvailablePlans(){
+    public List<PlanTemplateDTO> getAllAvailablePlans(String language){
         return planTemplateRepository.findAllByOrderByPlanCodeAsc().stream()
-            .map(this::toPlanTemplateDTO)
+            .map(plan -> toPlanTemplateDTO(plan, language))
             .toList();
     }
 
@@ -96,7 +99,7 @@ public class PlanService {
         return routePlanIds.stream()
             .map(templatesByCode::get)
             .filter(Objects::nonNull)
-            .map(this::toPlanTemplateDTO)
+            .map(plan -> toPlanTemplateDTO(plan, profile.getUser().getLanguage()))
             .toList();
     }
 
@@ -245,12 +248,12 @@ public class PlanService {
         return toActivePlanResponse(activePlan, tasks);
     }
 
-    private PlanTemplateDTO toPlanTemplateDTO(PlanTemplate plan) {
+    private PlanTemplateDTO toPlanTemplateDTO(PlanTemplate plan, String language) {
         return new PlanTemplateDTO(
             plan.getPlanTemplateId(),
             plan.getPlanCode(),
-            plan.getName(),
-            plan.getDescription(),
+            planLocalizationService.name(plan, language),
+            planLocalizationService.description(plan, language),
             plan.getDifficulty(),
             plan.getDurationDays(),
             plan.getTotalChapters(),
@@ -280,7 +283,10 @@ public class PlanService {
         return new UserActivePlanResponse(
             activePlan.getActivePlanId(),
             activePlan.getPlanTemplate().getPlanCode(),
-            activePlan.getPlanTemplate().getName(),
+            planLocalizationService.name(
+                activePlan.getPlanTemplate(),
+                activePlan.getUser().getLanguage()
+            ),
             activePlan.getPlanSequenceNumber(),
             activePlan.getStartDate(),
             tasks.isEmpty() ? activePlan.getStartDate() : tasks.getLast().getScheduledDate(),

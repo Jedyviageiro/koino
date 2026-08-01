@@ -41,6 +41,7 @@ public class FriendshipService {
     private final NotificationService notificationService;
     private final UserService userService;
     private final EmailService emailService;
+    private final PlanLocalizationService planLocalizationService;
 
     public FriendshipService(
         FriendshipRepository friendshipRepository,
@@ -52,7 +53,8 @@ public class FriendshipService {
         CommunityPostRepository communityPostRepository,
         NotificationService notificationService,
         UserService userService,
-        EmailService emailService
+        EmailService emailService,
+        PlanLocalizationService planLocalizationService
     ) {
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
@@ -64,6 +66,7 @@ public class FriendshipService {
         this.notificationService = notificationService;
         this.userService = userService;
         this.emailService = emailService;
+        this.planLocalizationService = planLocalizationService;
     }
 
     @Transactional
@@ -221,20 +224,27 @@ public class FriendshipService {
                     userId
                 ),
             communityPostRepository.countByAuthorUserId(userId),
-            toPlan(activePlan),
+            toPlan(
+                activePlan,
+                viewerId == null
+                    ? profileUser.getLanguage()
+                    : userRepository.findById(viewerId)
+                        .map(User::getLanguage)
+                        .orElse(profileUser.getLanguage())
+            ),
             toBattle(battle)
         );
     }
 
-    private PublicPlanResponse toPlan(UserActivePlan activePlan) {
+    private PublicPlanResponse toPlan(UserActivePlan activePlan, String language) {
         if (activePlan == null) {
             return null;
         }
         var plan = activePlan.getPlanTemplate();
         return new PublicPlanResponse(
             plan.getPlanCode(),
-            plan.getName(),
-            plan.getDescription(),
+            planLocalizationService.name(plan, language),
+            planLocalizationService.description(plan, language),
             plan.getDurationDays(),
             activePlan.getEstimatedMinutesPerDay()
         );

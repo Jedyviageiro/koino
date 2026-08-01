@@ -104,12 +104,10 @@ public class BattleChallengeService {
         challenge.setExpiresAt(now.plus(CHALLENGE_LIFETIME));
         challenge.setChallengerLastSeenAt(now);
         challenge = challengeRepository.save(challenge);
-        notificationService.create(
+        notificationService.createBattleChallenge(
             addressee,
-            challenger.getFullname() + " challenged you",
-            mode.getDisplayName()
-                + " is waiting. Accept while you are both online.",
-            "BATTLE_CHALLENGE",
+            challenger,
+            mode.getDisplayName(),
             challenge.getChallengeId()
         );
         if (addressee.isEmailVerified()) {

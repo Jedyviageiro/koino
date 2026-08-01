@@ -1,5 +1,8 @@
 package com.koino.backend.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,6 +10,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.koino.backend.repository.BattleQuestionRepository;
+import com.koino.backend.model.BattleQuestion;
+import com.koino.backend.service.BattleQuestionCatalogService.QuestionCatalogEntry;
 
 @Component
 public class BattleQuestionBackfillWorker {
@@ -41,6 +46,25 @@ public class BattleQuestionBackfillWorker {
         if (!enabled) {
             return;
         }
+        List<BattleQuestion> untranslated = questionRepository
+            .findByPromptPtIsNullOrderByQuestionIdAsc(PageRequest.of(0, 12));
+        if (!untranslated.isEmpty()) {
+            try {
+                List<QuestionCatalogEntry> source = untranslated.stream()
+                    .map(this::toCatalogEntry)
+                    .toList();
+                int saved = catalogService.savePortugueseTranslations(
+                    geminiClient.translatePortuguese(source)
+                );
+                LOGGER.info("Backed up {} Portuguese Battle Space translations", saved);
+            } catch (Exception exception) {
+                LOGGER.warn(
+                    "Battle Space translation backfill will retry later: {}",
+                    exception.getMessage()
+                );
+            }
+            return;
+        }
         int tier = 0;
         long smallestCount = Long.MAX_VALUE;
         for (int currentTier = 1; currentTier <= 6; currentTier++) {
@@ -69,5 +93,19 @@ public class BattleQuestionBackfillWorker {
                 exception.getMessage()
             );
         }
+    }
+
+    private QuestionCatalogEntry toCatalogEntry(BattleQuestion question) {
+        return new QuestionCatalogEntry(
+            question.getCatalogKey(),
+            question.getPrompt(),
+            List.of(
+                question.getOptionA(), question.getOptionB(),
+                question.getOptionC(), question.getOptionD()
+            ),
+            question.getCorrectOption(), question.getDifficulty(),
+            question.getCategory(), question.getReference(),
+            question.getExplanation(), null, null, null, null
+        );
     }
 }

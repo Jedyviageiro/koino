@@ -6,8 +6,10 @@ import {
   confirmEmail,
   resendVerification,
 } from '@/features/auth/authService.js'
+import { useTranslation } from 'react-i18next'
 
 function VerifyEmailPage({ onNavigate }) {
+  const { t } = useTranslation()
   const params = new URLSearchParams(window.location.search)
   const token = params.get('token') || ''
   const email = params.get('email') || ''
@@ -79,12 +81,16 @@ function VerifyEmailPage({ onNavigate }) {
               )}
             </div>
             <h1 className="text-[30px] font-medium leading-[1.12] tracking-normal">
-              {verified ? 'Email confirmed.' : 'Confirm your email.'}
+              {verified ? t('authExtra.emailConfirmed') : t('authExtra.confirmEmail')}
             </h1>
             <p className="mt-3 text-[12px] leading-6 text-[#6f746f]">
               {verified
-                ? 'Your Koino account is ready. You can continue to login.'
-                : `We sent a secure confirmation link${email ? ` to ${email}` : ''}. Open it to begin your reading journey.`}
+                ? t('authExtra.accountReady')
+                : t('authExtra.secureLink', {
+                    destination: email
+                      ? t('authExtra.toEmail', { email })
+                      : '',
+                  })}
             </p>
             <div
               className={`min-h-[60px] pt-4 text-[11px] leading-5 ${
@@ -92,14 +98,14 @@ function VerifyEmailPage({ onNavigate }) {
               }`}
               aria-live="polite"
             >
-              {message || 'Open the email and select “Confirm My Email.”'}
+              {message || t('authExtra.openEmail')}
             </div>
             <button
               type="button"
               onClick={() => onNavigate('/')}
               className="flex h-[46px] w-full items-center justify-center rounded-[9px] bg-[#e8a33d] text-[12px] font-semibold text-white transition-colors hover:bg-[#d8922e]"
             >
-              {verified ? 'Continue to Login' : 'Back to Login'}
+              {verified ? t('authExtra.continueLogin') : t('authExtra.backLogin')}
             </button>
             {!verified && email && (
               <button
@@ -108,12 +114,12 @@ function VerifyEmailPage({ onNavigate }) {
                 onClick={resend}
                 className="mt-3 h-9 w-full text-[10px] font-semibold text-[#555b66] disabled:opacity-50"
               >
-                Resend confirmation email
+                {t('authExtra.resend')}
               </button>
             )}
             <div className="mt-5 flex items-center gap-2 border-t border-[#eeeae4] pt-4 text-[9px] leading-4 text-[#858983]">
               <ShieldCheck className="h-4 w-4 shrink-0 text-[#c98522]" />
-              Confirmation links expire after 24 hours for your security.
+              {t('authExtra.expiry')}
             </div>
           </div>
 
@@ -124,9 +130,9 @@ function VerifyEmailPage({ onNavigate }) {
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/25 to-transparent px-7 pb-6 pt-16 text-white">
-              <p className="text-[13px] font-semibold">One step closer.</p>
+              <p className="text-[13px] font-semibold">{t('authExtra.closer')}</p>
               <p className="mt-1 text-[10px] text-white/85">
-                Grow in faith, track progress, and stay inspired.
+                {t('authExtra.closerText')}
               </p>
             </div>
           </div>

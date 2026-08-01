@@ -1,0 +1,20 @@
+{
+  "P01": {"name": "Encontrando Jesus", "description": "Conheça a identidade, os ensinamentos, o ministério, a morte e a ressurreição de Jesus através de Marcos e João."},
+  "P02": {"name": "Os Ensinamentos de Jesus", "description": "Estude ensinamentos selecionados de Jesus sobre o Reino de Deus, oração, fé, amor, caráter e discipulado."},
+  "P03": {"name": "Os Quatro Evangelhos", "description": "Leia os relatos completos da vida e do ministério de Jesus em Mateus, Marcos, Lucas e João."},
+  "P04": {"name": "Jesus, o Espírito e a Igreja", "description": "Continue do ministério de Jesus para a obra do Espírito Santo, o crescimento da Igreja e a vida cristã prática."},
+  "P05": {"name": "Lucas e Atos", "description": "Acompanhe a história de Jesus e o início da Igreja através do relato em dois volumes de Lucas e Atos."},
+  "P06": {"name": "Fundamentos da Fé Cristã", "description": "Aprenda sobre salvação, graça, crescimento espiritual, caráter cristão, a Igreja e uma vida fiel."},
+  "P07": {"name": "Os Evangelhos e Atos", "description": "Leia os relatos completos dos Evangelhos, seguidos pela missão e expansão da Igreja primitiva."},
+  "P08": {"name": "Cartas de Paulo", "description": "Estude as cartas de Paulo para compreender graça, salvação, Igreja, santidade, relacionamentos, serviço e crescimento espiritual."},
+  "P09": {"name": "Novo Testamento Completo", "description": "Leia os vinte e sete livros do Novo Testamento, de Mateus a Apocalipse."},
+  "P10": {"name": "O Início da História", "description": "Descubra criação, humanidade, pecado, aliança, fé, adoração e confiança através de Gênesis e Salmos selecionados."},
+  "P11": {"name": "Aliança e Libertação", "description": "Estude as promessas da aliança de Deus e a libertação de Israel através de Gênesis e Êxodo."},
+  "P12": {"name": "A Torá", "description": "Leia os cinco livros de Moisés para compreender criação, aliança, libertação, adoração, santidade e o chamado de Israel."},
+  "P13": {"name": "A História de Israel", "description": "Acompanhe a história de Israel desde a entrada na terra prometida até à monarquia, ao exílio e ao regresso."},
+  "P14": {"name": "Sabedoria e Adoração", "description": "Explore adoração, sofrimento, sabedoria prática, trabalho, relacionamentos, propósito, amor e reverência a Deus."},
+  "P15": {"name": "Os Profetas", "description": "Leia os profetas maiores e menores para estudar fidelidade à aliança, juízo, esperança, arrependimento, restauração e o Messias prometido."},
+  "P16": {"name": "Antigo Testamento Completo", "description": "Leia os trinta e nove livros do Antigo Testamento, de Gênesis a Malaquias."},
+  "P17": {"name": "A Bíblia Toda", "description": "Leia os sessenta e seis livros da Bíblia em ordem canónica, de Gênesis a Apocalipse."},
+  "P18": {"name": "Jornada Bíblica Cronológica", "description": "Leia toda a Bíblia seguindo uma sequência histórica aproximada e revista."}
+}

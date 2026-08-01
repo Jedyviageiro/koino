@@ -51,6 +51,27 @@ public class BattleQuestion {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String explanation;
 
+    @Column(columnDefinition = "TEXT")
+    private String promptPt;
+
+    @Column(length = 500)
+    private String optionAPt;
+
+    @Column(length = 500)
+    private String optionBPt;
+
+    @Column(length = 500)
+    private String optionCPt;
+
+    @Column(length = 500)
+    private String optionDPt;
+
+    @Column(length = 120)
+    private String categoryPt;
+
+    @Column(columnDefinition = "TEXT")
+    private String explanationPt;
+
     @Column(nullable = false)
     private boolean locallyBackedUp;
 }

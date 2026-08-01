@@ -21,6 +21,7 @@ import com.koino.backend.repository.UserProfileRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.service.FriendshipService;
 import com.koino.backend.service.NotificationService;
+import com.koino.backend.service.PlanLocalizationService;
 import com.koino.backend.service.UserService;
 import com.koino.backend.service.GmailService.EmailService;
 
@@ -76,7 +77,8 @@ class FriendshipServiceTests {
             mock(CommunityPostRepository.class),
             notifications,
             userService,
-            mock(EmailService.class)
+            mock(EmailService.class),
+            mock(PlanLocalizationService.class)
         );
     }
 

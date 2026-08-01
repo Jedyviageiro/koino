@@ -88,6 +88,23 @@ public class BattleQuestionCatalogService {
         return local.size() - before;
     }
 
+    @Transactional
+    public synchronized int savePortugueseTranslations(
+        List<QuestionCatalogEntry> translations
+    ) {
+        if (translations == null || translations.isEmpty()) {
+            return 0;
+        }
+        List<QuestionCatalogEntry> local = new ArrayList<>(readGenerated());
+        for (QuestionCatalogEntry translated : translations) {
+            local.removeIf(entry -> entry.catalogKey().equals(translated.catalogKey()));
+            local.add(translated);
+        }
+        upsertAll(translations, true);
+        writeGenerated(local);
+        return translations.size();
+    }
+
     private void upsertAll(
         List<QuestionCatalogEntry> entries,
         boolean locallyBackedUp
@@ -109,9 +126,16 @@ public class BattleQuestionCatalogService {
                 category,
                 reference,
                 explanation,
+                prompt_pt,
+                optionapt,
+                optionbpt,
+                optioncpt,
+                optiondpt,
+                category_pt,
+                explanation_pt,
                 locally_backed_up
             )
-            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             on conflict (catalog_key) do update set
                 prompt = excluded.prompt,
                 optiona = excluded.optiona,
@@ -123,6 +147,13 @@ public class BattleQuestionCatalogService {
                 category = excluded.category,
                 reference = excluded.reference,
                 explanation = excluded.explanation,
+                prompt_pt = coalesce(excluded.prompt_pt, battle_questions.prompt_pt),
+                optionapt = coalesce(excluded.optionapt, battle_questions.optionapt),
+                optionbpt = coalesce(excluded.optionbpt, battle_questions.optionbpt),
+                optioncpt = coalesce(excluded.optioncpt, battle_questions.optioncpt),
+                optiondpt = coalesce(excluded.optiondpt, battle_questions.optiondpt),
+                category_pt = coalesce(excluded.category_pt, battle_questions.category_pt),
+                explanation_pt = coalesce(excluded.explanation_pt, battle_questions.explanation_pt),
                 locally_backed_up = excluded.locally_backed_up
             """,
             entries,
@@ -142,7 +173,15 @@ public class BattleQuestionCatalogService {
                 statement.setString(9, entry.category());
                 statement.setString(10, entry.reference());
                 statement.setString(11, entry.explanation());
-                statement.setBoolean(12, locallyBackedUp);
+                statement.setString(12, entry.promptPt());
+                List<String> pt = entry.optionsPt();
+                statement.setString(13, option(pt, 0));
+                statement.setString(14, option(pt, 1));
+                statement.setString(15, option(pt, 2));
+                statement.setString(16, option(pt, 3));
+                statement.setString(17, entry.categoryPt());
+                statement.setString(18, entry.explanationPt());
+                statement.setBoolean(19, locallyBackedUp);
             }
         );
     }
@@ -224,7 +263,11 @@ public class BattleQuestionCatalogService {
         int difficulty,
         String category,
         String reference,
-        String explanation
+        String explanation,
+        String promptPt,
+        List<String> optionsPt,
+        String categoryPt,
+        String explanationPt
     ) {
         public QuestionCatalogEntry {
             if (catalogKey == null
@@ -241,5 +284,9 @@ public class BattleQuestionCatalogService {
                 );
             }
         }
+    }
+
+    private String option(List<String> options, int index) {
+        return options == null || options.size() <= index ? null : options.get(index);
     }
 }

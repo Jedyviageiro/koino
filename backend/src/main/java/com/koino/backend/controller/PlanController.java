@@ -37,8 +37,10 @@ public class PlanController {
     }
 
     @GetMapping
-    public List<PlanTemplateDTO> getPlanTemplates() {
-        return planService.getAllAvailablePlans();
+    public List<PlanTemplateDTO> getPlanTemplates(
+        @AuthenticationPrincipal User user
+    ) {
+        return planService.getAllAvailablePlans(user.getLanguage());
     }
 
     @GetMapping("/me")

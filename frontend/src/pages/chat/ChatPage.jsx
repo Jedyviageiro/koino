@@ -29,7 +29,7 @@ import {
 } from '@/features/auth/authStorage.js'
 
 function ChatPage({ onNavigate }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const session = getAuthSession()
   const [friends, setFriends] = useState([])
   const [selectedId, setSelectedId] = useState(() => {
@@ -71,7 +71,7 @@ function ChatPage({ onNavigate }) {
       .then(() => refreshFriends())
       .catch((requestError) => {
         if (active) {
-          setError(requestError.message || 'Unable to load your conversations.')
+          setError(requestError.message || t('chat.loadError'))
         }
       })
       .finally(() => {
@@ -84,7 +84,7 @@ function ChatPage({ onNavigate }) {
       active = false
       window.clearInterval(timer)
     }
-  }, [onNavigate, refreshFriends])
+  }, [onNavigate, refreshFriends, t])
 
   useEffect(() => {
     if (!selectedId) return undefined
@@ -102,7 +102,7 @@ function ChatPage({ onNavigate }) {
         }
       } catch (requestError) {
         if (active) {
-          setError(requestError.message || 'Unable to load this conversation.')
+          setError(requestError.message || t('chat.conversationError'))
         }
       }
     }
@@ -113,7 +113,7 @@ function ChatPage({ onNavigate }) {
       active = false
       window.clearInterval(timer)
     }
-  }, [selectedId])
+  }, [selectedId, t])
 
   const composing = Boolean(draft.trim())
   useEffect(() => {
@@ -152,7 +152,7 @@ function ChatPage({ onNavigate }) {
       setDraft('')
       await refreshFriends()
     } catch (requestError) {
-      setError(requestError.message || 'Unable to send this message.')
+      setError(requestError.message || t('chat.sendError'))
     } finally {
       setSending(false)
     }
@@ -183,14 +183,14 @@ function ChatPage({ onNavigate }) {
         >
           <div className="border-b border-[#e8eaed] px-4 py-4">
             <h2 className="font-sans text-[13px] font-semibold">
-              Messages
+              {t('chat.messages')}
             </h2>
             <label className="mt-3 flex h-9 items-center gap-2 rounded-[7px] border border-[#e1e4e8] px-3">
               <Search className="h-3.5 w-3.5 text-[#7a8290]" />
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search friends"
+                placeholder={t('chat.searchFriends')}
                 className="min-w-0 flex-1 bg-transparent text-[10px] outline-none"
               />
             </label>
@@ -221,13 +221,13 @@ function ChatPage({ onNavigate }) {
                       </span>
                       {friend.lastMessageAt && (
                         <span className="shrink-0 text-[8px] text-[#939aa5]">
-                          {formatConversationTime(friend.lastMessageAt)}
+                          {formatConversationTime(friend.lastMessageAt, i18n.language)}
                         </span>
                       )}
                     </span>
                     <span className="mt-1 flex items-center justify-between gap-2">
                       <span className="truncate text-[9px] text-[#7a8290]">
-                        {friend.lastMessage || 'Start a conversation'}
+                        {friend.lastMessage || t('chat.startConversation')}
                       </span>
                       {friend.unreadCount > 0 && (
                         <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-[#e8a33d] px-1 text-[7px] font-bold text-white">
@@ -242,7 +242,7 @@ function ChatPage({ onNavigate }) {
               <div className="px-5 py-12 text-center">
                 <MessageCircle className="mx-auto h-5 w-5 text-[#9aa1ac]" />
                 <p className="mt-3 text-[10px] leading-5 text-[#757e8c]">
-                  Your accepted friends will appear here.
+                  {t('chat.friendsEmpty')}
                 </p>
               </div>
             )}
@@ -260,7 +260,7 @@ function ChatPage({ onNavigate }) {
                     setSelectedId(null)
                   }}
                   className="flex h-8 w-8 items-center justify-center md:hidden"
-                  aria-label="Back to conversations"
+                  aria-label={t('chat.back')}
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </button>
@@ -283,7 +283,7 @@ function ChatPage({ onNavigate }) {
               </header>
 
               <div className="min-h-0 flex-1 overflow-y-auto bg-[#fdfdfd] px-4 py-5 sm:px-6">
-                {groupMessages(messages).map((group) => (
+                {groupMessages(messages, i18n.language, t).map((group) => (
                   <div key={group.date} className="mb-5">
                     <div className="mb-4 flex items-center gap-3">
                       <span className="h-px flex-1 bg-[#eceef1]" />
@@ -320,7 +320,7 @@ function ChatPage({ onNavigate }) {
                                   mine ? 'text-white/70' : 'text-[#858d99]'
                                 }`}
                               >
-                                {formatMessageTime(message.sentAt)}
+                                {formatMessageTime(message.sentAt, i18n.language)}
                                 {mine && (
                                   message.deliveredAt ? (
                                     <CheckCheck className="h-3 w-3" />
@@ -374,14 +374,14 @@ function ChatPage({ onNavigate }) {
                   }}
                   maxLength={2000}
                   rows={1}
-                  placeholder="Type a message"
+                  placeholder={t('chat.typeMessage')}
                   className="min-h-10 max-h-28 flex-1 resize-none rounded-[8px] border border-[#dfe3e8] px-3.5 py-2.5 text-[10px] leading-5 outline-none focus:border-[#e8a33d]"
                 />
                 <button
                   type="submit"
                   disabled={!draft.trim() || sending}
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#17634e] text-white disabled:opacity-40"
-                  aria-label="Send message"
+                  aria-label={t('chat.send')}
                 >
                   {sending ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -395,10 +395,10 @@ function ChatPage({ onNavigate }) {
             <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
               <MessageCircle className="h-7 w-7 text-[#a0a7b1]" />
               <h2 className="mt-4 font-sans text-[14px] font-semibold">
-                Select a friend
+                {t('chat.selectFriend')}
               </h2>
               <p className="mt-2 text-[10px] text-[#7a8290]">
-                Choose a conversation from the left.
+                {t('chat.selectHint')}
               </p>
             </div>
           )}
@@ -408,7 +408,7 @@ function ChatPage({ onNavigate }) {
       {error && (
         <StatusModal
           type="error"
-          title="Chat unavailable"
+          title={t('chat.unavailable')}
           message={error}
           onClose={() => setError('')}
         />
@@ -448,7 +448,7 @@ function ReadAvatar({ friend }) {
   )
 }
 
-function groupMessages(messages) {
+function groupMessages(messages, language = 'en', t = (key) => key) {
   const groups = new Map()
   messages.forEach((message) => {
     const date = new Date(message.sentAt)
@@ -456,7 +456,7 @@ function groupMessages(messages) {
     if (!groups.has(key)) {
       groups.set(key, {
         date: key,
-        label: formatDay(date),
+        label: formatDay(date, language, t),
         messages: [],
       })
     }
@@ -465,33 +465,33 @@ function groupMessages(messages) {
   return Array.from(groups.values())
 }
 
-function formatDay(date) {
+function formatDay(date, language, t) {
   const today = new Date()
   const yesterday = new Date()
   yesterday.setDate(today.getDate() - 1)
-  if (date.toDateString() === today.toDateString()) return 'Today'
-  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday'
-  return new Intl.DateTimeFormat('en', {
+  if (date.toDateString() === today.toDateString()) return t('chat.today')
+  if (date.toDateString() === yesterday.toDateString()) return t('chat.yesterday')
+  return new Intl.DateTimeFormat(language, {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
   }).format(date)
 }
 
-function formatConversationTime(value) {
+function formatConversationTime(value, language) {
   const date = new Date(value)
   const today = new Date()
   if (date.toDateString() === today.toDateString()) {
-    return formatMessageTime(value)
+    return formatMessageTime(value, language)
   }
-  return new Intl.DateTimeFormat('en', {
+  return new Intl.DateTimeFormat(language, {
     month: 'short',
     day: 'numeric',
   }).format(date)
 }
 
-function formatMessageTime(value) {
-  return new Intl.DateTimeFormat('en', {
+function formatMessageTime(value, language) {
+  return new Intl.DateTimeFormat(language, {
     hour: 'numeric',
     minute: '2-digit',
   }).format(new Date(value))

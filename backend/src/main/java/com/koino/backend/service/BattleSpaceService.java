@@ -761,15 +761,10 @@ public class BattleSpaceService {
             currentQuestion = new BattleQuestionResponse(
                 question.getQuestionId(),
                 battle.getCurrentQuestionIndex() + 1,
-                question.getPrompt(),
-                List.of(
-                    question.getOptionA(),
-                    question.getOptionB(),
-                    question.getOptionC(),
-                    question.getOptionD()
-                ),
+                localizedQuestionPrompt(battle, question),
+                localizedQuestionOptions(battle, question),
                 question.getDifficulty(),
-                question.getCategory()
+                localizedQuestionCategory(battle, question)
             );
         }
         boolean complete = battle.getStatus() != BattleStatus.ACTIVE;
@@ -801,6 +796,58 @@ public class BattleSpaceService {
                 ? null
                 : battle.getOpponentUser().getUserId()
         );
+    }
+
+    private String localizedQuestionPrompt(
+        BattleSession battle,
+        BattleQuestion question
+    ) {
+        return usePortuguese(battle) && hasText(question.getPromptPt())
+            ? question.getPromptPt()
+            : question.getPrompt();
+    }
+
+    private List<String> localizedQuestionOptions(
+        BattleSession battle,
+        BattleQuestion question
+    ) {
+        if (usePortuguese(battle)
+            && hasText(question.getOptionAPt())
+            && hasText(question.getOptionBPt())
+            && hasText(question.getOptionCPt())
+            && hasText(question.getOptionDPt())) {
+            return List.of(
+                question.getOptionAPt(),
+                question.getOptionBPt(),
+                question.getOptionCPt(),
+                question.getOptionDPt()
+            );
+        }
+        return List.of(
+            question.getOptionA(),
+            question.getOptionB(),
+            question.getOptionC(),
+            question.getOptionD()
+        );
+    }
+
+    private String localizedQuestionCategory(
+        BattleSession battle,
+        BattleQuestion question
+    ) {
+        return usePortuguese(battle) && hasText(question.getCategoryPt())
+            ? question.getCategoryPt()
+            : question.getCategory();
+    }
+
+    private boolean usePortuguese(BattleSession battle) {
+        String language = battle.getUser().getLanguage();
+        return language != null
+            && language.toLowerCase(java.util.Locale.ROOT).startsWith("pt");
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 
     private String resultFor(BattleSession battle) {

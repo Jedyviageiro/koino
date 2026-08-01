@@ -28,11 +28,15 @@ public class NotificationService {
 
     @Transactional
     public UserNotification createPlanReady(User user, String planName) {
+        boolean portuguese = isPortuguese(user);
         return create(
             user,
-            "Your new plan is ready",
-            planName
-                + " is now available. Your first reading is waiting for you.",
+            localized(portuguese, "Your new plan is ready", "O seu novo plano está pronto"),
+            localized(
+                portuguese,
+                planName + " is now available. Your first reading is waiting for you.",
+                planName + " já está disponível. A sua primeira leitura está à sua espera."
+            ),
             "PLAN_READY",
             null
         );
@@ -44,12 +48,62 @@ public class NotificationService {
         User requester,
         Long friendshipId
     ) {
+        boolean portuguese = isPortuguese(recipient);
         return create(
             recipient,
-            requester.getFullname() + " sent you a friend request",
-            "Grow together in faith and encourage each other.",
+            localized(
+                portuguese,
+                requester.getFullname() + " sent you a friend request",
+                requester.getFullname() + " enviou-lhe um pedido de amizade"
+            ),
+            localized(
+                portuguese,
+                "Grow together in faith and encourage each other.",
+                "Cresçam juntos na fé e encorajem-se mutuamente."
+            ),
             "FRIEND_REQUEST",
             friendshipId.toString()
+        );
+    }
+
+    @Transactional
+    public UserNotification createReadingReminder(User user, Long taskId) {
+        boolean portuguese = isPortuguese(user);
+        return create(
+            user,
+            localized(portuguese, "Today's reading is waiting", "A leitura de hoje está à sua espera"),
+            localized(
+                portuguese,
+                "Take a few quiet minutes to continue your plan.",
+                "Reserve alguns minutos tranquilos para continuar o seu plano."
+            ),
+            "READING_REMINDER",
+            taskId.toString()
+        );
+    }
+
+    @Transactional
+    public UserNotification createBattleChallenge(
+        User recipient,
+        User challenger,
+        String modeName,
+        String challengeId
+    ) {
+        boolean portuguese = isPortuguese(recipient);
+        return create(
+            recipient,
+            localized(
+                portuguese,
+                challenger.getFullname() + " challenged you",
+                challenger.getFullname() + " desafiou-o"
+            ),
+            localized(
+                portuguese,
+                modeName + " is waiting. Accept while you are both online.",
+                modeName + " está à espera. Aceite enquanto ambos estão online."
+            ),
+            "BATTLE_CHALLENGE",
+            challengeId
         );
     }
 
@@ -116,5 +170,15 @@ public class NotificationService {
             notification.isRead(),
             notification.getCreatedAt()
         );
+    }
+
+    private boolean isPortuguese(User user) {
+        return user != null
+            && user.getLanguage() != null
+            && user.getLanguage().toLowerCase(java.util.Locale.ROOT).startsWith("pt");
+    }
+
+    private String localized(boolean portuguese, String english, String portugueseText) {
+        return portuguese ? portugueseText : english;
     }
 }

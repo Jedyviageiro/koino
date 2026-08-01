@@ -11,18 +11,13 @@ import {
 } from 'lucide-react'
 import battleHero from '@/assets/images/battle-space-hero.png'
 import { PageHeader } from '@/components/common/AppPageLayout.jsx'
+import { useTranslation } from 'react-i18next'
 import BattleRail from './BattleRail.jsx'
 
 const modeIcons = {
   LIGHTNING: Zap,
   RAPID: Flame,
   CLASSICAL: Crown,
-}
-
-const modeDescriptions = {
-  LIGHTNING: 'Fast decisions and sharp recall.',
-  RAPID: 'A balanced test of speed and depth.',
-  CLASSICAL: 'The deepest test with the hardest finish.',
 }
 
 function BattleLobby({
@@ -34,18 +29,19 @@ function BattleLobby({
   challengeProfile,
   onOpenProfile,
 }) {
+  const { t } = useTranslation()
   const mode =
     lobby.modes.find((item) => item.mode === selectedMode) || lobby.modes[0]
 
   return (
     <div>
       <PageHeader
-        title="Battle Space"
-        eyebrow="Beta"
+        title={t('battle.title')}
+        eyebrow={t('battle.beta')}
         subtitle={
           challengeProfile
-            ? `Choose a time control for your challenge with ${challengeProfile.fullname}.`
-            : 'Compete in timed Bible knowledge battles.'
+            ? t('battle.chooseFor', { name: challengeProfile.fullname })
+            : t('battle.subtitle')
         }
         className="mb-5"
         actions={
@@ -55,7 +51,7 @@ function BattleLobby({
           className="flex h-9 items-center gap-2 rounded-[7px] border border-[#e2c28e] px-3 text-[9px] font-semibold text-[#8c5e1a] hover:bg-[#fff9ef]"
         >
           <CircleHelp className="h-3.5 w-3.5" />
-          How it works
+          {t('battle.how')}
         </button>
         }
       />
@@ -71,17 +67,15 @@ function BattleLobby({
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.93)_39%,rgba(255,255,255,0.12)_72%)]" />
             <div className="relative flex h-full max-w-[355px] flex-col justify-center px-7">
               <p className="text-[10px] font-semibold uppercase text-[#a66d19]">
-                Rated Bible battles
+                {t('battle.rated')}
               </p>
               <h2 className="mt-2 text-[27px] font-semibold leading-[1.16]">
-                Test your knowledge.
-                <br />
-                Grow your faith.
+                {t('battle.hero')}
               </h2>
               <div className="mt-5 grid gap-2 text-[9px] text-[#5f6672]">
-                <Feature icon={Swords} text="One-on-one skill battles" />
-                <Feature icon={ShieldCheck} text="Server-verified answers" />
-                <Feature icon={Trophy} text="Six progressive ELO ranks" />
+                <Feature icon={Swords} text={t('battle.oneOnOne')} />
+                <Feature icon={ShieldCheck} text={t('battle.verified')} />
+                <Feature icon={Trophy} text={t('battle.ranks')} />
               </div>
               <button
                 type="button"
@@ -89,8 +83,8 @@ function BattleLobby({
                 className="mt-5 flex h-10 w-[180px] items-center justify-center gap-2 rounded-[7px] bg-[#e8a33d] text-[10px] font-semibold text-white hover:bg-[#d8922e]"
               >
                 {challengeProfile
-                  ? `Challenge ${challengeProfile.fullname.split(/\s+/)[0]}`
-                  : 'Find an opponent'}
+                  ? t('battle.challenge', { name: challengeProfile.fullname.split(/\s+/)[0] })
+                  : t('battle.find')}
                 <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -100,10 +94,10 @@ function BattleLobby({
             <div className="mb-3 flex items-end justify-between">
               <div>
                 <h2 className="font-sans text-[13px] font-semibold">
-                  Choose a battle mode
+                  {t('battle.chooseMode')}
                 </h2>
                 <p className="mt-1 text-[9px] text-[#7a818d]">
-                  Every battle is rated. Choose your pace.
+                  {t('battle.choosePace')}
                 </p>
               </div>
             </div>
@@ -138,7 +132,7 @@ function BattleLobby({
                       {(rating?.elo || 200).toLocaleString()} ELO
                     </p>
                     <div className="mt-2 flex items-center gap-2 text-[8px] text-[#777e8a]">
-                      <span>Answer as many as you can</span>
+                      <span>{t('battle.many')}</span>
                       <span className="h-0.5 w-0.5 shrink-0 rounded-full bg-current" />
                       <span className="flex items-center gap-1">
                         <Timer className="h-2.5 w-2.5" />
@@ -146,7 +140,7 @@ function BattleLobby({
                       </span>
                     </div>
                     <p className="mt-2 text-[8px] leading-4 text-[#858b95]">
-                      {modeDescriptions[item.mode]}
+                      {t(`battleModes.${item.mode}`)}
                     </p>
                   </button>
                 )
@@ -161,10 +155,10 @@ function BattleLobby({
               </span>
               <div>
                 <p className="text-[10px] font-semibold">
-                  Win battles to earn ELO
+                  {t('battle.earn')}
                 </p>
                 <p className="mt-1 text-[8px] text-[#7a818d]">
-                  Match difficulty rises with your rating.
+                  {t('battle.difficulty')}
                 </p>
               </div>
             </div>
@@ -173,7 +167,7 @@ function BattleLobby({
               onClick={onHelp}
               className="text-[9px] font-semibold text-[#a66d19]"
             >
-              Rating guide
+              {t('battle.ratingGuide')}
             </button>
           </section>
         </div>

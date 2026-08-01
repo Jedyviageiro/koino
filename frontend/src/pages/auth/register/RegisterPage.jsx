@@ -20,8 +20,8 @@ function RegisterPage({ onNavigate }) {
   function handleSuccess(session) {
     setStatus({
       type: 'success',
-      title: 'Account created successfully',
-      message: `We sent a verification link to ${session.email}.`,
+      title: t('authExtra.accountCreated'),
+      message: t('authExtra.verificationSent', { email: session.email }),
       email: session.email,
     })
   }
@@ -29,7 +29,7 @@ function RegisterPage({ onNavigate }) {
   function handleFailure(message) {
     setStatus({
       type: 'error',
-      title: 'Registration failed',
+      title: t('authExtra.registrationFailed'),
       message,
     })
   }

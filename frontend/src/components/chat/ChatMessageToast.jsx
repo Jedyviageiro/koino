@@ -4,8 +4,10 @@ import AppToast from '@/components/common/AppToast.jsx'
 import { getAuthToken } from '@/features/auth/authStorage.js'
 import { getChatFriends } from '@/features/chat/chatService.js'
 import { playIncomingMessageSound } from '@/features/chat/chatAudio.js'
+import { useTranslation } from 'react-i18next'
 
 function ChatMessageToast({ onNavigate }) {
+  const { t } = useTranslation()
   const [message, setMessage] = useState(null)
   const latestIds = useRef(new Map())
   const initialized = useRef(false)
@@ -56,7 +58,7 @@ function ChatMessageToast({ onNavigate }) {
   return (
     <AppToast
       icon={MessageCircle}
-      title={`New message from ${message.fullname}`}
+      title={t('toasts.newMessage', { name: message.fullname })}
       message={message.lastMessage}
       onClose={() => setMessage(null)}
       onOpen={() => {

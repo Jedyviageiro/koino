@@ -17,6 +17,10 @@ public interface BattleQuestionRepository
 
     long countByDifficulty(int difficulty);
 
+    List<BattleQuestion> findByPromptPtIsNullOrderByQuestionIdAsc(
+        Pageable pageable
+    );
+
     @Query("""
         select question from BattleQuestion question
         where question.difficulty between :minimum and :maximum

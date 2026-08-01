@@ -1,5 +1,6 @@
 import { Trophy } from 'lucide-react'
 import BattleRankBadge from './BattleRankBadge.jsx'
+import { useTranslation } from 'react-i18next'
 
 function PlayerAvatar({ entry }) {
   const initials = entry.fullname
@@ -24,6 +25,7 @@ function PlayerAvatar({ entry }) {
 }
 
 function BattleRail({ lobby, selectedMode, onOpenProfile }) {
+  const { t } = useTranslation()
   const { profile } = lobby
   const rating =
     profile.ratings.find((item) => item.mode === selectedMode) ||
@@ -34,7 +36,7 @@ function BattleRail({ lobby, selectedMode, onOpenProfile }) {
     <aside className="space-y-4">
       <section className="rounded-[8px] border border-[#e3e5e8] bg-white p-5">
         <p className="text-[10px] font-semibold text-[#606774]">
-          {rating.modeName} rating
+          {t('battle.rating', { mode: rating.modeName })}
         </p>
         <div className="mt-4 flex items-end justify-between">
           <div>
@@ -50,15 +52,15 @@ function BattleRail({ lobby, selectedMode, onOpenProfile }) {
           </div>
         </div>
         <div className="mt-5 grid grid-cols-3 border-t border-[#eceef1] pt-4 text-center">
-          <Stat label="Battles" value={rating.battles} />
-          <Stat label="Win rate" value={`${rating.winRate}%`} bordered />
-          <Stat label="Streak" value={rating.winStreak} />
+          <Stat label={t('battle.battles')} value={rating.battles} />
+          <Stat label={t('battle.winRate')} value={`${rating.winRate}%`} bordered />
+          <Stat label={t('battle.streak')} value={rating.winStreak} />
         </div>
       </section>
 
       <section className="rounded-[8px] border border-[#e3e5e8] bg-white p-5">
         <div className="flex items-center justify-between">
-          <h2 className="font-sans text-[11px] font-semibold">Leaderboard</h2>
+          <h2 className="font-sans text-[11px] font-semibold">{t('battle.leaderboard')}</h2>
           <span className="text-[9px] text-[#858b95]">
             {rating.modeName}
           </span>
@@ -82,7 +84,7 @@ function BattleRail({ lobby, selectedMode, onOpenProfile }) {
               <div className="min-w-0">
                 <p className="truncate text-[9px] font-semibold">
                   {entry.fullname}
-                  {entry.currentUser ? ' (You)' : ''}
+                  {entry.currentUser ? ` (${t('battle.you')})` : ''}
                 </p>
                 <BattleRankBadge rank={entry.rank} compact />
               </div>

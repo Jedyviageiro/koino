@@ -4,6 +4,7 @@ import {
   getGoogleConfig,
   loginWithGoogle,
 } from '@/features/auth/authService.js'
+import { useTranslation } from 'react-i18next'
 
 const GOOGLE_SCRIPT_ID = 'google-identity-services'
 
@@ -31,6 +32,7 @@ function loadGoogleScript() {
 }
 
 function GoogleSignInButton({ onSuccess, onFailure }) {
+  const { t, i18n } = useTranslation()
   const containerRef = useRef(null)
   const [loading, setLoading] = useState(true)
 
@@ -40,7 +42,7 @@ function GoogleSignInButton({ onSuccess, onFailure }) {
     Promise.all([getGoogleConfig(), loadGoogleScript()])
       .then(([config]) => {
         if (!active || !containerRef.current || !config.clientId) {
-          throw new Error('Google sign-in is unavailable.')
+          throw new Error(t('authExtra.googleUnavailable'))
         }
         window.google.accounts.id.initialize({
           client_id: config.clientId,
@@ -50,7 +52,7 @@ function GoogleSignInButton({ onSuccess, onFailure }) {
               const session = await loginWithGoogle(credential)
               onSuccess(session)
             } catch (error) {
-              onFailure(error.message || 'Google sign-in failed.')
+              onFailure(error.message || t('authExtra.googleFailed'))
             } finally {
               setLoading(false)
             }
@@ -64,20 +66,21 @@ function GoogleSignInButton({ onSuccess, onFailure }) {
           text: 'continue_with',
           shape: 'rectangular',
           width: 336,
+          locale: i18n.language.startsWith('pt') ? 'pt-BR' : 'en',
         })
         setLoading(false)
       })
       .catch((error) => {
         if (active) {
           setLoading(false)
-          onFailure(error.message || 'Google sign-in is unavailable.')
+          onFailure(error.message || t('authExtra.googleUnavailable'))
         }
       })
 
     return () => {
       active = false
     }
-  }, [onFailure, onSuccess])
+  }, [i18n.language, onFailure, onSuccess, t])
 
   return (
     <div className="relative h-[45px] w-full overflow-hidden rounded-[7px]">

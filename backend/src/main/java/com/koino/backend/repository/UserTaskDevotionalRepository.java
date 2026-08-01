@@ -15,8 +15,9 @@ public interface UserTaskDevotionalRepository
     );
 
     Optional<UserTaskDevotional>
-        findFirstByTaskReadingAssignmentOrderByDevotionalIdAsc(
-            String readingAssignment
+        findFirstByTaskReadingAssignmentAndLanguageOrderByDevotionalIdAsc(
+            String readingAssignment,
+            String language
         );
 
     boolean existsByTaskTaskId(Long taskId);

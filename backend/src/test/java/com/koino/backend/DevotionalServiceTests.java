@@ -27,6 +27,7 @@ import com.koino.backend.model.Verse;
 import com.koino.backend.repository.UserPlanTaskRepository;
 import com.koino.backend.repository.UserTaskDevotionalRepository;
 import com.koino.backend.repository.VerseRepository;
+import com.koino.backend.repository.BibleVerseTextRepository;
 import com.koino.backend.service.DevotionalService;
 import com.koino.backend.service.GeminiDevotionalClient;
 import com.koino.backend.service.GeminiRateLimitException;
@@ -106,8 +107,9 @@ class DevotionalServiceTests {
         when(fixture.taskRepository().findOwnedTaskForDevotional(9L, 42L))
             .thenReturn(Optional.of(fixture.task()));
         when(fixture.devotionalRepository()
-            .findFirstByTaskReadingAssignmentOrderByDevotionalIdAsc(
-                "Matthew 5:3"
+            .findFirstByTaskReadingAssignmentAndLanguageOrderByDevotionalIdAsc(
+                "Matthew 5:3",
+                "en"
             ))
             .thenReturn(Optional.of(reusable));
         when(fixture.devotionalRepository().save(any()))
@@ -248,6 +250,7 @@ class DevotionalServiceTests {
             taskRepository,
             devotionalRepository,
             verseRepository,
+            mock(BibleVerseTextRepository.class),
             geminiClient,
             localCatalog
         );

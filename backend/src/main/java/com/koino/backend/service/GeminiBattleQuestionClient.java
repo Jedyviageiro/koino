@@ -86,7 +86,11 @@ public class GeminiBattleQuestionClient {
                     difficulty,
                     node.path("category").asText("Bible"),
                     node.path("reference").asText(),
-                    node.path("explanation").asText()
+                    node.path("explanation").asText(),
+                    node.path("promptPt").asText(),
+                    readOptions(node.path("optionsPt")),
+                    node.path("categoryPt").asText("Bíblia"),
+                    node.path("explanationPt").asText()
                 ));
             }
             return entries;
@@ -96,6 +100,65 @@ public class GeminiBattleQuestionClient {
         } catch (Exception exception) {
             throw new IllegalStateException(
                 "Gemini could not generate Battle Space questions",
+                exception
+            );
+        }
+    }
+
+    public List<QuestionCatalogEntry> translatePortuguese(
+        List<QuestionCatalogEntry> questions
+    ) {
+        if (apiKey == null || apiKey.isBlank() || questions.isEmpty()) {
+            return List.of();
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_ROOT + model + ":generateContent"))
+                .timeout(Duration.ofSeconds(60))
+                .header("Content-Type", "application/json")
+                .header("x-goog-api-key", apiKey)
+                .POST(HttpRequest.BodyPublishers.ofString(
+                    buildTranslationRequest(questions)
+                ))
+                .build();
+            HttpResponse<String> response = httpClient.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+            );
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                throw new IllegalStateException(
+                    "Gemini question translation returned " + response.statusCode()
+                );
+            }
+            JsonNode translated = objectMapper.readTree(
+                objectMapper.readTree(response.body())
+                    .path("candidates").path(0).path("content")
+                    .path("parts").path(0).path("text").asText()
+            );
+            java.util.Map<String, JsonNode> byKey = new java.util.HashMap<>();
+            translated.forEach(node -> byKey.put(node.path("catalogKey").asText(), node));
+            List<QuestionCatalogEntry> results = new ArrayList<>();
+            for (QuestionCatalogEntry source : questions) {
+                JsonNode node = byKey.get(source.catalogKey());
+                if (node == null) continue;
+                List<String> optionsPt = readOptions(node.path("optionsPt"));
+                if (optionsPt.size() != 4) continue;
+                results.add(new QuestionCatalogEntry(
+                    source.catalogKey(), source.prompt(), source.options(),
+                    source.correctOption(), source.difficulty(), source.category(),
+                    source.reference(), source.explanation(),
+                    node.path("promptPt").asText(), optionsPt,
+                    node.path("categoryPt").asText("Bíblia"),
+                    node.path("explanationPt").asText()
+                ));
+            }
+            return results;
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            return List.of();
+        } catch (Exception exception) {
+            throw new IllegalStateException(
+                "Gemini could not translate Battle Space questions",
                 exception
             );
         }
@@ -111,7 +174,10 @@ public class GeminiBattleQuestionClient {
             reference. Use the full Protestant 66-book canon. Avoid theological
             disputes, translation-dependent word counts, trick wording, and
             duplicate questions. correctOption is zero-based. Explanations must
-            be one concise factual sentence.
+            be one concise factual sentence. Return every question bilingually:
+            the standard fields in English and promptPt, optionsPt, categoryPt,
+            and explanationPt in natural Brazilian Portuguese. Both languages
+            must express exactly the same question and answer choices.
             """.formatted(count, difficulty);
 
         ObjectNode root = objectMapper.createObjectNode();
@@ -139,6 +205,12 @@ public class GeminiBattleQuestionClient {
         stringProperty(properties, "category");
         stringProperty(properties, "reference");
         stringProperty(properties, "explanation");
+        stringProperty(properties, "promptPt");
+        ObjectNode optionsPt = properties.putObject("optionsPt");
+        optionsPt.put("type", "ARRAY");
+        optionsPt.putObject("items").put("type", "STRING");
+        stringProperty(properties, "categoryPt");
+        stringProperty(properties, "explanationPt");
         ArrayNode required = item.putArray("required");
         required.add("prompt");
         required.add("options");
@@ -146,10 +218,65 @@ public class GeminiBattleQuestionClient {
         required.add("category");
         required.add("reference");
         required.add("explanation");
+        required.add("promptPt");
+        required.add("optionsPt");
+        required.add("categoryPt");
+        required.add("explanationPt");
+        return objectMapper.writeValueAsString(root);
+    }
+
+    private String buildTranslationRequest(
+        List<QuestionCatalogEntry> questions
+    ) throws Exception {
+        ArrayNode source = objectMapper.createArrayNode();
+        for (QuestionCatalogEntry question : questions) {
+            ObjectNode node = source.addObject();
+            node.put("catalogKey", question.catalogKey());
+            node.put("prompt", question.prompt());
+            ArrayNode options = node.putArray("options");
+            question.options().forEach(options::add);
+            node.put("category", question.category());
+            node.put("explanation", question.explanation());
+        }
+        String prompt = """
+            Translate these Bible quiz questions into natural Brazilian
+            Portuguese. Preserve catalogKey, meaning, difficulty, answer order,
+            proper names, and Bible references exactly. Do not answer or rewrite
+            the question. Return promptPt, four optionsPt, categoryPt, and a
+            concise explanationPt for every catalogKey.
+
+            %s
+            """.formatted(objectMapper.writeValueAsString(source));
+        ObjectNode root = objectMapper.createObjectNode();
+        root.putArray("contents").addObject().putArray("parts")
+            .addObject().put("text", prompt);
+        ObjectNode config = root.putObject("generationConfig");
+        config.put("responseMimeType", "application/json");
+        config.put("maxOutputTokens", 7000);
+        ObjectNode item = config.putObject("responseSchema")
+            .put("type", "ARRAY").putObject("items").put("type", "OBJECT");
+        ObjectNode properties = item.putObject("properties");
+        stringProperty(properties, "catalogKey");
+        stringProperty(properties, "promptPt");
+        ObjectNode optionsPt = properties.putObject("optionsPt");
+        optionsPt.put("type", "ARRAY");
+        optionsPt.putObject("items").put("type", "STRING");
+        stringProperty(properties, "categoryPt");
+        stringProperty(properties, "explanationPt");
+        ArrayNode required = item.putArray("required");
+        required.add("catalogKey"); required.add("promptPt");
+        required.add("optionsPt"); required.add("categoryPt");
+        required.add("explanationPt");
         return objectMapper.writeValueAsString(root);
     }
 
     private void stringProperty(ObjectNode properties, String name) {
         properties.putObject(name).put("type", "STRING");
+    }
+
+    private List<String> readOptions(JsonNode node) {
+        List<String> options = new ArrayList<>();
+        node.forEach(option -> options.add(option.asText()));
+        return options;
     }
 }

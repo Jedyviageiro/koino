@@ -52,6 +52,7 @@ public class PlanGenerationService implements CommandLineRunner {
     private final UserPlanTaskRepository taskRepository;
     private final ChapterRepository chapterRepository;
     private final NotificationService notificationService;
+    private final PlanLocalizationService planLocalizationService;
     private final Map<String, PlanDefinition> plansById;
     private final List<ScenarioRoute> scenarioRoutes;
 
@@ -61,7 +62,8 @@ public class PlanGenerationService implements CommandLineRunner {
         UserActivePlanRepositor activePlanRepository,
         UserPlanTaskRepository taskRepository,
         ChapterRepository chapterRepository,
-        NotificationService notificationService
+        NotificationService notificationService,
+        PlanLocalizationService planLocalizationService
     ) {
         this.userRepository = userRepository;
         this.planTemplateRepository = planTemplateRepository;
@@ -69,6 +71,7 @@ public class PlanGenerationService implements CommandLineRunner {
         this.taskRepository = taskRepository;
         this.chapterRepository = chapterRepository;
         this.notificationService = notificationService;
+        this.planLocalizationService = planLocalizationService;
 
         PlanCatalog catalog = loadCatalog();
         this.plansById = catalog.plans().stream().collect(Collectors.toUnmodifiableMap(
@@ -234,7 +237,10 @@ public class PlanGenerationService implements CommandLineRunner {
         }
 
         taskRepository.saveAll(tasks);
-        notificationService.createPlanReady(user, template.getName());
+        notificationService.createPlanReady(
+            user,
+            planLocalizationService.name(template, user.getLanguage())
+        );
     }
 
     private PlanTemplate getOrCreateTemplate(PlanDefinition definition) {
