@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
 import NotificationMenu from '@/components/home/NotificationMenu.jsx'
 import { getAuthToken } from '@/features/auth/authStorage.js'
@@ -17,15 +17,19 @@ function AppHeaderActions({ onNavigate }) {
   const [notifications, setNotifications] = useState([])
   const [open, setOpen] = useState(false)
   const [actioningId, setActioningId] = useState(null)
+  const dismissedIds = useRef(new Set())
 
   const refresh = useCallback(async () => {
     if (!getAuthToken()) return
     const result = await apiRequest('/users/me/notifications', {
       cache: 'no-store',
     })
-    setNotifications(result)
+    const unread = result.filter(
+      (item) => !item.read && !dismissedIds.current.has(item.notificationId),
+    )
+    setNotifications(unread)
     window.dispatchEvent(
-      new CustomEvent(NOTIFICATIONS_CHANGED_EVENT, { detail: result }),
+      new CustomEvent(NOTIFICATIONS_CHANGED_EVENT, { detail: unread }),
     )
   }, [])
 
@@ -33,7 +37,9 @@ function AppHeaderActions({ onNavigate }) {
     Promise.resolve().then(refresh).catch(() => {})
     const timer = window.setInterval(() => refresh().catch(() => {}), 15000)
     const syncNotifications = (event) => {
-      if (Array.isArray(event.detail)) setNotifications(event.detail)
+      if (Array.isArray(event.detail)) {
+        setNotifications(event.detail.filter((item) => !item.read))
+      }
       else refresh().catch(() => {})
     }
     window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, syncNotifications)
@@ -56,6 +62,7 @@ function AppHeaderActions({ onNavigate }) {
   }
 
   async function readNotification(notification) {
+    dismissedIds.current.add(notification.notificationId)
     const nextNotifications = notifications.filter(
         (item) => item.notificationId !== notification.notificationId,
     )
@@ -71,15 +78,16 @@ function AppHeaderActions({ onNavigate }) {
     if (!notification.read) {
       try {
         await markNotificationRead(notification.notificationId)
-        await refresh()
       } catch {
-        await refresh().catch(() => {})
+        dismissedIds.current.delete(notification.notificationId)
       }
+      await refresh().catch(() => {})
     }
   }
 
   async function respond(notification, accepted) {
     setActioningId(notification.notificationId)
+    dismissedIds.current.add(notification.notificationId)
     try {
       if (accepted) await acceptFriend(notification.referenceId)
       else await removeFriendship(notification.referenceId)
@@ -92,6 +100,7 @@ function AppHeaderActions({ onNavigate }) {
           detail: nextNotifications,
         }),
       )
+      await markNotificationRead(notification.notificationId).catch(() => {})
     } finally {
       setActioningId(null)
     }

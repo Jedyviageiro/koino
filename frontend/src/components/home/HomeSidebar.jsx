@@ -111,7 +111,7 @@ function HomeSidebar({
               aria-current={active ? 'page' : undefined}
             >
               <Icon className="h-4 w-4 shrink-0" strokeWidth={1.65} />
-              <span>{t(`navigation.${item.labelKey}`)}</span>
+              <span className="min-w-0 whitespace-nowrap">{t(`navigation.${item.labelKey}`)}</span>
             </button>
           )
         })}

@@ -14,7 +14,7 @@ import {
 } from '@/features/home/homeService.js'
 
 function HomePage({ onNavigate }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [data, setData] = useState(getCachedHomeData)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(() => !getCachedHomeData())
@@ -77,7 +77,7 @@ function HomePage({ onNavigate }) {
     : hour < 18
       ? t('pages.home.afternoon')
       : t('pages.home.evening')
-  const today = new Intl.DateTimeFormat('en', {
+  const today = new Intl.DateTimeFormat(i18n.resolvedLanguage, {
     weekday: 'long',
     month: 'long',
     day: 'numeric',

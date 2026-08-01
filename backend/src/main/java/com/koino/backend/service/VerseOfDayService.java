@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.koino.backend.dto.bible.VerseOfDayResponse;
 import com.koino.backend.model.User;
+import com.koino.backend.repository.BibleVerseTextRepository;
+import com.koino.backend.repository.VerseRepository;
 
 @Service
 public class VerseOfDayService {
@@ -22,10 +26,20 @@ public class VerseOfDayService {
         "verse-of-the-day/365-day.json";
     private static final DateTimeFormatter MONTH_DAY =
         DateTimeFormatter.ofPattern("MM-dd");
+    private static final Pattern REFERENCE = Pattern.compile(
+        "^(.+?)\\s+(\\d+):(\\d+)"
+    );
 
     private final List<VerseEntry> entries;
+    private final VerseRepository verseRepository;
+    private final BibleVerseTextRepository verseTextRepository;
 
-    public VerseOfDayService() {
+    public VerseOfDayService(
+        VerseRepository verseRepository,
+        BibleVerseTextRepository verseTextRepository
+    ) {
+        this.verseRepository = verseRepository;
+        this.verseTextRepository = verseTextRepository;
         ClassPathResource resource = new ClassPathResource(RESOURCE_PATH);
         try (InputStream input = resource.getInputStream()) {
             entries = new ObjectMapper().readValue(
@@ -54,12 +68,34 @@ public class VerseOfDayService {
             .orElseGet(() -> entries.get(
                 (today.getDayOfYear() - 1) % entries.size()
             ));
+        String text = localizedText(entry, user);
         return new VerseOfDayResponse(
             entry.verse().reference(),
-            entry.verse().text(),
+            text,
             entry.theme(),
             entry.monthDay()
         );
+    }
+
+    private String localizedText(VerseEntry entry, User user) {
+        String language = user.getLanguage();
+        String version = language != null && language.toLowerCase().startsWith("pt")
+            ? "NVI"
+            : "NIV";
+        Matcher matcher = REFERENCE.matcher(entry.verse().reference());
+        if (!matcher.find()) {
+            return entry.verse().text();
+        }
+        return verseRepository
+            .findByChapterBookTitleIgnoreCaseAndChapterChapterNumberAndVerseNumber(
+                matcher.group(1),
+                Integer.valueOf(matcher.group(2)),
+                Integer.valueOf(matcher.group(3))
+            )
+            .flatMap(verse -> verseTextRepository
+                .findByVersionCodeAndVerseVerseId(version, verse.getVerseId()))
+            .map(text -> text.getText())
+            .orElse(entry.verse().text());
     }
 
     private LocalDate todayFor(User user) {

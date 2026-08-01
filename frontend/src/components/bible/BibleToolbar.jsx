@@ -126,7 +126,7 @@ function BibleToolbar({
           onClick={onPrevious}
           disabled={loading}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] border border-[#dfe3e9] bg-white hover:bg-[#faf8f5] disabled:opacity-40"
-          aria-label="Previous chapter"
+          aria-label={t('pages.bible.previousChapter')}
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -135,7 +135,7 @@ function BibleToolbar({
           onClick={onNext}
           disabled={loading}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] border border-[#dfe3e9] bg-white hover:bg-[#faf8f5] disabled:opacity-40"
-          aria-label="Next chapter"
+          aria-label={t('pages.bible.nextChapter')}
         >
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -146,7 +146,7 @@ function BibleToolbar({
           className="flex h-9 min-w-[132px] items-center justify-center gap-2 rounded-[7px] border border-[#dfe3e9] bg-white px-3 text-[10px] font-medium hover:bg-[#faf8f5] disabled:cursor-not-allowed disabled:opacity-45"
         >
           <CalendarDays className="h-4 w-4" />
-          Today&apos;s Reading
+          {t('pages.bible.todaysReading')}
         </button>
       </div>
     </section>

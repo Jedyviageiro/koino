@@ -119,9 +119,10 @@ function BiblePage({ onNavigate }) {
         }
 
         const preferredVersion = String(i18n.resolvedLanguage || '')
-          .toLowerCase().startsWith('pt') ? 'NVI' : 'KJV'
+          .toLowerCase().startsWith('pt') ? 'NVI' : 'NIV'
         const initialVersion =
           browserData.versions.find((version) => version.code === preferredVersion) ||
+          browserData.versions.find((version) => version.code === 'NIV') ||
           browserData.versions.find((version) => version.code === 'KJV') ||
           browserData.versions[0]
         if (!initialVersion) {

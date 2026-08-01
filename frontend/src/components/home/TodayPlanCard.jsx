@@ -6,16 +6,18 @@ import {
   Clock3,
   LockKeyhole,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import planCover from '@/assets/images/plans-cover.png'
+import { localizedBibleBook } from '@/i18n/bibleBooks.js'
 
-function getReadingTitle(task) {
+function getReadingTitle(task, language, fallback) {
   const passage = task?.passages?.[0]
-  if (!passage) return task?.readingAssignment || 'Today’s reading'
+  if (!passage) return task?.readingAssignment || fallback
   const end =
     passage.firstVerse === passage.lastVerse
       ? ''
       : `-${passage.lastVerse}`
-  return `${passage.bookTitle} ${passage.chapterNumber}:${passage.firstVerse}${end}`
+  return `${localizedBibleBook(passage.bookTitle, language)} ${passage.chapterNumber}:${passage.firstVerse}${end}`
 }
 
 function getVerseCount(task) {
@@ -26,9 +28,9 @@ function getVerseCount(task) {
   )
 }
 
-function formatReadingDate(date) {
+function formatReadingDate(date, language) {
   if (!date) return null
-  return new Intl.DateTimeFormat('en', {
+  return new Intl.DateTimeFormat(language, {
     weekday: 'long',
     month: 'short',
     day: 'numeric',
@@ -36,13 +38,17 @@ function formatReadingDate(date) {
 }
 
 function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
+  const { t, i18n } = useTranslation()
   const percentage = Math.round(plan?.completionPercentage || 0)
   const circumference = 2 * Math.PI * 42
   const offset = circumference * (1 - percentage / 100)
   const verseCount = getVerseCount(task)
   const canStartReading = Boolean(task && !task.completed)
   const completedToday = Boolean(plan?.completedToday)
-  const nextReadingLabel = formatReadingDate(plan?.nextReadingDate)
+  const nextReadingLabel = formatReadingDate(
+    plan?.nextReadingDate,
+    i18n.resolvedLanguage,
+  )
   const reflectionMinutes = task
     ? Math.max(0, plan.estimatedMinutesPerDay - task.estimatedMinutes)
     : 0
@@ -52,10 +58,10 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
       <section className="rounded-[15px] border border-[#e4e4e2] bg-white px-8 py-16 text-center">
         <BookOpen className="mx-auto h-8 w-8 text-[#a66b0b]" strokeWidth={1.5} />
         <h2 className="mt-5 text-[24px] font-semibold">
-          Your first plan is being prepared
+          {t('homePlan.preparingTitle')}
         </h2>
         <p className="mx-auto mt-2 max-w-[380px] text-[14px] text-[#626b84]">
-          Your daily reading and progress will appear here shortly.
+          {t('homePlan.preparingText')}
         </p>
       </section>
     )
@@ -71,11 +77,11 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
             className="h-12 w-12 shrink-0 rounded-[10px] object-cover"
           />
           <div className="min-w-0 flex-1 pt-1">
-            <h2 className="text-[16px] font-bold leading-none">Today&apos;s Plan</h2>
+            <h2 className="text-[16px] font-bold leading-none">{t('homePlan.todaysPlan')}</h2>
             <p className="mt-2 text-[13px] text-[#626b84]">
               {task
-                ? `Day ${task.dayNumber} of ${plan.totalDays}`
-                : `${plan.completedDays} of ${plan.totalDays} days completed`}
+                ? t('homePlan.dayOf', { day: task.dayNumber, total: plan.totalDays })
+                : t('homePlan.daysCompleted', { completed: plan.completedDays, total: plan.totalDays })}
               <span className="px-2">&bull;</span>
               {plan.name}
             </p>
@@ -86,7 +92,7 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[9px] border border-[#e4e5e7] bg-white hover:bg-[#f8f8f8] sm:w-[116px] sm:gap-2"
           >
             <CalendarDays className="h-4 w-4" strokeWidth={1.8} />
-            <span className="hidden text-[12px] sm:inline">View Plan</span>
+            <span className="hidden text-[12px] sm:inline">{t('homePlan.viewPlan')}</span>
           </button>
         </div>
 
@@ -113,9 +119,9 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] text-[#545d75]">Progress</p>
+            <p className="text-[12px] text-[#545d75]">{t('homePlan.progress')}</p>
             <p className="mt-2.5 text-[20px] font-bold leading-none">
-              {plan.completedDays}/{plan.totalDays} days
+              {t('homePlan.daysCount', { completed: plan.completedDays, total: plan.totalDays })}
             </p>
             <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[#ecedef]">
               <div
@@ -134,12 +140,12 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
         {task ? (
           <>
             <span className="inline-flex rounded-[8px] bg-[#fbf4ea] px-[13px] py-2 text-[13px] text-[#84560d]">
-              Today&apos;s Reading
+              {t('homePlan.todaysReading')}
             </span>
             <div className="mt-4 flex items-center justify-between">
               <div>
                 <h3 className="text-[24px] font-semibold leading-tight">
-                  {getReadingTitle(task)}
+                  {getReadingTitle(task, i18n.resolvedLanguage, t('homePlan.todaysReading'))}
                 </h3>
                 <p className="mt-1 text-[14px] text-[#353b4a]">
                   {task.readingAssignment}
@@ -147,12 +153,12 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
                 <div className="mt-4 flex flex-wrap gap-3 sm:gap-[17px]">
                   <span className="flex h-[39px] items-center gap-2 rounded-[8px] bg-[#faf8f6] px-3.5 text-[13px] sm:text-[14px]">
                     <Clock3 className="h-[19px] w-[19px]" />
-                    {task.estimatedMinutes} min read
+                    {t('homePlan.minutesRead', { count: task.estimatedMinutes })}
                   </span>
                   {verseCount > 0 && (
                     <span className="flex h-[39px] items-center gap-2 rounded-[8px] bg-[#faf8f6] px-3.5 text-[13px] sm:text-[14px]">
                       <BookOpen className="h-[19px] w-[19px]" />
-                      {verseCount} verses
+                      {t('homePlan.verses', { count: verseCount })}
                     </span>
                   )}
                 </div>
@@ -167,15 +173,15 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
             </span>
             <div>
               <span className="text-[12px] font-semibold text-[#b27413]">
-                Reading complete
+                {t('homePlan.readingComplete')}
               </span>
               <h3 className="mt-1.5 text-[21px] font-semibold">
-                You&apos;re finished for today
+                {t('homePlan.finishedToday')}
               </h3>
               <p className="mt-1.5 text-[13px] text-[#626b84]">
                 {nextReadingLabel
-                  ? `Your next reading unlocks ${nextReadingLabel}.`
-                  : 'Your next plan is being prepared.'}
+                  ? t('homePlan.unlocks', { date: nextReadingLabel })
+                  : t('homePlan.nextPreparing')}
               </p>
             </div>
           </div>
@@ -186,15 +192,15 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
             </span>
             <div>
               <span className="text-[12px] font-semibold text-[#b27413]">
-                Reading scheduled
+                {t('homePlan.readingScheduled')}
               </span>
               <h3 className="mt-1.5 text-[21px] font-semibold">
-                Your next reading is coming up
+                {t('homePlan.nextComing')}
               </h3>
               <p className="mt-1.5 text-[13px] text-[#626b84]">
                 {nextReadingLabel
-                  ? `It unlocks ${nextReadingLabel}.`
-                  : 'Your plan is preparing the next reading.'}
+                  ? t('homePlan.itUnlocks', { date: nextReadingLabel })
+                  : t('homePlan.planPreparing')}
               </p>
             </div>
           </div>
@@ -214,17 +220,17 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
         {!task ? (
           <>
             <LockKeyhole className="h-5 w-5" />
-            Next Reading Locked
+            {t('homePlan.nextLocked')}
           </>
         ) : task.completed ? (
           <>
             <Check className="h-5 w-5" />
-            Reading Completed
+            {t('homePlan.readingCompleted')}
           </>
         ) : (
           <>
             <BookOpen className="h-5 w-5" strokeWidth={1.8} />
-            {task?.currentVerseIndex > 1 ? 'Continue Reading' : 'Start Reading'}
+            {task?.currentVerseIndex > 1 ? t('homePlan.continueReading') : t('homePlan.startReading')}
           </>
         )}
       </button>
@@ -234,17 +240,17 @@ function TodayPlanCard({ plan, task, onStartReading, onViewPlan }) {
         <div>
           <p className="text-[14px] font-bold">
             {task
-              ? `You have ${plan.estimatedMinutesPerDay} minutes allocated.`
-              : `Your plan reserves ${plan.estimatedMinutesPerDay} minutes per reading day.`}
+              ? t('homePlan.minutesAllocated', { count: plan.estimatedMinutesPerDay })
+              : t('homePlan.minutesReserved', { count: plan.estimatedMinutesPerDay })}
           </p>
           <p className="mt-1.5 text-[14px] text-[#667089]">
             {task
               ? reflectionMinutes > 0
-                ? `This reading takes about ${task.estimatedMinutes} minutes, leaving ${reflectionMinutes} minutes to reflect.`
-                : `This reading matches your ${plan.estimatedMinutesPerDay}-minute allocation.`
+                ? t('homePlan.readingReflection', { reading: task.estimatedMinutes, reflection: reflectionMinutes })
+                : t('homePlan.matchesAllocation', { count: plan.estimatedMinutesPerDay })
               : nextReadingLabel
-                ? `Your next scheduled reading begins ${nextReadingLabel}.`
-                : 'Your next scheduled reading will appear here when it is ready.'}
+                ? t('homePlan.nextBegins', { date: nextReadingLabel })
+                : t('homePlan.nextAppears')}
           </p>
         </div>
       </div>

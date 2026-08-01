@@ -23,7 +23,7 @@ function BibleChapter({
   onBookmark,
   onShare,
 }) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const verseRefs = useRef(new Map())
   const scrollRef = useRef(null)
   const scrollFrameRef = useRef(null)
@@ -108,24 +108,27 @@ function BibleChapter({
             </p>
             <span className="mt-5 h-px w-5 bg-[#e8a33d]" />
             <p className="mt-5 line-clamp-5 text-[10px] leading-5 text-[#747b86]">
-              {selectedVerse?.text || 'Choose a verse to begin reading.'}
+              {selectedVerse?.text || t('pages.bible.chooseVerse')}
             </p>
           </div>
           <p className="mt-7 text-center text-[9px] text-[#9a9fa7]">
-            Verse {verses.length ? selectedIndex + 1 : 0} of {verses.length}
+            {t('pages.bible.verseProgress', {
+              current: verses.length ? selectedIndex + 1 : 0,
+              total: verses.length,
+            })}
           </p>
         </aside>
 
         <div className="min-w-0">
           <header className="flex h-14 items-center justify-between border-b border-[#eceef1] px-4 sm:px-6">
             <div>
-              <p className="text-[9px] uppercase text-[#a56b13]">Chapter reading</p>
+              <p className="text-[9px] uppercase text-[#a56b13]">{t('pages.bible.chapterReading')}</p>
               <p className="mt-0.5 text-[10px] font-medium text-[#555d69]">
-                Select a verse to bookmark or share
+                {t('pages.bible.selectVerse')}
               </p>
             </div>
             <div className="flex gap-1">
-              <button type="button" onClick={onTextSize} className="flex h-8 w-8 items-center justify-center rounded-[6px] hover:bg-[#f5f3ef]" aria-label="Change text size">
+              <button type="button" onClick={onTextSize} className="flex h-8 w-8 items-center justify-center rounded-[6px] hover:bg-[#f5f3ef]" aria-label={t('pages.bible.changeTextSize')}>
                 <Type className="h-4 w-4" />
               </button>
               <button
@@ -133,19 +136,19 @@ function BibleChapter({
                 onClick={() => onBookmark(selectedVerse)}
                 disabled={!selectedVerse}
                 className={`flex h-8 w-8 items-center justify-center rounded-[6px] transition-colors disabled:opacity-40 ${bookmarked ? 'bg-[#fbf4ea] text-[#b27413]' : 'hover:bg-[#f5f3ef]'}`}
-                aria-label={bookmarked ? 'Edit verse bookmark' : 'Bookmark selected verse'}
+                aria-label={bookmarked ? t('pages.bible.editBookmark') : t('pages.bible.bookmarkVerse')}
               >
                 <Bookmark className={`h-4 w-4 ${bookmarked ? 'fill-current' : ''}`} />
               </button>
               <div className="relative">
-                <button type="button" onClick={() => setMoreOpen((current) => !current)} disabled={!selectedVerse} className="flex h-8 w-8 items-center justify-center rounded-[6px] hover:bg-[#f5f3ef] disabled:opacity-40" aria-label="More verse options" aria-expanded={moreOpen}>
+                <button type="button" onClick={() => setMoreOpen((current) => !current)} disabled={!selectedVerse} className="flex h-8 w-8 items-center justify-center rounded-[6px] hover:bg-[#f5f3ef] disabled:opacity-40" aria-label={t('pages.bible.moreOptions')} aria-expanded={moreOpen}>
                   <Ellipsis className="h-4 w-4" />
                 </button>
                 {moreOpen && (
                   <div className="absolute right-0 top-10 z-20 w-[180px] rounded-[7px] border border-[#e0e3e7] bg-white p-1.5 shadow-[0_12px_30px_rgba(27,31,38,0.12)]">
                     <button type="button" onClick={() => { setMoreOpen(false); onShare(selectedVerse) }} className="flex h-9 w-full items-center gap-2.5 rounded-[5px] px-2.5 text-left text-[11px] font-medium text-[#343a44] hover:bg-[#f7f4ef]">
                       <Share2 className="h-3.5 w-3.5" strokeWidth={1.7} />
-                      Share to Community
+                      {t('pages.bible.shareCommunity')}
                     </button>
                   </div>
                 )}
@@ -192,7 +195,7 @@ function BibleChapter({
       </div>
 
       <footer className="grid gap-3 border-t border-[#e3e6ea] bg-[#fefefe] px-5 py-3 sm:grid-cols-[150px_minmax(220px,1fr)_70px] sm:items-center sm:px-7">
-        <p className="text-[9px] text-[#697184]">Chapter {chapter?.chapterNumber || 0} progress</p>
+        <p className="text-[9px] text-[#697184]">{t('pages.bible.chapterProgress', { chapter: chapter?.chapterNumber || 0 })}</p>
         <div className="h-1 overflow-hidden rounded-full bg-[#e9ebee]">
           <div className="h-full rounded-full bg-[#e8a33d] transition-[width] duration-300" style={{ width: `${progress}%` }} />
         </div>

@@ -1,6 +1,7 @@
 package com.koino.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,12 @@ public interface VerseRepository extends JpaRepository<Verse, Long>{
     List<Verse> findByChapter_ChapterId(Long chapterId);
 
     List<Verse> findByChapterChapterIdOrderByVerseNumber(Long chapterId);
+
+    Optional<Verse> findByChapterBookTitleIgnoreCaseAndChapterChapterNumberAndVerseNumber(
+        String bookTitle,
+        Integer chapterNumber,
+        Integer verseNumber
+    );
 
     @Query("""
         select verse from Verse verse

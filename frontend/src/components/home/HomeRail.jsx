@@ -6,15 +6,18 @@ import {
   Search,
   SunMedium,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { SectionTitle } from '@/components/common/AppPageLayout.jsx'
+import { localizedBibleBook } from '@/i18n/bibleBooks.js'
 
 const quickActions = [
-  { label: 'Search Bible', icon: Search, path: '/bible' },
-  { label: 'Browse Plans', icon: BookOpen, path: '/plans' },
-  { label: 'My Bookmarks', icon: Bookmark, path: '/bookmarks' },
+  { labelKey: 'searchBible', icon: Search, path: '/bible' },
+  { labelKey: 'browsePlans', icon: BookOpen, path: '/plans' },
+  { labelKey: 'myBookmarks', icon: Bookmark, path: '/bookmarks' },
 ]
 
 function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
+  const { t, i18n } = useTranslation()
   const currentStreak = streak?.currentStreak || 0
   const recentDays = streak?.recentDays || []
   const streakProgress = Math.min(currentStreak, 7) / 7
@@ -24,7 +27,7 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
       <section className="rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
         <p className="flex items-center gap-2 text-[10px] font-semibold text-[#252a32]">
           <SunMedium className="h-4 w-4 text-[#d89127]" strokeWidth={1.7} />
-          Verse of the Day
+          {t('homeCards.verseOfDay')}
         </p>
         {verseOfDay ? (
           <>
@@ -32,18 +35,18 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
               &ldquo;{verseOfDay.text}&rdquo;
             </blockquote>
             <p className="mt-2 text-[9px] font-semibold text-[#b77718]">
-              {verseOfDay.reference}
+              {localizedReference(verseOfDay.reference, i18n.resolvedLanguage)}
             </p>
             <button
               type="button"
               onClick={() => onNavigate(verseLink(verseOfDay.reference))}
               className="mt-3 inline-flex h-8 items-center gap-2 text-[9px] font-medium text-[#4f5764]"
             >
-              View in Bible <span aria-hidden="true">&rarr;</span>
+              {t('homeCards.viewInBible')} <span aria-hidden="true">&rarr;</span>
             </button>
           </>
         ) : (
-          <div className="mt-3 space-y-2" aria-label="Loading verse of the day">
+          <div className="mt-3 space-y-2" aria-label={t('homeCards.loadingVerse')}>
             <div className="auth-skeleton h-3.5 w-full rounded-[4px]" />
             <div className="auth-skeleton h-3.5 w-4/5 rounded-[4px]" />
             <div className="auth-skeleton h-3 w-20 rounded-[4px]" />
@@ -52,20 +55,20 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
       </section>
 
       <section className="self-start rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
-        <SectionTitle>Quick Actions</SectionTitle>
+        <SectionTitle>{t('homeCards.quickActions')}</SectionTitle>
         <div className="mt-5 grid grid-cols-3 gap-2.5">
           {quickActions.map((item) => {
             const Icon = item.icon
             return (
               <button
-                key={item.label}
+                key={item.labelKey}
                 type="button"
                 onClick={() => onNavigate(item.path)}
                 className="relative flex h-[96px] min-w-0 flex-col items-center justify-center gap-3 rounded-[10px] border border-[#e7e8e9] bg-white px-1.5 text-center text-[10px] leading-4 text-[#303442] hover:border-[#d5d7da] hover:bg-[#fafafa]"
               >
                 <Icon className="h-6 w-6 text-[#07090c]" strokeWidth={1.55} />
-                {item.label}
-                {item.label === 'My Bookmarks' && bookmarkCount > 0 && (
+                {t(`homeCards.${item.labelKey}`)}
+                {item.labelKey === 'myBookmarks' && bookmarkCount > 0 && (
                   <span className="absolute right-2.5 top-2.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f5ad39] px-1 text-[9px] font-bold text-white">
                     {bookmarkCount}
                   </span>
@@ -78,8 +81,8 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
 
       <section className="rounded-[12px] border border-[#e4e4e2] bg-white px-5 py-5">
         <header className="flex items-center justify-between">
-          <h2 className="text-[14px] font-bold">Your Streak</h2>
-          <span className="text-[11px] text-[#7b8392]">Last 7 days</span>
+          <h2 className="text-[14px] font-bold">{t('homeCards.yourStreak')}</h2>
+          <span className="text-[11px] text-[#7b8392]">{t('homeCards.lastSevenDays')}</span>
         </header>
         <div className="mt-4 flex items-center gap-5">
           <span
@@ -88,7 +91,7 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
               background: `conic-gradient(#f7b44d ${streakProgress * 360}deg, #fbf0e1 0deg)`,
             }}
             role="img"
-            aria-label={`${currentStreak} of 7 streak days`}
+            aria-label={t('homeCards.streakProgress', { count: currentStreak })}
           >
             <span className="flex h-full w-full items-center justify-center rounded-full bg-white">
               <Flame className="h-7 w-7 fill-[#ffb23b] text-[#ffb23b]" />
@@ -96,20 +99,20 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
           </span>
           <div>
             <p className="text-[25px] font-semibold leading-none">{currentStreak}</p>
-            <p className="mt-2 text-[13px]">Days in a row</p>
+            <p className="mt-2 text-[13px]">{t('homeCards.daysInRow')}</p>
           </div>
         </div>
         <div className="mt-4 flex justify-between">
           {recentDays.map((day) => {
             const date = new Date(`${day.date}T00:00:00`)
-            const weekday = new Intl.DateTimeFormat('en', {
+            const weekday = new Intl.DateTimeFormat(i18n.resolvedLanguage, {
               weekday: 'narrow',
             }).format(date)
             return (
               <div
                 key={day.date}
                 className="flex flex-col items-center gap-2"
-                title={date.toLocaleDateString()}
+                title={date.toLocaleDateString(i18n.resolvedLanguage)}
               >
                 <span className="text-[11px] text-[#687188]">{weekday}</span>
                 <span className={`flex h-[18px] w-[18px] items-center justify-center rounded-full ${day.active ? 'bg-[#171b23] text-white' : 'border border-[#dce0e6]'}`}>
@@ -122,6 +125,12 @@ function HomeRail({ streak, bookmarkCount, verseOfDay, onNavigate }) {
       </section>
     </div>
   )
+}
+
+function localizedReference(reference, language) {
+  const match = reference?.match(/^(.+?)(\s+\d+:.*)$/)
+  if (!match) return reference
+  return `${localizedBibleBook(match[1], language)}${match[2]}`
 }
 
 function verseLink(reference) {
