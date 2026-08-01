@@ -11,6 +11,8 @@ import {
 } from '@/features/social/socialService.js'
 import { apiRequest } from '@/services/api/client.js'
 
+const NOTIFICATIONS_CHANGED_EVENT = 'koino:notifications-changed'
+
 function AppHeaderActions({ onNavigate }) {
   const [notifications, setNotifications] = useState([])
   const [open, setOpen] = useState(false)
@@ -18,14 +20,30 @@ function AppHeaderActions({ onNavigate }) {
 
   const refresh = useCallback(async () => {
     if (!getAuthToken()) return
-    const result = await apiRequest('/users/me/notifications')
+    const result = await apiRequest('/users/me/notifications', {
+      cache: 'no-store',
+    })
     setNotifications(result)
+    window.dispatchEvent(
+      new CustomEvent(NOTIFICATIONS_CHANGED_EVENT, { detail: result }),
+    )
   }, [])
 
   useEffect(() => {
     Promise.resolve().then(refresh).catch(() => {})
     const timer = window.setInterval(() => refresh().catch(() => {}), 15000)
-    return () => window.clearInterval(timer)
+    const syncNotifications = (event) => {
+      if (Array.isArray(event.detail)) setNotifications(event.detail)
+      else refresh().catch(() => {})
+    }
+    window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, syncNotifications)
+    return () => {
+      window.clearInterval(timer)
+      window.removeEventListener(
+        NOTIFICATIONS_CHANGED_EVENT,
+        syncNotifications,
+      )
+    }
   }, [refresh])
 
   const visibleNotifications = useMemo(
@@ -38,10 +56,14 @@ function AppHeaderActions({ onNavigate }) {
   }
 
   async function readNotification(notification) {
-    setNotifications((current) =>
-      current.filter(
+    const nextNotifications = notifications.filter(
         (item) => item.notificationId !== notification.notificationId,
-      ),
+    )
+    setNotifications(nextNotifications)
+    window.dispatchEvent(
+      new CustomEvent(NOTIFICATIONS_CHANGED_EVENT, {
+        detail: nextNotifications,
+      }),
     )
     setOpen(false)
     if (notification.type === 'PLAN_READY') onNavigate('/plans')
@@ -49,6 +71,7 @@ function AppHeaderActions({ onNavigate }) {
     if (!notification.read) {
       try {
         await markNotificationRead(notification.notificationId)
+        await refresh()
       } catch {
         await refresh().catch(() => {})
       }
@@ -60,10 +83,14 @@ function AppHeaderActions({ onNavigate }) {
     try {
       if (accepted) await acceptFriend(notification.referenceId)
       else await removeFriendship(notification.referenceId)
-      setNotifications((current) =>
-        current.filter(
-          (item) => item.notificationId !== notification.notificationId,
-        ),
+      const nextNotifications = notifications.filter(
+        (item) => item.notificationId !== notification.notificationId,
+      )
+      setNotifications(nextNotifications)
+      window.dispatchEvent(
+        new CustomEvent(NOTIFICATIONS_CHANGED_EVENT, {
+          detail: nextNotifications,
+        }),
       )
     } finally {
       setActioningId(null)

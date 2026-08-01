@@ -79,7 +79,7 @@ public class NotificationService {
                 "Notification not found"
             ));
         notification.setRead(true);
-        return toResponse(notificationRepository.save(notification));
+        return toResponse(notificationRepository.saveAndFlush(notification));
     }
 
     @Transactional

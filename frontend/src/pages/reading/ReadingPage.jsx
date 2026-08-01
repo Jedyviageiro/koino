@@ -1,8 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import {
-  AppPageLayout,
-  PageHeader,
-} from '@/components/common/AppPageLayout.jsx'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { AppPageLayout } from '@/components/common/AppPageLayout.jsx'
 import BibleReader from '@/components/reading/BibleReader.jsx'
 import BookmarkModal from '@/components/reading/BookmarkModal.jsx'
 import ReadingRail from '@/components/reading/ReadingRail.jsx'
@@ -26,6 +23,8 @@ function ReadingPage({ onNavigate }) {
   const [saving, setSaving] = useState(false)
   const [completing, setCompleting] = useState(false)
   const [error, setError] = useState('')
+  const progressTimerRef = useRef(null)
+  const saveVersionRef = useRef(0)
   const session = getAuthSession()
 
   useEffect(() => {
@@ -69,25 +68,36 @@ function ReadingPage({ onNavigate }) {
     }
   }, [onNavigate])
 
+  useEffect(
+    () => () => window.clearTimeout(progressTimerRef.current),
+    [],
+  )
+
   const currentVerse = data?.verses[currentIndex - 1]
   const bookmarked = useMemo(
     () => Boolean(currentVerse && bookmarkColors.has(currentVerse.verseId)),
     [bookmarkColors, currentVerse],
   )
 
-  async function selectVerse(nextIndex) {
-    if (!data?.task || saving || nextIndex === currentIndex) return
-    const previousIndex = currentIndex
+  function selectVerse(nextIndex) {
+    if (!data?.task || nextIndex === currentIndex) return
     setCurrentIndex(nextIndex)
+    window.clearTimeout(progressTimerRef.current)
+    const saveVersion = ++saveVersionRef.current
     setSaving(true)
-    try {
-      await saveReadingProgress(data.task.taskId, nextIndex)
-    } catch (requestError) {
-      setCurrentIndex(previousIndex)
-      setError(requestError.message || 'Unable to save your reading position.')
-    } finally {
-      setSaving(false)
-    }
+    progressTimerRef.current = window.setTimeout(async () => {
+      try {
+        await saveReadingProgress(data.task.taskId, nextIndex)
+      } catch (requestError) {
+        if (saveVersion === saveVersionRef.current) {
+          setError(
+            requestError.message || 'Unable to save your reading position.',
+          )
+        }
+      } finally {
+        if (saveVersion === saveVersionRef.current) setSaving(false)
+      }
+    }, 180)
   }
 
   async function saveBookmark(verse, highlightColor) {
@@ -146,13 +156,6 @@ function ReadingPage({ onNavigate }) {
       onNavigate={onNavigate}
       activePath="/plans"
     >
-        <PageHeader
-          eyebrow="Daily Scripture"
-          title="Make space for the Word"
-          subtitle="Read slowly, reflect, and continue when you are ready."
-          className="mb-6"
-        />
-
         {!data ? (
           <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_270px]">
             <div className="rounded-[8px] border border-[#e1e4e9] bg-white p-7">
@@ -179,7 +182,11 @@ function ReadingPage({ onNavigate }) {
               onBookmark={setBookmarkTarget}
               onComplete={finishReading}
             />
-            <ReadingRail plan={data.plan} task={data.task} />
+            <ReadingRail
+              plan={data.plan}
+              task={data.task}
+              currentVerse={currentVerse}
+            />
           </div>
         )}
       {bookmarkTarget && (

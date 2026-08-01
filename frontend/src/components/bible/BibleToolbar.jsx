@@ -1,7 +1,14 @@
-import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  BookOpen,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Hash,
+  Library,
+} from 'lucide-react'
 
 const controlClass =
-  'h-9 w-full rounded-[7px] border border-[#dfe3e9] bg-white px-2.5 text-[11px] font-medium text-[#20242b] outline-none transition-colors focus:border-[#e8a33d]'
+  'h-9 w-full appearance-none rounded-[7px] border border-[#dfe3e9] bg-white pl-8 pr-2 text-[10px] font-medium text-[#20242b] outline-none transition-colors focus:border-[#e8a33d]'
 
 function BibleToolbar({
   versions,
@@ -26,11 +33,10 @@ function BibleToolbar({
   onToday,
 }) {
   return (
-    <section className="grid gap-3 rounded-[8px] border border-[#dfe3e9] bg-white p-4 md:grid-cols-2 md:items-end xl:grid-cols-[185px_135px_minmax(125px,1fr)_78px_78px_auto]">
-      <label className="block">
-        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
-          Version
-        </span>
+    <section className="grid gap-2 rounded-[8px] border border-[#dfe3e9] bg-white p-3 md:grid-cols-2 xl:grid-cols-[92px_150px_minmax(135px,1fr)_74px_74px_auto] xl:items-center">
+      <label className="relative block">
+        <span className="sr-only">Version</span>
+        <BookOpen className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           className={controlClass}
           value={selectedVersion}
@@ -39,16 +45,15 @@ function BibleToolbar({
         >
           {versions.map((version) => (
             <option key={version.code} value={version.code}>
-              {version.name} ({version.code})
+              {version.code}
             </option>
           ))}
         </select>
       </label>
 
-      <label className="block">
-        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
-          Testament
-        </span>
+      <label className="relative block">
+        <span className="sr-only">Testament</span>
+        <Library className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           className={controlClass}
           value={testament}
@@ -60,10 +65,9 @@ function BibleToolbar({
         </select>
       </label>
 
-      <label className="block">
-        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
-          Book
-        </span>
+      <label className="relative block">
+        <span className="sr-only">Book</span>
+        <BookOpen className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           autoFocus={focusBook}
           className={controlClass}
@@ -79,10 +83,9 @@ function BibleToolbar({
         </select>
       </label>
 
-      <label className="block">
-        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
-          Chapter
-        </span>
+      <label className="relative block">
+        <span className="sr-only">Chapter</span>
+        <Hash className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-[#707886]" />
         <select
           className={controlClass}
           value={selectedChapterId || ''}
@@ -97,10 +100,9 @@ function BibleToolbar({
         </select>
       </label>
 
-      <label className="block">
-        <span className="mb-1 block text-[10px] font-medium text-[#565e6e]">
-          Verse
-        </span>
+      <label className="relative block">
+        <span className="sr-only">Verse</span>
+        <span className="pointer-events-none absolute left-2.5 top-2.5 text-[10px] font-semibold text-[#707886]">V</span>
         <select
           className={controlClass}
           value={selectedVerseNumber || ''}
@@ -115,7 +117,7 @@ function BibleToolbar({
         </select>
       </label>
 
-      <div className="flex gap-2 md:col-span-2 xl:col-span-1">
+      <div className="flex justify-end gap-2 md:col-span-2 xl:col-span-1">
         <button
           type="button"
           onClick={onPrevious}
