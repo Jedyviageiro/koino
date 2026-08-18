@@ -24,7 +24,7 @@ export default function IndexScreen() {
     setMessage('');
     try {
       const session = await login(email, password);
-      setMessage(`Welcome back, ${session.fullname}.`);
+      router.replace(session.onboardingCompleted ? '/onboarding-complete' : '/onboarding');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to log in. Please try again.');
     } finally {
@@ -58,7 +58,7 @@ export default function IndexScreen() {
       if (!response.data.idToken) throw new Error('Google did not return an identity token.');
 
       const session = await loginWithGoogle(response.data.idToken);
-      setMessage(`Welcome back, ${session.fullname}.`);
+      router.replace(session.onboardingCompleted ? '/onboarding-complete' : '/onboarding');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Google sign-in failed.');
     } finally {
@@ -98,7 +98,7 @@ export default function IndexScreen() {
       </View>
 
       <Pressable
-        onPress={() => Alert.alert('Forgot password', 'Password recovery will be added next.')}
+        onPress={() => router.push('/forgot-password')}
         style={styles.forgotButton}
       >
         <Text style={styles.goldLink}>Forgot password?</Text>

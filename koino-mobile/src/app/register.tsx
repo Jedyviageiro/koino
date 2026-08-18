@@ -36,13 +36,13 @@ export default function RegisterScreen() {
         return;
       }
       const result = await register(fullname, email, password);
-      Alert.alert(
-        'Account created',
-        result.verificationRequired
-          ? `We sent a verification link to ${result.email}.`
-          : 'Your Koino account is ready.',
-        [{ text: 'Continue to login', onPress: () => router.replace('/') }],
-      );
+      if (result.verificationRequired) {
+        router.replace({ pathname: '/verify-email', params: { email: result.email } });
+      } else {
+        Alert.alert('Account created', 'Your Koino account is ready.', [
+          { text: 'Continue to login', onPress: () => router.replace('/') },
+        ]);
+      }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to create your account.');
     } finally {

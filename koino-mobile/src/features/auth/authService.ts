@@ -9,7 +9,7 @@ export async function login(email: string, password: string) {
     body: JSON.stringify({ email: email.trim(), password }),
   });
   await saveAuthSession(session);
-  return session;
+  return addOnboardingStatus(session);
 }
 
 export function register(fullname: string, email: string, password: string) {
@@ -39,5 +39,42 @@ export async function loginWithGoogle(credential: string) {
     body: JSON.stringify({ credential, language: 'en' }),
   });
   await saveAuthSession(session);
-  return session;
+  return addOnboardingStatus(session);
+}
+
+async function addOnboardingStatus(session: AuthSession) {
+  const status = await apiRequest<{ completed: boolean }>('/onboarding/status', {
+    headers: { Authorization: `Bearer ${session.token}` },
+  });
+  const authenticatedSession = { ...session, onboardingCompleted: status.completed };
+  await saveAuthSession(authenticatedSession);
+  return authenticatedSession;
+}
+
+export function confirmEmail(token: string) {
+  return apiRequest<{ message: string }>('/users/verify-email/confirm', {
+    method: 'POST',
+    body: JSON.stringify({ token }),
+  });
+}
+
+export function resendVerification(email: string) {
+  return apiRequest<{ message: string }>('/users/verify-email/resend', {
+    method: 'POST',
+    body: JSON.stringify({ email: email.trim() }),
+  });
+}
+
+export function requestPasswordReset(email: string) {
+  return apiRequest<{ message: string }>('/users/resetPassword', {
+    method: 'POST',
+    body: JSON.stringify({ email: email.trim() }),
+  });
+}
+
+export function resetPassword(token: string, newPassword: string, confirmPassword: string) {
+  return apiRequest<null>('/users/resetPassword/confirm', {
+    method: 'POST',
+    body: JSON.stringify({ token, newPassword, confirmPassword }),
+  });
 }

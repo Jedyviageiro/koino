@@ -6,6 +6,7 @@ export type AuthSession = {
   fullname: string;
   profilePictureUrl: string | null;
   language: string;
+  onboardingCompleted?: boolean;
 };
 
 export type RegistrationResult = {
