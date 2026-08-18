@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppBottomNav } from './AppBottomNav';
 
-type Tab = 'home' | 'plans' | 'bible' | 'watch' | 'community' | 'chat';
+type Tab = 'home' | 'plans' | 'bible' | 'community' | 'chat' | 'settings';
 
 export function AppShell({ active, children }: PropsWithChildren<{ active: Tab }>) {
   return (

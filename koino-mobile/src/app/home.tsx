@@ -6,7 +6,6 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'r
 
 import { AppShell } from '@/components/app/AppShell';
 import { ErrorState, LoadingState } from '@/components/app/ScreenState';
-import { HeaderActions } from '@/components/app/HeaderActions';
 import { getAuthSession } from '@/features/auth/authStorage';
 import { getHomeData } from '@/features/app/appService';
 import type { HomeData, UserPlanTask } from '@/features/app/types';
@@ -49,7 +48,6 @@ export default function HomeScreen() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
   const progress = Math.round(data?.plan?.completionPercentage ?? 0);
-  const unread = data?.notifications.some((item) => !item.read) ?? false;
 
   return (
     <AppShell active="home">
@@ -66,7 +64,6 @@ export default function HomeScreen() {
               <Text style={styles.greeting}>{greeting}, {name.toLowerCase()}</Text>
               <Text style={styles.subtitle}>Let’s grow closer to God together.</Text>
             </View>
-            <HeaderActions unread={unread} />
           </View>
 
           <View style={styles.sectionHeader}>

@@ -61,6 +61,28 @@ class FriendshipServiceTests {
         verify(notifications).createFriendRequest(addressee, requester, 10L);
     }
 
+    @Test
+    void findsFriendByNormalizedPrivateCode() {
+        FriendshipRepository friendships = mock(FriendshipRepository.class);
+        UserRepository users = mock(UserRepository.class);
+        UserService userService = mock(UserService.class);
+        User friend = user(2L, "Sarah", "sarah");
+        friend.setFriendCode("AB12-CD34");
+        when(users.findByFriendCodeIgnoreCase("AB12-CD34"))
+            .thenReturn(Optional.of(friend));
+        when(userService.ensureUsername(friend)).thenReturn(friend);
+
+        var response = service(
+            friendships,
+            users,
+            mock(NotificationService.class),
+            userService
+        ).profileByFriendCode(1L, "ab12 cd34");
+
+        assertThat(response.userId()).isEqualTo(2L);
+        assertThat(response.username()).isEqualTo("sarah");
+    }
+
     private FriendshipService service(
         FriendshipRepository friendships,
         UserRepository users,

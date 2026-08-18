@@ -10,5 +10,6 @@ public record UserSettingsResponse(
     String username,
     String bio,
     String location,
-    String countryCode
+    String countryCode,
+    String friendCode
 ) {}

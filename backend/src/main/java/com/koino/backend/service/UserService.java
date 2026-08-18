@@ -6,6 +6,7 @@ import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.text.Normalizer;
+import java.security.SecureRandom;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,8 @@ import com.koino.backend.model.UserProfile;
 
 @Service
 public class UserService {
+    private static final SecureRandom FRIEND_CODE_RANDOM = new SecureRandom();
+    private static final char[] FRIEND_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".toCharArray();
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserLoginDayRepository loginDayRepository;
@@ -76,6 +79,7 @@ public class UserService {
             user.setEmail(normalizedEmail);
             user.setEmailVerified(emailVerified);
             user.setUsername(generateUsername(user.getFullname()));
+            user.setFriendCode(generateFriendCode());
 
             String hashedPassword = passwordEncoder.encode(password);
             user.setPassword(hashedPassword);
@@ -128,6 +132,7 @@ public class UserService {
                 java.util.UUID.randomUUID() + "Gg!"
             ));
             user.setUsername(generateUsername(user.getFullname()));
+            user.setFriendCode(generateFriendCode());
             user.setCreatedAt(LocalDateTime.now());
             user.setLanguage(normalizeLanguage(language));
         }
@@ -192,7 +197,7 @@ public class UserService {
 
     @Transactional
     public UserSettingsResponse getSettings(Long userId) {
-        User user = ensureUsername(findUser(userId));
+        User user = ensurePrivateIdentity(ensureUsername(findUser(userId)));
         return toSettingsResponse(user);
     }
 
@@ -325,8 +330,18 @@ public class UserService {
             user.getUsername(),
             profile == null ? null : profile.getBio(),
             profile == null ? null : profile.getLocation(),
-            profile == null ? null : profile.getCountryCode()
+            profile == null ? null : profile.getCountryCode(),
+            user.getFriendCode()
         );
+    }
+
+    @Transactional
+    public User ensurePrivateIdentity(User user) {
+        if (user.getFriendCode() != null && !user.getFriendCode().isBlank()) {
+            return user;
+        }
+        user.setFriendCode(generateFriendCode());
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -358,6 +373,19 @@ public class UserService {
         while (userRepository.existsByUsernameIgnoreCase(candidate)) {
             candidate = base + suffix++;
         }
+        return candidate;
+    }
+
+    private String generateFriendCode() {
+        String candidate;
+        do {
+            StringBuilder value = new StringBuilder(9);
+            for (int index = 0; index < 8; index++) {
+                if (index == 4) value.append('-');
+                value.append(FRIEND_CODE_ALPHABET[FRIEND_CODE_RANDOM.nextInt(FRIEND_CODE_ALPHABET.length)]);
+            }
+            candidate = value.toString();
+        } while (userRepository.existsByFriendCodeIgnoreCase(candidate));
         return candidate;
     }
 

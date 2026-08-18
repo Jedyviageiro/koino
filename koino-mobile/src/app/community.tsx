@@ -1,7 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
@@ -84,10 +83,6 @@ export default function CommunityScreen() {
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor="#e59010" />}>
           <View style={styles.header}>
             <View style={styles.headerCopy}><Text style={styles.title}>Community</Text><Text style={styles.subtitle}>Share Scripture, ask questions, and encourage one another.</Text></View>
-            <View style={styles.headerActions}>
-              <Pressable accessibilityLabel="Private chat" onPress={() => router.push('/chat/index')} style={styles.headerButton}><MaterialCommunityIcons name="magnify" size={29} color="#111820" /></Pressable>
-              <Pressable accessibilityLabel="Notifications" onPress={() => router.push('/notifications')} style={styles.headerButton}><MaterialCommunityIcons name="bell-outline" size={27} color="#111820" /><View style={styles.notificationDot} /></Pressable>
-            </View>
           </View>
 
           <View style={styles.composer}>
@@ -124,8 +119,6 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 18, paddingTop: 22, paddingBottom: 26 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }, headerCopy: { flex: 1 },
   title: { color: '#111820', fontFamily: 'serif', fontSize: 36, lineHeight: 44, fontWeight: '700' }, subtitle: { marginTop: 7, maxWidth: 280, color: '#6d7787', fontSize: 15, lineHeight: 23 },
-  headerActions: { flexDirection: 'row', gap: 8 }, headerButton: { width: 51, height: 51, borderWidth: 1, borderColor: '#eaebed', borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
-  notificationDot: { position: 'absolute', right: 7, top: 5, width: 9, height: 9, borderRadius: 5, backgroundColor: '#ec9013', borderWidth: 2, borderColor: '#fff' },
   composer: { marginTop: 28, padding: 15, borderWidth: 1, borderColor: '#dde1e5', borderRadius: 16, backgroundColor: '#fff' },
   composerTop: { flexDirection: 'row', alignItems: 'center', gap: 11 }, input: { flex: 1, minHeight: 53, maxHeight: 105, color: '#202831', fontSize: 15, lineHeight: 21 },
   postButton: { width: 69, height: 46, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e29624' }, postDisabled: { backgroundColor: '#f4ede4' }, postText: { color: '#fff', fontSize: 14, fontWeight: '700' }, postTextDisabled: { color: '#9299a3' },

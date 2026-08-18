@@ -99,8 +99,6 @@ export default function ConversationScreen() {
             <Text numberOfLines={1} style={styles.friendName}>{friend?.fullname ?? 'Koino friend'}</Text>
             <Text style={[styles.presence, friendTyping && styles.typing]}>{friendTyping ? 'Typing...' : 'Koino friend'}</Text>
           </View>
-          <Pressable accessibilityLabel="Search messages" style={styles.headerAction}><MaterialCommunityIcons name="magnify" size={28} color="#111820" /></Pressable>
-          <Pressable accessibilityLabel="Notifications" onPress={() => router.push('/notifications')} style={styles.headerAction}><MaterialCommunityIcons name="bell-outline" size={27} color="#111820" /><View style={styles.notificationDot} /></Pressable>
         </View>
 
         <FlatList
@@ -142,7 +140,6 @@ const styles = StyleSheet.create({
   header: { minHeight: 84, paddingHorizontal: 14, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center', gap: 10 },
   backButton: { width: 31, height: 48, alignItems: 'flex-start', justifyContent: 'center' },
   headerCopy: { flex: 1, minWidth: 0 }, friendName: { color: '#111820', fontSize: 18, fontWeight: '700' }, presence: { marginTop: 3, color: '#707b8d', fontSize: 13 }, typing: { color: '#2c69f3' },
-  headerAction: { width: 47, height: 47, borderWidth: 1, borderColor: '#e8eaed', borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }, notificationDot: { position: 'absolute', right: 4, top: 3, width: 10, height: 10, borderRadius: 5, backgroundColor: '#ee991e', borderWidth: 2, borderColor: '#fff' },
   messages: { paddingHorizontal: 18, paddingTop: 17, paddingBottom: 20 }, emptyMessages: { flexGrow: 1 }, dayLabel: { marginBottom: 25, color: '#738095', fontSize: 13, textAlign: 'center' },
   messageRow: { marginBottom: 17, flexDirection: 'row', alignItems: 'flex-end', gap: 10 }, myMessageRow: { justifyContent: 'flex-end' }, messageGroup: { maxWidth: '78%', alignItems: 'flex-start' }, myMessageGroup: { alignItems: 'flex-end' },
   bubble: { paddingHorizontal: 15, paddingVertical: 11, borderRadius: 19 }, theirBubble: { backgroundColor: '#f2f3f5', borderBottomLeftRadius: 5 }, myBubble: { backgroundColor: '#2b68f3', borderBottomRightRadius: 5 }, messageBody: { color: '#1e2b41', fontSize: 16, lineHeight: 23 }, myMessageBody: { color: '#fff' },

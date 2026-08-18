@@ -185,6 +185,30 @@ public class FriendshipService {
         return profile(viewerId, profileUser);
     }
 
+    @Transactional
+    public PublicUserProfileResponse profileByFriendCode(
+        Long viewerId,
+        String friendCode
+    ) {
+        String normalized = normalizeFriendCode(friendCode);
+        User profileUser = userRepository.findByFriendCodeIgnoreCase(normalized)
+            .filter(User::isActive)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Friend code not found"
+            ));
+        return profile(viewerId, profileUser);
+    }
+
+    private String normalizeFriendCode(String value) {
+        String compact = value == null
+            ? ""
+            : value.trim().toUpperCase(java.util.Locale.ROOT).replaceAll("[^A-Z0-9]", "");
+        if (compact.length() != 8) {
+            throw new IllegalArgumentException("Enter a valid friend code");
+        }
+        return compact.substring(0, 4) + "-" + compact.substring(4);
+    }
+
     private PublicUserProfileResponse profile(Long viewerId, User profileUser) {
         profileUser = userService.ensureUsername(profileUser);
         Long userId = profileUser.getUserId();

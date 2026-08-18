@@ -329,6 +329,17 @@ public class UserController {
         );
     }
 
+    @GetMapping("/me/friend-code/{friendCode}")
+    public PublicUserProfileResponse getProfileByFriendCode(
+        @AuthenticationPrincipal User viewer,
+        @PathVariable String friendCode
+    ) {
+        return friendshipService.profileByFriendCode(
+            viewer.getUserId(),
+            friendCode
+        );
+    }
+
     @GetMapping("/{userId}/profile")
     public PublicUserProfileResponse getUserProfile(
         @AuthenticationPrincipal User viewer,

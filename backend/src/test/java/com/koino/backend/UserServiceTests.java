@@ -82,6 +82,21 @@ class UserServiceTests {
     }
 
     @Test
+    void assignsPrivateFriendCodeWhenSettingsAreFirstOpened() {
+        UserRepository repository = mock(UserRepository.class);
+        User user = user(42L, true);
+        user.setFullname("Private Reader");
+        user.setEmail("reader@koino.local");
+        when(repository.findById(42L)).thenReturn(Optional.of(user));
+        when(repository.save(user)).thenReturn(user);
+
+        var settings = service(repository).getSettings(42L);
+
+        assertThat(settings.friendCode()).matches("[A-Z2-9]{4}-[A-Z2-9]{4}");
+        assertThat(user.getFriendCode()).isEqualTo(settings.friendCode());
+    }
+
+    @Test
     void incrementsStreakOnlyAfterSuccessfulLoginOnANewDay() {
         UserRepository repository = mock(UserRepository.class);
         PasswordEncoder encoder = mock(PasswordEncoder.class);

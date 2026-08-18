@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppShell } from '@/components/app/AppShell';
-import { HeaderActions } from '@/components/app/HeaderActions';
 import { ErrorState, LoadingState } from '@/components/app/ScreenState';
 import { getPlansData } from '@/features/app/appService';
 import type { PlansData } from '@/features/app/types';
@@ -52,7 +51,6 @@ export default function PlansScreen() {
               <Text style={styles.title}>Plans</Text>
               <Text style={styles.subtitle}>Stay consistent with God’s Word through intentional reading plans.</Text>
             </View>
-            <HeaderActions />
           </View>
 
           <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Current Plan</Text><Text style={styles.link}>View All  ›</Text></View>

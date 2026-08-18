@@ -37,6 +37,9 @@ public class User {
     @Column(unique = true, length = 40)
     private String username;
 
+    @Column(unique = true, length = 9)
+    private String friendCode;
+
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;

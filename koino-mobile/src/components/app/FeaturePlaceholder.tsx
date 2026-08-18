@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { AppShell } from './AppShell';
 
-type Tab = 'bible' | 'watch' | 'community';
+type Tab = 'bible' | 'community';
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
 export function FeaturePlaceholder({ active, title, icon }: { active: Tab; title: string; icon: IconName }) {

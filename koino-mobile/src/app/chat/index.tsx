@@ -52,12 +52,8 @@ export default function ChatListScreen() {
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor="#2a68f5" />}>
           <View style={styles.header}>
             <View style={styles.headerCopy}><Text style={styles.title}>Chat</Text><Text style={styles.subtitle}>Private conversations with your Koino friends.</Text></View>
-            <View style={styles.actions}>
-              <View style={styles.headerButton}><MaterialCommunityIcons name="magnify" size={29} color="#111820" /></View>
-              <Pressable onPress={() => router.push('/notifications')} style={styles.headerButton}><MaterialCommunityIcons name="bell-outline" size={27} color="#111820" /><View style={styles.notificationDot} /></Pressable>
-            </View>
           </View>
-          <View style={styles.search}><MaterialCommunityIcons name="magnify" size={27} color="#778294" /><TextInput value={query} onChangeText={setQuery} placeholder="Search friends" placeholderTextColor="#778294" style={styles.searchInput} /></View>
+          <View style={styles.search}><TextInput value={query} onChangeText={setQuery} placeholder="Filter conversations" placeholderTextColor="#778294" style={styles.searchInput} /></View>
           <View style={styles.list}>
             {visible.map((friend) => (
               <Pressable key={friend.userId} onPress={() => router.push({ pathname: '/chat/[friendId]', params: { friendId: String(friend.userId) } })} style={styles.friend}>
@@ -82,8 +78,6 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 20, paddingTop: 23, paddingBottom: 25 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 9 }, headerCopy: { flex: 1 },
   title: { color: '#111820', fontFamily: 'serif', fontSize: 38, lineHeight: 46, fontWeight: '700' }, subtitle: { marginTop: 6, color: '#6d7787', fontSize: 14, lineHeight: 21 },
-  actions: { flexDirection: 'row', gap: 8 }, headerButton: { width: 51, height: 51, borderWidth: 1, borderColor: '#e8eaed', borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
-  notificationDot: { position: 'absolute', right: 6, top: 5, width: 9, height: 9, borderRadius: 5, backgroundColor: '#ee991e', borderWidth: 2, borderColor: '#fff' },
   search: { height: 57, marginTop: 28, paddingHorizontal: 17, borderRadius: 15, flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#f7f7f7' }, searchInput: { flex: 1, height: '100%', color: '#18212b', fontSize: 15 },
   list: { marginTop: 20 },
   friend: { minHeight: 105, paddingHorizontal: 6, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center' },
