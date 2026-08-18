@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "koino-mobile",
+    "slug": "koino-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "koinomobile",
+    "userInterfaceStyle": "automatic",
+    "ios": {},
+    "android": {
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
