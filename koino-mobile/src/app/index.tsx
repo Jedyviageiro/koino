@@ -1,15 +1,17 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AuthButton } from '@/components/auth/AuthButton';
 import { AuthField } from '@/components/auth/AuthField';
 import { AuthScreen } from '@/components/auth/AuthScreen';
 import { GoogleLogo } from '@/components/auth/GoogleLogo';
 import { getGoogleConfig, login, loginWithGoogle } from '@/features/auth/authService';
+import { getAuthSession } from '@/features/auth/authStorage';
 
 export default function IndexScreen() {
+  const [checkingSession, setCheckingSession] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,13 +20,25 @@ export default function IndexScreen() {
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const canSubmit = emailValid && password.length >= 6;
 
+  useEffect(() => {
+    let active = true;
+    getAuthSession()
+      .then((session) => {
+        if (active && session?.token) {
+          router.replace(session.onboardingCompleted ? '/home' : '/onboarding');
+        }
+      })
+      .finally(() => { if (active) setCheckingSession(false); });
+    return () => { active = false; };
+  }, []);
+
   async function handleLogin() {
     if (!canSubmit || loading) return;
     setLoading(true);
     setMessage('');
     try {
       const session = await login(email, password);
-      router.replace(session.onboardingCompleted ? '/onboarding-complete' : '/onboarding');
+      router.replace(session.onboardingCompleted ? '/home' : '/onboarding');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to log in. Please try again.');
     } finally {
@@ -58,12 +72,16 @@ export default function IndexScreen() {
       if (!response.data.idToken) throw new Error('Google did not return an identity token.');
 
       const session = await loginWithGoogle(response.data.idToken);
-      router.replace(session.onboardingCompleted ? '/onboarding-complete' : '/onboarding');
+      router.replace(session.onboardingCompleted ? '/home' : '/onboarding');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Google sign-in failed.');
     } finally {
       setLoading(false);
     }
+  }
+
+  if (checkingSession) {
+    return <View style={styles.sessionLoading}><ActivityIndicator size="large" color="#c58a28" /></View>;
   }
 
   return (
@@ -134,6 +152,7 @@ export default function IndexScreen() {
 }
 
 const styles = StyleSheet.create({
+  sessionLoading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
   fields: { gap: 14 },
   forgotButton: { alignSelf: 'flex-end', paddingVertical: 12 },
   goldLink: { color: '#bd7d18', fontSize: 14, fontWeight: '600' },

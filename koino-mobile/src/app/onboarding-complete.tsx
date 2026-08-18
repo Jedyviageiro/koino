@@ -20,8 +20,7 @@ export default function OnboardingCompleteScreen() {
           Koino will use your answers to shape a daily rhythm that fits your life.
         </Text>
       </View>
-      <AuthButton label="Continue" onPress={() => router.replace('/')} />
-      <Text style={styles.note}>The mobile home experience is coming next.</Text>
+      <AuthButton label="Continue" onPress={() => router.replace('/home')} />
     </SafeAreaView>
   );
 }
