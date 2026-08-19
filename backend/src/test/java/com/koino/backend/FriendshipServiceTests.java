@@ -1,6 +1,7 @@
 package com.koino.backend;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 import com.koino.backend.model.Friendship;
+import com.koino.backend.model.FriendshipStatus;
 import com.koino.backend.model.User;
 import com.koino.backend.repository.BattleProfileRepository;
 import com.koino.backend.repository.BattleRatingRepository;
@@ -81,6 +83,46 @@ class FriendshipServiceTests {
 
         assertThat(response.userId()).isEqualTo(2L);
         assertThat(response.username()).isEqualTo("sarah");
+    }
+
+    @Test
+    void rejectsCurrentUsersOwnPrivateCode() {
+        FriendshipRepository friendships = mock(FriendshipRepository.class);
+        UserRepository users = mock(UserRepository.class);
+        User current = user(1L, "Maria", "maria");
+        current.setFriendCode("AB12-CD34");
+        when(users.findByFriendCodeIgnoreCase("AB12-CD34"))
+            .thenReturn(Optional.of(current));
+
+        assertThatThrownBy(() -> service(
+            friendships,
+            users,
+            mock(NotificationService.class),
+            mock(UserService.class)
+        ).profileByFriendCode(1L, "AB12-CD34"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("You cannot add your own friend code");
+    }
+
+    @Test
+    void requesterCanCancelPendingFriendRequest() {
+        FriendshipRepository friendships = mock(FriendshipRepository.class);
+        UserRepository users = mock(UserRepository.class);
+        NotificationService notifications = mock(NotificationService.class);
+        User requester = user(1L, "Maria", "maria");
+        User addressee = user(2L, "Sarah", "sarah");
+        Friendship pending = new Friendship();
+        pending.setFriendshipId(10L);
+        pending.setRequester(requester);
+        pending.setAddressee(addressee);
+        pending.setStatus(FriendshipStatus.PENDING);
+        when(friendships.findById(10L)).thenReturn(Optional.of(pending));
+
+        service(friendships, users, notifications, mock(UserService.class))
+            .rejectOrRemove(1L, 10L);
+
+        verify(friendships).delete(pending);
+        verify(notifications).resolve(2L, "FRIEND_REQUEST", "10");
     }
 
     private FriendshipService service(

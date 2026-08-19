@@ -3,6 +3,7 @@ package com.koino.backend.model;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.Instant;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -80,4 +81,6 @@ public class User {
     private int longestStreak;
 
     private LocalDate lastLoginDate;
+
+    private Instant lastSeenAt;
 }

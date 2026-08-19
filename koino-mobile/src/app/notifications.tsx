@@ -10,6 +10,7 @@ import { acceptFriendRequest, getNotifications, markAllNotificationsRead, markNo
 import type { Notification } from '@/features/app/types';
 import { useLanguage } from '@/features/localization/LanguageProvider';
 import { Toast, type ToastMessage } from '@/components/app/Toast';
+import { sendDeviceTestNotification } from '@/features/notifications/deviceNotifications';
 
 export default function NotificationsScreen() {
   const { language } = useLanguage(); const pt = language === 'pt';
@@ -48,6 +49,15 @@ export default function NotificationsScreen() {
     catch (failure) { setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível atualizar as notificações.' : 'Unable to update notifications.'); }
   }
 
+  async function testPhoneNotification() {
+    try {
+      await sendDeviceTestNotification(pt);
+      setToast({ id: Date.now(), tone: 'success', text: pt ? 'Notificação de teste enviada.' : 'Test notification sent.' });
+    } catch (failure) {
+      setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível testar a notificação.' : 'Unable to test notifications.' });
+    }
+  }
+
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.header}>
@@ -59,6 +69,7 @@ export default function NotificationsScreen() {
       {!items && error ? <ErrorState message={error} onRetry={load} /> : null}
       {items ? (
         <ScrollView contentContainerStyle={styles.list}>
+          <Pressable onPress={testPhoneNotification} style={styles.testNotification}><MaterialCommunityIcons name="cellphone-message" size={20} color="#c87400" /><View style={styles.testCopy}><Text style={styles.testTitle}>{pt ? 'Testar no telemóvel' : 'Test on this phone'}</Text><Text style={styles.testHint}>{pt ? 'Mostrar uma notificação do sistema agora' : 'Show a system notification now'}</Text></View><MaterialCommunityIcons name="chevron-right" size={20} color="#7d8793" /></Pressable>
           {items.length ? items.map((item) => (
             <Pressable key={item.notificationId} onPress={() => read(item)} style={[styles.item, !item.read && styles.unread]}>
               <View style={styles.icon}><MaterialCommunityIcons name={item.read ? 'bell-outline' : 'bell-ring-outline'} size={22} color="#d68108" /></View>
@@ -71,7 +82,7 @@ export default function NotificationsScreen() {
           {error ? <Text style={styles.inlineError}>{error}</Text> : null}
         </ScrollView>
       ) : null}
-      <Toast message={toast} onDismiss={() => setToast(null)} />
+      <Toast message={toast} duration={3500} onDismiss={() => setToast(null)} />
     </SafeAreaView>
   );
 }
@@ -83,6 +94,8 @@ const styles = StyleSheet.create({
   title: { color: '#151c24', fontSize: 23, fontWeight: '800' },
   readAll: { color: '#d68108', fontSize: 12, fontWeight: '600' },
   list: { padding: 18, gap: 10 },
+  testNotification: { minHeight: 68, marginBottom: 4, paddingHorizontal: 14, borderWidth: 1, borderColor: '#efd9b8', borderRadius: 14, flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#fffaf2' },
+  testCopy: { flex: 1 }, testTitle: { color: '#202932', fontSize: 13, fontWeight: '700' }, testHint: { marginTop: 3, color: '#77818d', fontSize: 11 },
   item: { minHeight: 86, padding: 14, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: 14, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' },
   unread: { borderColor: '#efd7b4', backgroundColor: '#fff9f0' },
   icon: { width: 43, height: 43, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff3df' },

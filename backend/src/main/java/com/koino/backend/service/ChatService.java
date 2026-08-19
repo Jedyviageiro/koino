@@ -31,6 +31,8 @@ import com.koino.backend.repository.UserRepository;
 public class ChatService {
     private static final long MAX_PHOTO_SIZE = 5L * 1024 * 1024;
     private static final String PHOTO_FOLDER = "koino/chat";
+    private static final long ONLINE_WINDOW_SECONDS = 20;
+    private static final long LAST_SEEN_WRITE_SECONDS = 60;
     private final ChatMessageRepository messageRepository;
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
@@ -39,6 +41,9 @@ public class ChatService {
     private final NotificationService notificationService;
     private final ConcurrentMap<String, Instant> typingUntil =
         new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Instant> onlineUntil = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Instant> lastSeenByUser = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Instant> lastSeenPersistedAt = new ConcurrentHashMap<>();
 
     public ChatService(
         ChatMessageRepository messageRepository,
@@ -58,6 +63,7 @@ public class ChatService {
 
     @Transactional
     public List<ChatFriendResponse> friends(Long userId) {
+        touchPresence(userId, true);
         List<Friendship> friendships =
             friendshipRepository.findForUserByStatus(
                 userId,
@@ -103,7 +109,9 @@ public class ChatService {
                 latest == null ? null : latest.getMessageId(),
                 latest == null ? null : latest.getSender().getUserId(),
                 latest == null ? null : latest.getSentAt(),
-                unreadByFriend.getOrDefault(friend.getUserId(), 0L)
+                unreadByFriend.getOrDefault(friend.getUserId(), 0L),
+                isOnline(friend.getUserId()),
+                lastSeen(friend)
             ));
         }
         result.sort((left, right) -> {
@@ -123,6 +131,7 @@ public class ChatService {
         Long userId,
         Long friendId
     ) {
+        touchPresence(userId, true);
         ensureFriends(userId, friendId);
         List<ChatMessage> messages =
             messageRepository.findConversation(userId, friendId);
@@ -148,6 +157,7 @@ public class ChatService {
         Long senderId,
         ChatMessageRequest request
     ) {
+        touchPresence(senderId, true);
         ensureFriends(senderId, request.recipientId());
         User sender = findUser(senderId);
         User recipient = findUser(request.recipientId());
@@ -167,6 +177,7 @@ public class ChatService {
         MultipartFile file,
         String caption
     ) {
+        touchPresence(senderId, true);
         ensureFriends(senderId, recipientId);
         validatePhoto(file);
         String cleanedCaption = caption == null ? null : caption.trim();
@@ -203,6 +214,7 @@ public class ChatService {
         Long recipientId,
         boolean typing
     ) {
+        touchPresence(senderId, false);
         ensureFriends(senderId, recipientId);
         String key = typingKey(senderId, recipientId);
         if (typing) {
@@ -215,6 +227,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public ChatTypingResponse isTyping(Long userId, Long friendId) {
+        touchPresence(userId, false);
         ensureFriends(userId, friendId);
         String key = typingKey(friendId, userId);
         Instant expiresAt = typingUntil.get(key);
@@ -225,6 +238,28 @@ public class ChatService {
 
     private String typingKey(Long senderId, Long recipientId) {
         return senderId + ":" + recipientId;
+    }
+
+    private void touchPresence(Long userId, boolean persist) {
+        Instant now = Instant.now();
+        onlineUntil.put(userId, now.plusSeconds(ONLINE_WINDOW_SECONDS));
+        lastSeenByUser.put(userId, now);
+        if (!persist) return;
+        Instant lastWrite = lastSeenPersistedAt.get(userId);
+        if (lastWrite != null && lastWrite.isAfter(now.minusSeconds(LAST_SEEN_WRITE_SECONDS))) return;
+        User user = findUser(userId);
+        user.setLastSeenAt(now);
+        userRepository.save(user);
+        lastSeenPersistedAt.put(userId, now);
+    }
+
+    private boolean isOnline(Long userId) {
+        Instant expiry = onlineUntil.get(userId);
+        return expiry != null && expiry.isAfter(Instant.now());
+    }
+
+    private Instant lastSeen(User user) {
+        return lastSeenByUser.getOrDefault(user.getUserId(), user.getLastSeenAt());
     }
 
     private void ensureFriends(Long firstId, Long secondId) {

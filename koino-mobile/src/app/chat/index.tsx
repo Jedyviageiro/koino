@@ -61,7 +61,7 @@ export default function ChatListScreen() {
           <View style={styles.list}>
             {visible.map((friend) => (
               <Pressable key={friend.userId} onPress={() => router.push({ pathname: '/chat/[friendId]', params: { friendId: String(friend.userId) } })} style={styles.friend}>
-                <View><Avatar name={friend.fullname} uri={friend.profilePictureUrl} size={49} />{friend.unreadCount > 0 ? <View style={styles.onlineDot} /> : null}</View>
+                <View><Avatar name={friend.fullname} uri={friend.profilePictureUrl} size={49} />{friend.online ? <View style={styles.onlineDot} /> : null}</View>
                 <View style={styles.friendCopy}>
                   <Text style={styles.friendName}>{friend.fullname}</Text>
                   <Text numberOfLines={2} style={[styles.lastMessage, friend.unreadCount > 0 && styles.unreadMessage]}>{friend.lastMessage === 'Photo' ? (pt ? 'Foto' : 'Photo') : friend.lastMessage || (pt ? 'Envie uma mensagem ao seu novo amigo…' : 'Message your new friend…')}</Text>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   search: { height: 46, marginTop: 18, paddingHorizontal: 14, borderRadius: 13, flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#f7f7f7' }, searchInput: { flex: 1, height: '100%', color: '#18212b', fontSize: 14 },
   list: { marginTop: 12 },
   friend: { minHeight: 82, paddingHorizontal: 4, paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center' },
-  onlineDot: { position: 'absolute', right: -1, bottom: 2, width: 17, height: 17, borderRadius: 9, borderWidth: 3, borderColor: '#fff', backgroundColor: '#326cf4' },
+  onlineDot: { position: 'absolute', right: -1, bottom: 2, width: 15, height: 15, borderRadius: 8, borderWidth: 3, borderColor: '#fff', backgroundColor: '#20b55a' },
   friendCopy: { flex: 1, marginLeft: 13 }, friendName: { color: '#101820', fontSize: 16, fontWeight: '700' }, lastMessage: { marginTop: 5, color: '#717c8d', fontSize: 12, lineHeight: 17 }, unreadMessage: { color: '#303a48', fontWeight: '600' },
   friendTail: { minWidth: 38, marginLeft: 7, alignItems: 'center', gap: 8 }, time: { color: '#6f798a', fontSize: 12 }, unreadBadge: { minWidth: 22, height: 22, paddingHorizontal: 5, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#2c69f3' }, unreadCount: { color: '#fff', fontSize: 10, fontWeight: '700' },
   empty: { minHeight: 260, alignItems: 'center', justifyContent: 'center' }, emptyTitle: { marginTop: 14, color: '#172029', fontSize: 18, fontWeight: '700' }, emptyText: { marginTop: 7, maxWidth: 280, color: '#76808e', fontSize: 13, lineHeight: 20, textAlign: 'center' },

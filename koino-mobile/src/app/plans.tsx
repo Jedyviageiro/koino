@@ -85,7 +85,7 @@ export default function PlansScreen() {
                 style={[styles.continueButton, !data.todayTask && styles.disabled]}
               >
                 <Ionicons name="book-outline" size={20} color="#df8500" />
-                <Text style={styles.continueText}>{pt ? (data.todayTask ? 'Continuar plano' : 'Leitura bloqueada') : (data.todayTask ? 'Continue Plan' : 'Reading Locked')}</Text>
+                <Text style={styles.continueText}>{pt ? (data.todayTask ? 'Continuar plano' : 'Leitura terminada por hoje') : (data.todayTask ? 'Continue Plan' : 'Reading finished for today')}</Text>
                 <Ionicons name="chevron-forward" size={20} color="#df8500" />
               </Pressable>
             </View>

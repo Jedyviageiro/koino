@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText as Text } from '@/components/app/Typography';
 
@@ -15,7 +15,9 @@ export default function SettingsHomeScreen() {
   const { language } = useLanguage(); const pt = language === 'pt';
   const [user, setUser] = useState<UserSettings | null>(null);
   const [error, setError] = useState('');
-  useEffect(() => { getSettings().then(setUser).catch((failure) => setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar as definições.' : 'Unable to load settings.')); }, [pt]);
+  useFocusEffect(useCallback(() => { let active = true; getSettings().then((value) => { if (active) setUser(value); }).catch((failure) => { if (active) setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar as definições.' : 'Unable to load settings.'); }); return () => { active = false; }; }, [pt]));
+  const countryNames: Record<string, string> = { MZ: pt ? 'Moçambique' : 'Mozambique', BR: pt ? 'Brasil' : 'Brazil', PT: 'Portugal', AO: 'Angola', US: pt ? 'Estados Unidos' : 'United States', ZA: pt ? 'África do Sul' : 'South Africa' };
+  const place = user ? [user.location, user.countryCode ? countryNames[user.countryCode] ?? user.countryCode : null].filter(Boolean).join(', ') : '';
   return (
     <SettingsScreen title={pt ? 'Definições' : 'Settings'} subtitle={pt ? 'Gerencie o seu perfil, preferências e conta.' : 'Manage your profile, preferences, and account.'} back={false}>
       {!user && !error ? <LoadingState label={pt ? 'A carregar definições…' : 'Loading settings…'} /> : null}
@@ -31,11 +33,12 @@ export default function SettingsHomeScreen() {
       </SettingsSection>
       <SettingsSection title={pt ? 'Preferências' : 'Preferences'}>
         <SettingsRow icon="bookmark-outline" title={pt ? 'Versículos guardados' : 'Saved Verses'} onPress={() => router.push('/settings/saved')} />
+        <SettingsRow icon="map-marker-outline" title={pt ? 'Localização' : 'Location'} subtitle={place || (pt ? 'Adicionar cidade e país' : 'Add your city and country')} onPress={() => router.push('/settings/edit-profile')} />
         <SettingsRow icon="bell-outline" title={pt ? 'Notificações' : 'Notifications'} subtitle={pt ? 'Atualizações e pedidos de amizade' : 'Updates and friend requests'} onPress={() => router.push('/notifications')} />
         <SettingsRow icon="web" title={pt ? 'Idioma' : 'Language'} subtitle={language === 'pt' ? 'Português' : 'English'} onPress={() => router.push('/settings/language')} />
       </SettingsSection>
       <SettingsSection title="Koino">
-        <SettingsRow icon="information-outline" title={pt ? 'Sobre o Koino' : 'About Koino'} subtitle="Koino mobile · SDK 54" />
+        <SettingsRow icon="information-outline" title={pt ? 'Sobre o Koino' : 'About Koino'} subtitle={pt ? 'Versão, missão e informações da aplicação' : 'Version, mission, and app information'} onPress={() => router.push('/settings/about')} />
       </SettingsSection>
     </SettingsScreen>
   );

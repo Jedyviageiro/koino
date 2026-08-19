@@ -196,6 +196,9 @@ public class FriendshipService {
             .orElseThrow(() -> new IllegalArgumentException(
                 "Friend code not found"
             ));
+        if (profileUser.getUserId().equals(viewerId)) {
+            throw new IllegalArgumentException("You cannot add your own friend code");
+        }
         return profile(viewerId, profileUser);
     }
 

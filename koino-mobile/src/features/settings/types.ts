@@ -27,6 +27,12 @@ export type PublicProfile = {
   postsCount: number;
 };
 
+export type FriendshipResult = {
+  friendshipId: number;
+  status: string;
+  direction: string;
+};
+
 export type LocalPreferences = {
   pushMessages: boolean;
   pushMentions: boolean;

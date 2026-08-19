@@ -11,5 +11,7 @@ public record ChatFriendResponse(
     Long lastMessageId,
     Long lastMessageSenderId,
     Instant lastMessageAt,
-    long unreadCount
+    long unreadCount,
+    boolean online,
+    Instant lastSeenAt
 ) {}

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { AppText as Text, AppTextInput as TextInput } from '@/components/app/Typography';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
@@ -17,6 +17,30 @@ import { Toast, type ToastMessage } from '@/components/app/Toast';
 
 function messageTime(value: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(new Date(value));
+}
+
+function lastSeenText(friend: ChatFriend | null, pt: boolean) {
+  if (friend?.online) return pt ? 'Online' : 'Online';
+  if (!friend?.lastSeenAt) return pt ? 'Offline' : 'Offline';
+  const elapsed = Math.max(0, Date.now() - new Date(friend.lastSeenAt).getTime());
+  if (elapsed < 60000) return pt ? 'Visto agora' : 'Last seen just now';
+  if (elapsed < 3600000) return pt ? `Visto há ${Math.floor(elapsed / 60000)} min` : `Last seen ${Math.floor(elapsed / 60000)}m ago`;
+  if (elapsed < 86400000) return pt ? `Visto há ${Math.floor(elapsed / 3600000)} h` : `Last seen ${Math.floor(elapsed / 3600000)}h ago`;
+  const date = new Intl.DateTimeFormat(pt ? 'pt' : 'en', { month: 'short', day: 'numeric' }).format(new Date(friend.lastSeenAt));
+  return pt ? `Visto em ${date}` : `Last seen ${date}`;
+}
+
+function TypingIndicator({ label }: { label: string }) {
+  const dots = useRef([new Animated.Value(.25), new Animated.Value(.25), new Animated.Value(.25)]).current;
+  useEffect(() => {
+    const animation = Animated.loop(Animated.stagger(140, dots.map((dot) => Animated.sequence([
+      Animated.timing(dot, { toValue: 1, duration: 220, useNativeDriver: true }),
+      Animated.timing(dot, { toValue: .25, duration: 220, useNativeDriver: true }),
+    ]))));
+    animation.start();
+    return () => animation.stop();
+  }, [dots]);
+  return <View style={styles.typingRow}><Text style={[styles.presence, styles.typing]}>{label}</Text><View style={styles.typingDots}>{dots.map((dot, index) => <Animated.View key={index} style={[styles.typingDot, { opacity: dot, transform: [{ translateY: dot.interpolate({ inputRange: [.25, 1], outputRange: [0, -2] }) }] }]} />)}</View></View>;
 }
 
 export default function ConversationScreen() {
@@ -55,8 +79,8 @@ export default function ConversationScreen() {
   useEffect(() => {
     if (!Number.isFinite(friendId) || friendId <= 0) return;
     const interval = setInterval(() => {
-      Promise.all([getConversation(friendId), getChatTyping(friendId)])
-        .then(([conversation, typing]) => { setMessages(conversation); setFriendTyping(typing.typing); })
+      Promise.all([getConversation(friendId), getChatTyping(friendId), getChatFriends()])
+        .then(([conversation, typing, friends]) => { setMessages(conversation); setFriendTyping(typing.typing); setFriend(friends.find((item) => item.userId === friendId) ?? null); })
         .catch(() => {});
     }, 1800);
     return () => clearInterval(interval);
@@ -85,6 +109,7 @@ export default function ConversationScreen() {
     try {
       const message = photo ? await sendChatPhoto(friendId, photo.uri, photo.mimeType ?? null, photo.fileName ?? null, body) : await sendChatMessage(friendId, body);
       setMessages((current) => [...(current ?? []), message]);
+      setToast({ id: Date.now(), tone: 'success', text: pt ? 'Mensagem enviada.' : 'Message sent.' });
       setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 50);
     } catch (failure) {
       setDraft(body); setPendingPhoto(photo);
@@ -116,7 +141,7 @@ export default function ConversationScreen() {
           <Pressable accessibilityLabel={pt ? 'Abrir perfil' : 'Open profile'} disabled={!friend} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })}><Avatar name={friend?.fullname ?? 'Koino friend'} uri={friend?.profilePictureUrl} size={52} /></Pressable>
           <Pressable disabled={!friend} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })} style={styles.headerCopy}>
             <Text numberOfLines={1} style={styles.friendName}>{friend?.fullname ?? 'Koino friend'}</Text>
-            <Text style={[styles.presence, friendTyping && styles.typing]}>{friendTyping ? (pt ? 'A escrever…' : 'Typing…') : (pt ? 'Amigo Koino' : 'Koino friend')}</Text>
+            {friendTyping ? <TypingIndicator label={pt ? 'A escrever' : 'Typing'} /> : <Text style={[styles.presence, friend?.online && styles.online]}>{lastSeenText(friend, pt)}</Text>}
           </Pressable>
         </View>
 
@@ -136,7 +161,7 @@ export default function ConversationScreen() {
                 {!mine ? <Avatar name={friend?.fullname ?? 'Friend'} uri={friend?.profilePictureUrl} size={36} /> : null}
                 <View style={[styles.messageGroup, mine && styles.myMessageGroup]}>
                   <View style={[styles.bubble, item.photoUrl && styles.photoBubble, mine ? styles.myBubble : styles.theirBubble]}>{item.photoUrl ? <Image source={{ uri: item.photoUrl }} style={styles.messagePhoto} contentFit="cover" transition={180} /> : null}{item.body ? <Text style={[styles.messageBody, mine && styles.myMessageBody, item.photoUrl && styles.caption]}>{item.body}</Text> : null}</View>
-                  <View style={[styles.messageMeta, mine && styles.myMessageMeta]}><Text style={styles.messageTime}>{messageTime(item.sentAt, pt ? 'pt' : 'en')}</Text>{mine ? <Ionicons name={item.readAt ? 'checkmark-done' : 'checkmark'} size={17} color="#2c69f3" /> : null}</View>
+                  <View style={[styles.messageMeta, mine && styles.myMessageMeta]}><Text style={styles.messageTime}>{messageTime(item.sentAt, pt ? 'pt' : 'en')}</Text>{mine ? <Ionicons accessibilityLabel={item.readAt ? (pt ? 'Lida' : 'Read') : item.deliveredAt ? (pt ? 'Entregue' : 'Delivered') : (pt ? 'Enviada' : 'Sent')} name={item.readAt || item.deliveredAt ? 'checkmark-done' : 'checkmark'} size={17} color={item.readAt ? '#2c69f3' : '#8a94a3'} /> : null}</View>
                 </View>
               </View>
             );
@@ -149,7 +174,7 @@ export default function ConversationScreen() {
           <View style={styles.inputWrap}><TextInput value={draft} onChangeText={setDraft} onSubmitEditing={send} returnKeyType="send" placeholder={pt ? 'Escreva uma mensagem…' : 'Type a message…'} placeholderTextColor="#778294" multiline style={styles.input} /></View>
           <Pressable accessibilityLabel={pt ? 'Enviar mensagem' : 'Send message'} disabled={(!draft.trim() && !pendingPhoto) || sending} onPress={send} style={({ pressed }) => [styles.sendButton, ((!draft.trim() && !pendingPhoto) || sending) && styles.sendDisabled, pressed && styles.pressed]}><Ionicons name="send" size={21} color="#fff" /></Pressable>
         </View>
-        <Toast message={toast} onDismiss={() => setToast(null)} />
+        <Toast message={toast} duration={3000} onDismiss={() => setToast(null)} />
       </KeyboardAvoidingView>
     </AppShell>
   );
@@ -159,7 +184,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#fff' },
   header: { minHeight: 84, paddingHorizontal: 14, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center', gap: 10 },
   backButton: { width: 31, height: 48, alignItems: 'flex-start', justifyContent: 'center' },
-  headerCopy: { flex: 1, minWidth: 0 }, friendName: { color: '#111820', fontSize: 18, fontWeight: '700' }, presence: { marginTop: 3, color: '#707b8d', fontSize: 13 }, typing: { color: '#2c69f3' },
+  headerCopy: { flex: 1, minWidth: 0 }, friendName: { color: '#111820', fontSize: 18, fontWeight: '700' }, presence: { marginTop: 3, color: '#707b8d', fontSize: 13 }, online: { color: '#16934d', fontWeight: '600' }, typing: { color: '#2c69f3' }, typingRow: { minHeight: 20, flexDirection: 'row', alignItems: 'center', gap: 5 }, typingDots: { paddingTop: 3, flexDirection: 'row', gap: 3 }, typingDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#2c69f3' },
   messages: { paddingHorizontal: 18, paddingTop: 17, paddingBottom: 20 }, emptyMessages: { flexGrow: 1 }, dayLabel: { marginBottom: 25, color: '#738095', fontSize: 13, textAlign: 'center' },
   messageRow: { marginBottom: 17, flexDirection: 'row', alignItems: 'flex-end', gap: 10 }, myMessageRow: { justifyContent: 'flex-end' }, messageGroup: { maxWidth: '78%', alignItems: 'flex-start' }, myMessageGroup: { alignItems: 'flex-end' },
   bubble: { paddingHorizontal: 15, paddingVertical: 11, borderRadius: 19 }, photoBubble: { width: 230, overflow: 'hidden', padding: 4 }, theirBubble: { backgroundColor: '#f2f3f5', borderBottomLeftRadius: 5 }, myBubble: { backgroundColor: '#2b68f3', borderBottomRightRadius: 5 }, messagePhoto: { width: '100%', aspectRatio: 1.15, borderRadius: 15, backgroundColor: '#e8eaed' }, messageBody: { color: '#1e2b41', fontSize: 15, lineHeight: 22 }, myMessageBody: { color: '#fff' }, caption: { paddingHorizontal: 10, paddingTop: 8, paddingBottom: 5 },

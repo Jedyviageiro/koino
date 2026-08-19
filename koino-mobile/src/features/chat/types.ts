@@ -8,6 +8,8 @@ export type ChatFriend = {
   lastMessageSenderId: number | null;
   lastMessageAt: string | null;
   unreadCount: number;
+  online: boolean;
+  lastSeenAt: string | null;
 };
 
 export type ChatMessage = {
