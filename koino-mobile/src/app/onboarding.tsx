@@ -4,13 +4,12 @@ import { useState } from 'react';
 import {
   ActivityIndicator,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { completeOnboarding } from '@/features/onboarding/onboardingService';
@@ -285,7 +284,7 @@ const styles = StyleSheet.create({
   hero: { alignItems: 'center', paddingTop: 10 },
   heroIcon: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fbf4ea' },
   eyebrow: { marginTop: 16, color: '#7f8792', fontSize: 10, lineHeight: 14, fontWeight: '700', letterSpacing: 0.45 },
-  title: { marginTop: 7, maxWidth: 330, color: '#101820', fontFamily: Platform.select({ ios: 'Georgia-Bold', android: 'serif' }), fontSize: 27, lineHeight: 34, fontWeight: '700', textAlign: 'center' },
+  title: { marginTop: 7, maxWidth: 330, color: '#101820', fontFamily: 'Poppins_700Bold', fontSize: 27, lineHeight: 34, textAlign: 'center' },
   subtitle: { marginTop: 9, maxWidth: 315, color: '#777f8b', fontSize: 13, lineHeight: 20, textAlign: 'center' },
   choices: { gap: 9, marginTop: 22 },
   choice: { minHeight: 82, paddingHorizontal: 13, paddingVertical: 12, borderRadius: 13, borderWidth: 1, borderColor: '#e0e3e7', flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' },
@@ -311,6 +310,6 @@ const styles = StyleSheet.create({
   modalBackdrop: { flex: 1, paddingHorizontal: 34, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(16,24,32,0.28)' },
   modalCard: { width: '100%', maxWidth: 360, paddingHorizontal: 28, paddingVertical: 32, borderRadius: 20, alignItems: 'center', backgroundColor: '#fff' },
   modalIcon: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff6e8' },
-  modalTitle: { marginTop: 18, color: '#151c24', fontFamily: Platform.select({ ios: 'Georgia-Bold', android: 'serif' }), fontSize: 23, fontWeight: '700' },
+  modalTitle: { marginTop: 18, color: '#151c24', fontFamily: 'Poppins_700Bold', fontSize: 23 },
   modalText: { marginTop: 9, color: '#777f89', fontSize: 13, lineHeight: 20, textAlign: 'center' },
 });

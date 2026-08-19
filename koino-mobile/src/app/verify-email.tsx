@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 import { AuthButton } from '@/components/auth/AuthButton';
 import { AuthScreen } from '@/components/auth/AuthScreen';

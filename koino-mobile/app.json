@@ -22,7 +22,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Koino to select photos you choose to share with the community."
+          "photosPermission": "Allow Koino to select photos you choose to share in the community and private conversations."
         }
       ]
     ],

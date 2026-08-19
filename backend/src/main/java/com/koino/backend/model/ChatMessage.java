@@ -48,6 +48,12 @@ public class ChatMessage {
     @Column(nullable = false, length = 2000)
     private String body;
 
+    @Column(length = 1000)
+    private String photoUrl;
+
+    @Column(length = 300)
+    private String photoPublicId;
+
     @Column(nullable = false, updatable = false)
     private Instant sentAt;
 

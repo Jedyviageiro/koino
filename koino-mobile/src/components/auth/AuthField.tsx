@@ -3,10 +3,10 @@ import { useState } from 'react';
 import {
   Pressable,
   StyleSheet,
-  TextInput,
   type TextInputProps,
   View,
 } from 'react-native';
+import { AppTextInput as TextInput } from '@/components/app/Typography';
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 

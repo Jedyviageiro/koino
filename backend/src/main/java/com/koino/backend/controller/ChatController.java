@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.koino.backend.dto.chat.ChatFriendResponse;
 import com.koino.backend.dto.chat.ChatMessageRequest;
@@ -50,6 +53,21 @@ public class ChatController {
         @Valid @RequestBody ChatMessageRequest request
     ) {
         return chatService.send(user.getUserId(), request);
+    }
+
+    @PostMapping(value = "/messages/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ChatMessageResponse sendPhoto(
+        @AuthenticationPrincipal User user,
+        @RequestPart("recipientId") String recipientId,
+        @RequestPart("file") MultipartFile file,
+        @RequestPart(value = "caption", required = false) String caption
+    ) {
+        return chatService.sendPhoto(
+            user.getUserId(),
+            Long.valueOf(recipientId),
+            file,
+            caption
+        );
     }
 
     @PostMapping("/typing/{friendId}")

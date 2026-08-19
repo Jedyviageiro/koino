@@ -1,22 +1,26 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
+import { useLanguage } from '@/features/localization/LanguageProvider';
 
-export function LoadingState({ label = 'Loading your Koino journey…' }: { label?: string }) {
+export function LoadingState({ label }: { label?: string }) {
+  const { language } = useLanguage();
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#e5951d" />
-      <Text style={styles.message}>{label}</Text>
+      <Text style={styles.message}>{label ?? (language === 'pt' ? 'A carregar a sua jornada Koino…' : 'Loading your Koino journey…')}</Text>
     </View>
   );
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const { language } = useLanguage();
   return (
     <View style={styles.container}>
       <View style={styles.icon}><MaterialCommunityIcons name="cloud-alert-outline" size={34} color="#b46d11" /></View>
-      <Text style={styles.title}>Something went wrong</Text>
+      <Text style={styles.title}>{language === 'pt' ? 'Ocorreu um erro' : 'Something went wrong'}</Text>
       <Text style={styles.message}>{message}</Text>
-      <Pressable onPress={onRetry} style={styles.retry}><Text style={styles.retryText}>Try Again</Text></Pressable>
+      <Pressable onPress={onRetry} style={styles.retry}><Text style={styles.retryText}>{language === 'pt' ? 'Tentar novamente' : 'Try Again'}</Text></Pressable>
     </View>
   );
 }

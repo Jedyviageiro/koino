@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 import { AuthButton } from '@/components/auth/AuthButton';
 import { AuthField } from '@/components/auth/AuthField';
@@ -8,6 +9,7 @@ import { AuthScreen } from '@/components/auth/AuthScreen';
 import { PasswordRules } from '@/components/auth/PasswordRules';
 import { emailExists, register } from '@/features/auth/authService';
 import { isStrongPassword } from '@/features/auth/passwordPolicy';
+import { ActionSheet } from '@/components/app/ActionSheet';
 
 export default function RegisterScreen() {
   const [fullname, setFullname] = useState('');
@@ -16,6 +18,7 @@ export default function RegisterScreen() {
   const [confirmation, setConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [created, setCreated] = useState(false);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const passwordsMatch = password === confirmation;
@@ -39,9 +42,7 @@ export default function RegisterScreen() {
       if (result.verificationRequired) {
         router.replace({ pathname: '/verify-email', params: { email: result.email } });
       } else {
-        Alert.alert('Account created', 'Your Koino account is ready.', [
-          { text: 'Continue to login', onPress: () => router.replace('/') },
-        ]);
+        setCreated(true);
       }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to create your account.');
@@ -117,6 +118,7 @@ export default function RegisterScreen() {
           <Text style={styles.goldLink}>Sign In</Text>
         </Pressable>
       </View>
+      <ActionSheet visible={created} title="Account created" subtitle="Your Koino account is ready." cancelLabel="Close" onClose={() => setCreated(false)} actions={[{ key: 'login', label: 'Continue to login', icon: 'log-in-outline', onPress: () => router.replace('/') }]} />
     </AuthScreen>
   );
 }

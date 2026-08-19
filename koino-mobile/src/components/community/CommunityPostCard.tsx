@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text, AppTextInput as TextInput } from '@/components/app/Typography';
 
 import type { CommunityPost } from '@/features/community/types';
 import { Avatar } from './Avatar';
@@ -28,7 +29,6 @@ export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }
       <Pressable onPress={() => onAuthorPress(post.author.userId)} style={styles.header}>
         <Avatar name={post.author.fullname} uri={post.author.profilePictureUrl} size={44} />
         <View style={styles.authorCopy}><Text style={styles.author}>{post.author.fullname}</Text><Text style={styles.meta}>{pt ? ({ VERSE: 'Versículo', QUESTION: 'Pergunta', PHOTO: 'Foto' }[post.postType]) : `${post.postType[0]}${post.postType.slice(1).toLowerCase()}`}  ·  {relativeTime(post.createdAt, pt)}</Text></View>
-        <Ionicons name="ellipsis-horizontal" size={21} color="#536071" />
       </Pressable>
       {post.postType === 'VERSE' && post.verse ? (
         <View style={styles.verseCard}>
@@ -64,14 +64,14 @@ export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }
 }
 
 const styles = StyleSheet.create({
-  card: { padding: 13, borderWidth: 1, borderColor: '#e2e5e8', borderRadius: 14, backgroundColor: '#fff', boxShadow: '0 5px 16px rgba(31, 39, 48, 0.04)' },
+  card: { padding: 13, borderWidth: 1, borderColor: '#e2e5e8', borderRadius: 14, backgroundColor: '#fff' },
   header: { flexDirection: 'row', alignItems: 'center' }, authorCopy: { flex: 1, marginLeft: 13 },
   author: { color: '#151c24', fontSize: 15, fontWeight: '700' }, meta: { marginTop: 3, color: '#7b8492', fontSize: 12 },
   verseCard: { marginTop: 13, padding: 13, borderLeftWidth: 3, borderLeftColor: '#eb9718', borderRadius: 8, backgroundColor: '#fffaf3' },
   verseLabel: { flexDirection: 'row', alignItems: 'center', gap: 10 }, verseReference: { color: '#9e620b', fontSize: 14, fontWeight: '600' },
-  verseText: { marginTop: 15, color: '#19212a', fontFamily: 'serif', fontSize: 18, lineHeight: 29 },
+  verseText: { marginTop: 15, color: '#19212a', fontFamily: 'Poppins_400Regular', fontSize: 17, lineHeight: 28 },
   photo: { width: '100%', height: 245, marginTop: 17, borderRadius: 11, backgroundColor: '#f1f2f3' },
-  content: { marginTop: 14, color: '#333d49', fontSize: 14, lineHeight: 22 }, question: { color: '#161d25', fontFamily: 'serif', fontSize: 19, lineHeight: 27, fontWeight: '700' },
+  content: { marginTop: 14, color: '#333d49', fontSize: 14, lineHeight: 22 }, question: { color: '#161d25', fontFamily: 'Poppins_600SemiBold_Italic', fontSize: 19, lineHeight: 27 },
   divider: { height: 1, marginTop: 18, backgroundColor: '#eceef0' },
   commentButton: { height: 43, flexDirection: 'row', alignItems: 'center', gap: 10 }, commentLabel: { color: '#596475', fontSize: 13, fontWeight: '500' },
   comments: { paddingTop: 12, borderTopWidth: 1, borderTopColor: '#f0f1f2', gap: 10 },

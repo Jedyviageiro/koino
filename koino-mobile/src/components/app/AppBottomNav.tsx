@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import type { Href } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/features/localization/LanguageProvider';
 
@@ -13,7 +14,7 @@ const items: { key: Tab; label: string; icon: IconName; activeIcon: IconName; pa
   { key: 'plans', label: 'Plans', icon: 'layers-outline', activeIcon: 'layers', path: '/plans' },
   { key: 'bible', label: 'Bible', icon: 'book-outline', activeIcon: 'book', path: '/bible' },
   { key: 'community', label: 'Community', icon: 'people-circle-outline', activeIcon: 'people-circle', path: '/community' },
-  { key: 'settings', label: 'Settings', icon: 'menu-outline', activeIcon: 'menu', path: '/settings' },
+  { key: 'settings', label: 'Settings', icon: 'settings-outline', activeIcon: 'settings', path: '/settings' },
 ];
 
 export function AppBottomNav({ active }: { active: Tab }) {
@@ -49,7 +50,7 @@ export function AppBottomNav({ active }: { active: Tab }) {
 }
 
 const styles = StyleSheet.create({
-  outer: { borderTopWidth: 1, borderTopColor: '#eceef0', backgroundColor: '#fff', boxShadow: '0 -5px 20px rgba(30, 37, 45, 0.05)' },
+  outer: { borderTopWidth: 1, borderTopColor: '#eceef0', backgroundColor: '#fff' },
   nav: { minHeight: 64, paddingHorizontal: 8, flexDirection: 'row', alignItems: 'stretch' },
   item: { flex: 1, minWidth: 0, paddingTop: 8, borderRadius: 16, alignItems: 'center', justifyContent: 'center', gap: 3 },
   itemActive: { backgroundColor: '#fff8ee' },

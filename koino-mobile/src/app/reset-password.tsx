@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 import { AuthButton } from '@/components/auth/AuthButton';
 import { AuthField } from '@/components/auth/AuthField';

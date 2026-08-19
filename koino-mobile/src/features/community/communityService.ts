@@ -48,6 +48,6 @@ export function getBookChapters(bookId: number) {
   return apiRequest<BibleChapter[]>(`/bible/books/${bookId}/chapters`);
 }
 
-export function getChapterVerses(chapterId: number) {
-  return apiRequest<BibleVerseOption[]>(`/bible/chapters/${chapterId}/verses`);
+export function getChapterVerses(chapterId: number, version: string) {
+  return apiRequest<BibleVerseOption[]>(`/bible/chapters/${chapterId}/verses?version=${encodeURIComponent(version)}`);
 }

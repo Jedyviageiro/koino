@@ -1,61 +1,77 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState, LoadingState } from '@/components/app/ScreenState';
-import { getNotifications, markAllNotificationsRead, markNotificationRead } from '@/features/app/appService';
+import { acceptFriendRequest, getNotifications, markAllNotificationsRead, markNotificationRead, rejectFriendRequest } from '@/features/app/appService';
 import type { Notification } from '@/features/app/types';
+import { useLanguage } from '@/features/localization/LanguageProvider';
+import { Toast, type ToastMessage } from '@/components/app/Toast';
 
 export default function NotificationsScreen() {
+  const { language } = useLanguage(); const pt = language === 'pt';
   const [items, setItems] = useState<Notification[] | null>(null);
   const [error, setError] = useState('');
+  const [busyId, setBusyId] = useState<number | null>(null);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
 
   const load = useCallback(async () => {
     setError('');
-    try { setItems(await getNotifications()); }
-    catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to load notifications.'); }
-  }, []);
+    try { setItems((await getNotifications()).filter((item) => item.type !== 'BATTLE_CHALLENGE')); }
+    catch (failure) { setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar as notificações.' : 'Unable to load notifications.'); }
+  }, [pt]);
 
   useEffect(() => { load(); }, [load]);
 
   async function read(item: Notification) {
-    if (item.read) return;
     try {
-      await markNotificationRead(item.notificationId);
-      setItems((current) => current?.map((entry) => entry.notificationId === item.notificationId ? { ...entry, read: true } : entry) ?? null);
-    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to update notification.'); }
+      if (!item.read) { await markNotificationRead(item.notificationId); setItems((current) => current?.map((entry) => entry.notificationId === item.notificationId ? { ...entry, read: true } : entry) ?? null); }
+      if (item.type === 'PLAN_READY') router.push('/plans');
+      if (item.type === 'READING_REMINDER') router.push('/devotional');
+      if (item.type === 'CHAT_MESSAGE' && item.referenceId) router.push({ pathname: '/chat/[friendId]', params: { friendId: item.referenceId } });
+    } catch (failure) { setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível atualizar a notificação.' : 'Unable to update notification.'); }
+  }
+
+  async function respond(item: Notification, accept: boolean) {
+    const friendshipId = Number(item.referenceId); if (!Number.isFinite(friendshipId)) return;
+    setBusyId(item.notificationId);
+    try { if (accept) await acceptFriendRequest(friendshipId); else await rejectFriendRequest(friendshipId); setItems((current) => current?.filter((entry) => entry.notificationId !== item.notificationId) ?? null); setToast({ id: Date.now(), tone: 'success', text: accept ? (pt ? 'Pedido de amizade aceite.' : 'Friend request accepted.') : (pt ? 'Pedido recusado.' : 'Friend request declined.') }); }
+    catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível responder.' : 'Unable to respond.' }); }
+    finally { setBusyId(null); }
   }
 
   async function readAll() {
     try { await markAllNotificationsRead(); setItems((current) => current?.map((item) => ({ ...item, read: true })) ?? null); }
-    catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to update notifications.'); }
+    catch (failure) { setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível atualizar as notificações.' : 'Unable to update notifications.'); }
   }
 
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.back}><MaterialCommunityIcons name="arrow-left" size={25} color="#56606d" /></Pressable>
-        <Text style={styles.title}>Notifications</Text>
-        <Pressable onPress={readAll}><Text style={styles.readAll}>Read all</Text></Pressable>
+        <Text style={styles.title}>{pt ? 'Notificações' : 'Notifications'}</Text>
+        <Pressable disabled={!items?.some((item) => !item.read)} onPress={readAll}><Text style={styles.readAll}>{pt ? 'Ler todas' : 'Read all'}</Text></Pressable>
       </View>
-      {!items && !error ? <LoadingState label="Loading notifications…" /> : null}
+      {!items && !error ? <LoadingState label={pt ? 'A carregar notificações…' : 'Loading notifications…'} /> : null}
       {!items && error ? <ErrorState message={error} onRetry={load} /> : null}
       {items ? (
         <ScrollView contentContainerStyle={styles.list}>
           {items.length ? items.map((item) => (
             <Pressable key={item.notificationId} onPress={() => read(item)} style={[styles.item, !item.read && styles.unread]}>
               <View style={styles.icon}><MaterialCommunityIcons name={item.read ? 'bell-outline' : 'bell-ring-outline'} size={22} color="#d68108" /></View>
-              <View style={styles.copy}><Text style={styles.itemTitle}>{item.title}</Text><Text style={styles.message}>{item.message}</Text></View>
+              <View style={styles.copy}><Text style={styles.itemTitle}>{item.title}</Text><Text style={styles.message}>{item.message}</Text>{item.type === 'FRIEND_REQUEST' && item.referenceId ? <View style={styles.requestActions}><Pressable disabled={busyId === item.notificationId} onPress={(event) => { event.stopPropagation(); respond(item, true); }} style={styles.accept}><Text style={styles.acceptText}>{pt ? 'Aceitar' : 'Accept'}</Text></Pressable><Pressable disabled={busyId === item.notificationId} onPress={(event) => { event.stopPropagation(); respond(item, false); }} style={styles.decline}><Text style={styles.declineText}>{pt ? 'Recusar' : 'Decline'}</Text></Pressable></View> : null}</View>
               {!item.read ? <View style={styles.dot} /> : null}
             </Pressable>
           )) : (
-            <View style={styles.empty}><MaterialCommunityIcons name="bell-check-outline" size={38} color="#d68108" /><Text style={styles.emptyTitle}>You’re all caught up</Text><Text style={styles.emptyText}>New updates will appear here.</Text></View>
+            <View style={styles.empty}><MaterialCommunityIcons name="bell-check-outline" size={38} color="#d68108" /><Text style={styles.emptyTitle}>{pt ? 'Está tudo em dia' : 'You’re all caught up'}</Text><Text style={styles.emptyText}>{pt ? 'Novas atualizações aparecerão aqui.' : 'New updates will appear here.'}</Text></View>
           )}
           {error ? <Text style={styles.inlineError}>{error}</Text> : null}
         </ScrollView>
       ) : null}
+      <Toast message={toast} onDismiss={() => setToast(null)} />
     </SafeAreaView>
   );
 }
@@ -64,7 +80,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#fff' },
   header: { minHeight: 70, paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   back: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
-  title: { color: '#151c24', fontFamily: 'serif', fontSize: 23, fontWeight: '700' },
+  title: { color: '#151c24', fontFamily: 'Poppins_700Bold', fontSize: 23 },
   readAll: { color: '#d68108', fontSize: 12, fontWeight: '600' },
   list: { padding: 18, gap: 10 },
   item: { minHeight: 86, padding: 14, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: 14, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' },
@@ -74,4 +90,5 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#ed9210' },
   empty: { paddingTop: 120, alignItems: 'center' }, emptyTitle: { marginTop: 15, fontSize: 18, fontWeight: '700' }, emptyText: { marginTop: 6, color: '#737c87', fontSize: 13 },
   inlineError: { color: '#aa3c34', fontSize: 12, textAlign: 'center' },
+  requestActions: { marginTop: 10, flexDirection: 'row', gap: 8 }, accept: { minHeight: 36, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e9900c' }, acceptText: { color: '#fff', fontSize: 12, fontWeight: '700' }, decline: { minHeight: 36, paddingHorizontal: 15, borderWidth: 1, borderColor: '#dfe3e7', borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }, declineText: { color: '#525e6c', fontSize: 12, fontWeight: '700' },
 });

@@ -83,6 +83,20 @@ public class NotificationService {
     }
 
     @Transactional
+    public UserNotification createChatMessage(User recipient, User sender, boolean photo) {
+        boolean portuguese = isPortuguese(recipient);
+        return create(
+            recipient,
+            localized(portuguese, "New message from " + sender.getFullname(), "Nova mensagem de " + sender.getFullname()),
+            photo
+                ? localized(portuguese, "Sent you a photo.", "Enviou-lhe uma foto.")
+                : localized(portuguese, "Open the conversation to reply.", "Abra a conversa para responder."),
+            "CHAT_MESSAGE",
+            sender.getUserId().toString()
+        );
+    }
+
+    @Transactional
     public UserNotification createBattleChallenge(
         User recipient,
         User challenger,
@@ -158,6 +172,11 @@ public class NotificationService {
                 notification.setReferenceId(null);
                 notificationRepository.save(notification);
             });
+    }
+
+    @Transactional
+    public void resolveAll(Long userId, String type, String referenceId) {
+        notificationRepository.markMatchingRead(userId, type, referenceId);
     }
 
     private NotificationResponse toResponse(UserNotification notification) {

@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 export function KoinoLogo() {
   return (

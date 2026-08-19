@@ -1,7 +1,8 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 import { AuthButton } from '@/components/auth/AuthButton';
 import { AuthField } from '@/components/auth/AuthField';
@@ -49,10 +50,7 @@ export default function IndexScreen() {
   async function handleGoogleLogin() {
     if (loading) return;
     if (Constants.appOwnership === 'expo') {
-      Alert.alert(
-        'Development build required',
-        'Google sign-in cannot run inside Expo Go. Install the Koino development build, then try again.',
-      );
+      setMessage('Google sign-in requires the Koino development build and cannot run inside Expo Go.');
       return;
     }
 

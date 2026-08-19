@@ -7,6 +7,7 @@ public record ChatMessageResponse(
     Long senderId,
     Long recipientId,
     String body,
+    String photoUrl,
     Instant sentAt,
     Instant deliveredAt,
     Instant readAt

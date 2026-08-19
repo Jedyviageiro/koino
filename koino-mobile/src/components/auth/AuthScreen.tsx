@@ -5,9 +5,9 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 31,
     lineHeight: 39,
     fontWeight: '700',
-    fontFamily: Platform.select({ ios: 'Georgia-Bold', android: 'serif' }),
+    fontFamily: 'Poppins_700Bold',
     textAlign: 'center',
   },
   subtitle: {

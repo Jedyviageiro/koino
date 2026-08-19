@@ -15,6 +15,7 @@ export type ChatMessage = {
   senderId: number;
   recipientId: number;
   body: string;
+  photoUrl: string | null;
   sentAt: string;
   deliveredAt: string | null;
   readAt: string | null;

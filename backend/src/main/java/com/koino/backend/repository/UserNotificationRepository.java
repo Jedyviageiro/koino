@@ -35,4 +35,19 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
           and notification.read = false
         """)
     int markAllRead(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("""
+        update UserNotification notification
+        set notification.read = true
+        where notification.user.userId = :userId
+          and notification.type = :type
+          and notification.referenceId = :referenceId
+          and notification.read = false
+        """)
+    int markMatchingRead(
+        @Param("userId") Long userId,
+        @Param("type") String type,
+        @Param("referenceId") String referenceId
+    );
 }

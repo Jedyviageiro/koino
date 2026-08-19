@@ -2,7 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 import { AppShell } from '@/components/app/AppShell';
 import { ErrorState, LoadingState } from '@/components/app/ScreenState';
@@ -39,7 +40,7 @@ export default function PlansScreen() {
 
   return (
     <AppShell active="plans">
-      {!data && !error ? <LoadingState label="Loading your plans…" /> : null}
+      {!data && !error ? <LoadingState label={pt ? 'A carregar os seus planos…' : 'Loading your plans…'} /> : null}
       {!data && error ? <ErrorState message={error} onRetry={() => load()} /> : null}
       {data ? (
         <ScrollView
@@ -59,7 +60,7 @@ export default function PlansScreen() {
           {data.needsOnboarding ? (
             <Pressable onPress={() => router.push('/onboarding')} style={styles.emptyCard}>
               <View style={styles.emptyIcon}><Ionicons name="map-outline" size={25} color="#d68108" /></View>
-              <View style={styles.emptyCopy}><Text style={styles.emptyTitle}>Let’s build your reading route</Text><Text style={styles.emptyText}>Complete the short onboarding to begin.</Text></View>
+              <View style={styles.emptyCopy}><Text style={styles.emptyTitle}>{pt ? 'Vamos criar o seu percurso' : 'Let’s build your reading route'}</Text><Text style={styles.emptyText}>{pt ? 'Conclua a breve introdução para começar.' : 'Complete the short onboarding to begin.'}</Text></View>
               <Ionicons name="chevron-forward" size={22} color="#66707d" />
             </Pressable>
           ) : currentPlan ? (
@@ -89,7 +90,7 @@ export default function PlansScreen() {
               </Pressable>
             </View>
           ) : (
-            <View style={styles.emptyCard}><Ionicons name="checkmark-circle-outline" size={30} color="#d68108" /><View style={styles.emptyCopy}><Text style={styles.emptyTitle}>Your route is complete</Text><Text style={styles.emptyText}>You’ve completed every plan assigned to you.</Text></View></View>
+            <View style={styles.emptyCard}><Ionicons name="checkmark-circle-outline" size={30} color="#d68108" /><View style={styles.emptyCopy}><Text style={styles.emptyTitle}>{pt ? 'Percurso concluído' : 'Your route is complete'}</Text><Text style={styles.emptyText}>{pt ? 'Concluiu todos os planos atribuídos.' : 'You’ve completed every plan assigned to you.'}</Text></View></View>
           )}
 
           {!data.needsOnboarding ? (
@@ -123,16 +124,16 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 22 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 },
   headerCopy: { flex: 1 },
-  title: { color: '#111820', fontFamily: 'serif', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '700' },
+  title: { color: '#111820', fontFamily: 'Poppins_700Bold', fontSize: layout.titleSize, lineHeight: 37 },
   subtitle: { marginTop: 8, maxWidth: 275, color: '#707988', fontSize: 15, lineHeight: 23 },
   sectionHeader: { marginTop: 22, marginBottom: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  sectionTitle: { color: '#121820', fontFamily: 'serif', fontSize: 21, fontWeight: '700' },
+  sectionTitle: { color: '#121820', fontFamily: 'Poppins_600SemiBold', fontSize: 21 },
   link: { color: '#db8100', fontSize: 14, fontWeight: '600' },
   currentCard: { padding: 13, borderWidth: 1, borderColor: '#eee1d3', borderRadius: layout.cardRadius, backgroundColor: '#fffdfa' },
   currentTop: { flexDirection: 'row' },
   currentCover: { width: 68, height: 92, borderRadius: 10 },
   currentCopy: { flex: 1, marginLeft: 17 },
-  currentName: { color: '#121820', fontFamily: 'serif', fontSize: 19, fontWeight: '700' },
+  currentName: { color: '#121820', fontFamily: 'Poppins_600SemiBold_Italic', fontSize: 19 },
   books: { marginTop: 7, color: '#707989', fontSize: 13 },
   description: { marginTop: 10, color: '#636d7c', fontSize: 12, lineHeight: 19 },
   divider: { height: 1, marginVertical: 15, backgroundColor: '#e7e7e7' },
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
   planCard: { minHeight: 86, padding: 11, borderWidth: 1, borderColor: '#e4e7ea', borderRadius: 13, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' },
   planCover: { width: 54, height: 64, borderRadius: 9 },
   planCopy: { flex: 1, marginLeft: 15, marginRight: 7 },
-  planTitle: { color: '#121820', fontFamily: 'serif', fontSize: 18, fontWeight: '700' },
+  planTitle: { color: '#121820', fontFamily: 'Poppins_600SemiBold_Italic', fontSize: 18 },
   planSubtitle: { marginTop: 7, color: '#697382', fontSize: 12 },
   meta: { marginTop: 10, flexDirection: 'row', alignItems: 'center', gap: 7 },
   metaText: { flex: 1, color: '#697382', fontSize: 10.5 },

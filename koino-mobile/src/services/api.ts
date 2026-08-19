@@ -30,8 +30,9 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}) 
   try {
     response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
   } catch (error) {
+    const pt = getCurrentLanguage() === 'pt';
     throw new ApiError(
-      'Unable to connect to Koino. Check your connection and API address.',
+      pt ? 'Não foi possível ligar ao Koino. Verifique a sua ligação.' : 'Unable to connect to Koino. Check your connection and API address.',
       0,
       error,
     );
@@ -55,7 +56,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}) 
         ? String(payload.message)
         : typeof payload === 'string' && payload.trim()
           ? payload.trim()
-          : 'Something went wrong. Please try again.';
+          : getCurrentLanguage() === 'pt' ? 'Ocorreu um erro. Tente novamente.' : 'Something went wrong. Please try again.';
     throw new ApiError(message, response.status, payload);
   }
 

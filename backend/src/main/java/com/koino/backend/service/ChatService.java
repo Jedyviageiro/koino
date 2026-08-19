@@ -1,5 +1,6 @@
 package com.koino.backend.service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.springframework.web.multipart.MultipartFile;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +29,14 @@ import com.koino.backend.repository.UserRepository;
 
 @Service
 public class ChatService {
+    private static final long MAX_PHOTO_SIZE = 5L * 1024 * 1024;
+    private static final String PHOTO_FOLDER = "koino/chat";
     private final ChatMessageRepository messageRepository;
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final Cloudinary cloudinary;
+    private final NotificationService notificationService;
     private final ConcurrentMap<String, Instant> typingUntil =
         new ConcurrentHashMap<>();
 
@@ -36,12 +44,16 @@ public class ChatService {
         ChatMessageRepository messageRepository,
         FriendshipRepository friendshipRepository,
         UserRepository userRepository,
-        UserService userService
+        UserService userService,
+        Cloudinary cloudinary,
+        NotificationService notificationService
     ) {
         this.messageRepository = messageRepository;
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.cloudinary = cloudinary;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -85,7 +97,9 @@ public class ChatService {
                 friend.getUsername(),
                 friend.getFullname(),
                 friend.getProfilePictureUrl(),
-                latest == null ? null : latest.getBody(),
+                latest == null ? null : latest.getPhotoUrl() != null
+                    ? (latest.getBody() == null || latest.getBody().isBlank() ? "Photo" : latest.getBody())
+                    : latest.getBody(),
                 latest == null ? null : latest.getMessageId(),
                 latest == null ? null : latest.getSender().getUserId(),
                 latest == null ? null : latest.getSentAt(),
@@ -125,6 +139,7 @@ public class ChatService {
             }
         }
         if (changed) messageRepository.saveAll(messages);
+        notificationService.resolveAll(userId, "CHAT_MESSAGE", friendId.toString());
         return messages.stream().map(this::toResponse).toList();
     }
 
@@ -140,7 +155,46 @@ public class ChatService {
         message.setSender(sender);
         message.setRecipient(recipient);
         message.setBody(request.body().trim());
-        return toResponse(messageRepository.save(message));
+        message = messageRepository.save(message);
+        notificationService.createChatMessage(recipient, sender, false);
+        return toResponse(message);
+    }
+
+    @Transactional
+    public ChatMessageResponse sendPhoto(
+        Long senderId,
+        Long recipientId,
+        MultipartFile file,
+        String caption
+    ) {
+        ensureFriends(senderId, recipientId);
+        validatePhoto(file);
+        String cleanedCaption = caption == null ? null : caption.trim();
+        if (cleanedCaption != null && cleanedCaption.length() > 500) {
+            throw new IllegalArgumentException("Photo caption must be 500 characters or fewer");
+        }
+        try {
+            Map<?, ?> upload = cloudinary.uploader().upload(
+                file.getBytes(),
+                ObjectUtils.asMap(
+                    "resource_type", "image",
+                    "folder", PHOTO_FOLDER,
+                    "unique_filename", true,
+                    "overwrite", false
+                )
+            );
+            ChatMessage message = new ChatMessage();
+            message.setSender(findUser(senderId));
+            message.setRecipient(findUser(recipientId));
+            message.setBody(cleanedCaption == null || cleanedCaption.isBlank() ? "" : cleanedCaption);
+            message.setPhotoUrl(requiredUploadValue(upload, "secure_url"));
+            message.setPhotoPublicId(requiredUploadValue(upload, "public_id"));
+            message = messageRepository.save(message);
+            notificationService.createChatMessage(message.getRecipient(), message.getSender(), true);
+            return toResponse(message);
+        } catch (IOException exception) {
+            throw new IllegalStateException("Could not upload the chat photo", exception);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -194,15 +248,32 @@ public class ChatService {
             ));
     }
 
+    private void validatePhoto(MultipartFile file) {
+        if (file == null || file.isEmpty()) throw new IllegalArgumentException("Choose a photo to send");
+        if (file.getSize() > MAX_PHOTO_SIZE) throw new IllegalArgumentException("Photo must be 5 MB or smaller");
+        String type = file.getContentType();
+        if (type == null || !(type.equals("image/jpeg") || type.equals("image/png") || type.equals("image/webp"))) {
+            throw new IllegalArgumentException("Only JPG, PNG, and WebP photos are allowed");
+        }
+    }
+
+    private String requiredUploadValue(Map<?, ?> upload, String key) {
+        Object value = upload.get(key);
+        if (value == null || value.toString().isBlank()) throw new IllegalStateException("Photo upload did not return " + key);
+        return value.toString();
+    }
+
     private ChatMessageResponse toResponse(ChatMessage message) {
         return new ChatMessageResponse(
             message.getMessageId(),
             message.getSender().getUserId(),
             message.getRecipient().getUserId(),
             message.getBody(),
+            message.getPhotoUrl(),
             message.getSentAt(),
             message.getDeliveredAt(),
             message.getReadAt()
         );
     }
 }
+import java.io.IOException;

@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text, AppTextInput as TextInput } from '@/components/app/Typography';
 
 import { AppShell } from '@/components/app/AppShell';
 import { ErrorState, LoadingState } from '@/components/app/ScreenState';
@@ -11,14 +12,14 @@ import type { ChatFriend } from '@/features/chat/types';
 import { layout } from '@/theme/layout';
 import { useLanguage } from '@/features/localization/LanguageProvider';
 
-function conversationTime(value: string | null) {
+function conversationTime(value: string | null, locale = 'en') {
   if (!value) return '';
   const date = new Date(value);
   const elapsed = Date.now() - date.getTime();
   if (elapsed < 3600000) return `${Math.max(1, Math.floor(elapsed / 60000))}m`;
   if (elapsed < 86400000) return `${Math.floor(elapsed / 3600000)}h`;
   if (elapsed < 604800000) return `${Math.floor(elapsed / 86400000)}d`;
-  return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric' }).format(date);
+  return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(date);
 }
 
 export default function ChatListScreen() {
@@ -32,9 +33,9 @@ export default function ChatListScreen() {
     if (refresh) setRefreshing(true);
     setError('');
     try { setFriends(await getChatFriends()); }
-    catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to load your conversations.'); }
+    catch (failure) { setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar as conversas.' : 'Unable to load your conversations.'); }
     finally { setRefreshing(false); }
-  }, []);
+  }, [pt]);
 
   useEffect(() => {
     load();
@@ -48,7 +49,7 @@ export default function ChatListScreen() {
   }, [friends, query]);
 
   return (
-    <AppShell active="chat">
+    <AppShell active="community">
       {!friends && !error ? <LoadingState label={pt ? 'A carregar conversas…' : 'Loading your conversations…'} /> : null}
       {!friends && error ? <ErrorState message={error} onRetry={() => load()} /> : null}
       {friends ? (
@@ -56,16 +57,16 @@ export default function ChatListScreen() {
           <View style={styles.header}>
             <View style={styles.headerCopy}><Text style={styles.title}>{pt ? 'Conversas' : 'Chat'}</Text><Text style={styles.subtitle}>{pt ? 'Conversas privadas com os seus amigos Koino.' : 'Private conversations with your Koino friends.'}</Text></View>
           </View>
-          <View style={styles.search}><TextInput value={query} onChangeText={setQuery} placeholder={pt ? 'Filtrar conversas' : 'Filter conversations'} placeholderTextColor="#778294" style={styles.searchInput} /></View>
+          <View style={styles.search}><Ionicons name="search-outline" size={20} color="#738094" /><TextInput value={query} onChangeText={setQuery} placeholder={pt ? 'Procurar uma conversa' : 'Search conversations'} placeholderTextColor="#778294" style={styles.searchInput} /></View>
           <View style={styles.list}>
             {visible.map((friend) => (
               <Pressable key={friend.userId} onPress={() => router.push({ pathname: '/chat/[friendId]', params: { friendId: String(friend.userId) } })} style={styles.friend}>
                 <View><Avatar name={friend.fullname} uri={friend.profilePictureUrl} size={49} />{friend.unreadCount > 0 ? <View style={styles.onlineDot} /> : null}</View>
                 <View style={styles.friendCopy}>
                   <Text style={styles.friendName}>{friend.fullname}</Text>
-                  <Text numberOfLines={2} style={[styles.lastMessage, friend.unreadCount > 0 && styles.unreadMessage]}>{friend.lastMessage || (pt ? 'Envie uma mensagem ao seu novo amigo…' : 'Message your new friend…')}</Text>
+                  <Text numberOfLines={2} style={[styles.lastMessage, friend.unreadCount > 0 && styles.unreadMessage]}>{friend.lastMessage === 'Photo' ? (pt ? 'Foto' : 'Photo') : friend.lastMessage || (pt ? 'Envie uma mensagem ao seu novo amigo…' : 'Message your new friend…')}</Text>
                 </View>
-                <View style={styles.friendTail}><Text style={styles.time}>{conversationTime(friend.lastMessageAt)}</Text>{friend.unreadCount > 0 ? <View style={styles.unreadBadge}><Text style={styles.unreadCount}>{friend.unreadCount}</Text></View> : <Ionicons name="chevron-forward" size={22} color="#747e8e" />}</View>
+                <View style={styles.friendTail}><Text style={styles.time}>{conversationTime(friend.lastMessageAt, pt ? 'pt' : 'en')}</Text>{friend.unreadCount > 0 ? <View style={styles.unreadBadge}><Text style={styles.unreadCount}>{friend.unreadCount}</Text></View> : <Ionicons name="chevron-forward" size={22} color="#747e8e" />}</View>
               </Pressable>
             ))}
             {!visible.length ? <View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={36} color="#2d69f4" /><Text style={styles.emptyTitle}>{pt ? (query ? 'Nenhum amigo encontrado' : 'Ainda não há conversas') : (query ? 'No friends found' : 'No conversations yet')}</Text><Text style={styles.emptyText}>{pt ? (query ? 'Tente outro nome.' : 'Adicione amigos para iniciar uma conversa.') : (query ? 'Try another name or username.' : 'Add Koino friends to start a private conversation.')}</Text></View> : null}
@@ -80,7 +81,7 @@ export default function ChatListScreen() {
 const styles = StyleSheet.create({
   content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 22 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 9 }, headerCopy: { flex: 1 },
-  title: { color: '#111820', fontFamily: 'serif', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '700' }, subtitle: { marginTop: 4, color: '#6d7787', fontSize: 13, lineHeight: 19 },
+  title: { color: '#111820', fontFamily: 'Poppins_700Bold', fontSize: layout.titleSize, lineHeight: 37 }, subtitle: { marginTop: 4, color: '#6d7787', fontSize: 13, lineHeight: 19 },
   search: { height: 46, marginTop: 18, paddingHorizontal: 14, borderRadius: 13, flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#f7f7f7' }, searchInput: { flex: 1, height: '100%', color: '#18212b', fontSize: 14 },
   list: { marginTop: 12 },
   friend: { minHeight: 82, paddingHorizontal: 4, paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center' },

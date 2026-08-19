@@ -1,5 +1,6 @@
 import { apiRequest } from '@/services/api';
 import { authenticatedRequest } from '@/services/authenticatedApi';
+import { getCurrentLanguage } from '@/features/localization/language';
 
 import type {
   BibleVerse,
@@ -57,8 +58,9 @@ export async function getDevotionalData(): Promise<DevotionalData> {
 }
 
 async function getPassageVerses(passage: UserPlanTask['passages'][number]): Promise<ReadingVerse[]> {
+  const version = getCurrentLanguage() === 'pt' ? 'NVI' : 'NIV';
   const verses = await apiRequest<BibleVerse[]>(
-    `/bible/books/${encodeURIComponent(passage.bookTitle)}/chapters/${passage.chapterNumber}/verses`,
+    `/bible/books/${encodeURIComponent(passage.bookTitle)}/chapters/${passage.chapterNumber}/verses?version=${version}`,
   );
   return verses
     .filter((verse) => verse.verseNumber >= passage.firstVerse && verse.verseNumber <= passage.lastVerse)
@@ -98,6 +100,8 @@ export function removeBookmark(verseId: number) {
   return authenticatedRequest<null>(`/users/me/bookmarks/${verseId}`, { method: 'DELETE' });
 }
 
+export function getBookmarks() { return authenticatedRequest<Bookmark[]>('/users/me/bookmarks'); }
+
 export function getNotifications() {
   return authenticatedRequest<Notification[]>('/users/me/notifications');
 }
@@ -108,4 +112,12 @@ export function markNotificationRead(notificationId: number) {
 
 export function markAllNotificationsRead() {
   return authenticatedRequest<null>('/users/me/notifications/read', { method: 'PATCH' });
+}
+
+export function acceptFriendRequest(friendshipId: number) {
+  return authenticatedRequest(`/users/me/friend-requests/${friendshipId}/accept`, { method: 'PATCH' });
+}
+
+export function rejectFriendRequest(friendshipId: number) {
+  return authenticatedRequest<null>(`/users/me/friend-requests/${friendshipId}`, { method: 'DELETE' });
 }

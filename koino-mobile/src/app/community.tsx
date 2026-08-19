@@ -2,7 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text, AppTextInput as TextInput } from '@/components/app/Typography';
 
 import { AppShell } from '@/components/app/AppShell';
 import { ErrorState, LoadingState } from '@/components/app/ScreenState';
@@ -14,6 +15,7 @@ import type { BibleBook, CommunityPost, CommunityPostType, CommunityVerse, Curre
 import { router } from 'expo-router';
 import { layout } from '@/theme/layout';
 import { useLanguage } from '@/features/localization/LanguageProvider';
+import { Toast, type ToastMessage } from '@/components/app/Toast';
 
 export default function CommunityScreen() {
   const { language } = useLanguage(); const pt = language === 'pt';
@@ -31,6 +33,7 @@ export default function CommunityScreen() {
   const [commentingId, setCommentingId] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState<ToastMessage | null>(null);
 
   const load = useCallback(async (refresh = false) => {
     if (refresh) setRefreshing(true);
@@ -38,15 +41,15 @@ export default function CommunityScreen() {
     try {
       const [nextPosts, currentUser, bibleBooks] = await Promise.all([getCommunityPosts(filter), getCurrentUser(), getBibleBooks()]);
       setPosts(nextPosts); setUser(currentUser); setBooks(bibleBooks);
-    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to load the community.'); }
+    } catch (failure) { setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar a comunidade.' : 'Unable to load the community.'); }
     finally { setRefreshing(false); }
-  }, [filter]);
+  }, [filter, pt]);
 
   useEffect(() => { load(); }, [load]);
 
   async function pickPhoto() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) { Alert.alert('Photo access needed', 'Allow photo access to share an image with the community.'); return; }
+    if (!permission.granted) { setToast({ id: Date.now(), tone: 'error', text: pt ? 'Permita o acesso às fotos para partilhar uma imagem.' : 'Allow photo access to share an image with the community.' }); return; }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, quality: 0.72 });
     if (!result.canceled) setPhoto(result.assets[0]);
   }
@@ -62,7 +65,8 @@ export default function CommunityScreen() {
         : await createCommunityPost(mode, content, verse?.verseId ?? null);
       setFilter('ALL'); setPosts((current) => [created, ...(current ?? []).filter((item) => item.postId !== created.postId)]);
       setContent(''); setPhoto(null); setVerse(null);
-    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to publish this post.'); }
+      setToast({ id: Date.now(), tone: 'success', text: pt ? 'Publicação criada.' : 'Post published.' });
+    } catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível publicar.' : 'Unable to publish this post.' }); }
     finally { setPosting(false); }
   }
 
@@ -72,7 +76,7 @@ export default function CommunityScreen() {
       const saved = await addCommunityComment(postId, comment);
       setPosts((current) => current?.map((post) => post.postId === postId ? { ...post, comments: [...post.comments, saved] } : post) ?? null);
       return true;
-    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to post this comment.'); return false; }
+    } catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível comentar.' : 'Unable to post this comment.' }); return false; }
     finally { setCommentingId(null); }
   }
 
@@ -113,6 +117,7 @@ export default function CommunityScreen() {
           <VersePickerModal visible={versePickerOpen} books={books} onClose={() => setVersePickerOpen(false)} onSelect={(selected) => { setVerse(selected); setMode('VERSE'); }} />
         </ScrollView>
       ) : null}
+      <Toast message={toast} onDismiss={() => setToast(null)} />
     </AppShell>
   );
 }
@@ -120,13 +125,13 @@ export default function CommunityScreen() {
 const styles = StyleSheet.create({
   content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 24 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }, headerCopy: { flex: 1 },
-  title: { color: '#111820', fontFamily: 'serif', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '700' }, subtitle: { marginTop: 4, maxWidth: 280, color: '#6d7787', fontSize: 13, lineHeight: 19 },
+  title: { color: '#111820', fontFamily: 'Poppins_700Bold', fontSize: layout.titleSize, lineHeight: 37 }, subtitle: { marginTop: 4, maxWidth: 280, color: '#6d7787', fontSize: 13, lineHeight: 19 },
   headerAction: { width: 42, height: 42, borderWidth: 1, borderColor: '#e4e7ea', borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
-  composer: { marginTop: 18, padding: 12, borderWidth: 1, borderColor: '#dde1e5', borderRadius: 14, backgroundColor: '#fff', boxShadow: '0 5px 16px rgba(31, 39, 48, 0.045)' },
-  composerTop: { flexDirection: 'row', alignItems: 'center', gap: 11 }, input: { flex: 1, minHeight: 53, maxHeight: 105, color: '#202831', fontSize: 15, lineHeight: 21 },
-  postButton: { width: 69, height: 46, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e29624' }, postDisabled: { backgroundColor: '#f4ede4' }, postText: { color: '#fff', fontSize: 14, fontWeight: '700' }, postTextDisabled: { color: '#9299a3' },
-  composerDivider: { height: 1, marginTop: 14, backgroundColor: '#eceef0' }, modes: { paddingTop: 10, flexDirection: 'row', justifyContent: 'space-around' },
-  mode: { minHeight: 44, paddingHorizontal: 12, borderRadius: 11, flexDirection: 'row', alignItems: 'center', gap: 8 }, modeActive: { backgroundColor: '#fff6ea' }, modeText: { color: '#526071', fontSize: 13, fontWeight: '600' }, modeTextActive: { color: '#a86508' },
+  composer: { marginTop: 18, padding: 12, borderWidth: 1, borderColor: '#dde1e5', borderRadius: 14, backgroundColor: '#fff' },
+  composerTop: { flexDirection: 'row', alignItems: 'center', gap: 9 }, input: { flex: 1, minHeight: 44, maxHeight: 96, color: '#202831', fontSize: 14, lineHeight: 20 },
+  postButton: { minWidth: 78, height: 42, paddingHorizontal: 12, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e29624' }, postDisabled: { backgroundColor: '#f4ede4' }, postText: { color: '#fff', fontSize: 13, fontWeight: '700' }, postTextDisabled: { color: '#9299a3' },
+  composerDivider: { height: 1, marginTop: 12, backgroundColor: '#eceef0' }, modes: { paddingTop: 9, flexDirection: 'row', gap: 5 },
+  mode: { flex: 1, minHeight: 42, paddingHorizontal: 7, borderRadius: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }, modeActive: { backgroundColor: '#fff6ea' }, modeText: { color: '#526071', fontSize: 12, fontWeight: '600' }, modeTextActive: { color: '#a86508' },
   versePreview: { marginTop: 12, padding: 12, borderLeftWidth: 3, borderLeftColor: '#e99516', borderRadius: 8, backgroundColor: '#fffaf3' }, previewRef: { color: '#9f6309', fontSize: 12, fontWeight: '700' }, previewText: { marginTop: 5, color: '#4b5663', fontSize: 12, lineHeight: 18 },
   photoPreview: { position: 'relative', marginTop: 12 }, previewImage: { width: '100%', height: 180, borderRadius: 10 }, removePhoto: { position: 'absolute', right: 8, top: 8, width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
   filters: { marginTop: 22, borderBottomWidth: 1, borderBottomColor: '#e1e4e7' }, filter: { height: 47, marginRight: 19, paddingHorizontal: 7, justifyContent: 'center' }, filterActive: { borderBottomWidth: 3, borderBottomColor: '#eb920f' }, filterText: { color: '#596575', fontSize: 14, fontWeight: '500' }, filterTextActive: { color: '#d98000', fontWeight: '700' },

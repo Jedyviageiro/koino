@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 export function Avatar({ name, uri, size = 48 }: { name: string; uri?: string | null; size?: number }) {
   const initials = (name || 'Koino Reader').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();

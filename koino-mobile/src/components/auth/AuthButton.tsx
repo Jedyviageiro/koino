@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { AppText as Text } from '@/components/app/Typography';
 
 type AuthButtonProps = {
   label: string;
@@ -28,7 +29,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#efc77f',
-    boxShadow: '0 5px 12px rgba(214, 155, 62, 0.12)',
   },
   disabled: { opacity: 0.48 },
   pressed: { opacity: 0.82 },
