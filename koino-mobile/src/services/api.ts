@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@/config/env';
+import { getCurrentLanguage } from '@/features/localization/language';
 
 export class ApiError extends Error {
   constructor(
@@ -17,7 +18,7 @@ type RequestOptions = Omit<RequestInit, 'headers'> & {
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}) {
   const headers: Record<string, string> = {
-    'X-Koino-Language': 'en',
+    'X-Koino-Language': getCurrentLanguage(),
     ...options.headers,
   };
 

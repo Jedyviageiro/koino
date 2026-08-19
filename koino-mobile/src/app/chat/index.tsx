@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -8,6 +8,8 @@ import { ErrorState, LoadingState } from '@/components/app/ScreenState';
 import { Avatar } from '@/components/community/Avatar';
 import { getChatFriends } from '@/features/chat/chatService';
 import type { ChatFriend } from '@/features/chat/types';
+import { layout } from '@/theme/layout';
+import { useLanguage } from '@/features/localization/LanguageProvider';
 
 function conversationTime(value: string | null) {
   if (!value) return '';
@@ -20,6 +22,7 @@ function conversationTime(value: string | null) {
 }
 
 export default function ChatListScreen() {
+  const { language } = useLanguage(); const pt = language === 'pt';
   const [friends, setFriends] = useState<ChatFriend[] | null>(null);
   const [query, setQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -46,26 +49,26 @@ export default function ChatListScreen() {
 
   return (
     <AppShell active="chat">
-      {!friends && !error ? <LoadingState label="Loading your conversations…" /> : null}
+      {!friends && !error ? <LoadingState label={pt ? 'A carregar conversas…' : 'Loading your conversations…'} /> : null}
       {!friends && error ? <ErrorState message={error} onRetry={() => load()} /> : null}
       {friends ? (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor="#2a68f5" />}>
           <View style={styles.header}>
-            <View style={styles.headerCopy}><Text style={styles.title}>Chat</Text><Text style={styles.subtitle}>Private conversations with your Koino friends.</Text></View>
+            <View style={styles.headerCopy}><Text style={styles.title}>{pt ? 'Conversas' : 'Chat'}</Text><Text style={styles.subtitle}>{pt ? 'Conversas privadas com os seus amigos Koino.' : 'Private conversations with your Koino friends.'}</Text></View>
           </View>
-          <View style={styles.search}><TextInput value={query} onChangeText={setQuery} placeholder="Filter conversations" placeholderTextColor="#778294" style={styles.searchInput} /></View>
+          <View style={styles.search}><TextInput value={query} onChangeText={setQuery} placeholder={pt ? 'Filtrar conversas' : 'Filter conversations'} placeholderTextColor="#778294" style={styles.searchInput} /></View>
           <View style={styles.list}>
             {visible.map((friend) => (
               <Pressable key={friend.userId} onPress={() => router.push({ pathname: '/chat/[friendId]', params: { friendId: String(friend.userId) } })} style={styles.friend}>
-                <View><Avatar name={friend.fullname} uri={friend.profilePictureUrl} size={61} />{friend.unreadCount > 0 ? <View style={styles.onlineDot} /> : null}</View>
+                <View><Avatar name={friend.fullname} uri={friend.profilePictureUrl} size={49} />{friend.unreadCount > 0 ? <View style={styles.onlineDot} /> : null}</View>
                 <View style={styles.friendCopy}>
                   <Text style={styles.friendName}>{friend.fullname}</Text>
-                  <Text numberOfLines={2} style={[styles.lastMessage, friend.unreadCount > 0 && styles.unreadMessage]}>{friend.lastMessage || 'Message your new friend…'}</Text>
+                  <Text numberOfLines={2} style={[styles.lastMessage, friend.unreadCount > 0 && styles.unreadMessage]}>{friend.lastMessage || (pt ? 'Envie uma mensagem ao seu novo amigo…' : 'Message your new friend…')}</Text>
                 </View>
-                <View style={styles.friendTail}><Text style={styles.time}>{conversationTime(friend.lastMessageAt)}</Text>{friend.unreadCount > 0 ? <View style={styles.unreadBadge}><Text style={styles.unreadCount}>{friend.unreadCount}</Text></View> : <MaterialCommunityIcons name="chevron-right" size={28} color="#747e8e" />}</View>
+                <View style={styles.friendTail}><Text style={styles.time}>{conversationTime(friend.lastMessageAt)}</Text>{friend.unreadCount > 0 ? <View style={styles.unreadBadge}><Text style={styles.unreadCount}>{friend.unreadCount}</Text></View> : <Ionicons name="chevron-forward" size={22} color="#747e8e" />}</View>
               </Pressable>
             ))}
-            {!visible.length ? <View style={styles.empty}><MaterialCommunityIcons name="message-outline" size={38} color="#2d69f4" /><Text style={styles.emptyTitle}>{query ? 'No friends found' : 'No conversations yet'}</Text><Text style={styles.emptyText}>{query ? 'Try another name or username.' : 'Add Koino friends to start a private conversation.'}</Text></View> : null}
+            {!visible.length ? <View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={36} color="#2d69f4" /><Text style={styles.emptyTitle}>{pt ? (query ? 'Nenhum amigo encontrado' : 'Ainda não há conversas') : (query ? 'No friends found' : 'No conversations yet')}</Text><Text style={styles.emptyText}>{pt ? (query ? 'Tente outro nome.' : 'Adicione amigos para iniciar uma conversa.') : (query ? 'Try another name or username.' : 'Add Koino friends to start a private conversation.')}</Text></View> : null}
           </View>
           {error ? <Text style={styles.error}>{error}</Text> : null}
         </ScrollView>
@@ -75,14 +78,14 @@ export default function ChatListScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: 20, paddingTop: 23, paddingBottom: 25 },
+  content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 22 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 9 }, headerCopy: { flex: 1 },
-  title: { color: '#111820', fontFamily: 'serif', fontSize: 38, lineHeight: 46, fontWeight: '700' }, subtitle: { marginTop: 6, color: '#6d7787', fontSize: 14, lineHeight: 21 },
-  search: { height: 57, marginTop: 28, paddingHorizontal: 17, borderRadius: 15, flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#f7f7f7' }, searchInput: { flex: 1, height: '100%', color: '#18212b', fontSize: 15 },
-  list: { marginTop: 20 },
-  friend: { minHeight: 105, paddingHorizontal: 6, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center' },
+  title: { color: '#111820', fontFamily: 'serif', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '700' }, subtitle: { marginTop: 4, color: '#6d7787', fontSize: 13, lineHeight: 19 },
+  search: { height: 46, marginTop: 18, paddingHorizontal: 14, borderRadius: 13, flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#f7f7f7' }, searchInput: { flex: 1, height: '100%', color: '#18212b', fontSize: 14 },
+  list: { marginTop: 12 },
+  friend: { minHeight: 82, paddingHorizontal: 4, paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center' },
   onlineDot: { position: 'absolute', right: -1, bottom: 2, width: 17, height: 17, borderRadius: 9, borderWidth: 3, borderColor: '#fff', backgroundColor: '#326cf4' },
-  friendCopy: { flex: 1, marginLeft: 17 }, friendName: { color: '#101820', fontSize: 18, fontWeight: '700' }, lastMessage: { marginTop: 7, color: '#717c8d', fontSize: 14, lineHeight: 20 }, unreadMessage: { color: '#303a48', fontWeight: '600' },
+  friendCopy: { flex: 1, marginLeft: 13 }, friendName: { color: '#101820', fontSize: 16, fontWeight: '700' }, lastMessage: { marginTop: 5, color: '#717c8d', fontSize: 12, lineHeight: 17 }, unreadMessage: { color: '#303a48', fontWeight: '600' },
   friendTail: { minWidth: 38, marginLeft: 7, alignItems: 'center', gap: 8 }, time: { color: '#6f798a', fontSize: 12 }, unreadBadge: { minWidth: 22, height: 22, paddingHorizontal: 5, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#2c69f3' }, unreadCount: { color: '#fff', fontSize: 10, fontWeight: '700' },
   empty: { minHeight: 260, alignItems: 'center', justifyContent: 'center' }, emptyTitle: { marginTop: 14, color: '#172029', fontSize: 18, fontWeight: '700' }, emptyText: { marginTop: 7, maxWidth: 280, color: '#76808e', fontSize: 13, lineHeight: 20, textAlign: 'center' },
   error: { marginTop: 12, padding: 10, borderRadius: 10, color: '#a33a34', backgroundColor: '#fff0ef', textAlign: 'center' },

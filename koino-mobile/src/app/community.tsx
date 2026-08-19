@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,12 +11,13 @@ import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import { VersePickerModal } from '@/components/community/VersePickerModal';
 import { addCommunityComment, createCommunityPhotoPost, createCommunityPost, getBibleBooks, getCommunityPosts, getCurrentUser } from '@/features/community/communityService';
 import type { BibleBook, CommunityPost, CommunityPostType, CommunityVerse, CurrentUser } from '@/features/community/types';
-
-const filters: { label: string; value: CommunityPostType | 'ALL' }[] = [
-  { label: 'For You', value: 'ALL' }, { label: 'Verses', value: 'VERSE' }, { label: 'Questions', value: 'QUESTION' }, { label: 'Photos', value: 'PHOTO' },
-];
+import { router } from 'expo-router';
+import { layout } from '@/theme/layout';
+import { useLanguage } from '@/features/localization/LanguageProvider';
 
 export default function CommunityScreen() {
+  const { language } = useLanguage(); const pt = language === 'pt';
+  const filters: { label: string; value: CommunityPostType | 'ALL' }[] = pt ? [{ label: 'Para si', value: 'ALL' }, { label: 'Versículos', value: 'VERSE' }, { label: 'Perguntas', value: 'QUESTION' }, { label: 'Fotos', value: 'PHOTO' }] : [{ label: 'For You', value: 'ALL' }, { label: 'Verses', value: 'VERSE' }, { label: 'Questions', value: 'QUESTION' }, { label: 'Photos', value: 'PHOTO' }];
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [books, setBooks] = useState<BibleBook[]>([]);
   const [posts, setPosts] = useState<CommunityPost[] | null>(null);
@@ -77,27 +78,28 @@ export default function CommunityScreen() {
 
   return (
     <AppShell active="community">
-      {!posts && !error ? <LoadingState label="Opening the community…" /> : null}
+      {!posts && !error ? <LoadingState label={pt ? 'A abrir a comunidade…' : 'Opening the community…'} /> : null}
       {!posts && error ? <ErrorState message={error} onRetry={() => load()} /> : null}
       {posts && user ? (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor="#e59010" />}>
           <View style={styles.header}>
-            <View style={styles.headerCopy}><Text style={styles.title}>Community</Text><Text style={styles.subtitle}>Share Scripture, ask questions, and encourage one another.</Text></View>
+            <View style={styles.headerCopy}><Text style={styles.title}>{pt ? 'Comunidade' : 'Community'}</Text><Text style={styles.subtitle}>{pt ? 'Partilhe a Palavra, faça perguntas e encoraje outros.' : 'Share Scripture, ask questions, and encourage one another.'}</Text></View>
+            <Pressable accessibilityLabel={pt ? 'Abrir conversas' : 'Open chats'} onPress={() => router.push('/chat')} style={styles.headerAction}><Ionicons name="chatbubbles-outline" size={21} color="#27313d" /></Pressable>
           </View>
 
           <View style={styles.composer}>
             <View style={styles.composerTop}>
               <Avatar name={user.fullname} uri={user.profilePictureUrl} size={49} />
-              <TextInput value={content} onChangeText={setContent} maxLength={1200} multiline placeholder={mode === 'QUESTION' ? 'What would you like to ask?' : mode === 'PHOTO' ? 'Add a caption…' : 'Add a thought about this verse…'} placeholderTextColor="#969daa" style={styles.input} />
-              <Pressable disabled={!canPost} onPress={submitPost} style={[styles.postButton, !canPost && styles.postDisabled]}>{posting ? <ActivityIndicator color="#fff" /> : <Text style={[styles.postText, !canPost && styles.postTextDisabled]}>Post</Text>}</Pressable>
+              <TextInput value={content} onChangeText={setContent} maxLength={1200} multiline placeholder={pt ? (mode === 'QUESTION' ? 'O que deseja perguntar?' : mode === 'PHOTO' ? 'Adicione uma legenda…' : 'Partilhe uma reflexão…') : (mode === 'QUESTION' ? 'What would you like to ask?' : mode === 'PHOTO' ? 'Add a caption…' : 'Add a thought about this verse…')} placeholderTextColor="#969daa" style={styles.input} />
+              <Pressable disabled={!canPost} onPress={submitPost} style={[styles.postButton, !canPost && styles.postDisabled]}>{posting ? <ActivityIndicator color="#fff" /> : <Text style={[styles.postText, !canPost && styles.postTextDisabled]}>{pt ? 'Publicar' : 'Post'}</Text>}</Pressable>
             </View>
             {verse ? <Pressable onPress={() => setVersePickerOpen(true)} style={styles.versePreview}><Text style={styles.previewRef}>{verse.reference}</Text><Text numberOfLines={2} style={styles.previewText}>“{verse.text}”</Text></Pressable> : null}
-            {photo ? <View style={styles.photoPreview}><Image source={{ uri: photo.uri }} style={styles.previewImage} contentFit="cover" /><Pressable onPress={() => setPhoto(null)} style={styles.removePhoto}><MaterialCommunityIcons name="close" size={19} color="#111820" /></Pressable></View> : null}
+            {photo ? <View style={styles.photoPreview}><Image source={{ uri: photo.uri }} style={styles.previewImage} contentFit="cover" /><Pressable onPress={() => setPhoto(null)} style={styles.removePhoto}><Ionicons name="close" size={19} color="#111820" /></Pressable></View> : null}
             <View style={styles.composerDivider} />
             <View style={styles.modes}>
-              <Pressable onPress={() => { setMode('VERSE'); setVersePickerOpen(true); }} style={[styles.mode, mode === 'VERSE' && styles.modeActive]}><MaterialCommunityIcons name="book-open-outline" size={23} color={mode === 'VERSE' ? '#a86508' : '#526071'} /><Text style={[styles.modeText, mode === 'VERSE' && styles.modeTextActive]}>Verse</Text></Pressable>
-              <Pressable onPress={() => { setMode('PHOTO'); pickPhoto(); }} style={[styles.mode, mode === 'PHOTO' && styles.modeActive]}><MaterialCommunityIcons name="camera-outline" size={23} color={mode === 'PHOTO' ? '#a86508' : '#526071'} /><Text style={[styles.modeText, mode === 'PHOTO' && styles.modeTextActive]}>Photo</Text></Pressable>
-              <Pressable onPress={() => setMode('QUESTION')} style={[styles.mode, mode === 'QUESTION' && styles.modeActive]}><MaterialCommunityIcons name="help-circle-outline" size={23} color={mode === 'QUESTION' ? '#a86508' : '#526071'} /><Text style={[styles.modeText, mode === 'QUESTION' && styles.modeTextActive]}>Question</Text></Pressable>
+              <Pressable onPress={() => { setMode('VERSE'); setVersePickerOpen(true); }} style={[styles.mode, mode === 'VERSE' && styles.modeActive]}><Ionicons name="book-outline" size={21} color={mode === 'VERSE' ? '#a86508' : '#526071'} /><Text style={[styles.modeText, mode === 'VERSE' && styles.modeTextActive]}>{pt ? 'Versículo' : 'Verse'}</Text></Pressable>
+              <Pressable onPress={() => { setMode('PHOTO'); pickPhoto(); }} style={[styles.mode, mode === 'PHOTO' && styles.modeActive]}><Ionicons name="image-outline" size={21} color={mode === 'PHOTO' ? '#a86508' : '#526071'} /><Text style={[styles.modeText, mode === 'PHOTO' && styles.modeTextActive]}>{pt ? 'Foto' : 'Photo'}</Text></Pressable>
+              <Pressable onPress={() => setMode('QUESTION')} style={[styles.mode, mode === 'QUESTION' && styles.modeActive]}><Ionicons name="help-circle-outline" size={21} color={mode === 'QUESTION' ? '#a86508' : '#526071'} /><Text style={[styles.modeText, mode === 'QUESTION' && styles.modeTextActive]}>{pt ? 'Pergunta' : 'Question'}</Text></Pressable>
             </View>
           </View>
 
@@ -105,7 +107,7 @@ export default function CommunityScreen() {
             {filters.map((item) => <Pressable key={item.value} onPress={() => { setFilter(item.value); setPosts(null); }} style={[styles.filter, filter === item.value && styles.filterActive]}><Text style={[styles.filterText, filter === item.value && styles.filterTextActive]}>{item.label}</Text></Pressable>)}
           </ScrollView>
           <View style={styles.feed}>
-            {posts.length ? posts.map((post) => <CommunityPostCard key={post.postId} post={post} commenting={commentingId === post.postId} onComment={addComment} />) : <View style={styles.empty}><MaterialCommunityIcons name="message-text-outline" size={37} color="#d68108" /><Text style={styles.emptyTitle}>Start the conversation</Text><Text style={styles.emptyText}>Share a verse, photo, or question with the community.</Text></View>}
+            {posts.length ? posts.map((post) => <CommunityPostCard key={post.postId} post={post} commenting={commentingId === post.postId} onComment={addComment} onAuthorPress={(userId) => router.push({ pathname: '/profile/[userId]', params: { userId: String(userId) } })} />) : <View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={35} color="#d68108" /><Text style={styles.emptyTitle}>{pt ? 'Comece a conversa' : 'Start the conversation'}</Text><Text style={styles.emptyText}>{pt ? 'Partilhe um versículo, foto ou pergunta.' : 'Share a verse, photo, or question with the community.'}</Text></View>}
           </View>
           {error ? <Pressable onPress={() => setError('')}><Text style={styles.error}>{error}</Text></Pressable> : null}
           <VersePickerModal visible={versePickerOpen} books={books} onClose={() => setVersePickerOpen(false)} onSelect={(selected) => { setVerse(selected); setMode('VERSE'); }} />
@@ -116,10 +118,11 @@ export default function CommunityScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: 18, paddingTop: 22, paddingBottom: 26 },
+  content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 24 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }, headerCopy: { flex: 1 },
-  title: { color: '#111820', fontFamily: 'serif', fontSize: 36, lineHeight: 44, fontWeight: '700' }, subtitle: { marginTop: 7, maxWidth: 280, color: '#6d7787', fontSize: 15, lineHeight: 23 },
-  composer: { marginTop: 28, padding: 15, borderWidth: 1, borderColor: '#dde1e5', borderRadius: 16, backgroundColor: '#fff' },
+  title: { color: '#111820', fontFamily: 'serif', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '700' }, subtitle: { marginTop: 4, maxWidth: 280, color: '#6d7787', fontSize: 13, lineHeight: 19 },
+  headerAction: { width: 42, height: 42, borderWidth: 1, borderColor: '#e4e7ea', borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
+  composer: { marginTop: 18, padding: 12, borderWidth: 1, borderColor: '#dde1e5', borderRadius: 14, backgroundColor: '#fff', boxShadow: '0 5px 16px rgba(31, 39, 48, 0.045)' },
   composerTop: { flexDirection: 'row', alignItems: 'center', gap: 11 }, input: { flex: 1, minHeight: 53, maxHeight: 105, color: '#202831', fontSize: 15, lineHeight: 21 },
   postButton: { width: 69, height: 46, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e29624' }, postDisabled: { backgroundColor: '#f4ede4' }, postText: { color: '#fff', fontSize: 14, fontWeight: '700' }, postTextDisabled: { color: '#9299a3' },
   composerDivider: { height: 1, marginTop: 14, backgroundColor: '#eceef0' }, modes: { paddingTop: 10, flexDirection: 'row', justifyContent: 'space-around' },

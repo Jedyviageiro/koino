@@ -25,6 +25,7 @@ export function getPublicProfileByFriendCode(friendCode: string) {
   const normalized = friendCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
   return authenticatedRequest<PublicProfile>(`/users/me/friend-code/${encodeURIComponent(normalized)}`);
 }
+export function getUserProfile(userId: number) { return authenticatedRequest<PublicProfile>(`/users/${userId}/profile`); }
 export function requestFriend(userId: number) { return authenticatedRequest(`/users/me/friend-requests/${userId}`, { method: 'POST' }); }
 
 export async function getLocalPreferences(): Promise<LocalPreferences> {

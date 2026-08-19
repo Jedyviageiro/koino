@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -93,7 +93,7 @@ export default function ConversationScreen() {
     <AppShell active="chat">
       <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.header}>
-          <Pressable accessibilityLabel="Back to chat list" onPress={() => router.back()} style={styles.backButton}><MaterialCommunityIcons name="arrow-left" size={29} color="#637083" /></Pressable>
+          <Pressable accessibilityLabel="Back to chat list" onPress={() => router.back()} style={styles.backButton}><Ionicons name="arrow-back" size={25} color="#637083" /></Pressable>
           <Avatar name={friend?.fullname ?? 'Koino friend'} uri={friend?.profilePictureUrl} size={52} />
           <View style={styles.headerCopy}>
             <Text numberOfLines={1} style={styles.friendName}>{friend?.fullname ?? 'Koino friend'}</Text>
@@ -109,7 +109,7 @@ export default function ConversationScreen() {
           onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={orderedMessages.length ? <Text style={styles.dayLabel}>Today</Text> : null}
-          ListEmptyComponent={<View style={styles.empty}><MaterialCommunityIcons name="message-text-outline" size={40} color="#2d69f4" /><Text style={styles.emptyTitle}>Start the conversation</Text><Text style={styles.emptyText}>Send an encouraging message to your Koino friend.</Text></View>}
+          ListEmptyComponent={<View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={38} color="#2d69f4" /><Text style={styles.emptyTitle}>Start the conversation</Text><Text style={styles.emptyText}>Send an encouraging message to your Koino friend.</Text></View>}
           renderItem={({ item }) => {
             const mine = item.senderId === currentUserId;
             return (
@@ -117,7 +117,7 @@ export default function ConversationScreen() {
                 {!mine ? <Avatar name={friend?.fullname ?? 'Friend'} uri={friend?.profilePictureUrl} size={36} /> : null}
                 <View style={[styles.messageGroup, mine && styles.myMessageGroup]}>
                   <View style={[styles.bubble, mine ? styles.myBubble : styles.theirBubble]}><Text style={[styles.messageBody, mine && styles.myMessageBody]}>{item.body}</Text></View>
-                  <View style={[styles.messageMeta, mine && styles.myMessageMeta]}><Text style={styles.messageTime}>{messageTime(item.sentAt)}</Text>{mine ? <MaterialCommunityIcons name={item.readAt ? 'check-all' : 'check'} size={17} color="#2c69f3" /> : null}</View>
+                  <View style={[styles.messageMeta, mine && styles.myMessageMeta]}><Text style={styles.messageTime}>{messageTime(item.sentAt)}</Text>{mine ? <Ionicons name={item.readAt ? 'checkmark-done' : 'checkmark'} size={17} color="#2c69f3" /> : null}</View>
                 </View>
               </View>
             );
@@ -126,9 +126,9 @@ export default function ConversationScreen() {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <View style={styles.composer}>
-          <Pressable accessibilityLabel="Add attachment" style={styles.addButton}><MaterialCommunityIcons name="plus" size={29} color="#647184" /></Pressable>
+          <Pressable accessibilityLabel="Add attachment" style={styles.addButton}><Ionicons name="add" size={26} color="#647184" /></Pressable>
           <View style={styles.inputWrap}><TextInput value={draft} onChangeText={setDraft} onSubmitEditing={send} returnKeyType="send" placeholder="Type a message..." placeholderTextColor="#778294" multiline style={styles.input} /></View>
-          <Pressable accessibilityLabel="Send message" disabled={!draft.trim() || sending} onPress={send} style={({ pressed }) => [styles.sendButton, (!draft.trim() || sending) && styles.sendDisabled, pressed && styles.pressed]}><MaterialCommunityIcons name="send" size={23} color="#fff" /></Pressable>
+          <Pressable accessibilityLabel="Send message" disabled={!draft.trim() || sending} onPress={send} style={({ pressed }) => [styles.sendButton, (!draft.trim() || sending) && styles.sendDisabled, pressed && styles.pressed]}><Ionicons name="send" size={21} color="#fff" /></Pressable>
         </View>
       </KeyboardAvoidingView>
     </AppShell>

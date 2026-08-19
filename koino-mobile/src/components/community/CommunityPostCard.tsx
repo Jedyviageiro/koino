@@ -1,21 +1,23 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import type { CommunityPost } from '@/features/community/types';
 import { Avatar } from './Avatar';
+import { useLanguage } from '@/features/localization/LanguageProvider';
 
-function relativeTime(value: string) {
+function relativeTime(value: string, pt = false) {
   const minutes = Math.floor(Math.max(0, Date.now() - new Date(value).getTime()) / 60000);
-  if (minutes < 1) return 'just now';
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 1) return pt ? 'agora' : 'just now';
+  if (minutes < 60) return pt ? `há ${minutes}m` : `${minutes}m ago`;
   const hours = Math.floor(minutes / 60);
-  return hours < 24 ? `${hours}h ago` : `${Math.floor(hours / 24)}d ago`;
+  return pt ? (hours < 24 ? `há ${hours}h` : `há ${Math.floor(hours / 24)}d`) : (hours < 24 ? `${hours}h ago` : `${Math.floor(hours / 24)}d ago`);
 }
 
-export function CommunityPostCard({ post, commenting, onComment }: { post: CommunityPost; commenting: boolean; onComment: (postId: number, content: string) => Promise<boolean> }) {
+export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }: { post: CommunityPost; commenting: boolean; onComment: (postId: number, content: string) => Promise<boolean>; onAuthorPress: (userId: number) => void }) {
   const [open, setOpen] = useState(false);
+  const { language } = useLanguage(); const pt = language === 'pt';
   const [comment, setComment] = useState('');
   async function submit() {
     if (!comment.trim() || commenting) return;
@@ -23,14 +25,14 @@ export function CommunityPostCard({ post, commenting, onComment }: { post: Commu
   }
   return (
     <View style={styles.card}>
-      <View style={styles.header}>
+      <Pressable onPress={() => onAuthorPress(post.author.userId)} style={styles.header}>
         <Avatar name={post.author.fullname} uri={post.author.profilePictureUrl} size={44} />
-        <View style={styles.authorCopy}><Text style={styles.author}>{post.author.fullname}</Text><Text style={styles.meta}>{post.postType[0]}{post.postType.slice(1).toLowerCase()}  |  {relativeTime(post.createdAt)}</Text></View>
-        <MaterialCommunityIcons name="dots-horizontal" size={25} color="#111820" />
-      </View>
+        <View style={styles.authorCopy}><Text style={styles.author}>{post.author.fullname}</Text><Text style={styles.meta}>{pt ? ({ VERSE: 'Versículo', QUESTION: 'Pergunta', PHOTO: 'Foto' }[post.postType]) : `${post.postType[0]}${post.postType.slice(1).toLowerCase()}`}  ·  {relativeTime(post.createdAt, pt)}</Text></View>
+        <Ionicons name="ellipsis-horizontal" size={21} color="#536071" />
+      </Pressable>
       {post.postType === 'VERSE' && post.verse ? (
         <View style={styles.verseCard}>
-          <View style={styles.verseLabel}><MaterialCommunityIcons name="book-open-outline" size={22} color="#a86508" /><Text style={styles.verseReference}>{post.verse.reference}</Text></View>
+          <View style={styles.verseLabel}><Ionicons name="book-outline" size={20} color="#a86508" /><Text style={styles.verseReference}>{post.verse.reference}</Text></View>
           <Text style={styles.verseText}>“{post.verse.text}”</Text>
         </View>
       ) : null}
@@ -38,21 +40,21 @@ export function CommunityPostCard({ post, commenting, onComment }: { post: Commu
       {post.content ? <Text style={[styles.content, post.postType === 'QUESTION' && styles.question]}>{post.content}</Text> : null}
       <View style={styles.divider} />
       <Pressable onPress={() => setOpen((current) => !current)} style={styles.commentButton}>
-        <MaterialCommunityIcons name="comment-outline" size={22} color="#596475" />
-        <Text style={styles.commentLabel}>{post.comments.length ? `${post.comments.length} comment${post.comments.length === 1 ? '' : 's'}` : 'Comment'}</Text>
+        <Ionicons name="chatbubble-outline" size={20} color="#596475" />
+        <Text style={styles.commentLabel}>{post.comments.length ? `${post.comments.length} ${pt ? (post.comments.length === 1 ? 'comentário' : 'comentários') : `comment${post.comments.length === 1 ? '' : 's'}`}` : (pt ? 'Comentar' : 'Comment')}</Text>
       </Pressable>
       {open ? (
         <View style={styles.comments}>
           {post.comments.map((item) => (
-            <View key={item.commentId} style={styles.commentRow}>
+            <Pressable key={item.commentId} onPress={() => onAuthorPress(item.author.userId)} style={styles.commentRow}>
               <Avatar name={item.author.fullname} uri={item.author.profilePictureUrl} size={31} />
-              <View style={styles.commentBubble}><Text style={styles.commentAuthor}>{item.author.fullname} <Text style={styles.commentTime}>• {relativeTime(item.createdAt)}</Text></Text><Text style={styles.commentText}>{item.content}</Text></View>
-            </View>
+              <View style={styles.commentBubble}><Text style={styles.commentAuthor}>{item.author.fullname} <Text style={styles.commentTime}>• {relativeTime(item.createdAt, pt)}</Text></Text><Text style={styles.commentText}>{item.content}</Text></View>
+            </Pressable>
           ))}
           <View style={styles.commentComposer}>
-            <TextInput value={comment} onChangeText={setComment} maxLength={600} placeholder="Write a comment…" placeholderTextColor="#9aa0aa" style={styles.commentInput} onSubmitEditing={submit} returnKeyType="send" />
+            <TextInput value={comment} onChangeText={setComment} maxLength={600} placeholder={pt ? 'Escreva um comentário…' : 'Write a comment…'} placeholderTextColor="#9aa0aa" style={styles.commentInput} onSubmitEditing={submit} returnKeyType="send" />
             <Pressable disabled={!comment.trim() || commenting} onPress={submit} style={[styles.send, (!comment.trim() || commenting) && styles.disabled]}>
-              {commenting ? <ActivityIndicator size="small" color="#fff" /> : <MaterialCommunityIcons name="send" size={18} color="#fff" />}
+              {commenting ? <ActivityIndicator size="small" color="#fff" /> : <Ionicons name="send" size={17} color="#fff" />}
             </Pressable>
           </View>
         </View>
@@ -62,10 +64,10 @@ export function CommunityPostCard({ post, commenting, onComment }: { post: Commu
 }
 
 const styles = StyleSheet.create({
-  card: { padding: 16, borderWidth: 1, borderColor: '#e2e5e8', borderRadius: 16, backgroundColor: '#fff' },
+  card: { padding: 13, borderWidth: 1, borderColor: '#e2e5e8', borderRadius: 14, backgroundColor: '#fff', boxShadow: '0 5px 16px rgba(31, 39, 48, 0.04)' },
   header: { flexDirection: 'row', alignItems: 'center' }, authorCopy: { flex: 1, marginLeft: 13 },
   author: { color: '#151c24', fontSize: 15, fontWeight: '700' }, meta: { marginTop: 3, color: '#7b8492', fontSize: 12 },
-  verseCard: { marginTop: 18, padding: 17, borderLeftWidth: 3, borderLeftColor: '#eb9718', borderRadius: 8, backgroundColor: '#fffaf3' },
+  verseCard: { marginTop: 13, padding: 13, borderLeftWidth: 3, borderLeftColor: '#eb9718', borderRadius: 8, backgroundColor: '#fffaf3' },
   verseLabel: { flexDirection: 'row', alignItems: 'center', gap: 10 }, verseReference: { color: '#9e620b', fontSize: 14, fontWeight: '600' },
   verseText: { marginTop: 15, color: '#19212a', fontFamily: 'serif', fontSize: 18, lineHeight: 29 },
   photo: { width: '100%', height: 245, marginTop: 17, borderRadius: 11, backgroundColor: '#f1f2f3' },

@@ -42,7 +42,9 @@ export async function authenticatedRequest<T>(path: string, options: RequestInit
         headers: { ...Object.fromEntries(new Headers(options.headers).entries()), Authorization: `Bearer ${fresh.token}` },
       });
     } catch (refreshError) {
-      await clearAuthSession();
+      if (refreshError instanceof ApiError && refreshError.status === 401) {
+        await clearAuthSession();
+      }
       throw refreshError instanceof Error
         ? refreshError
         : new ApiError('Your session has expired. Please log in again.', 401);

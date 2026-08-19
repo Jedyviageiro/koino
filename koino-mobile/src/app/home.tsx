@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
@@ -9,21 +9,26 @@ import { ErrorState, LoadingState } from '@/components/app/ScreenState';
 import { getAuthSession } from '@/features/auth/authStorage';
 import { getHomeData } from '@/features/app/appService';
 import type { HomeData, UserPlanTask } from '@/features/app/types';
+import { layout } from '@/theme/layout';
+import { useLanguage } from '@/features/localization/LanguageProvider';
+import { localizedBibleBook, localizedBibleReference } from '@/features/localization/bibleBooks';
 
 const cover = require('../../assets/images/plans-cover.png');
+const verseBanner = require('../../assets/images/verse-of-day-banner.png');
 
 function verseCount(task: UserPlanTask | null) {
   return task?.passages.reduce((sum, passage) => sum + passage.lastVerse - passage.firstVerse + 1, 0) ?? 0;
 }
 
-function readingTitle(task: UserPlanTask | null) {
+function readingTitle(task: UserPlanTask | null, language = 'en') {
   const passage = task?.passages[0];
   if (!passage) return task?.readingAssignment ?? 'Today’s Reading';
   const end = passage.lastVerse === passage.firstVerse ? '' : `–${passage.lastVerse}`;
-  return `${passage.bookTitle} ${passage.chapterNumber}:${passage.firstVerse}${end}`;
+  return `${localizedBibleBook(passage.bookTitle, language)} ${passage.chapterNumber}:${passage.firstVerse}${end}`;
 }
 
 export default function HomeScreen() {
+  const { language } = useLanguage(); const pt = language === 'pt';
   const [data, setData] = useState<HomeData | null>(null);
   const [name, setName] = useState('Friend');
   const [error, setError] = useState('');
@@ -35,18 +40,18 @@ export default function HomeScreen() {
     try {
       const [home, session] = await Promise.all([getHomeData(), getAuthSession()]);
       setData(home);
-      setName(session?.fullname?.trim().split(/\s+/)[0] || 'Friend');
+      setName(session?.fullname?.trim().split(/\s+/)[0] || (pt ? 'Amigo' : 'Friend'));
     } catch (failure) {
-      setError(failure instanceof Error ? failure.message : 'Unable to load your home page.');
+      setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar o início.' : 'Unable to load your home page.');
     } finally {
       setRefreshing(false);
     }
-  }, []);
+  }, [pt]);
 
   useEffect(() => { load(); }, [load]);
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const greeting = pt ? (hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite') : (hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening');
   const progress = Math.round(data?.plan?.completionPercentage ?? 0);
 
   return (
@@ -61,16 +66,34 @@ export default function HomeScreen() {
         >
           <View style={styles.header}>
             <View style={styles.headerCopy}>
-              <Text style={styles.greeting}>{greeting}, {name.toLowerCase()}</Text>
-              <Text style={styles.subtitle}>Let’s grow closer to God together.</Text>
+              <Text style={styles.greeting}>{greeting}, {name.replace(/\p{Extended_Pictographic}/gu, '').trim().toLowerCase()}</Text>
+              <Text style={styles.subtitle}>{pt ? 'Vamos crescer juntos na fé.' : 'Let’s grow closer to God together.'}</Text>
+            </View>
+          </View>
+
+          <View style={styles.verseCard}>
+            <Image source={verseBanner} style={styles.verseImage} contentFit="cover" />
+            <View style={styles.verseOverlay} />
+            <View style={styles.verseContent}>
+              <View style={styles.verseHeader}>
+                <View style={styles.cardLabelRow}>
+                  <View style={styles.roundIcon}><Ionicons name="sunny-outline" size={21} color="#d97e00" /></View>
+                  <View><Text style={styles.verseEyebrow}>{pt ? 'Versículo do dia' : 'Verse of the Day'}</Text><Text style={styles.reference}>{localizedBibleReference(data.verseOfDay.reference, language)}</Text></View>
+                </View>
+                <Ionicons name="bookmark-outline" size={23} color="#1c252f" />
+              </View>
+              <Text numberOfLines={5} style={styles.quote}>“{data.verseOfDay.text}”</Text>
+              <Pressable onPress={() => router.push('/bible')} style={styles.viewBible}>
+                <Text style={styles.viewBibleText}>{pt ? 'Ver na Bíblia' : 'View in Bible'}</Text><Ionicons name="arrow-forward" size={19} color="#1f2933" />
+              </Pressable>
             </View>
           </View>
 
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Continue</Text>
+            <Text style={styles.sectionTitle}>{pt ? 'Continuar' : 'Continue'}</Text>
             <Pressable onPress={() => router.push('/plans')} style={styles.inlineLink}>
-              <Text style={styles.linkText}>View Plan</Text>
-              <MaterialCommunityIcons name="chevron-right" size={24} color="#d78105" />
+              <Text style={styles.linkText}>{pt ? 'Ver plano' : 'View Plan'}</Text>
+              <Ionicons name="chevron-forward" size={21} color="#d78105" />
             </Pressable>
           </View>
 
@@ -79,7 +102,7 @@ export default function HomeScreen() {
               <Image source={cover} style={styles.cover} contentFit="cover" />
               <View style={styles.continueCopy}>
                 <Text style={styles.planName}>{data.plan.name}</Text>
-                <Text style={styles.planDay}>Day {data.task?.dayNumber ?? data.plan.completedDays} of {data.plan.totalDays}</Text>
+                <Text style={styles.planDay}>{pt ? 'Dia' : 'Day'} {data.task?.dayNumber ?? data.plan.completedDays} {pt ? 'de' : 'of'} {data.plan.totalDays}</Text>
                 <View style={styles.progressRow}>
                   <View style={styles.progressTrack}><View style={[styles.progressFill, { width: `${Math.max(1, progress)}%` }]} /></View>
                   <Text style={styles.progressText}>{progress}%</Text>
@@ -88,30 +111,30 @@ export default function HomeScreen() {
             </Pressable>
           ) : (
             <Pressable onPress={() => router.push('/onboarding')} style={styles.emptyCard}>
-              <MaterialCommunityIcons name="book-plus-outline" size={30} color="#cb7c0c" />
+              <Ionicons name="library-outline" size={28} color="#cb7c0c" />
               <View style={styles.emptyCopy}><Text style={styles.emptyTitle}>Build your first plan</Text><Text style={styles.emptyText}>Complete onboarding to begin your journey.</Text></View>
-              <MaterialCommunityIcons name="chevron-right" size={25} color="#68717d" />
+              <Ionicons name="chevron-forward" size={22} color="#68717d" />
             </Pressable>
           )}
 
           <View style={styles.readingCard}>
             <View style={styles.cardLabelRow}>
-              <View style={styles.roundIcon}><MaterialCommunityIcons name="book-open-page-variant-outline" size={24} color="#202830" /></View>
-              <Text style={styles.cardLabel}>Today’s Reading</Text>
+              <View style={styles.roundIcon}><Ionicons name="book-outline" size={21} color="#202830" /></View>
+              <Text style={styles.cardLabel}>{pt ? 'Leitura de hoje' : 'Today’s Reading'}</Text>
             </View>
             {data.task ? (
               <>
                 <Pressable onPress={() => router.push('/devotional')} style={styles.readingHeading}>
-                  <View><Text style={styles.readingTitle}>{readingTitle(data.task)}</Text><Text style={styles.readingAssignment}>{data.task.readingAssignment}</Text></View>
-                  <MaterialCommunityIcons name="chevron-right" size={27} color="#1b222a" />
+                  <View><Text style={styles.readingTitle}>{readingTitle(data.task, language)}</Text><Text style={styles.readingAssignment}>{localizedBibleReference(data.task.readingAssignment, language)}</Text></View>
+                  <Ionicons name="chevron-forward" size={23} color="#1b222a" />
                 </Pressable>
                 <View style={styles.chips}>
-                  <View style={styles.chip}><MaterialCommunityIcons name="clock-outline" size={21} color="#1d252d" /><Text style={styles.chipText}>{data.task.estimatedMinutes} min read</Text></View>
-                  <View style={styles.chip}><MaterialCommunityIcons name="text-box-outline" size={20} color="#1d252d" /><Text style={styles.chipText}>{verseCount(data.task)} verses</Text></View>
+                  <View style={styles.chip}><Ionicons name="time-outline" size={19} color="#1d252d" /><Text style={styles.chipText}>{data.task.estimatedMinutes} {pt ? 'min de leitura' : 'min read'}</Text></View>
+                  <View style={styles.chip}><Ionicons name="document-text-outline" size={18} color="#1d252d" /><Text style={styles.chipText}>{verseCount(data.task)} {pt ? 'versículos' : 'verses'}</Text></View>
                 </View>
                 <Pressable onPress={() => router.push('/reading')} style={styles.primaryButton}>
-                  <MaterialCommunityIcons name="book-open-outline" size={25} color="#fff" />
-                  <Text style={styles.primaryButtonText}>{data.task.currentVerseIndex > 1 ? 'Continue Reading' : 'Start Reading'}</Text>
+                  <Ionicons name="book-outline" size={22} color="#fff" />
+                  <Text style={styles.primaryButtonText}>{pt ? (data.task.currentVerseIndex > 1 ? 'Continuar leitura' : 'Começar leitura') : (data.task.currentVerseIndex > 1 ? 'Continue Reading' : 'Start Reading')}</Text>
                 </Pressable>
               </>
             ) : (
@@ -119,29 +142,16 @@ export default function HomeScreen() {
             )}
           </View>
 
-          <View style={styles.verseCard}>
-            <View style={styles.cardLabelRow}>
-              <View style={styles.roundIcon}><MaterialCommunityIcons name="white-balance-sunny" size={24} color="#e38a06" /></View>
-              <Text style={styles.cardLabel}>Verse of the Day</Text>
-            </View>
-            <Text style={styles.quote}>“{data.verseOfDay.text}”</Text>
-            <Text style={styles.reference}>{data.verseOfDay.reference}</Text>
-            <Pressable onPress={() => router.push('/bible')} style={styles.viewBible}>
-              <Text style={styles.viewBibleText}>View in Bible</Text><MaterialCommunityIcons name="chevron-right" size={21} color="#4f5864" />
-            </Pressable>
-            <View style={styles.sun} /><View style={styles.mountainOne} /><View style={styles.mountainTwo} />
-          </View>
-
           <View style={styles.streakCard}>
-            <View style={styles.streakHeader}><Text style={styles.cardLabel}>Your Streak</Text><Text style={styles.muted}>Last 7 days</Text></View>
+            <View style={styles.streakHeader}><Text style={styles.cardLabel}>{pt ? 'Sua sequência' : 'Your Streak'}</Text><Text style={styles.muted}>{pt ? 'Últimos 7 dias' : 'Last 7 days'}</Text></View>
             <View style={styles.streakBody}>
-              <View style={styles.flameRing}><MaterialCommunityIcons name="fire" size={31} color="#ef9513" /></View>
-              <View><Text style={styles.streakNumber}>{data.streak.currentStreak}</Text><Text style={styles.streakCaption}>Day in a row</Text></View>
+              <View style={styles.flameRing}><Ionicons name="flame-outline" size={28} color="#ef9513" /></View>
+              <View><Text style={styles.streakNumber}>{data.streak.currentStreak}</Text><Text style={styles.streakCaption}>{pt ? 'Dias seguidos' : 'Day in a row'}</Text></View>
               <View style={styles.days}>
                 {data.streak.recentDays.map((day) => (
                   <View key={day.date} style={styles.day}>
                     <Text style={styles.dayName}>{new Intl.DateTimeFormat('en', { weekday: 'narrow' }).format(new Date(`${day.date}T00:00:00`))}</Text>
-                    <View style={[styles.dayDot, day.active && styles.dayDotActive]}>{day.active ? <MaterialCommunityIcons name="check" size={13} color="#fff" /> : null}</View>
+                    <View style={[styles.dayDot, day.active && styles.dayDotActive]}>{day.active ? <Ionicons name="checkmark" size={13} color="#fff" /> : null}</View>
                   </View>
                 ))}
               </View>
@@ -154,29 +164,29 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24, gap: 18 },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 18 },
+  content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 20, gap: 14 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 4 },
   headerCopy: { flex: 1 },
-  greeting: { color: '#111820', fontSize: 26, lineHeight: 33, fontWeight: '800' },
-  subtitle: { marginTop: 5, color: '#777d86', fontSize: 15, lineHeight: 22 },
+  greeting: { color: '#111820', fontSize: 25, lineHeight: 31, fontWeight: '800' },
+  subtitle: { marginTop: 3, color: '#777d86', fontSize: 13, lineHeight: 19 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   sectionTitle: { color: '#111820', fontSize: 19, fontWeight: '700' },
   inlineLink: { flexDirection: 'row', alignItems: 'center' },
   linkText: { color: '#d78105', fontSize: 14, fontWeight: '600' },
-  continueCard: { minHeight: 126, padding: 14, borderRadius: 17, borderWidth: 1, borderColor: '#f0dfc8', flexDirection: 'row', alignItems: 'center', backgroundColor: '#fffaf3' },
-  cover: { width: 70, height: 94, borderRadius: 12 },
+  continueCard: { minHeight: 104, padding: 12, borderRadius: layout.cardRadius, borderWidth: 1, borderColor: '#f0dfc8', flexDirection: 'row', alignItems: 'center', backgroundColor: '#fffaf3', boxShadow: '0 5px 16px rgba(33, 24, 13, 0.05)' },
+  cover: { width: 58, height: 76, borderRadius: 10 },
   continueCopy: { flex: 1, marginLeft: 15 },
-  planName: { color: '#121922', fontSize: 20, fontWeight: '700' },
-  planDay: { marginTop: 8, color: '#6d747e', fontSize: 15 },
-  progressRow: { marginTop: 17, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  planName: { color: '#121922', fontSize: 17, fontWeight: '700' },
+  planDay: { marginTop: 6, color: '#6d747e', fontSize: 13 },
+  progressRow: { marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
   progressTrack: { flex: 1, height: 6, borderRadius: 4, overflow: 'hidden', backgroundColor: '#e8e9eb' },
   progressFill: { height: '100%', borderRadius: 4, backgroundColor: '#ed9412' },
   progressText: { color: '#747a83', fontSize: 13 },
   emptyCard: { minHeight: 100, paddingHorizontal: 18, borderWidth: 1, borderColor: '#eadfcf', borderRadius: 16, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fffaf3' },
   emptyCopy: { flex: 1, marginLeft: 14 }, emptyTitle: { fontSize: 16, fontWeight: '700' }, emptyText: { marginTop: 3, color: '#747b85', fontSize: 12 },
-  readingCard: { padding: 17, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: 17, backgroundColor: '#fff' },
+  readingCard: { padding: 14, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: layout.cardRadius, backgroundColor: '#fff', boxShadow: '0 5px 16px rgba(31, 39, 48, 0.045)' },
   cardLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  roundIcon: { width: 45, height: 45, borderRadius: 23, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff7ec' },
+  roundIcon: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff7ec' },
   cardLabel: { color: '#151b22', fontSize: 17, fontWeight: '700' },
   readingHeading: { marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   readingTitle: { color: '#121922', fontSize: 23, fontWeight: '700' },
@@ -184,18 +194,20 @@ const styles = StyleSheet.create({
   chips: { marginTop: 17, flexDirection: 'row', gap: 12 },
   chip: { minHeight: 44, paddingHorizontal: 14, borderRadius: 11, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#f8f8f8' },
   chipText: { color: '#1c232b', fontSize: 13, fontWeight: '600' },
-  primaryButton: { height: 53, marginTop: 17, borderRadius: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 11, backgroundColor: '#ec9410' },
+  primaryButton: { height: 46, marginTop: 14, borderRadius: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#ec9410' },
   primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   noReading: { marginTop: 17, color: '#717985', fontSize: 14, lineHeight: 21 },
-  verseCard: { minHeight: 230, padding: 18, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: 17, overflow: 'hidden', backgroundColor: '#fff' },
-  quote: { marginTop: 19, maxWidth: '78%', color: '#182028', fontSize: 17, lineHeight: 27, fontWeight: '600' },
-  reference: { marginTop: 13, color: '#dc8400', fontSize: 14, fontWeight: '600' },
-  viewBible: { marginTop: 17, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' },
-  viewBibleText: { color: '#4f5864', fontSize: 13 },
-  sun: { position: 'absolute', right: 46, bottom: 20, width: 62, height: 62, borderRadius: 31, backgroundColor: '#fde3c1', opacity: 0.6 },
-  mountainOne: { position: 'absolute', right: -36, bottom: -42, width: 180, height: 120, borderRadius: 70, backgroundColor: '#efd5bd', transform: [{ rotate: '-12deg' }], opacity: 0.75 },
-  mountainTwo: { position: 'absolute', right: 58, bottom: -55, width: 150, height: 105, borderRadius: 62, backgroundColor: '#f9e8d5', transform: [{ rotate: '17deg' }], opacity: 0.85 },
-  streakCard: { padding: 18, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: 17, backgroundColor: '#fff' },
+  verseCard: { minHeight: 238, borderRadius: 18, overflow: 'hidden', backgroundColor: '#f5eadc', boxShadow: '0 8px 24px rgba(42, 30, 18, 0.10)' },
+  verseImage: { ...StyleSheet.absoluteFillObject },
+  verseOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255, 255, 255, 0.72)' },
+  verseContent: { flex: 1, padding: 17, justifyContent: 'space-between' },
+  verseHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  verseEyebrow: { color: '#66707c', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.7 },
+  quote: { marginVertical: 17, color: '#17202a', fontFamily: 'serif', fontSize: 20, lineHeight: 29, fontWeight: '600' },
+  reference: { marginTop: 3, color: '#18212a', fontSize: 14, fontWeight: '800' },
+  viewBible: { minHeight: 36, paddingHorizontal: 12, borderRadius: 18, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 8, backgroundColor: 'rgba(255,255,255,0.72)' },
+  viewBibleText: { color: '#1f2933', fontSize: 13, fontWeight: '700' },
+  streakCard: { padding: 15, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: layout.cardRadius, backgroundColor: '#fff' },
   streakHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   muted: { color: '#818792', fontSize: 13 },
   streakBody: { marginTop: 18, flexDirection: 'row', alignItems: 'center' },
