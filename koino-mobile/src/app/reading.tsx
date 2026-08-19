@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   listContent: { paddingHorizontal: 22, paddingTop: 28, paddingBottom: 20 },
   chapterHeader: { paddingHorizontal: 10, paddingBottom: 23 },
   chapterLabel: { color: '#c97800', fontSize: 14, fontWeight: '600' },
-  chapterTitle: { marginTop: 12, color: '#111820', fontFamily: 'Poppins_600SemiBold_Italic', fontSize: 30, lineHeight: 40 },
+  chapterTitle: { marginTop: 12, color: '#111820', fontSize: 30, lineHeight: 40, fontStyle: 'italic', fontWeight: '700' },
   verse: { position: 'relative', marginVertical: 3, paddingLeft: 10, paddingRight: 12, paddingVertical: 13, borderRadius: 13, flexDirection: 'row', alignItems: 'flex-start' },
   activeVerse: { backgroundColor: '#fff7eb' }, savedVerse: { backgroundColor: '#fff3db' },
   activeBar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, borderRadius: 2, backgroundColor: '#ed940d' },

@@ -45,7 +45,7 @@ export const settingsStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   screen: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 30 }, back: { width: 42, height: 40, justifyContent: 'center' },
-  title: { color: '#111820', fontFamily: 'Poppins_700Bold', fontSize: 32, lineHeight: 40 }, subtitle: { marginTop: 4, color: '#697487', fontSize: 14, lineHeight: 20 }, content: { marginTop: 22, gap: 20 },
+  title: { color: '#111820', fontSize: 32, lineHeight: 40, fontWeight: '800' }, subtitle: { marginTop: 4, color: '#697487', fontSize: 14, lineHeight: 20 }, content: { marginTop: 22, gap: 20 },
   section: { gap: 9 }, sectionTitle: { color: '#1b232c', fontSize: 12, fontWeight: '700' }, card: { overflow: 'hidden', borderWidth: 1, borderColor: '#e2e5e8', borderRadius: 12, backgroundColor: '#fff' },
   row: { minHeight: 66, paddingHorizontal: 15, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#e5e7ea', flexDirection: 'row', alignItems: 'center', gap: 13 }, pressed: { backgroundColor: '#faf8f4' },
   rowCopy: { flex: 1 }, rowTitle: { color: '#17202a', fontSize: 14, fontWeight: '600' }, rowSubtitle: { marginTop: 3, color: '#788291', fontSize: 11, lineHeight: 15 }, danger: { color: '#de3d3d' },

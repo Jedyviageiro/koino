@@ -79,8 +79,7 @@ const styles = StyleSheet.create({
     color: '#0d1722',
     fontSize: 31,
     lineHeight: 39,
-    fontWeight: '700',
-    fontFamily: 'Poppins_700Bold',
+    fontWeight: '800',
     textAlign: 'center',
   },
   subtitle: {

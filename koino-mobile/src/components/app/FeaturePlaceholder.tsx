@@ -22,6 +22,6 @@ export function FeaturePlaceholder({ active, title, icon }: { active: Tab; title
 const styles = StyleSheet.create({
   content: { flex: 1, paddingHorizontal: 30, alignItems: 'center', justifyContent: 'center' },
   icon: { width: 86, height: 86, borderRadius: 43, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff5e6' },
-  title: { marginTop: 21, color: '#141b22', fontFamily: 'Poppins_700Bold', fontSize: 30 },
+  title: { marginTop: 21, color: '#141b22', fontSize: 30, fontWeight: '800' },
   text: { marginTop: 9, color: '#737c88', fontSize: 14, textAlign: 'center' },
 });

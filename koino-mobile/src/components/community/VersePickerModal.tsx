@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#fff' },
   header: { minHeight: 58, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: '#e8eaed', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   iconButton: { width: 42, height: 42, alignItems: 'center', justifyContent: 'center' },
-  title: { color: '#161d25', fontFamily: 'Poppins_600SemiBold', fontSize: 21 },
+  title: { color: '#161d25', fontSize: 21, fontWeight: '700' },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   list: { padding: 17 },
   row: { minHeight: 55, paddingHorizontal: 14, borderBottomWidth: 1, borderBottomColor: '#eff0f2', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

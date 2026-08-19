@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#fff' },
   header: { minHeight: 70, paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   back: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
-  title: { color: '#151c24', fontFamily: 'Poppins_700Bold', fontSize: 23 },
+  title: { color: '#151c24', fontSize: 23, fontWeight: '800' },
   readAll: { color: '#d68108', fontSize: 12, fontWeight: '600' },
   list: { padding: 18, gap: 10 },
   item: { minHeight: 86, padding: 14, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: 14, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' },

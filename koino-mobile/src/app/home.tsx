@@ -33,6 +33,10 @@ function bibleLink(reference: string) {
   return match ? { pathname: '/bible' as const, params: { book: match[1], chapter: match[2], verse: match[3] } } : '/bible' as const;
 }
 
+function cleanVerseQuote(text: string) {
+  return text.trim().replace(/^[\s\/\\"'“”„‘’«»]+/, '').replace(/[\s\/\\"'“”„‘’«»]+$/, '');
+}
+
 export default function HomeScreen() {
   const { language } = useLanguage(); const pt = language === 'pt';
   const [data, setData] = useState<HomeData | null>(null);
@@ -87,7 +91,7 @@ export default function HomeScreen() {
                   <View><Text style={styles.verseEyebrow}>{pt ? 'Versículo do dia' : 'Verse of the Day'}</Text><Text style={styles.reference}>{localizedBibleReference(data.verseOfDay.reference, language)}</Text></View>
                 </View>
               </View>
-              <Text numberOfLines={5} style={styles.quote}>“{data.verseOfDay.text}”</Text>
+              <Text numberOfLines={5} style={styles.quote}>“{cleanVerseQuote(data.verseOfDay.text)}”</Text>
               <Pressable onPress={() => router.push(bibleLink(data.verseOfDay.reference))} style={styles.viewBible}>
                 <Text style={styles.viewBibleText}>{pt ? 'Ver na Bíblia' : 'View in Bible'}</Text><Ionicons name="arrow-forward" size={19} color="#1f2933" />
               </Pressable>
@@ -95,9 +99,9 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>{pt ? 'Continuar' : 'Continue'}</Text>
+            <Text numberOfLines={1} style={styles.sectionTitle}>{pt ? 'Continuar' : 'Continue'}</Text>
             <Pressable onPress={() => router.push('/plans')} style={styles.inlineLink}>
-              <Text style={styles.linkText}>{pt ? 'Ver plano' : 'View Plan'}</Text>
+              <Text numberOfLines={1} style={styles.linkText}>{pt ? 'Ver plano' : 'View Plan'}</Text>
               <Ionicons name="chevron-forward" size={21} color="#d78105" />
             </Pressable>
           </View>
@@ -174,14 +178,14 @@ const styles = StyleSheet.create({
   headerCopy: { flex: 1 },
   greeting: { color: '#111820', fontSize: 25, lineHeight: 31, fontWeight: '800' },
   subtitle: { marginTop: 3, color: '#777d86', fontSize: 13, lineHeight: 19 },
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  sectionTitle: { color: '#111820', fontSize: 19, fontWeight: '700' },
-  inlineLink: { flexDirection: 'row', alignItems: 'center' },
+  sectionHeader: { minHeight: 40, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  sectionTitle: { flex: 1, color: '#111820', fontSize: 19, fontWeight: '700' },
+  inlineLink: { minHeight: 40, paddingLeft: 8, flexDirection: 'row', alignItems: 'center', gap: 2 },
   linkText: { color: '#d78105', fontSize: 14, fontWeight: '600' },
   continueCard: { minHeight: 104, padding: 12, borderRadius: layout.cardRadius, borderWidth: 1, borderColor: '#f0dfc8', flexDirection: 'row', alignItems: 'center', backgroundColor: '#fffaf3' },
   cover: { width: 58, height: 76, borderRadius: 10 },
   continueCopy: { flex: 1, marginLeft: 15 },
-  planName: { color: '#121922', fontFamily: 'Poppins_600SemiBold_Italic', fontSize: 17 },
+  planName: { color: '#121922', fontSize: 17, fontStyle: 'italic', fontWeight: '700' },
   planDay: { marginTop: 6, color: '#6d747e', fontSize: 13 },
   progressRow: { marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
   progressTrack: { flex: 1, height: 6, borderRadius: 4, overflow: 'hidden', backgroundColor: '#e8e9eb' },
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
   roundIcon: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff7ec' },
   cardLabel: { color: '#151b22', fontSize: 17, fontWeight: '700' },
   readingHeading: { marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  readingTitle: { color: '#121922', fontFamily: 'Poppins_600SemiBold_Italic', fontSize: 23 },
+  readingTitle: { color: '#121922', fontSize: 23, fontStyle: 'italic', fontWeight: '700' },
   readingAssignment: { marginTop: 5, color: '#747b85', fontSize: 14 },
   chips: { marginTop: 17, flexDirection: 'row', gap: 12 },
   chip: { minHeight: 44, paddingHorizontal: 14, borderRadius: 11, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#f8f8f8' },
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
   verseContent: { flex: 1, padding: 17, justifyContent: 'space-between' },
   verseHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
   verseEyebrow: { color: '#66707c', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.7 },
-  quote: { marginVertical: 17, color: '#17202a', fontFamily: 'Poppins_400Regular', fontSize: 18, lineHeight: 28 },
+  quote: { marginVertical: 17, color: '#17202a', fontSize: 18, lineHeight: 28 },
   reference: { marginTop: 3, color: '#18212a', fontSize: 14, fontWeight: '800' },
   viewBible: { minHeight: 36, paddingHorizontal: 12, borderRadius: 18, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 8, backgroundColor: 'rgba(255,255,255,0.72)' },
   viewBibleText: { color: '#1f2933', fontSize: 13, fontWeight: '700' },

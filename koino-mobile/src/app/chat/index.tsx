@@ -81,7 +81,7 @@ export default function ChatListScreen() {
 const styles = StyleSheet.create({
   content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 22 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 9 }, headerCopy: { flex: 1 },
-  title: { color: '#111820', fontFamily: 'Poppins_700Bold', fontSize: layout.titleSize, lineHeight: 37 }, subtitle: { marginTop: 4, color: '#6d7787', fontSize: 13, lineHeight: 19 },
+  title: { color: '#111820', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '800' }, subtitle: { marginTop: 4, color: '#6d7787', fontSize: 13, lineHeight: 19 },
   search: { height: 46, marginTop: 18, paddingHorizontal: 14, borderRadius: 13, flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#f7f7f7' }, searchInput: { flex: 1, height: '100%', color: '#18212b', fontSize: 14 },
   list: { marginTop: 12 },
   friend: { minHeight: 82, paddingHorizontal: 4, paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center' },

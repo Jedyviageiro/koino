@@ -125,7 +125,7 @@ export default function CommunityScreen() {
 const styles = StyleSheet.create({
   content: { paddingHorizontal: layout.screenPadding, paddingTop: layout.screenTop, paddingBottom: 24 },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }, headerCopy: { flex: 1 },
-  title: { color: '#111820', fontFamily: 'Poppins_700Bold', fontSize: layout.titleSize, lineHeight: 37 }, subtitle: { marginTop: 4, maxWidth: 280, color: '#6d7787', fontSize: 13, lineHeight: 19 },
+  title: { color: '#111820', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '800' }, subtitle: { marginTop: 4, maxWidth: 280, color: '#6d7787', fontSize: 13, lineHeight: 19 },
   headerAction: { width: 42, height: 42, borderWidth: 1, borderColor: '#e4e7ea', borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
   composer: { marginTop: 18, padding: 12, borderWidth: 1, borderColor: '#dde1e5', borderRadius: 14, backgroundColor: '#fff' },
   composerTop: { flexDirection: 'row', alignItems: 'center', gap: 9 }, input: { flex: 1, minHeight: 44, maxHeight: 96, color: '#202831', fontSize: 14, lineHeight: 20 },
