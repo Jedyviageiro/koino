@@ -96,13 +96,14 @@ public class ChatService {
             User friend = friendship.getRequester().getUserId().equals(userId)
                 ? friendship.getAddressee()
                 : friendship.getRequester();
-            friend = userService.ensureUsername(friend);
+            boolean friendActive = friend.isActive();
+            if (friendActive) friend = userService.ensureUsername(friend);
             ChatMessage latest = latestByFriend.get(friend.getUserId());
             result.add(new ChatFriendResponse(
                 friend.getUserId(),
-                friend.getUsername(),
-                friend.getFullname(),
-                friend.getProfilePictureUrl(),
+                friendActive ? friend.getUsername() : "",
+                friendActive ? friend.getFullname() : "Deleted Account",
+                friendActive ? friend.getProfilePictureUrl() : null,
                 latest == null ? null : latest.getPhotoUrl() != null
                     ? (latest.getBody() == null || latest.getBody().isBlank() ? "Photo" : latest.getBody())
                     : latest.getBody(),
@@ -110,8 +111,9 @@ public class ChatService {
                 latest == null ? null : latest.getSender().getUserId(),
                 latest == null ? null : latest.getSentAt(),
                 unreadByFriend.getOrDefault(friend.getUserId(), 0L),
-                isOnline(friend.getUserId()),
-                lastSeen(friend)
+                friendActive && isOnline(friend.getUserId()),
+                friendActive ? lastSeen(friend) : null,
+                friendActive
             ));
         }
         result.sort((left, right) -> {
@@ -161,6 +163,9 @@ public class ChatService {
         ensureFriends(senderId, request.recipientId());
         User sender = findUser(senderId);
         User recipient = findUser(request.recipientId());
+        if (!recipient.isActive()) {
+            throw new IllegalArgumentException("This account is no longer available");
+        }
         ChatMessage message = new ChatMessage();
         message.setSender(sender);
         message.setRecipient(recipient);
@@ -184,6 +189,10 @@ public class ChatService {
         if (cleanedCaption != null && cleanedCaption.length() > 500) {
             throw new IllegalArgumentException("Photo caption must be 500 characters or fewer");
         }
+        User recipient = findUser(recipientId);
+        if (!recipient.isActive()) {
+            throw new IllegalArgumentException("This account is no longer available");
+        }
         try {
             Map<?, ?> upload = cloudinary.uploader().upload(
                 file.getBytes(),
@@ -196,7 +205,7 @@ public class ChatService {
             );
             ChatMessage message = new ChatMessage();
             message.setSender(findUser(senderId));
-            message.setRecipient(findUser(recipientId));
+            message.setRecipient(recipient);
             message.setBody(cleanedCaption == null || cleanedCaption.isBlank() ? "" : cleanedCaption);
             message.setPhotoUrl(requiredUploadValue(upload, "secure_url"));
             message.setPhotoPublicId(requiredUploadValue(upload, "public_id"));

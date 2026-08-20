@@ -10,11 +10,14 @@ import { SettingsRow, SettingsScreen, SettingsSection } from '@/components/setti
 import { getSettings } from '@/features/settings/settingsService';
 import type { UserSettings } from '@/features/settings/types';
 import { useLanguage } from '@/features/localization/LanguageProvider';
+import { clearAuthSession } from '@/features/auth/authStorage';
+import { ActionSheet } from '@/components/app/ActionSheet';
 
 export default function SettingsHomeScreen() {
   const { language } = useLanguage(); const pt = language === 'pt';
   const [user, setUser] = useState<UserSettings | null>(null);
   const [error, setError] = useState('');
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
   useFocusEffect(useCallback(() => { let active = true; getSettings().then((value) => { if (active) setUser(value); }).catch((failure) => { if (active) setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar as definições.' : 'Unable to load settings.'); }); return () => { active = false; }; }, [pt]));
   const countryNames: Record<string, string> = { MZ: pt ? 'Moçambique' : 'Mozambique', BR: pt ? 'Brasil' : 'Brazil', PT: 'Portugal', AO: 'Angola', US: pt ? 'Estados Unidos' : 'United States', ZA: pt ? 'África do Sul' : 'South Africa' };
   const place = user ? [user.location, user.countryCode ? countryNames[user.countryCode] ?? user.countryCode : null].filter(Boolean).join(', ') : '';
@@ -40,6 +43,17 @@ export default function SettingsHomeScreen() {
       <SettingsSection title="Koino">
         <SettingsRow icon="information-outline" title={pt ? 'Sobre o Koino' : 'About Koino'} subtitle={pt ? 'Versão, missão e informações da aplicação' : 'Version, mission, and app information'} onPress={() => router.push('/settings/about')} />
       </SettingsSection>
+      <SettingsSection title={pt ? 'Sessão' : 'Session'}>
+        <SettingsRow icon="logout" title={pt ? 'Terminar sessão' : 'Log Out'} danger onPress={() => setConfirmingLogout(true)} />
+      </SettingsSection>
+      <ActionSheet
+        visible={confirmingLogout}
+        title={pt ? 'Terminar sessão?' : 'Log out?'}
+        subtitle={pt ? 'Terá de iniciar sessão novamente para continuar.' : 'You will need to sign in again to continue.'}
+        cancelLabel={pt ? 'Cancelar' : 'Cancel'}
+        onClose={() => setConfirmingLogout(false)}
+        actions={[{ key: 'logout', label: pt ? 'Terminar sessão' : 'Log Out', icon: 'log-out-outline', destructive: true, onPress: () => { void clearAuthSession().then(() => router.replace('/')); } }]}
+      />
     </SettingsScreen>
   );
 }

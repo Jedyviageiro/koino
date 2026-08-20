@@ -10,6 +10,7 @@ export type ChatFriend = {
   unreadCount: number;
   online: boolean;
   lastSeenAt: string | null;
+  active?: boolean;
 };
 
 export type ChatMessage = {

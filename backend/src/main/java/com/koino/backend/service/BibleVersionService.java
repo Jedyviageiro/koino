@@ -90,15 +90,12 @@ public class BibleVersionService {
                     text -> text.getVerse().getVerseId(),
                     Function.identity()
                 ));
-        if (translated.size() != verses.size()) {
-            throw new IllegalStateException(
-                "This Bible version is still being prepared"
-            );
-        }
         return verses.stream()
             .map(verse -> toResponse(
                 verse,
-                translated.get(verse.getVerseId()).getText()
+                translated.containsKey(verse.getVerseId())
+                    ? translated.get(verse.getVerseId()).getText()
+                    : verse.getText()
             ))
             .toList();
     }

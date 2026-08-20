@@ -13,5 +13,6 @@ public record ChatFriendResponse(
     Instant lastMessageAt,
     long unreadCount,
     boolean online,
-    Instant lastSeenAt
+    Instant lastSeenAt,
+    boolean active
 ) {}

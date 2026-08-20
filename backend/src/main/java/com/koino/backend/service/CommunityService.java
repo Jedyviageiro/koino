@@ -224,10 +224,12 @@ public class CommunityService {
     }
 
     private CommunityAuthorResponse toAuthorResponse(User user) {
+        boolean active = user.isActive();
         return new CommunityAuthorResponse(
             user.getUserId(),
-            user.getFullname(),
-            user.getProfilePictureUrl()
+            active ? user.getFullname() : "Deleted Account",
+            active ? user.getProfilePictureUrl() : null,
+            active
         );
     }
 

@@ -26,7 +26,7 @@ export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }
   }
   return (
     <View style={styles.card}>
-      <Pressable onPress={() => onAuthorPress(post.author.userId)} style={styles.header}>
+      <Pressable disabled={post.author.active === false} onPress={() => onAuthorPress(post.author.userId)} style={styles.header}>
         <Avatar name={post.author.fullname} uri={post.author.profilePictureUrl} size={44} />
         <View style={styles.authorCopy}><Text style={styles.author}>{post.author.fullname}</Text><Text style={styles.meta}>{pt ? ({ VERSE: 'Versículo', QUESTION: 'Pergunta', PHOTO: 'Foto' }[post.postType]) : `${post.postType[0]}${post.postType.slice(1).toLowerCase()}`}  ·  {relativeTime(post.createdAt, pt)}</Text></View>
       </Pressable>
@@ -46,7 +46,7 @@ export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }
       {open ? (
         <View style={styles.comments}>
           {post.comments.map((item) => (
-            <Pressable key={item.commentId} onPress={() => onAuthorPress(item.author.userId)} style={styles.commentRow}>
+            <Pressable key={item.commentId} disabled={item.author.active === false} onPress={() => onAuthorPress(item.author.userId)} style={styles.commentRow}>
               <Avatar name={item.author.fullname} uri={item.author.profilePictureUrl} size={31} />
               <View style={styles.commentBubble}><Text style={styles.commentAuthor}>{item.author.fullname} <Text style={styles.commentTime}>• {relativeTime(item.createdAt, pt)}</Text></Text><Text style={styles.commentText}>{item.content}</Text></View>
             </Pressable>

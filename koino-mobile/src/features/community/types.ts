@@ -1,5 +1,5 @@
 export type CommunityPostType = 'VERSE' | 'QUESTION' | 'PHOTO';
-export type CommunityAuthor = { userId: number; fullname: string; profilePictureUrl: string | null };
+export type CommunityAuthor = { userId: number; fullname: string; profilePictureUrl: string | null; active?: boolean };
 export type CommunityVerse = { verseId: number; reference: string; text: string };
 export type CommunityComment = { commentId: number; author: CommunityAuthor; content: string; createdAt: string };
 export type CommunityPost = {

@@ -14,12 +14,30 @@ import { getChatFriends, getChatTyping, getConversation, sendChatMessage, sendCh
 import type { ChatFriend, ChatMessage } from '@/features/chat/types';
 import { useLanguage } from '@/features/localization/LanguageProvider';
 import { Toast, type ToastMessage } from '@/components/app/Toast';
+import { ImageViewerModal } from '@/components/app/ImageViewerModal';
 
 function messageTime(value: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(new Date(value));
 }
 
+function sameDay(left: string, right: string) {
+  const a = new Date(left); const b = new Date(right);
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function messageDay(value: string, pt: boolean) {
+  const date = new Date(value); const today = new Date();
+  if (sameDay(value, today.toISOString())) return pt ? 'Hoje' : 'Today';
+  const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+  if (sameDay(value, yesterday.toISOString())) return pt ? 'Ontem' : 'Yesterday';
+  return new Intl.DateTimeFormat(pt ? 'pt' : 'en', {
+    weekday: 'long', month: 'short', day: 'numeric',
+    ...(date.getFullYear() !== today.getFullYear() ? { year: 'numeric' as const } : {}),
+  }).format(date);
+}
+
 function lastSeenText(friend: ChatFriend | null, pt: boolean) {
+  if (friend?.active === false) return pt ? 'Conta eliminada' : 'Deleted account';
   if (friend?.online) return pt ? 'Online' : 'Online';
   if (!friend?.lastSeenAt) return pt ? 'Offline' : 'Offline';
   const elapsed = Math.max(0, Date.now() - new Date(friend.lastSeenAt).getTime());
@@ -57,6 +75,7 @@ export default function ConversationScreen() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [toast, setToast] = useState<ToastMessage | null>(null);
+  const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!Number.isFinite(friendId) || friendId <= 0) {
@@ -138,8 +157,8 @@ export default function ConversationScreen() {
       <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.header}>
           <Pressable accessibilityLabel={pt ? 'Voltar às conversas' : 'Back to chat list'} onPress={() => router.back()} style={styles.backButton}><Ionicons name="arrow-back" size={25} color="#637083" /></Pressable>
-          <Pressable accessibilityLabel={pt ? 'Abrir perfil' : 'Open profile'} disabled={!friend} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })}><Avatar name={friend?.fullname ?? 'Koino friend'} uri={friend?.profilePictureUrl} size={52} /></Pressable>
-          <Pressable disabled={!friend} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })} style={styles.headerCopy}>
+          <Pressable accessibilityLabel={pt ? 'Abrir perfil' : 'Open profile'} disabled={!friend || friend.active === false} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })}><Avatar name={friend?.fullname ?? 'Koino friend'} uri={friend?.profilePictureUrl} size={52} /></Pressable>
+          <Pressable disabled={!friend || friend.active === false} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })} style={styles.headerCopy}>
             <Text numberOfLines={1} style={styles.friendName}>{friend?.fullname ?? 'Koino friend'}</Text>
             {friendTyping ? <TypingIndicator label={pt ? 'A escrever' : 'Typing'} /> : <Text style={[styles.presence, friend?.online && styles.online]}>{lastSeenText(friend, pt)}</Text>}
           </Pressable>
@@ -152,16 +171,19 @@ export default function ConversationScreen() {
           contentContainerStyle={[styles.messages, !orderedMessages.length && styles.emptyMessages]}
           onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
           keyboardShouldPersistTaps="handled"
-          ListHeaderComponent={orderedMessages.length ? <Text style={styles.dayLabel}>{pt ? 'Hoje' : 'Today'}</Text> : null}
           ListEmptyComponent={<View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={38} color="#2d69f4" /><Text style={styles.emptyTitle}>{pt ? 'Comece a conversa' : 'Start the conversation'}</Text><Text style={styles.emptyText}>{pt ? 'Envie uma mensagem de encorajamento ao seu amigo.' : 'Send an encouraging message to your Koino friend.'}</Text></View>}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             const mine = item.senderId === currentUserId;
+            const showDay = index === 0 || !sameDay(orderedMessages[index - 1].sentAt, item.sentAt);
             return (
-              <View style={[styles.messageRow, mine && styles.myMessageRow]}>
-                {!mine ? <Avatar name={friend?.fullname ?? 'Friend'} uri={friend?.profilePictureUrl} size={36} /> : null}
-                <View style={[styles.messageGroup, mine && styles.myMessageGroup]}>
-                  <View style={[styles.bubble, item.photoUrl && styles.photoBubble, mine ? styles.myBubble : styles.theirBubble]}>{item.photoUrl ? <Image source={{ uri: item.photoUrl }} style={styles.messagePhoto} contentFit="cover" transition={180} /> : null}{item.body ? <Text style={[styles.messageBody, mine && styles.myMessageBody, item.photoUrl && styles.caption]}>{item.body}</Text> : null}</View>
-                  <View style={[styles.messageMeta, mine && styles.myMessageMeta]}><Text style={styles.messageTime}>{messageTime(item.sentAt, pt ? 'pt' : 'en')}</Text>{mine ? <Ionicons accessibilityLabel={item.readAt ? (pt ? 'Lida' : 'Read') : item.deliveredAt ? (pt ? 'Entregue' : 'Delivered') : (pt ? 'Enviada' : 'Sent')} name={item.readAt || item.deliveredAt ? 'checkmark-done' : 'checkmark'} size={17} color={item.readAt ? '#2c69f3' : '#8a94a3'} /> : null}</View>
+              <View>
+                {showDay ? <Text style={styles.dayLabel}>{messageDay(item.sentAt, pt)}</Text> : null}
+                <View style={[styles.messageRow, mine && styles.myMessageRow]}>
+                  {!mine ? <Avatar name={friend?.fullname ?? 'Friend'} uri={friend?.profilePictureUrl} size={36} /> : null}
+                  <View style={[styles.messageGroup, mine && styles.myMessageGroup]}>
+                    <View style={[styles.bubble, item.photoUrl && styles.photoBubble, mine ? styles.myBubble : styles.theirBubble]}>{item.photoUrl ? <Pressable accessibilityLabel={pt ? 'Abrir imagem' : 'Open image'} onPress={() => setViewingPhoto(item.photoUrl)}><Image source={{ uri: item.photoUrl }} style={styles.messagePhoto} contentFit="cover" transition={180} /></Pressable> : null}{item.body ? <Text style={[styles.messageBody, mine && styles.myMessageBody, item.photoUrl && styles.caption]}>{item.body}</Text> : null}</View>
+                    <View style={[styles.messageMeta, mine && styles.myMessageMeta]}><Text style={styles.messageTime}>{messageTime(item.sentAt, pt ? 'pt' : 'en')}</Text>{mine ? <Ionicons accessibilityLabel={item.readAt ? (pt ? 'Lida' : 'Read') : item.deliveredAt ? (pt ? 'Entregue' : 'Delivered') : (pt ? 'Enviada' : 'Sent')} name={item.readAt || item.deliveredAt ? 'checkmark-done' : 'checkmark'} size={17} color={item.readAt ? '#2c69f3' : '#8a94a3'} /> : null}</View>
+                  </View>
                 </View>
               </View>
             );
@@ -169,12 +191,13 @@ export default function ConversationScreen() {
         />
 
         {pendingPhoto ? <View style={styles.photoPreview}><Image source={{ uri: pendingPhoto.uri }} style={styles.previewImage} contentFit="cover" /><View style={styles.previewCopy}><Text style={styles.previewTitle}>{pt ? 'Foto selecionada' : 'Photo selected'}</Text><Text style={styles.previewHint}>{pt ? 'Adicione uma legenda ou envie agora.' : 'Add a caption or send it now.'}</Text></View><Pressable accessibilityLabel={pt ? 'Remover foto' : 'Remove photo'} onPress={() => setPendingPhoto(null)} style={styles.removePreview}><Ionicons name="close" size={20} color="#344050" /></Pressable></View> : null}
-        <View style={styles.composer}>
+        {friend?.active === false ? <View style={styles.unavailable}><Ionicons name="lock-closed-outline" size={17} color="#788291" /><Text style={styles.unavailableText}>{pt ? 'Esta conta já não está disponível.' : 'This account is no longer available.'}</Text></View> : <View style={styles.composer}>
           <Pressable accessibilityLabel={pt ? 'Anexar foto' : 'Attach photo'} disabled={sending} onPress={choosePhoto} style={styles.addButton}><Ionicons name="image-outline" size={21} color="#59677a" /></Pressable>
           <View style={styles.inputWrap}><TextInput value={draft} onChangeText={setDraft} onSubmitEditing={send} returnKeyType="send" placeholder={pt ? 'Escreva uma mensagem…' : 'Type a message…'} placeholderTextColor="#778294" multiline style={styles.input} /></View>
           <Pressable accessibilityLabel={pt ? 'Enviar mensagem' : 'Send message'} disabled={(!draft.trim() && !pendingPhoto) || sending} onPress={send} style={({ pressed }) => [styles.sendButton, ((!draft.trim() && !pendingPhoto) || sending) && styles.sendDisabled, pressed && styles.pressed]}><Ionicons name="send" size={21} color="#fff" /></Pressable>
-        </View>
+        </View>}
         <Toast message={toast} duration={3000} onDismiss={() => setToast(null)} />
+        <ImageViewerModal visible={Boolean(viewingPhoto)} uri={viewingPhoto} portuguese={pt} onClose={() => setViewingPhoto(null)} onSaved={() => setToast({ id: Date.now(), tone: 'success', text: pt ? 'Imagem guardada nas fotos.' : 'Image saved to photos.' })} onError={(text) => setToast({ id: Date.now(), tone: 'error', text })} />
       </KeyboardAvoidingView>
     </AppShell>
   );
@@ -195,4 +218,5 @@ const styles = StyleSheet.create({
   composer: { paddingHorizontal: 12, paddingVertical: 10, borderTopWidth: 1, borderTopColor: '#eceef0', flexDirection: 'row', alignItems: 'flex-end', gap: 8, backgroundColor: '#fff' },
   addButton: { width: 43, height: 43, borderWidth: 1, borderColor: '#dfe3e8', borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f7f8f9' }, inputWrap: { flex: 1, minHeight: 43, maxHeight: 104, paddingHorizontal: 15, borderWidth: 1, borderColor: '#e1e5ea', borderRadius: 23, justifyContent: 'center' }, input: { maxHeight: 92, paddingVertical: 9, color: '#17202b', fontSize: 14 },
   sendButton: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#2b69f4' }, sendDisabled: { opacity: 0.45 }, pressed: { opacity: 0.7 },
+  unavailable: { minHeight: 62, paddingHorizontal: 18, borderTopWidth: 1, borderTopColor: '#eceef0', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#f7f8f9' }, unavailableText: { color: '#788291', fontSize: 12, fontWeight: '600' },
 });

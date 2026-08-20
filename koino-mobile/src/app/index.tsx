@@ -72,7 +72,12 @@ export default function IndexScreen() {
       const session = await loginWithGoogle(response.data.idToken);
       router.replace(session.onboardingCompleted ? '/home' : '/onboarding');
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Google sign-in failed.');
+      const raw = error instanceof Error ? error.message : String(error ?? '');
+      setMessage(
+        /DEVELOPER_ERROR|\bcode\s*[:=]?\s*10\b/i.test(raw)
+          ? 'Google Sign-In is not authorized for this APK yet. Add this build’s SHA-1 certificate for com.koino.mobile in Google Cloud, then rebuild the APK.'
+          : raw || 'Google sign-in failed.',
+      );
     } finally {
       setLoading(false);
     }

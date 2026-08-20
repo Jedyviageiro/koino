@@ -29,16 +29,52 @@ export default function BibleScreen() {
   const [error, setError] = useState(''); const [loading, setLoading] = useState(true);
   const [highlights, setHighlights] = useState<Map<number, string>>(new Map()); const [highlightVerse, setHighlightVerse] = useState<Verse | null>(null); const [actionVerse, setActionVerse] = useState<Verse | null>(null); const [savingHighlight, setSavingHighlight] = useState(false); const [toast, setToast] = useState<ToastMessage | null>(null);
   const pt = language === 'pt';
-  const visibleVersions = versions.filter((item) => pt ? item.code === 'NVI' : item.code !== 'NVI');
+  const localizedVersions = versions.filter((item) => pt ? item.code === 'NVI' : item.code !== 'NVI');
+  const visibleVersions = localizedVersions.length ? localizedVersions : versions.filter((item) => item.code === 'KJV');
   const loadLibrary = useCallback(async () => {
     setLoading(true); setError('');
-    try { const [availableVersions, availableBooks, bookmarks] = await Promise.all([apiRequest<Version[]>('/bible/versions'), apiRequest<Book[]>('/bible/books'), getBookmarks()]); setVersions(availableVersions); setBooks(availableBooks); setHighlights(new Map(bookmarks.map((item) => [item.verseId, item.highlightColor ?? '#CFE0FF']))); const languageVersions = availableVersions.filter((item) => pt ? item.code === 'NVI' : item.code !== 'NVI'); const preferred = pt ? languageVersions.find((item) => item.code === 'NVI') : languageVersions.find((item) => item.code === 'NIV'); setVersion(preferred?.code ?? languageVersions[0]?.code ?? (pt ? 'NVI' : 'NIV')); const requestedBook = availableBooks.find((item) => item.title.toLowerCase() === params.book?.toLowerCase()); setBook(requestedBook ?? availableBooks[0] ?? null); }
+    try {
+      const [availableVersions, availableBooks] = await Promise.all([apiRequest<Version[]>('/bible/versions'), apiRequest<Book[]>('/bible/books')]);
+      setVersions(availableVersions); setBooks(availableBooks);
+      const languageVersions = availableVersions.filter((item) => pt ? item.code === 'NVI' : item.code !== 'NVI');
+      const preferred = pt ? languageVersions.find((item) => item.code === 'NVI') : languageVersions.find((item) => item.code === 'NIV');
+      setVersion(preferred?.code ?? languageVersions[0]?.code ?? availableVersions.find((item) => item.code === 'KJV')?.code ?? 'KJV');
+      const requestedBook = availableBooks.find((item) => item.title.toLowerCase() === params.book?.toLowerCase());
+      setBook(requestedBook ?? availableBooks[0] ?? null);
+      getBookmarks().then((bookmarks) => setHighlights(new Map(bookmarks.map((item) => [item.verseId, item.highlightColor ?? '#CFE0FF'])))).catch(() => setHighlights(new Map()));
+    }
     catch (failure) { setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar a Bíblia.' : 'Unable to load the Bible.'); }
     finally { setLoading(false); }
   }, [params.book, pt]);
   useEffect(() => { loadLibrary(); }, [loadLibrary]);
-  useEffect(() => { if (book) apiRequest<Chapter[]>(`/bible/books/${book.bookId}/chapters`).then((items) => { setChapters(items); const requested = book.title.toLowerCase() === params.book?.toLowerCase() ? Number(params.chapter) : NaN; setChapter(items.find((item) => item.chapterNumber === requested) ?? items[0] ?? null); }).catch((failure) => setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar os capítulos.' : 'Unable to load chapters.')); }, [book, params.book, params.chapter, pt]);
-  useEffect(() => { if (chapter) { setLoading(true); apiRequest<Verse[]>(`/bible/chapters/${chapter.chapterId}/verses?version=${encodeURIComponent(version)}`).then(setVerses).catch((failure) => setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar os versículos.' : 'Unable to load verses.')).finally(() => setLoading(false)); } }, [chapter, pt, version]);
+  useEffect(() => {
+    if (!book) return;
+    let active = true;
+    setLoading(true); setError(''); setChapters([]); setChapter(null); setVerses([]);
+    apiRequest<Chapter[]>(`/bible/books/${book.bookId}/chapters`)
+      .then((items) => { if (active) { setChapters(items); const requested = book.title.toLowerCase() === params.book?.toLowerCase() ? Number(params.chapter) : NaN; setChapter(items.find((item) => item.chapterNumber === requested) ?? items[0] ?? null); setError(''); } })
+      .catch((failure) => { if (active) setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar os capítulos.' : 'Unable to load chapters.'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [book, params.book, params.chapter, pt]);
+  useEffect(() => {
+    if (!chapter || !version) return;
+    let active = true;
+    setLoading(true); setError(''); setVerses([]);
+    apiRequest<Verse[]>(`/bible/chapters/${chapter.chapterId}/verses?version=${encodeURIComponent(version)}`)
+      .then((items) => { if (active) { setVerses(items); setError(''); } })
+      .catch((failure) => {
+        if (!active) return;
+        if (version !== 'KJV' && versions.some((item) => item.code === 'KJV')) {
+          setToast({ id: Date.now(), tone: 'info', text: pt ? 'Esta tradução está temporariamente indisponível. A abrir KJV.' : 'That translation is temporarily unavailable. Opening KJV.' });
+          setVersion('KJV');
+          return;
+        }
+        setError(failure instanceof Error ? failure.message : pt ? 'Não foi possível carregar os versículos.' : 'Unable to load verses.');
+      })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [chapter, pt, version, versions]);
   async function copyVerse(item: Verse) { const bookName = book ? localizedBibleBook(book.title, language) : ''; await Clipboard.setStringAsync(`${item.text} — ${bookName} ${chapter?.chapterNumber}:${item.verseNumber} (${version})`); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Versículo copiado.' : 'Verse copied.' }); }
   async function saveVerseHighlight(color: string) { if (!highlightVerse) return; setSavingHighlight(true); try { await saveBookmark(highlightVerse.verseId, color); setHighlights((current) => new Map(current).set(highlightVerse.verseId, color)); setHighlightVerse(null); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Versículo destacado.' : 'Verse highlighted.' }); } catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível destacar.' : 'Unable to highlight verse.' }); } finally { setSavingHighlight(false); } }
   async function removeVerseHighlight() { if (!highlightVerse) return; setSavingHighlight(true); try { await removeBookmark(highlightVerse.verseId); setHighlights((current) => { const next = new Map(current); next.delete(highlightVerse.verseId); return next; }); setHighlightVerse(null); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Destaque removido.' : 'Highlight removed.' }); } catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível remover.' : 'Unable to remove highlight.' }); } finally { setSavingHighlight(false); } }
