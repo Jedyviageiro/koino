@@ -31,7 +31,7 @@ import com.koino.backend.repository.UserRepository;
 public class ChatService {
     private static final long MAX_PHOTO_SIZE = 5L * 1024 * 1024;
     private static final String PHOTO_FOLDER = "koino/chat";
-    private static final long ONLINE_WINDOW_SECONDS = 20;
+    private static final long ONLINE_WINDOW_SECONDS = 12;
     private static final long LAST_SEEN_WRITE_SECONDS = 60;
     private final ChatMessageRepository messageRepository;
     private final FriendshipRepository friendshipRepository;
@@ -39,6 +39,8 @@ public class ChatService {
     private final UserService userService;
     private final Cloudinary cloudinary;
     private final NotificationService notificationService;
+    private final TrustSafetyService trustSafetyService;
+    private final ContentModerationService contentModerationService;
     private final ConcurrentMap<String, Instant> typingUntil =
         new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, Instant> onlineUntil = new ConcurrentHashMap<>();
@@ -51,7 +53,9 @@ public class ChatService {
         UserRepository userRepository,
         UserService userService,
         Cloudinary cloudinary,
-        NotificationService notificationService
+        NotificationService notificationService,
+        TrustSafetyService trustSafetyService,
+        ContentModerationService contentModerationService
     ) {
         this.messageRepository = messageRepository;
         this.friendshipRepository = friendshipRepository;
@@ -59,6 +63,8 @@ public class ChatService {
         this.userService = userService;
         this.cloudinary = cloudinary;
         this.notificationService = notificationService;
+        this.trustSafetyService = trustSafetyService;
+        this.contentModerationService = contentModerationService;
     }
 
     @Transactional
@@ -96,6 +102,7 @@ public class ChatService {
             User friend = friendship.getRequester().getUserId().equals(userId)
                 ? friendship.getAddressee()
                 : friendship.getRequester();
+            if (trustSafetyService.isBlockedEitherWay(userId, friend.getUserId())) continue;
             boolean friendActive = friend.isActive();
             if (friendActive) friend = userService.ensureUsername(friend);
             ChatMessage latest = latestByFriend.get(friend.getUserId());
@@ -194,8 +201,14 @@ public class ChatService {
             throw new IllegalArgumentException("This account is no longer available");
         }
         try {
+            byte[] bytes = file.getBytes();
+            ContentModerationService.ModerationResult moderation = contentModerationService.reviewImage(bytes, file.getContentType(), cleanedCaption);
+            if (!moderation.allowed()) {
+                if (moderation.confidence() >= .75) trustSafetyService.recordAutomatedViolation(senderId, moderation.reason(), moderation.confidence(), moderation.severe());
+                throw new IllegalArgumentException("This photo cannot be sent because it may violate the community guidelines.");
+            }
             Map<?, ?> upload = cloudinary.uploader().upload(
-                file.getBytes(),
+                bytes,
                 ObjectUtils.asMap(
                     "resource_type", "image",
                     "folder", PHOTO_FOLDER,
@@ -274,6 +287,9 @@ public class ChatService {
     private void ensureFriends(Long firstId, Long secondId) {
         if (firstId.equals(secondId)) {
             throw new IllegalArgumentException("Conversation not available");
+        }
+        if (trustSafetyService.isBlockedEitherWay(firstId, secondId)) {
+            throw new IllegalArgumentException("This conversation is no longer available.");
         }
         long lower = Math.min(firstId, secondId);
         long higher = Math.max(firstId, secondId);

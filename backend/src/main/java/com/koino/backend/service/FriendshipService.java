@@ -20,6 +20,7 @@ import com.koino.backend.model.FriendshipStatus;
 import com.koino.backend.model.User;
 import com.koino.backend.model.UserActivePlan;
 import com.koino.backend.model.UserProfile;
+import com.koino.backend.model.AccountStatus;
 import com.koino.backend.repository.BattleProfileRepository;
 import com.koino.backend.repository.BattleRatingRepository;
 import com.koino.backend.repository.CommunityPostRepository;
@@ -42,6 +43,7 @@ public class FriendshipService {
     private final UserService userService;
     private final EmailService emailService;
     private final PlanLocalizationService planLocalizationService;
+    private final TrustSafetyService trustSafetyService;
 
     public FriendshipService(
         FriendshipRepository friendshipRepository,
@@ -54,7 +56,8 @@ public class FriendshipService {
         NotificationService notificationService,
         UserService userService,
         EmailService emailService,
-        PlanLocalizationService planLocalizationService
+        PlanLocalizationService planLocalizationService,
+        TrustSafetyService trustSafetyService
     ) {
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
@@ -67,6 +70,7 @@ public class FriendshipService {
         this.userService = userService;
         this.emailService = emailService;
         this.planLocalizationService = planLocalizationService;
+        this.trustSafetyService = trustSafetyService;
     }
 
     @Transactional
@@ -76,6 +80,7 @@ public class FriendshipService {
                 "You cannot send yourself a friend request"
             );
         }
+        ensureVisible(requesterId, addresseeId);
         User requester = findActiveUser(requesterId);
         User addressee = findActiveUser(addresseeId);
         long lower = Math.min(requesterId, addresseeId);
@@ -161,7 +166,9 @@ public class FriendshipService {
         return friendshipRepository.findForUserByStatus(
             userId,
             FriendshipStatus.ACCEPTED
-        ).stream().map(item -> toResponse(item, userId)).toList();
+        ).stream()
+            .filter(item -> !trustSafetyService.isBlockedEitherWay(userId, item.getRequester().getUserId().equals(userId) ? item.getAddressee().getUserId() : item.getRequester().getUserId()))
+            .map(item -> toResponse(item, userId)).toList();
     }
 
     @Transactional
@@ -169,6 +176,7 @@ public class FriendshipService {
         Long viewerId,
         Long profileUserId
     ) {
+        ensureVisible(viewerId, profileUserId);
         return profile(viewerId, findActiveUser(profileUserId));
     }
 
@@ -178,10 +186,11 @@ public class FriendshipService {
         String username
     ) {
         User profileUser = userRepository.findByUsernameIgnoreCase(username)
-            .filter(User::isActive)
+            .filter(this::isPubliclyVisible)
             .orElseThrow(() -> new IllegalArgumentException(
                 "User profile not found"
             ));
+        ensureVisible(viewerId, profileUser.getUserId());
         return profile(viewerId, profileUser);
     }
 
@@ -192,14 +201,21 @@ public class FriendshipService {
     ) {
         String normalized = normalizeFriendCode(friendCode);
         User profileUser = userRepository.findByFriendCodeIgnoreCase(normalized)
-            .filter(User::isActive)
+            .filter(this::isPubliclyVisible)
             .orElseThrow(() -> new IllegalArgumentException(
                 "Friend code not found"
             ));
         if (profileUser.getUserId().equals(viewerId)) {
             throw new IllegalArgumentException("You cannot add your own friend code");
         }
+        ensureVisible(viewerId, profileUser.getUserId());
         return profile(viewerId, profileUser);
+    }
+
+    private void ensureVisible(Long viewerId, Long profileUserId) {
+        if (viewerId != null && !viewerId.equals(profileUserId) && trustSafetyService.isBlockedEitherWay(viewerId, profileUserId)) {
+            throw new IllegalArgumentException("This profile is not available.");
+        }
     }
 
     private String normalizeFriendCode(String value) {
@@ -415,9 +431,13 @@ public class FriendshipService {
 
     private User findActiveUser(Long userId) {
         return userRepository.findById(userId)
-            .filter(User::isActive)
+            .filter(this::isPubliclyVisible)
             .orElseThrow(() -> new IllegalArgumentException(
                 "User profile not found"
             ));
+    }
+
+    private boolean isPubliclyVisible(User user) {
+        return user.isActive() && user.getAccountStatus() != AccountStatus.BANNED;
     }
 }

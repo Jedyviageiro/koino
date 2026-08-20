@@ -11,6 +11,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -83,4 +85,21 @@ public class User {
     private LocalDate lastLoginDate;
 
     private Instant lastSeenAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16)
+    @ColumnDefault("'ACTIVE'")
+    private AccountStatus accountStatus = AccountStatus.ACTIVE;
+
+    private Instant suspensionEndsAt;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int warningCount;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int reportCount;
+
+    private Instant bannedAt;
 }

@@ -22,7 +22,9 @@ import com.koino.backend.repository.ChatMessageRepository;
 import com.koino.backend.repository.FriendshipRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.service.ChatService;
+import com.koino.backend.service.ContentModerationService;
 import com.koino.backend.service.NotificationService;
+import com.koino.backend.service.TrustSafetyService;
 import com.koino.backend.service.UserService;
 
 class ChatServiceTests {
@@ -97,7 +99,7 @@ class ChatServiceTests {
             when(users.findById(1L)).thenReturn(Optional.of(first));
             when(users.findById(2L)).thenReturn(Optional.of(second));
             when(friendships.findByLowerUserIdAndHigherUserId(1L, 2L)).thenReturn(Optional.of(friendship));
-            service = new ChatService(messages, friendships, users, userService, mock(Cloudinary.class), notifications);
+            service = new ChatService(messages, friendships, users, userService, mock(Cloudinary.class), notifications, mock(TrustSafetyService.class), mock(ContentModerationService.class));
         }
     }
 

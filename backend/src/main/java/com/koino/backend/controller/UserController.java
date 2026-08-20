@@ -153,6 +153,7 @@ public class UserController {
             || !jwtService.isRefreshTokenValid(request.refreshToken(), user)) {
             return ResponseEntity.status(401).body("Session expired");
         }
+        userService.ensureAccountAccess(user);
         return ResponseEntity.ok(new LoginResponse(
             user.getUserId(),
             jwtService.generateToken(user),

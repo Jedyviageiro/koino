@@ -75,8 +75,10 @@ export default function IndexScreen() {
       const raw = error instanceof Error ? error.message : String(error ?? '');
       setMessage(
         /DEVELOPER_ERROR|\bcode\s*[:=]?\s*10\b/i.test(raw)
-          ? 'Google Sign-In is not authorized for this APK yet. Add this build’s SHA-1 certificate for com.koino.mobile in Google Cloud, then rebuild the APK.'
-          : raw || 'Google sign-in failed.',
+          ? 'Google sign-in is temporarily unavailable for this app version. Please use email sign-in or try again later.'
+          : /api key|client id|identity token|not configured|exception|stack/i.test(raw)
+            ? 'Google sign-in could not be completed right now. Please try again.'
+            : raw || 'Google sign-in could not be completed right now. Please try again.',
       );
     } finally {
       setLoading(false);

@@ -10,7 +10,8 @@ import { ErrorState, LoadingState } from '@/components/app/ScreenState';
 import { Avatar } from '@/components/community/Avatar';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import { VersePickerModal } from '@/components/community/VersePickerModal';
-import { addCommunityComment, createCommunityPhotoPost, createCommunityPost, getBibleBooks, getCommunityPosts, getCurrentUser } from '@/features/community/communityService';
+import { addCommunityComment, blockCommunityUser, createCommunityPhotoPost, createCommunityPost, getBibleBooks, getCommunityPosts, getCurrentUser, reportCommunityPost } from '@/features/community/communityService';
+import type { ReportReason } from '@/components/community/ReportModal';
 import type { BibleBook, CommunityPost, CommunityPostType, CommunityVerse, CurrentUser } from '@/features/community/types';
 import { router } from 'expo-router';
 import { layout } from '@/theme/layout';
@@ -80,12 +81,22 @@ export default function CommunityScreen() {
     finally { setCommentingId(null); }
   }
 
+  async function reportPost(postId: number, reason: ReportReason, details: string) {
+    try { await reportCommunityPost(postId, reason, details); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Obrigado. A publicação foi enviada para análise.' : 'Thank you. The post was sent for review.' }); return true; }
+    catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível enviar a denúncia.' : 'Unable to submit this report.' }); return false; }
+  }
+
+  async function blockUser(userId: number) {
+    try { await blockCommunityUser(userId); setPosts((current) => current?.filter((post) => post.author.userId !== userId) ?? null); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Utilizador bloqueado. O conteúdo foi ocultado.' : 'User blocked. Their content is now hidden.' }); return true; }
+    catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível bloquear este utilizador.' : 'Unable to block this user.' }); return false; }
+  }
+
   return (
     <AppShell active="community">
       {!posts && !error ? <LoadingState label={pt ? 'A abrir a comunidade…' : 'Opening the community…'} /> : null}
       {!posts && error ? <ErrorState message={error} onRetry={() => load()} /> : null}
       {posts && user ? (
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor="#e59010" />}>
+        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor="#e59010" />}>
           <View style={styles.header}>
             <View style={styles.headerCopy}><Text style={styles.title}>{pt ? 'Comunidade' : 'Community'}</Text><Text style={styles.subtitle}>{pt ? 'Partilhe a Palavra, faça perguntas e encoraje outros.' : 'Share Scripture, ask questions, and encourage one another.'}</Text></View>
             <Pressable accessibilityLabel={pt ? 'Abrir conversas' : 'Open chats'} onPress={() => router.push('/chat')} style={styles.headerAction}><Ionicons name="chatbubbles-outline" size={21} color="#27313d" /></Pressable>
@@ -111,7 +122,7 @@ export default function CommunityScreen() {
             {filters.map((item) => <Pressable key={item.value} onPress={() => { setFilter(item.value); setPosts(null); }} style={[styles.filter, filter === item.value && styles.filterActive]}><Text style={[styles.filterText, filter === item.value && styles.filterTextActive]}>{item.label}</Text></Pressable>)}
           </ScrollView>
           <View style={styles.feed}>
-            {posts.length ? posts.map((post) => <CommunityPostCard key={post.postId} post={post} commenting={commentingId === post.postId} onComment={addComment} onAuthorPress={(userId) => router.push({ pathname: '/profile/[userId]', params: { userId: String(userId) } })} />) : <View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={35} color="#d68108" /><Text style={styles.emptyTitle}>{pt ? 'Comece a conversa' : 'Start the conversation'}</Text><Text style={styles.emptyText}>{pt ? 'Partilhe um versículo, foto ou pergunta.' : 'Share a verse, photo, or question with the community.'}</Text></View>}
+            {posts.length ? posts.map((post) => <CommunityPostCard key={post.postId} post={post} currentUserId={user.userId} commenting={commentingId === post.postId} onComment={addComment} onReport={reportPost} onBlock={blockUser} onAuthorPress={(userId) => router.push({ pathname: '/profile/[userId]', params: { userId: String(userId) } })} />) : <View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={35} color="#d68108" /><Text style={styles.emptyTitle}>{pt ? 'Comece a conversa' : 'Start the conversation'}</Text><Text style={styles.emptyText}>{pt ? 'Partilhe um versículo, foto ou pergunta.' : 'Share a verse, photo, or question with the community.'}</Text></View>}
           </View>
           {error ? <Pressable onPress={() => setError('')}><Text style={styles.error}>{error}</Text></Pressable> : null}
           <VersePickerModal visible={versePickerOpen} books={books} onClose={() => setVersePickerOpen(false)} onSelect={(selected) => { setVerse(selected); setMode('VERSE'); }} />
@@ -128,7 +139,7 @@ const styles = StyleSheet.create({
   title: { color: '#111820', fontSize: layout.titleSize, lineHeight: 37, fontWeight: '800' }, subtitle: { marginTop: 4, maxWidth: 280, color: '#6d7787', fontSize: 13, lineHeight: 19 },
   headerAction: { width: 42, height: 42, borderWidth: 1, borderColor: '#e4e7ea', borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
   composer: { marginTop: 18, padding: 12, borderWidth: 1, borderColor: '#dde1e5', borderRadius: 14, backgroundColor: '#fff' },
-  composerTop: { flexDirection: 'row', alignItems: 'center', gap: 9 }, input: { flex: 1, minHeight: 44, maxHeight: 96, color: '#202831', fontSize: 14, lineHeight: 20 },
+  composerTop: { flexDirection: 'row', alignItems: 'center', gap: 9 }, input: { flex: 1, minHeight: 46, maxHeight: 96, paddingHorizontal: 11, paddingVertical: 8, borderWidth: 1, borderColor: '#d9dee4', borderRadius: 12, color: '#202831', backgroundColor: '#fff', fontSize: 14, lineHeight: 20, textAlignVertical: 'top' },
   postButton: { minWidth: 78, height: 42, paddingHorizontal: 12, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e29624' }, postDisabled: { backgroundColor: '#f4ede4' }, postText: { color: '#fff', fontSize: 13, fontWeight: '700' }, postTextDisabled: { color: '#9299a3' },
   composerDivider: { height: 1, marginTop: 12, backgroundColor: '#eceef0' }, modes: { paddingTop: 9, flexDirection: 'row', gap: 5 },
   mode: { flex: 1, minHeight: 42, paddingHorizontal: 7, borderRadius: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }, modeActive: { backgroundColor: '#fff6ea' }, modeText: { color: '#526071', fontSize: 12, fontWeight: '600' }, modeTextActive: { color: '#a86508' },

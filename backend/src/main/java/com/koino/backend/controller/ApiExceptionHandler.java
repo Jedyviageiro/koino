@@ -12,6 +12,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 
 import com.koino.backend.dto.common.ErrorResponse;
 import com.koino.backend.service.DevotionalGenerationException;
+import com.koino.backend.service.ModerationUnavailableException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -42,11 +43,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidation(
         MethodArgumentNotValidException exception
     ) {
-        String message = exception.getBindingResult().getFieldErrors().stream()
-            .findFirst()
-            .map(error -> error.getField() + ": " + error.getDefaultMessage())
-            .orElse("Request validation failed");
-        return error(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", message);
+        return error(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "Please check the information you entered and try again.");
     }
 
     @ExceptionHandler(MissingServletRequestPartException.class)
@@ -56,7 +53,7 @@ public class ApiExceptionHandler {
         return error(
             HttpStatus.BAD_REQUEST,
             "MISSING_REQUEST_PART",
-            "Missing multipart field: " + exception.getRequestPartName()
+            "Please choose the required file and try again."
         );
     }
 
@@ -67,7 +64,7 @@ public class ApiExceptionHandler {
         return error(
             HttpStatus.CONTENT_TOO_LARGE,
             "FILE_TOO_LARGE",
-            "Uploaded file must be 8 MB or smaller"
+            "This file is too large. Please choose one that is 8 MB or smaller."
         );
     }
 
@@ -81,6 +78,12 @@ public class ApiExceptionHandler {
             "DEVOTIONAL_GENERATION_FAILED",
             "Today's devotional is temporarily unavailable. Please try again shortly."
         );
+    }
+
+    @ExceptionHandler(ModerationUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleModerationUnavailable(ModerationUnavailableException exception) {
+        logger.warn("Content moderation unavailable", exception);
+        return error(HttpStatus.SERVICE_UNAVAILABLE, "SAFETY_REVIEW_UNAVAILABLE", "Photo safety review is temporarily unavailable. Please try again shortly.");
     }
 
     @ExceptionHandler(Exception.class)

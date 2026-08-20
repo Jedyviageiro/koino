@@ -15,6 +15,7 @@ import com.koino.backend.config.JwtAuthenticationFilter;
 import com.koino.backend.model.User;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.service.JwtService;
+import com.koino.backend.service.TrustSafetyService;
 
 class JwtAuthenticationFilterTests {
 
@@ -94,6 +95,7 @@ class JwtAuthenticationFilterTests {
         JwtService jwtService,
         UserRepository userRepository
     ) {
-        return new JwtAuthenticationFilter(jwtService, userRepository);
+        TrustSafetyService safety = mock(TrustSafetyService.class);
+        return new JwtAuthenticationFilter(jwtService, userRepository, safety);
     }
 }

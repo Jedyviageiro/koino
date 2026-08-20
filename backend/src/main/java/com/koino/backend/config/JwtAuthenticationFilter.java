@@ -10,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.koino.backend.model.User;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.service.JwtService;
+import com.koino.backend.service.TrustSafetyService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,10 +23,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final TrustSafetyService trustSafetyService;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository, TrustSafetyService trustSafetyService) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        this.trustSafetyService = trustSafetyService;
     }
 
     @Override
@@ -44,6 +47,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String email = jwtService.extractEmail(token);
             User user = userRepository.findByEmail(email);
+            String restriction = user == null ? null : trustSafetyService.accessRestriction(user);
+            if (restriction != null) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"status\":403,\"errorCode\":\"ACCOUNT_RESTRICTED\",\"message\":\"" + restriction.replace("\"", "\\\"") + "\"}");
+                return;
+            }
             if (user != null
                 && user.isActive()
                 && SecurityContextHolder.getContext().getAuthentication() == null

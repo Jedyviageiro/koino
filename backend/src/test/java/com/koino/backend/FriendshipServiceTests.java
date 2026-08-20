@@ -142,7 +142,8 @@ class FriendshipServiceTests {
             notifications,
             userService,
             mock(EmailService.class),
-            mock(PlanLocalizationService.class)
+            mock(PlanLocalizationService.class),
+            mock(com.koino.backend.service.TrustSafetyService.class)
         );
     }
 

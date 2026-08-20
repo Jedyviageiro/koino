@@ -34,9 +34,10 @@ public class CommunityController {
 
     @GetMapping("/posts")
     public List<CommunityPostResponse> getFeed(
+        @AuthenticationPrincipal User user,
         @RequestParam(defaultValue = "ALL") String type
     ) {
-        return communityService.getFeed(type);
+        return communityService.getFeed(user.getUserId(), type);
     }
 
     @PostMapping("/posts")

@@ -21,6 +21,7 @@
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO"
       ],
+      "softwareKeyboardLayoutMode": "resize",
       "predictiveBackGestureEnabled": false
     },
     "web": {

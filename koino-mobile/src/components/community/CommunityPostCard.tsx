@@ -7,6 +7,8 @@ import { AppText as Text, AppTextInput as TextInput } from '@/components/app/Typ
 import type { CommunityPost } from '@/features/community/types';
 import { Avatar } from './Avatar';
 import { useLanguage } from '@/features/localization/LanguageProvider';
+import { ActionSheet } from '@/components/app/ActionSheet';
+import { ReportModal, type ReportReason } from './ReportModal';
 
 function relativeTime(value: string, pt = false) {
   const minutes = Math.floor(Math.max(0, Date.now() - new Date(value).getTime()) / 60000);
@@ -16,8 +18,9 @@ function relativeTime(value: string, pt = false) {
   return pt ? (hours < 24 ? `há ${hours}h` : `há ${Math.floor(hours / 24)}d`) : (hours < 24 ? `${hours}h ago` : `${Math.floor(hours / 24)}d ago`);
 }
 
-export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }: { post: CommunityPost; commenting: boolean; onComment: (postId: number, content: string) => Promise<boolean>; onAuthorPress: (userId: number) => void }) {
+export function CommunityPostCard({ post, currentUserId, commenting, onComment, onAuthorPress, onReport, onBlock }: { post: CommunityPost; currentUserId: number; commenting: boolean; onComment: (postId: number, content: string) => Promise<boolean>; onAuthorPress: (userId: number) => void; onReport: (postId: number, reason: ReportReason, details: string) => Promise<boolean>; onBlock: (userId: number) => Promise<boolean> }) {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); const [reportOpen, setReportOpen] = useState(false);
   const { language } = useLanguage(); const pt = language === 'pt';
   const [comment, setComment] = useState('');
   async function submit() {
@@ -26,10 +29,10 @@ export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }
   }
   return (
     <View style={styles.card}>
-      <Pressable disabled={post.author.active === false} onPress={() => onAuthorPress(post.author.userId)} style={styles.header}>
+      <View style={styles.headerRow}><Pressable disabled={post.author.active === false} onPress={() => onAuthorPress(post.author.userId)} style={styles.header}>
         <Avatar name={post.author.fullname} uri={post.author.profilePictureUrl} size={44} />
         <View style={styles.authorCopy}><Text style={styles.author}>{post.author.fullname}</Text><Text style={styles.meta}>{pt ? ({ VERSE: 'Versículo', QUESTION: 'Pergunta', PHOTO: 'Foto' }[post.postType]) : `${post.postType[0]}${post.postType.slice(1).toLowerCase()}`}  ·  {relativeTime(post.createdAt, pt)}</Text></View>
-      </Pressable>
+      </Pressable>{post.author.userId !== currentUserId && post.author.active !== false ? <Pressable accessibilityLabel={pt ? 'Opções da publicação' : 'Post options'} onPress={() => setMenuOpen(true)} style={styles.menu}><Ionicons name="ellipsis-horizontal" size={21} color="#596575" /></Pressable> : null}</View>
       {post.postType === 'VERSE' && post.verse ? (
         <View style={styles.verseCard}>
           <View style={styles.verseLabel}><Ionicons name="book-outline" size={20} color="#a86508" /><Text style={styles.verseReference}>{post.verse.reference}</Text></View>
@@ -59,13 +62,18 @@ export function CommunityPostCard({ post, commenting, onComment, onAuthorPress }
           </View>
         </View>
       ) : null}
+      <ActionSheet visible={menuOpen} title={pt ? 'Opções da publicação' : 'Post options'} cancelLabel={pt ? 'Cancelar' : 'Cancel'} onClose={() => setMenuOpen(false)} actions={[
+        { key: 'report', label: pt ? 'Reportar publicação' : 'Report post', icon: 'flag-outline', onPress: () => setReportOpen(true) },
+        { key: 'block', label: pt ? 'Bloquear utilizador' : 'Block user', icon: 'ban-outline', destructive: true, onPress: () => { void onBlock(post.author.userId); } },
+      ]} />
+      <ReportModal visible={reportOpen} portuguese={pt} target="post" onClose={() => setReportOpen(false)} onSubmit={(reason, details) => onReport(post.postId, reason, details)} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: { padding: 13, borderWidth: 1, borderColor: '#e2e5e8', borderRadius: 14, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center' }, authorCopy: { flex: 1, marginLeft: 13 },
+  headerRow: { flexDirection: 'row', alignItems: 'center' }, header: { flex: 1, flexDirection: 'row', alignItems: 'center' }, menu: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }, authorCopy: { flex: 1, marginLeft: 13 },
   author: { color: '#151c24', fontSize: 15, fontWeight: '700' }, meta: { marginTop: 3, color: '#7b8492', fontSize: 12 },
   verseCard: { marginTop: 13, padding: 13, borderLeftWidth: 3, borderLeftColor: '#eb9718', borderRadius: 8, backgroundColor: '#fffaf3' },
   verseLabel: { flexDirection: 'row', alignItems: 'center', gap: 10 }, verseReference: { color: '#9e620b', fontSize: 14, fontWeight: '600' },

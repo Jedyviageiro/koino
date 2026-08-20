@@ -21,6 +21,7 @@ import com.koino.backend.model.CommunityComment;
 import com.koino.backend.model.CommunityPost;
 import com.koino.backend.model.CommunityPostType;
 import com.koino.backend.model.User;
+import com.koino.backend.model.AccountStatus;
 import com.koino.backend.model.Verse;
 import com.koino.backend.repository.CommunityCommentRepository;
 import com.koino.backend.repository.CommunityPostRepository;
@@ -37,27 +38,37 @@ public class CommunityService {
     private final UserRepository userRepository;
     private final VerseRepository verseRepository;
     private final Cloudinary cloudinary;
+    private final TrustSafetyService trustSafetyService;
+    private final ContentModerationService contentModerationService;
 
     public CommunityService(
         CommunityPostRepository postRepository,
         CommunityCommentRepository commentRepository,
         UserRepository userRepository,
         VerseRepository verseRepository,
-        Cloudinary cloudinary
+        Cloudinary cloudinary,
+        TrustSafetyService trustSafetyService,
+        ContentModerationService contentModerationService
     ) {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.verseRepository = verseRepository;
         this.cloudinary = cloudinary;
+        this.trustSafetyService = trustSafetyService;
+        this.contentModerationService = contentModerationService;
     }
 
     @Transactional(readOnly = true)
-    public List<CommunityPostResponse> getFeed(String type) {
+    public List<CommunityPostResponse> getFeed(Long userId, String type) {
         List<CommunityPost> posts = parseType(type)
             .map(postRepository::findTop50ByPostTypeOrderByCreatedAtDesc)
             .orElseGet(postRepository::findTop50ByOrderByCreatedAtDesc);
 
+        java.util.Set<Long> hiddenUsers = trustSafetyService.hiddenUserIds(userId);
+        posts = posts.stream().filter(post -> !hiddenUsers.contains(post.getAuthor().getUserId())
+            && post.getAuthor().isActive()
+            && post.getAuthor().getAccountStatus() != AccountStatus.BANNED).toList();
         if (posts.isEmpty()) {
             return List.of();
         }
@@ -73,7 +84,9 @@ public class CommunityService {
         return posts.stream()
             .map(post -> toResponse(
                 post,
-                commentsByPost.getOrDefault(post.getPostId(), List.of())
+                commentsByPost.getOrDefault(post.getPostId(), List.of()).stream()
+                    .filter(comment -> !hiddenUsers.contains(comment.getAuthor().getUserId()))
+                    .toList()
             ))
             .toList();
     }
@@ -128,8 +141,14 @@ public class CommunityService {
         }
 
         try {
+            byte[] bytes = file.getBytes();
+            ContentModerationService.ModerationResult moderation = contentModerationService.reviewImage(bytes, file.getContentType(), cleanedCaption);
+            if (!moderation.allowed()) {
+                if (moderation.confidence() >= .75) trustSafetyService.recordAutomatedViolation(userId, moderation.reason(), moderation.confidence(), moderation.severe());
+                throw new IllegalArgumentException("This photo cannot be shared because it may violate the community guidelines. It was not published.");
+            }
             Map<?, ?> upload = cloudinary.uploader().upload(
-                file.getBytes(),
+                bytes,
                 ObjectUtils.asMap(
                     "resource_type", "image",
                     "folder", PHOTO_FOLDER,
@@ -197,7 +216,10 @@ public class CommunityService {
             post.getVerse() == null ? null : toVerseResponse(post.getVerse()),
             post.getPhotoUrl(),
             post.getCreatedAt().toInstant(ZoneOffset.UTC),
-            comments.stream().map(this::toCommentResponse).toList()
+            comments.stream()
+                .filter(comment -> comment.getAuthor().isActive()
+                    && comment.getAuthor().getAccountStatus() != AccountStatus.BANNED)
+                .map(this::toCommentResponse).toList()
         );
     }
 
@@ -256,8 +278,8 @@ public class CommunityService {
             throw new IllegalArgumentException("Photo must be 8 MB or smaller");
         }
         String contentType = file.getContentType();
-        if (contentType == null || !contentType.startsWith("image/")) {
-            throw new IllegalArgumentException("Only image files are allowed");
+        if (contentType == null || !(contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/webp"))) {
+            throw new IllegalArgumentException("Please choose a JPG, PNG, or WebP image.");
         }
     }
 

@@ -26,6 +26,8 @@ import com.koino.backend.repository.CommunityPostRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.repository.VerseRepository;
 import com.koino.backend.service.CommunityService;
+import com.koino.backend.service.ContentModerationService;
+import com.koino.backend.service.TrustSafetyService;
 
 class CommunityServiceTests {
 
@@ -118,7 +120,9 @@ class CommunityServiceTests {
             commentRepository,
             userRepository,
             verseRepository,
-            mock(Cloudinary.class)
+            mock(Cloudinary.class),
+            mock(TrustSafetyService.class),
+            mock(ContentModerationService.class)
         );
         return new Fixture(
             service,

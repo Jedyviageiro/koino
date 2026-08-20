@@ -38,8 +38,8 @@ function messageDay(value: string, pt: boolean) {
 
 function lastSeenText(friend: ChatFriend | null, pt: boolean) {
   if (friend?.active === false) return pt ? 'Conta eliminada' : 'Deleted account';
-  if (friend?.online) return pt ? 'Online' : 'Online';
-  if (!friend?.lastSeenAt) return pt ? 'Offline' : 'Offline';
+  if (friend?.online) return pt ? 'Ativo agora' : 'Active now';
+  if (!friend?.lastSeenAt) return pt ? 'Atividade indisponível' : 'Activity unavailable';
   const elapsed = Math.max(0, Date.now() - new Date(friend.lastSeenAt).getTime());
   if (elapsed < 60000) return pt ? 'Visto agora' : 'Last seen just now';
   if (elapsed < 3600000) return pt ? `Visto há ${Math.floor(elapsed / 60000)} min` : `Last seen ${Math.floor(elapsed / 60000)}m ago`;
@@ -154,7 +154,7 @@ export default function ConversationScreen() {
 
   return (
     <AppShell active="community">
-      <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
         <View style={styles.header}>
           <Pressable accessibilityLabel={pt ? 'Voltar às conversas' : 'Back to chat list'} onPress={() => router.back()} style={styles.backButton}><Ionicons name="arrow-back" size={25} color="#637083" /></Pressable>
           <Pressable accessibilityLabel={pt ? 'Abrir perfil' : 'Open profile'} disabled={!friend || friend.active === false} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })}><Avatar name={friend?.fullname ?? 'Koino friend'} uri={friend?.profilePictureUrl} size={52} /></Pressable>
@@ -215,8 +215,8 @@ const styles = StyleSheet.create({
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center' }, emptyTitle: { marginTop: 13, color: '#172029', fontSize: 18, fontWeight: '700' }, emptyText: { marginTop: 7, maxWidth: 260, color: '#76808e', fontSize: 13, lineHeight: 19, textAlign: 'center' },
   error: { marginHorizontal: 15, marginBottom: 7, padding: 8, borderRadius: 9, color: '#a33a34', backgroundColor: '#fff0ef', fontSize: 12, textAlign: 'center' },
   photoPreview: { minHeight: 76, padding: 10, borderTopWidth: 1, borderTopColor: '#eceef0', flexDirection: 'row', alignItems: 'center', gap: 11, backgroundColor: '#fffaf2' }, previewImage: { width: 56, height: 56, borderRadius: 11 }, previewCopy: { flex: 1 }, previewTitle: { color: '#27313d', fontSize: 13, fontWeight: '700' }, previewHint: { marginTop: 2, color: '#737e8d', fontSize: 10 }, removePreview: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
-  composer: { paddingHorizontal: 12, paddingVertical: 10, borderTopWidth: 1, borderTopColor: '#eceef0', flexDirection: 'row', alignItems: 'flex-end', gap: 8, backgroundColor: '#fff' },
-  addButton: { width: 43, height: 43, borderWidth: 1, borderColor: '#dfe3e8', borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f7f8f9' }, inputWrap: { flex: 1, minHeight: 43, maxHeight: 104, paddingHorizontal: 15, borderWidth: 1, borderColor: '#e1e5ea', borderRadius: 23, justifyContent: 'center' }, input: { maxHeight: 92, paddingVertical: 9, color: '#17202b', fontSize: 14 },
+  composer: { paddingHorizontal: 12, paddingVertical: 10, borderTopWidth: 1, borderTopColor: '#dfe3e8', flexDirection: 'row', alignItems: 'flex-end', gap: 8, backgroundColor: '#fff' },
+  addButton: { width: 43, height: 43, borderWidth: 1, borderColor: '#dfe3e8', borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f7f8f9' }, inputWrap: { flex: 1, minHeight: 43, maxHeight: 104, paddingHorizontal: 15, borderWidth: 1, borderColor: '#cfd5dc', borderRadius: 23, justifyContent: 'center', backgroundColor: '#fff' }, input: { minHeight: 40, maxHeight: 92, paddingVertical: 9, color: '#17202b', fontSize: 14, textAlignVertical: 'center' },
   sendButton: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#2b69f4' }, sendDisabled: { opacity: 0.45 }, pressed: { opacity: 0.7 },
   unavailable: { minHeight: 62, paddingHorizontal: 18, borderTopWidth: 1, borderTopColor: '#eceef0', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#f7f8f9' }, unavailableText: { color: '#788291', fontSize: 12, fontWeight: '600' },
 });

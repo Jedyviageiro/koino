@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.DateTimeException;
 import java.time.ZoneId;
+import java.time.Instant;
 import java.util.Locale;
 import java.text.Normalizer;
 import java.security.SecureRandom;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.koino.backend.model.User;
+import com.koino.backend.model.AccountStatus;
 import com.koino.backend.dto.user.UserStreakResponse;
 import com.koino.backend.dto.user.UserStreakDayResponse;
 import com.koino.backend.dto.user.UserSettingsRequest;
@@ -101,6 +103,7 @@ public class UserService {
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw new IllegalArgumentException("Invalid email or password");
         }
+        ensureAccountAccess(user);
         if (!user.isEmailVerified()) {
             throw new IllegalArgumentException(
                 "Please verify your email address before logging in"
@@ -139,6 +142,7 @@ public class UserService {
         if (!user.isActive()) {
             throw new IllegalArgumentException("This account is deactivated");
         }
+        ensureAccountAccess(user);
         user.setEmailVerified(true);
         if (pictureUrl != null && !pictureUrl.isBlank()
             && user.getProfilePictureUrl() == null) {
@@ -148,6 +152,19 @@ public class UserService {
         user = userRepository.save(user);
         recordLogin(user, LocalDate.now());
         return user;
+    }
+
+    @Transactional
+    public void ensureAccountAccess(User user) {
+        AccountStatus status = user.getAccountStatus() == null ? AccountStatus.ACTIVE : user.getAccountStatus();
+        if (status == AccountStatus.SUSPENDED && user.getSuspensionEndsAt() != null && !user.getSuspensionEndsAt().isAfter(Instant.now())) {
+            user.setAccountStatus(AccountStatus.ACTIVE);
+            user.setSuspensionEndsAt(null);
+            userRepository.save(user);
+            return;
+        }
+        if (status == AccountStatus.BANNED) throw new IllegalArgumentException("This account has been restricted for violating the community guidelines.");
+        if (status == AccountStatus.SUSPENDED) throw new IllegalArgumentException("This account is temporarily suspended. Please try again after the suspension ends.");
     }
 
     private String normalizeLanguage(String language) {

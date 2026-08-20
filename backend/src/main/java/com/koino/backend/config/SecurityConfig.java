@@ -3,6 +3,7 @@ package com.koino.backend.config;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -62,9 +63,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(exceptions -> exceptions
-                .authenticationEntryPoint((request, response, exception) ->
-                    response.sendError(401, "Authentication required")
-                ))
+                .authenticationEntryPoint((request, response, exception) -> writeFriendlyError(response, 401, "Please sign in to continue."))
+                .accessDeniedHandler((request, response, exception) -> writeFriendlyError(response, 403, "You do not have permission to do that.")))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
@@ -92,6 +92,13 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    private static void writeFriendlyError(jakarta.servlet.http.HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"status\":" + status + ",\"errorCode\":\"ACCESS_DENIED\",\"message\":\"" + message + "\"}");
     }
 
     @Bean

@@ -10,6 +10,7 @@ import type {
   CommunityPostType,
   CurrentUser,
 } from './types';
+import type { ReportReason } from '@/components/community/ReportModal';
 
 export function getCommunityPosts(type: CommunityPostType | 'ALL' = 'ALL') {
   return authenticatedRequest<CommunityPost[]>(`/community/posts?type=${encodeURIComponent(type)}`);
@@ -38,6 +39,18 @@ export function addCommunityComment(postId: number, content: string) {
     method: 'POST',
     body: JSON.stringify({ content: content.trim() }),
   });
+}
+
+export function reportCommunityPost(postId: number, reason: ReportReason, details = '') {
+  return authenticatedRequest<{ message: string }>(`/safety/reports/posts/${postId}`, { method: 'POST', body: JSON.stringify({ reason, details: details.trim() || null }) });
+}
+
+export function reportCommunityUser(userId: number, reason: ReportReason, details = '') {
+  return authenticatedRequest<{ message: string }>(`/safety/reports/users/${userId}`, { method: 'POST', body: JSON.stringify({ reason, details: details.trim() || null }) });
+}
+
+export function blockCommunityUser(userId: number) {
+  return authenticatedRequest<{ message: string }>(`/safety/blocks/${userId}`, { method: 'POST' });
 }
 
 export function getBibleBooks() {
