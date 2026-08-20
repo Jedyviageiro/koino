@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   optionTitle: { color: '#171c23', fontSize: 14, lineHeight: 19, fontWeight: '700' },
   optionDescription: { marginTop: 2, color: '#737b87', fontSize: 12, lineHeight: 17 },
   optionDetail: { marginTop: 3, color: '#9197a0', fontSize: 10.5, lineHeight: 15 },
-  error: { marginTop: 10, color: '#b83434', fontSize: 12, lineHeight: 17, textAlign: 'center' },
+  error: { marginTop: 10, color: '#68717d', fontSize: 12, lineHeight: 17, textAlign: 'center' },
   footer: { paddingHorizontal: 24, paddingTop: 8, paddingBottom: 10, backgroundColor: '#fff' },
   continueButton: { height: 54, borderRadius: 11, flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eda12c' },
   continueLabel: { color: '#fff', fontSize: 16, fontWeight: '700' },

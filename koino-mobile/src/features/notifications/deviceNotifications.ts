@@ -26,7 +26,7 @@ export async function configureNotificationPresentation() {
 
 export async function sendDeviceTestNotification(portuguese: boolean) {
   if (Platform.OS === 'web') throw new Error(portuguese ? 'Teste disponível apenas no telemóvel.' : 'This test is only available on a phone.');
-  if (isExpoGo()) throw new Error(portuguese ? 'As notificações exigem uma build de desenvolvimento ou o APK.' : 'Notifications require a development build or the APK.');
+  if (isExpoGo()) throw new Error(portuguese ? 'Este teste estará disponível na aplicação Koino instalada.' : 'This test will be available in the installed Koino app.');
   const Notifications = await notificationsModule();
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync(CHANNEL_ID, {

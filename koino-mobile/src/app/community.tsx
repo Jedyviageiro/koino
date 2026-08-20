@@ -147,5 +147,5 @@ const styles = StyleSheet.create({
   photoPreview: { position: 'relative', marginTop: 12 }, previewImage: { width: '100%', height: 180, borderRadius: 10 }, removePhoto: { position: 'absolute', right: 8, top: 8, width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
   filters: { marginTop: 22, borderBottomWidth: 1, borderBottomColor: '#e1e4e7' }, filter: { height: 47, marginRight: 19, paddingHorizontal: 7, justifyContent: 'center' }, filterActive: { borderBottomWidth: 3, borderBottomColor: '#eb920f' }, filterText: { color: '#596575', fontSize: 14, fontWeight: '500' }, filterTextActive: { color: '#d98000', fontWeight: '700' },
   feed: { marginTop: 14, gap: 13 }, empty: { minHeight: 230, alignItems: 'center', justifyContent: 'center' }, emptyTitle: { marginTop: 14, fontSize: 17, fontWeight: '700' }, emptyText: { marginTop: 6, color: '#747d89', fontSize: 13, textAlign: 'center' },
-  error: { marginTop: 13, padding: 10, borderRadius: 9, color: '#a33a34', fontSize: 12, textAlign: 'center', backgroundColor: '#fff0ef' },
+  error: { marginTop: 13, padding: 10, borderRadius: 9, color: '#5f6977', fontSize: 12, textAlign: 'center', backgroundColor: '#f4f5f6' },
 });

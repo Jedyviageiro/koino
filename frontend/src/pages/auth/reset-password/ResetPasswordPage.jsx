@@ -71,7 +71,7 @@ function ResetPasswordPage({ onNavigate }) {
         <PasswordRules password={password} />
         <div
           className={`min-h-[48px] pt-2 text-[9px] leading-4 ${
-            status.type === 'error' ? 'text-[#c73434]' : 'text-[#217a45]'
+            status.type === 'success' ? 'text-[#217a45]' : 'text-[#6f747d]'
           }`}
           aria-live="polite"
         >
@@ -87,6 +87,9 @@ function ResetPasswordPage({ onNavigate }) {
         </button>
       </form>
       }
+      <p className="mt-4 text-center text-[9px] leading-4 text-[#858983]">
+        {t('authExtra.playStoreSoon')}
+      </p>
     </AuthLayout>
   )
 }

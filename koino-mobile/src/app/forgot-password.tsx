@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#fff6e8',
   },
-  message: { minHeight: 58, paddingTop: 14, color: '#b83434', textAlign: 'center', fontSize: 13, lineHeight: 19 },
+  message: { minHeight: 58, paddingTop: 14, color: '#68717d', textAlign: 'center', fontSize: 13, lineHeight: 19 },
   success: { color: '#68717d' },
   backLink: { marginTop: 24, textAlign: 'center', color: '#bd7d18', fontSize: 14, fontWeight: '600' },
 });

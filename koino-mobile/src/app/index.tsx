@@ -10,6 +10,7 @@ import { AuthScreen } from '@/components/auth/AuthScreen';
 import { GoogleLogo } from '@/components/auth/GoogleLogo';
 import { getGoogleConfig, login, loginWithGoogle } from '@/features/auth/authService';
 import { getAuthSession } from '@/features/auth/authStorage';
+import { ApiError } from '@/services/api';
 
 export default function IndexScreen() {
   const [checkingSession, setCheckingSession] = useState(true);
@@ -50,7 +51,7 @@ export default function IndexScreen() {
   async function handleGoogleLogin() {
     if (loading) return;
     if (Constants.appOwnership === 'expo') {
-      setMessage('Google sign-in requires the Koino development build and cannot run inside Expo Go.');
+      setMessage('Google sign-in is available in the installed Koino app. Please use email sign-in while previewing.');
       return;
     }
 
@@ -72,14 +73,7 @@ export default function IndexScreen() {
       const session = await loginWithGoogle(response.data.idToken);
       router.replace(session.onboardingCompleted ? '/home' : '/onboarding');
     } catch (error) {
-      const raw = error instanceof Error ? error.message : String(error ?? '');
-      setMessage(
-        /DEVELOPER_ERROR|\bcode\s*[:=]?\s*10\b/i.test(raw)
-          ? 'Google sign-in is temporarily unavailable for this app version. Please use email sign-in or try again later.'
-          : /api key|client id|identity token|not configured|exception|stack/i.test(raw)
-            ? 'Google sign-in could not be completed right now. Please try again.'
-            : raw || 'Google sign-in could not be completed right now. Please try again.',
-      );
+      setMessage(error instanceof ApiError ? error.message : 'Google sign-in needs a moment. Please try again or use email sign-in.');
     } finally {
       setLoading(false);
     }
@@ -161,7 +155,7 @@ const styles = StyleSheet.create({
   fields: { gap: 14 },
   forgotButton: { alignSelf: 'flex-end', paddingVertical: 12 },
   goldLink: { color: '#bd7d18', fontSize: 14, fontWeight: '600' },
-  message: { minHeight: 30, color: '#b83434', textAlign: 'center', fontSize: 13 },
+  message: { minHeight: 30, color: '#68717d', textAlign: 'center', fontSize: 13 },
   success: { color: '#28784d' },
   divider: { flexDirection: 'row', alignItems: 'center', gap: 20, marginVertical: 22 },
   line: { flex: 1, height: 1, backgroundColor: '#dfe2e6' },

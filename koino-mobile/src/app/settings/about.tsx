@@ -22,7 +22,7 @@ export default function AboutScreen() {
     <View style={styles.hero}><View style={styles.mark}><MaterialCommunityIcons name="book-cross" size={34} color="#dd8306" /></View><Text style={styles.name}>Koino</Text><Text style={styles.version}>{pt ? 'Versão' : 'Version'} {version}</Text></View>
     <View style={styles.mission}><Text style={styles.missionTitle}>{pt ? 'A nossa missão' : 'Our mission'}</Text><Text style={styles.missionText}>{pt ? 'Ajudar pessoas a ler a Bíblia com consistência, crescer em comunidade e aplicar a Palavra no dia a dia.' : 'Help people read Scripture consistently, grow in community, and apply the Word in everyday life.'}</Text></View>
     <SettingsSection title={pt ? 'Aplicação' : 'Application'}>
-      <SettingsRow icon="cellphone" title={pt ? 'Aplicação móvel' : 'Mobile application'} subtitle={`Koino ${version} · Expo SDK 54`} />
+      <SettingsRow icon="cellphone" title={pt ? 'Aplicação móvel' : 'Mobile application'} subtitle={`Koino ${version}`} />
       <SettingsRow icon="web" title={pt ? 'Site oficial' : 'Official website'} subtitle="koinoo.space" onPress={openWebsite} />
     </SettingsSection>
     <Text style={styles.footer}>© {new Date().getFullYear()} Koino</Text>

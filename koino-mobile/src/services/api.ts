@@ -15,7 +15,7 @@ export class ApiError extends Error {
 function publicMessage(message: string, status: number) {
   const pt = getCurrentLanguage() === 'pt';
   if (status >= 500) return pt ? 'O Koino está temporariamente indisponível. Tente novamente dentro de instantes.' : 'Koino is temporarily unavailable. Please try again in a moment.';
-  const technical = /exception|stack|hibernate|jdbc|sql|cloudinary|gemini|api key|developer_error|internal server|failed to fetch|network request failed/i;
+  const technical = /exception|stack|hibernate|jdbc|sql|cloudinary|gemini|\bapi\b|client id|developer_error|internal server|\bfailed\b|\bfailure\b|\berror\b|network request|java\.|org\.spring|https?:\/\/|econn|timeout/i;
   if (!message || technical.test(message)) return pt ? 'Não foi possível concluir esta ação agora. Tente novamente.' : 'We could not complete that action right now. Please try again.';
   return message;
 }
@@ -40,7 +40,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}) 
   } catch {
     const pt = getCurrentLanguage() === 'pt';
     throw new ApiError(
-      pt ? 'Não foi possível ligar ao Koino. Verifique a sua ligação e tente novamente.' : 'Unable to connect to Koino. Check your connection and try again.',
+      pt ? 'Parece que está sem ligação. Verifique a internet e tente novamente.' : 'You appear to be offline. Check your connection and try again.',
       0,
       null,
     );
@@ -64,7 +64,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}) 
         ? String(payload.message)
         : typeof payload === 'string' && payload.trim()
           ? payload.trim()
-          : getCurrentLanguage() === 'pt' ? 'Ocorreu um erro. Tente novamente.' : 'Something went wrong. Please try again.';
+          : getCurrentLanguage() === 'pt' ? 'Esta ação precisa de um momento. Tente novamente.' : 'This action needs a moment. Please try again.';
     throw new ApiError(publicMessage(message, response.status), response.status, null);
   }
 

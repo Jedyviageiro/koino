@@ -95,7 +95,7 @@ export default function ResetPasswordScreen() {
 
 const styles = StyleSheet.create({
   fields: { gap: 10 },
-  message: { minHeight: 56, paddingTop: 12, color: '#b83434', textAlign: 'center', fontSize: 13, lineHeight: 19 },
+  message: { minHeight: 56, paddingTop: 12, color: '#68717d', textAlign: 'center', fontSize: 13, lineHeight: 19 },
   success: { color: '#28784d' },
   link: { marginTop: 22, color: '#bd7d18', textAlign: 'center', fontSize: 14, fontWeight: '600' },
 });

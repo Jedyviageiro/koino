@@ -60,5 +60,5 @@ export default function SettingsHomeScreen() {
 
 const styles = StyleSheet.create({
   profile: { minHeight: 84, padding: 14, borderWidth: 1, borderColor: '#e3e6e9', borderRadius: 12, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' },
-  profileCopy: { flex: 1, marginLeft: 14 }, name: { color: '#17202a', fontSize: 17, fontWeight: '700' }, profileHint: { marginTop: 4, color: '#788291', fontSize: 12 }, error: { color: '#a33b32', fontSize: 12 },
+  profileCopy: { flex: 1, marginLeft: 14 }, name: { color: '#17202a', fontSize: 17, fontWeight: '700' }, profileHint: { marginTop: 4, color: '#788291', fontSize: 12 }, error: { color: '#5f6977', fontSize: 12 },
 });

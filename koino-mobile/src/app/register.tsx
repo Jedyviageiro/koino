@@ -125,7 +125,7 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
   fields: { gap: 10 },
-  message: { minHeight: 34, paddingTop: 8, color: '#b83434', textAlign: 'center', fontSize: 13 },
+  message: { minHeight: 34, paddingTop: 8, color: '#68717d', textAlign: 'center', fontSize: 13 },
   accountRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 28 },
   accountText: { color: '#747b86', fontSize: 14 },
   goldLink: { color: '#bd7d18', fontSize: 14, fontWeight: '600' },

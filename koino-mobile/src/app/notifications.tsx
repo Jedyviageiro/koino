@@ -102,6 +102,6 @@ const styles = StyleSheet.create({
   copy: { flex: 1, marginLeft: 12 }, itemTitle: { color: '#172029', fontSize: 14, fontWeight: '700' }, message: { marginTop: 4, color: '#697382', fontSize: 12, lineHeight: 17 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#ed9210' },
   empty: { paddingTop: 120, alignItems: 'center' }, emptyTitle: { marginTop: 15, fontSize: 18, fontWeight: '700' }, emptyText: { marginTop: 6, color: '#737c87', fontSize: 13 },
-  inlineError: { color: '#aa3c34', fontSize: 12, textAlign: 'center' },
+  inlineError: { color: '#5f6977', fontSize: 12, textAlign: 'center' },
   requestActions: { marginTop: 10, flexDirection: 'row', gap: 8 }, accept: { minHeight: 36, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e9900c' }, acceptText: { color: '#fff', fontSize: 12, fontWeight: '700' }, decline: { minHeight: 36, paddingHorizontal: 15, borderWidth: 1, borderColor: '#dfe3e7', borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }, declineText: { color: '#525e6c', fontSize: 12, fontWeight: '700' },
 });

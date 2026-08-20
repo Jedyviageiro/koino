@@ -93,9 +93,7 @@ function VerifyEmailPage({ onNavigate }) {
                   })}
             </p>
             <div
-              className={`min-h-[60px] pt-4 text-[11px] leading-5 ${
-                state === 'error' ? 'text-[#c73434]' : 'text-[#6f747d]'
-              }`}
+              className="min-h-[60px] pt-4 text-[11px] leading-5 text-[#6f747d]"
               aria-live="polite"
             >
               {message || t('authExtra.openEmail')}
@@ -121,6 +119,9 @@ function VerifyEmailPage({ onNavigate }) {
               <ShieldCheck className="h-4 w-4 shrink-0 text-[#c98522]" />
               {t('authExtra.expiry')}
             </div>
+            <p className="mt-3 text-center text-[9px] leading-4 text-[#858983]">
+              {t('authExtra.playStoreSoon')}
+            </p>
           </div>
 
           <div className="relative min-h-[280px] overflow-hidden bg-[#f8efe2] lg:min-h-[470px]">

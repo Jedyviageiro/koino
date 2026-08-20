@@ -46,7 +46,7 @@ function friendlyErrorMessage(payload, status) {
         ? payload.trim()
         : ''
   const exposesInternalDetails =
-    /(?:exception|stack\s*trace|org\.springframework|java\.|hibernate|jdbc|sqlstate|constraint|at\s+com\.koino|expected\s+\d+.*resolved\s+\d+)/i.test(
+    /(?:exception|stack\s*trace|org\.springframework|java\.|hibernate|jdbc|sqlstate|constraint|cloudinary|gemini|api\s*key|developer_error|https?:\/\/|at\s+com\.koino|expected\s+\d+.*resolved\s+\d+)/i.test(
       message,
     )
 
@@ -93,12 +93,12 @@ export async function apiRequest(
       ...options,
       headers: requestHeaders,
     })
-  } catch (error) {
+  } catch {
     notifyServiceUnavailable()
     throw new ApiError(
       i18n.t('errors.connect'),
       0,
-      error,
+      null,
     )
   }
 
@@ -136,7 +136,7 @@ export async function apiRequest(
       notifyServiceUnavailable()
     }
     const message = friendlyErrorMessage(payload, response.status)
-    throw new ApiError(message, response.status, payload)
+    throw new ApiError(message, response.status, null)
   }
 
   return payload

@@ -64,18 +64,18 @@ export default function VerifyEmailScreen() {
           : 'Open the secure link in your email to activate your account.'}
       onBack={() => router.replace('/')}
     >
-      <View style={[styles.icon, verified && styles.verifiedIcon, state === 'error' && styles.errorIcon]}>
+      <View style={[styles.icon, verified && styles.verifiedIcon]}>
         {busy ? (
           <ActivityIndicator color="#c58522" size="large" />
         ) : (
           <MaterialCommunityIcons
-            name={verified ? 'check-circle-outline' : state === 'error' ? 'alert-circle-outline' : 'email-check-outline'}
+            name={verified ? 'check-circle-outline' : state === 'error' ? 'link-variant' : 'email-check-outline'}
             size={42}
-            color={verified ? '#28784d' : state === 'error' ? '#b83434' : '#c58522'}
+            color={verified ? '#28784d' : '#c58522'}
           />
         )}
       </View>
-      <Text style={[styles.message, state === 'error' && styles.error, verified && styles.success]}>
+      <Text style={[styles.message, verified && styles.success]}>
         {message || (busy ? 'Verifying your email…' : 'The link expires after 24 hours.')}
       </Text>
       <AuthButton
@@ -95,9 +95,7 @@ export default function VerifyEmailScreen() {
 const styles = StyleSheet.create({
   icon: { width: 82, height: 82, borderRadius: 41, alignItems: 'center', justifyContent: 'center', alignSelf: 'center', backgroundColor: '#fff6e8' },
   verifiedIcon: { backgroundColor: '#eef8f2' },
-  errorIcon: { backgroundColor: '#fff0ef' },
   message: { minHeight: 82, paddingTop: 18, color: '#68717d', textAlign: 'center', fontSize: 13, lineHeight: 20 },
-  error: { color: '#b83434' },
   success: { color: '#28784d' },
   resend: { marginTop: 24, color: '#bd7d18', textAlign: 'center', fontSize: 14, fontWeight: '600' },
   disabled: { opacity: 0.5 },

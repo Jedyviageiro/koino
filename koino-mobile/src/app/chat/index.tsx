@@ -89,5 +89,5 @@ const styles = StyleSheet.create({
   friendCopy: { flex: 1, marginLeft: 13 }, friendName: { color: '#101820', fontSize: 16, fontWeight: '700' }, lastMessage: { marginTop: 5, color: '#717c8d', fontSize: 12, lineHeight: 17 }, unreadMessage: { color: '#303a48', fontWeight: '600' },
   friendTail: { minWidth: 38, marginLeft: 7, alignItems: 'center', gap: 8 }, time: { color: '#6f798a', fontSize: 12 }, unreadBadge: { minWidth: 22, height: 22, paddingHorizontal: 5, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: '#2c69f3' }, unreadCount: { color: '#fff', fontSize: 10, fontWeight: '700' },
   empty: { minHeight: 260, alignItems: 'center', justifyContent: 'center' }, emptyTitle: { marginTop: 14, color: '#172029', fontSize: 18, fontWeight: '700' }, emptyText: { marginTop: 7, maxWidth: 280, color: '#76808e', fontSize: 13, lineHeight: 20, textAlign: 'center' },
-  error: { marginTop: 12, padding: 10, borderRadius: 10, color: '#a33a34', backgroundColor: '#fff0ef', textAlign: 'center' },
+  error: { marginTop: 12, padding: 10, borderRadius: 10, color: '#5f6977', backgroundColor: '#f4f5f6', textAlign: 'center' },
 });
