@@ -1,4 +1,5 @@
 import { apiRequest } from '@/services/api';
+import { getCurrentLanguage } from '@/features/localization/language';
 
 import { saveAuthSession } from './authStorage';
 import type { AuthSession, RegistrationResult } from './types';
@@ -19,7 +20,7 @@ export function register(fullname: string, email: string, password: string) {
       fullname: fullname.trim(),
       email: email.trim(),
       password,
-      language: 'en',
+      language: getCurrentLanguage(),
     }),
   });
 }
@@ -36,7 +37,7 @@ export function getGoogleConfig() {
 export async function loginWithGoogle(credential: string) {
   const session = await apiRequest<AuthSession>('/users/login/google', {
     method: 'POST',
-    body: JSON.stringify({ credential, language: 'en' }),
+    body: JSON.stringify({ credential, language: getCurrentLanguage() }),
   });
   await saveAuthSession(session);
   return addOnboardingStatus(session);

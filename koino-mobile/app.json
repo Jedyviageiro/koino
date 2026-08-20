@@ -1,20 +1,30 @@
 {
   "expo": {
-    "name": "koino-mobile",
+    "name": "Koino",
     "slug": "koino-mobile",
     "version": "1.0.0",
+    "icon": "./assets/images/icon.png",
     "orientation": "portrait",
     "scheme": "koinomobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "bundleIdentifier": "com.koino.mobile"
+      "bundleIdentifier": "com.koino.mobile",
+      "buildNumber": "1"
     },
     "android": {
       "package": "com.koino.mobile",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#FFF9F0"
+      },
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO"
       ],
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static"
@@ -22,7 +32,24 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-notifications",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFFFF"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#E88A00",
+          "defaultChannel": "default"
+        }
+      ],
       [
         "expo-image-picker",
         {
@@ -33,6 +60,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3c6a1254-3aae-4515-ba23-512b65977c3e"
+      }
+    },
+    "owner": "jedyv"
   }
 }
