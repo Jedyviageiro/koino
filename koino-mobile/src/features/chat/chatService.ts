@@ -32,3 +32,14 @@ export function setChatTyping(friendId: number, typing: boolean) {
 export function getChatTyping(friendId: number) {
   return authenticatedRequest<{ typing: boolean }>(`/chat/typing/${friendId}`);
 }
+
+export function deleteChatConversations(friendIds: number[]) {
+  return authenticatedRequest<void>('/chat/conversations/delete', {
+    method: 'POST',
+    body: JSON.stringify({ friendIds }),
+  });
+}
+
+export function deleteChatMessageForEveryone(messageId: number) {
+  return authenticatedRequest<void>(`/chat/messages/${messageId}`, { method: 'DELETE' });
+}

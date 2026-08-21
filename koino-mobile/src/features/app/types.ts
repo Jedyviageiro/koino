@@ -55,7 +55,7 @@ export type Streak = {
   lastLoginDate: string | null;
   recentDays: { date: string; active: boolean }[];
 };
-export type Notification = { notificationId: number; title: string; message: string; type: string; referenceId: string | null; read: boolean; createdAt: string };
+export type Notification = { notificationId: number; title: string; message: string; type: string; referenceId: string | null; actorName: string | null; actorProfilePictureUrl: string | null; read: boolean; createdAt: string };
 export type Bookmark = { bookmarkId: number; verseId: number; book: string; chapterId: number; chapterNumber: number; verseNumber: number; text: string; highlightColor: string | null; bookmarkedAt: string };
 export type Devotional = {
   devotionalId: number;

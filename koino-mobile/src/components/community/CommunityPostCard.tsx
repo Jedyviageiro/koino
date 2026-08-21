@@ -18,7 +18,7 @@ function relativeTime(value: string, pt = false) {
   return pt ? (hours < 24 ? `há ${hours}h` : `há ${Math.floor(hours / 24)}d`) : (hours < 24 ? `${hours}h ago` : `${Math.floor(hours / 24)}d ago`);
 }
 
-export function CommunityPostCard({ post, currentUserId, commenting, onComment, onAuthorPress, onReport, onBlock }: { post: CommunityPost; currentUserId: number; commenting: boolean; onComment: (postId: number, content: string) => Promise<boolean>; onAuthorPress: (userId: number) => void; onReport: (postId: number, reason: ReportReason, details: string) => Promise<boolean>; onBlock: (userId: number) => Promise<boolean> }) {
+export function CommunityPostCard({ post, currentUserId, commenting, onComment, onAuthorPress, onReport, onBlock, onDelete }: { post: CommunityPost; currentUserId: number; commenting: boolean; onComment: (postId: number, content: string) => Promise<boolean>; onAuthorPress: (userId: number) => void; onReport: (postId: number, reason: ReportReason, details: string) => Promise<boolean>; onBlock: (userId: number) => Promise<boolean>; onDelete: (postId: number) => Promise<boolean> }) {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); const [reportOpen, setReportOpen] = useState(false);
   const { language } = useLanguage(); const pt = language === 'pt';
@@ -32,7 +32,7 @@ export function CommunityPostCard({ post, currentUserId, commenting, onComment, 
       <View style={styles.headerRow}><Pressable disabled={post.author.active === false} onPress={() => onAuthorPress(post.author.userId)} style={styles.header}>
         <Avatar name={post.author.fullname} uri={post.author.profilePictureUrl} size={44} />
         <View style={styles.authorCopy}><Text style={styles.author}>{post.author.fullname}</Text><Text style={styles.meta}>{pt ? ({ VERSE: 'Versículo', QUESTION: 'Pergunta', PHOTO: 'Foto' }[post.postType]) : `${post.postType[0]}${post.postType.slice(1).toLowerCase()}`}  ·  {relativeTime(post.createdAt, pt)}</Text></View>
-      </Pressable>{post.author.userId !== currentUserId && post.author.active !== false ? <Pressable accessibilityLabel={pt ? 'Opções da publicação' : 'Post options'} onPress={() => setMenuOpen(true)} style={styles.menu}><Ionicons name="ellipsis-horizontal" size={21} color="#596575" /></Pressable> : null}</View>
+      </Pressable>{post.author.active !== false ? <Pressable accessibilityLabel={pt ? 'Opções da publicação' : 'Post options'} onPress={() => setMenuOpen(true)} style={styles.menu}><Ionicons name="ellipsis-horizontal" size={21} color="#596575" /></Pressable> : null}</View>
       {post.postType === 'VERSE' && post.verse ? (
         <View style={styles.verseCard}>
           <View style={styles.verseLabel}><Ionicons name="book-outline" size={20} color="#a86508" /><Text style={styles.verseReference}>{post.verse.reference}</Text></View>
@@ -62,7 +62,9 @@ export function CommunityPostCard({ post, currentUserId, commenting, onComment, 
           </View>
         </View>
       ) : null}
-      <ActionSheet visible={menuOpen} title={pt ? 'Opções da publicação' : 'Post options'} cancelLabel={pt ? 'Cancelar' : 'Cancel'} onClose={() => setMenuOpen(false)} actions={[
+      <ActionSheet visible={menuOpen} title={pt ? 'Opções da publicação' : 'Post options'} cancelLabel={pt ? 'Cancelar' : 'Cancel'} onClose={() => setMenuOpen(false)} actions={post.author.userId === currentUserId ? [
+        { key: 'delete', label: pt ? 'Eliminar publicação' : 'Delete post', icon: 'trash-outline', destructive: true, onPress: () => { void onDelete(post.postId); } },
+      ] : [
         { key: 'report', label: pt ? 'Reportar publicação' : 'Report post', icon: 'flag-outline', onPress: () => setReportOpen(true) },
         { key: 'block', label: pt ? 'Bloquear utilizador' : 'Block user', icon: 'ban-outline', destructive: true, onPress: () => { void onBlock(post.author.userId); } },
       ]} />

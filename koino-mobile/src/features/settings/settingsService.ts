@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 import { authenticatedRequest } from '@/services/authenticatedApi';
-import type { FriendshipResult, LocalPreferences, PublicProfile, UserSettings } from './types';
+import type { FriendshipListItem, FriendshipResult, LocalPreferences, PublicProfile, UserSettings } from './types';
 
 const LOCAL_KEY = 'koino.preferences';
 const defaults: LocalPreferences = {
@@ -28,6 +28,7 @@ export function getPublicProfileByFriendCode(friendCode: string) {
 export function getUserProfile(userId: number) { return authenticatedRequest<PublicProfile>(`/users/${userId}/profile`); }
 export function requestFriend(userId: number) { return authenticatedRequest<FriendshipResult>(`/users/me/friend-requests/${userId}`, { method: 'POST' }); }
 export function cancelFriendRequest(friendshipId: number) { return authenticatedRequest<null>(`/users/me/friend-requests/${friendshipId}`, { method: 'DELETE' }); }
+export function getFriends() { return authenticatedRequest<FriendshipListItem[]>('/users/me/friends'); }
 
 export async function getLocalPreferences(): Promise<LocalPreferences> {
   const stored = Platform.OS === 'web' ? globalThis.localStorage?.getItem(LOCAL_KEY) : await SecureStore.getItemAsync(LOCAL_KEY);

@@ -94,9 +94,10 @@ export async function apiRequest(
       headers: requestHeaders,
     })
   } catch {
-    notifyServiceUnavailable()
+    const definitelyOffline = typeof navigator !== 'undefined' && navigator.onLine === false
+    if (!definitelyOffline) notifyServiceUnavailable()
     throw new ApiError(
-      i18n.t('errors.connect'),
+      i18n.t(definitelyOffline ? 'errors.connect' : 'errors.service'),
       0,
       null,
     )

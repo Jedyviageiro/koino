@@ -25,6 +25,7 @@ import com.koino.backend.model.AccountStatus;
 import com.koino.backend.model.Verse;
 import com.koino.backend.repository.CommunityCommentRepository;
 import com.koino.backend.repository.CommunityPostRepository;
+import com.koino.backend.repository.ContentReportRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.repository.VerseRepository;
 
@@ -34,6 +35,7 @@ public class CommunityService {
     private static final String PHOTO_FOLDER = "koino/community";
 
     private final CommunityPostRepository postRepository;
+    private final ContentReportRepository reportRepository;
     private final CommunityCommentRepository commentRepository;
     private final UserRepository userRepository;
     private final VerseRepository verseRepository;
@@ -43,6 +45,7 @@ public class CommunityService {
 
     public CommunityService(
         CommunityPostRepository postRepository,
+        ContentReportRepository reportRepository,
         CommunityCommentRepository commentRepository,
         UserRepository userRepository,
         VerseRepository verseRepository,
@@ -51,6 +54,7 @@ public class CommunityService {
         ContentModerationService contentModerationService
     ) {
         this.postRepository = postRepository;
+        this.reportRepository = reportRepository;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.verseRepository = verseRepository;
@@ -65,9 +69,7 @@ public class CommunityService {
             .map(postRepository::findTop50ByPostTypeOrderByCreatedAtDesc)
             .orElseGet(postRepository::findTop50ByOrderByCreatedAtDesc);
 
-        java.util.Set<Long> hiddenUsers = trustSafetyService.hiddenUserIds(userId);
-        posts = posts.stream().filter(post -> !hiddenUsers.contains(post.getAuthor().getUserId())
-            && post.getAuthor().isActive()
+        posts = posts.stream().filter(post -> post.getAuthor().isActive()
             && post.getAuthor().getAccountStatus() != AccountStatus.BANNED).toList();
         if (posts.isEmpty()) {
             return List.of();
@@ -84,11 +86,28 @@ public class CommunityService {
         return posts.stream()
             .map(post -> toResponse(
                 post,
-                commentsByPost.getOrDefault(post.getPostId(), List.of()).stream()
-                    .filter(comment -> !hiddenUsers.contains(comment.getAuthor().getUserId()))
-                    .toList()
+                commentsByPost.getOrDefault(post.getPostId(), List.of())
             ))
             .toList();
+    }
+
+    @Transactional
+    public void deletePost(Long userId, Long postId) {
+        CommunityPost post = postRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        if (!post.getAuthor().getUserId().equals(userId)) {
+            throw new IllegalArgumentException("Only the author can delete this post");
+        }
+        commentRepository.deleteByPostPostId(postId);
+        reportRepository.clearPostReference(postId);
+        postRepository.delete(post);
+        if (post.getPhotoPublicId() != null && !post.getPhotoPublicId().isBlank()) {
+            try {
+                cloudinary.uploader().destroy(post.getPhotoPublicId(), ObjectUtils.emptyMap());
+            } catch (IOException ignored) {
+                // The database deletion must not be reversed by storage cleanup.
+            }
+        }
     }
 
     @Transactional

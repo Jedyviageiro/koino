@@ -33,6 +33,14 @@ export type FriendshipResult = {
   direction: string;
 };
 
+export type FriendshipListItem = {
+  friendshipId: number;
+  user: { userId: number; username: string; fullname: string; profilePictureUrl: string | null };
+  status: string;
+  direction: string;
+  createdAt: string;
+};
+
 export type LocalPreferences = {
   pushMessages: boolean;
   pushMentions: boolean;

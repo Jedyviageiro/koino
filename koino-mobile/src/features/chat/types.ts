@@ -11,6 +11,8 @@ export type ChatFriend = {
   online: boolean;
   lastSeenAt: string | null;
   active?: boolean;
+  blockedByMe: boolean;
+  blockedMe: boolean;
 };
 
 export type ChatMessage = {

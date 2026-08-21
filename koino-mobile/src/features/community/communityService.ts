@@ -41,6 +41,10 @@ export function addCommunityComment(postId: number, content: string) {
   });
 }
 
+export function deleteCommunityPost(postId: number) {
+  return authenticatedRequest<void>(`/community/posts/${postId}`, { method: 'DELETE' });
+}
+
 export function reportCommunityPost(postId: number, reason: ReportReason, details = '') {
   return authenticatedRequest<{ message: string }>(`/safety/reports/posts/${postId}`, { method: 'POST', body: JSON.stringify({ reason, details: details.trim() || null }) });
 }
@@ -51,6 +55,10 @@ export function reportCommunityUser(userId: number, reason: ReportReason, detail
 
 export function blockCommunityUser(userId: number) {
   return authenticatedRequest<{ message: string }>(`/safety/blocks/${userId}`, { method: 'POST' });
+}
+
+export function unblockCommunityUser(userId: number) {
+  return authenticatedRequest<{ message: string }>(`/safety/blocks/${userId}`, { method: 'DELETE' });
 }
 
 export function getBibleBooks() {

@@ -33,7 +33,7 @@ export function AppBottomNav({ active }: { active: Tab }) {
               accessibilityRole="tab"
               accessibilityState={{ selected }}
               onPress={() => router.replace(item.path as Href)}
-              style={({ pressed }) => [styles.item, selected && styles.itemActive, pressed && styles.pressed]}
+              style={({ pressed }) => [styles.item, pressed && styles.pressed]}
             >
               <Ionicons
                 name={selected ? item.activeIcon : item.icon}
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   outer: { borderTopWidth: 1, borderTopColor: '#eceef0', backgroundColor: '#fff' },
   nav: { minHeight: 64, paddingHorizontal: 8, flexDirection: 'row', alignItems: 'stretch' },
   item: { flex: 1, minWidth: 0, paddingTop: 8, borderRadius: 16, alignItems: 'center', justifyContent: 'center', gap: 3 },
-  itemActive: { backgroundColor: '#fff8ee' },
   pressed: { opacity: 0.65 },
   label: { color: '#747c87', fontSize: 9, lineHeight: 13, fontWeight: '500' },
   labelActive: { color: '#d97f00', fontWeight: '700' },

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.koino.backend.dto.chat.ChatFriendResponse;
 import com.koino.backend.dto.chat.ChatMessageRequest;
 import com.koino.backend.dto.chat.ChatMessageResponse;
 import com.koino.backend.dto.chat.ChatTypingResponse;
+import com.koino.backend.dto.chat.DeleteConversationsRequest;
 import com.koino.backend.model.User;
 import com.koino.backend.service.ChatService;
 
@@ -85,5 +87,21 @@ public class ChatController {
         @PathVariable Long friendId
     ) {
         return chatService.isTyping(user.getUserId(), friendId);
+    }
+
+    @PostMapping("/conversations/delete")
+    public void deleteConversations(
+        @AuthenticationPrincipal User user,
+        @Valid @RequestBody DeleteConversationsRequest request
+    ) {
+        chatService.deleteConversations(user.getUserId(), request.friendIds());
+    }
+
+    @DeleteMapping("/messages/{messageId}")
+    public void deleteMessageForEveryone(
+        @AuthenticationPrincipal User user,
+        @PathVariable Long messageId
+    ) {
+        chatService.deleteMessageForEveryone(user.getUserId(), messageId);
     }
 }

@@ -17,4 +17,6 @@ public interface CommunityCommentRepository
     List<CommunityComment> findByPostPostIdInOrderByCreatedAtAsc(
         List<Long> postIds
     );
+
+    void deleteByPostPostId(Long postId);
 }

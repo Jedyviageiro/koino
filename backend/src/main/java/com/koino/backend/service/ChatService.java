@@ -20,10 +20,12 @@ import com.koino.backend.dto.chat.ChatMessageRequest;
 import com.koino.backend.dto.chat.ChatMessageResponse;
 import com.koino.backend.dto.chat.ChatTypingResponse;
 import com.koino.backend.model.ChatMessage;
+import com.koino.backend.model.ChatConversationDeletion;
 import com.koino.backend.model.Friendship;
 import com.koino.backend.model.FriendshipStatus;
 import com.koino.backend.model.User;
 import com.koino.backend.repository.ChatMessageRepository;
+import com.koino.backend.repository.ChatConversationDeletionRepository;
 import com.koino.backend.repository.FriendshipRepository;
 import com.koino.backend.repository.UserRepository;
 
@@ -34,6 +36,7 @@ public class ChatService {
     private static final long ONLINE_WINDOW_SECONDS = 12;
     private static final long LAST_SEEN_WRITE_SECONDS = 60;
     private final ChatMessageRepository messageRepository;
+    private final ChatConversationDeletionRepository deletionRepository;
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
     private final UserService userService;
@@ -49,6 +52,7 @@ public class ChatService {
 
     public ChatService(
         ChatMessageRepository messageRepository,
+        ChatConversationDeletionRepository deletionRepository,
         FriendshipRepository friendshipRepository,
         UserRepository userRepository,
         UserService userService,
@@ -58,6 +62,7 @@ public class ChatService {
         ContentModerationService contentModerationService
     ) {
         this.messageRepository = messageRepository;
+        this.deletionRepository = deletionRepository;
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -76,6 +81,10 @@ public class ChatService {
                 FriendshipStatus.ACCEPTED
             );
         List<ChatMessage> messages = messageRepository.findAllForUser(userId);
+        Map<Long, Instant> hiddenBeforeByFriend = new HashMap<>();
+        for (ChatConversationDeletion deletion : deletionRepository.findByOwnerUserId(userId)) {
+            hiddenBeforeByFriend.put(deletion.getFriend().getUserId(), deletion.getHiddenBefore());
+        }
         Map<Long, ChatMessage> latestByFriend = new HashMap<>();
         Map<Long, Long> unreadByFriend = new HashMap<>();
         List<ChatMessage> delivered = new ArrayList<>();
@@ -84,6 +93,8 @@ public class ChatService {
             Long friendId = message.getSender().getUserId().equals(userId)
                 ? message.getRecipient().getUserId()
                 : message.getSender().getUserId();
+            Instant hiddenBefore = hiddenBeforeByFriend.get(friendId);
+            if (hiddenBefore != null && !message.getSentAt().isAfter(hiddenBefore)) continue;
             latestByFriend.putIfAbsent(friendId, message);
             if (message.getRecipient().getUserId().equals(userId)
                 && message.getReadAt() == null) {
@@ -102,10 +113,12 @@ public class ChatService {
             User friend = friendship.getRequester().getUserId().equals(userId)
                 ? friendship.getAddressee()
                 : friendship.getRequester();
-            if (trustSafetyService.isBlockedEitherWay(userId, friend.getUserId())) continue;
             boolean friendActive = friend.isActive();
             if (friendActive) friend = userService.ensureUsername(friend);
             ChatMessage latest = latestByFriend.get(friend.getUserId());
+            if (latest == null && hiddenBeforeByFriend.containsKey(friend.getUserId())) continue;
+            boolean blockedByMe = trustSafetyService.isBlockedBy(userId, friend.getUserId());
+            boolean blockedMe = trustSafetyService.isBlockedBy(friend.getUserId(), userId);
             result.add(new ChatFriendResponse(
                 friend.getUserId(),
                 friendActive ? friend.getUsername() : "",
@@ -120,7 +133,9 @@ public class ChatService {
                 unreadByFriend.getOrDefault(friend.getUserId(), 0L),
                 friendActive && isOnline(friend.getUserId()),
                 friendActive ? lastSeen(friend) : null,
-                friendActive
+                friendActive,
+                blockedByMe,
+                blockedMe
             ));
         }
         result.sort((left, right) -> {
@@ -141,9 +156,18 @@ public class ChatService {
         Long friendId
     ) {
         touchPresence(userId, true);
-        ensureFriends(userId, friendId);
+        ensureFriendship(userId, friendId);
         List<ChatMessage> messages =
             messageRepository.findConversation(userId, friendId);
+        Instant hiddenBefore = deletionRepository
+            .findByOwnerUserIdAndFriendUserId(userId, friendId)
+            .map(ChatConversationDeletion::getHiddenBefore)
+            .orElse(null);
+        if (hiddenBefore != null) {
+            messages = messages.stream()
+                .filter(message -> message.getSentAt().isAfter(hiddenBefore))
+                .toList();
+        }
         Instant readAt = Instant.now();
         boolean changed = false;
         for (ChatMessage message : messages) {
@@ -167,7 +191,7 @@ public class ChatService {
         ChatMessageRequest request
     ) {
         touchPresence(senderId, true);
-        ensureFriends(senderId, request.recipientId());
+        ensureCanMessage(senderId, request.recipientId());
         User sender = findUser(senderId);
         User recipient = findUser(request.recipientId());
         if (!recipient.isActive()) {
@@ -178,7 +202,7 @@ public class ChatService {
         message.setRecipient(recipient);
         message.setBody(request.body().trim());
         message = messageRepository.save(message);
-        notificationService.createChatMessage(recipient, sender, false);
+        notificationService.createChatMessage(recipient, sender, request.body().trim(), false);
         return toResponse(message);
     }
 
@@ -190,7 +214,7 @@ public class ChatService {
         String caption
     ) {
         touchPresence(senderId, true);
-        ensureFriends(senderId, recipientId);
+        ensureCanMessage(senderId, recipientId);
         validatePhoto(file);
         String cleanedCaption = caption == null ? null : caption.trim();
         if (cleanedCaption != null && cleanedCaption.length() > 500) {
@@ -223,7 +247,7 @@ public class ChatService {
             message.setPhotoUrl(requiredUploadValue(upload, "secure_url"));
             message.setPhotoPublicId(requiredUploadValue(upload, "public_id"));
             message = messageRepository.save(message);
-            notificationService.createChatMessage(message.getRecipient(), message.getSender(), true);
+            notificationService.createChatMessage(message.getRecipient(), message.getSender(), cleanedCaption, true);
             return toResponse(message);
         } catch (IOException exception) {
             throw new IllegalStateException("Could not upload the chat photo", exception);
@@ -237,7 +261,11 @@ public class ChatService {
         boolean typing
     ) {
         touchPresence(senderId, false);
-        ensureFriends(senderId, recipientId);
+        if (trustSafetyService.isBlockedEitherWay(senderId, recipientId)) {
+            typingUntil.remove(typingKey(senderId, recipientId));
+            return new ChatTypingResponse(false);
+        }
+        ensureFriendship(senderId, recipientId);
         String key = typingKey(senderId, recipientId);
         if (typing) {
             typingUntil.put(key, Instant.now().plusSeconds(4));
@@ -250,7 +278,8 @@ public class ChatService {
     @Transactional(readOnly = true)
     public ChatTypingResponse isTyping(Long userId, Long friendId) {
         touchPresence(userId, false);
-        ensureFriends(userId, friendId);
+        if (trustSafetyService.isBlockedEitherWay(userId, friendId)) return new ChatTypingResponse(false);
+        ensureFriendship(userId, friendId);
         String key = typingKey(friendId, userId);
         Instant expiresAt = typingUntil.get(key);
         boolean typing = expiresAt != null && expiresAt.isAfter(Instant.now());
@@ -284,12 +313,52 @@ public class ChatService {
         return lastSeenByUser.getOrDefault(user.getUserId(), user.getLastSeenAt());
     }
 
-    private void ensureFriends(Long firstId, Long secondId) {
+    @Transactional
+    public void deleteConversations(Long userId, List<Long> friendIds) {
+        Instant now = Instant.now();
+        for (Long friendId : friendIds.stream().filter(id -> id != null && !id.equals(userId)).distinct().toList()) {
+            ensureFriendship(userId, friendId);
+            ChatConversationDeletion deletion = deletionRepository
+                .findByOwnerUserIdAndFriendUserId(userId, friendId)
+                .orElseGet(ChatConversationDeletion::new);
+            deletion.setOwner(findUser(userId));
+            deletion.setFriend(findUser(friendId));
+            deletion.setHiddenBefore(now);
+            deletionRepository.save(deletion);
+            notificationService.resolveAll(userId, "CHAT_MESSAGE", friendId.toString());
+        }
+    }
+
+    @Transactional
+    public void deleteMessageForEveryone(Long userId, Long messageId) {
+        ChatMessage message = messageRepository.findById(messageId)
+            .orElseThrow(() -> new IllegalArgumentException("Message not found"));
+        if (!message.getSender().getUserId().equals(userId)) {
+            throw new IllegalArgumentException("Only the sender can delete this message");
+        }
+        if (message.getSentAt().isBefore(Instant.now().minusSeconds(300))) {
+            throw new IllegalArgumentException("Messages can only be deleted for everyone within five minutes");
+        }
+        messageRepository.delete(message);
+        if (message.getPhotoPublicId() != null && !message.getPhotoPublicId().isBlank()) {
+            try {
+                cloudinary.uploader().destroy(message.getPhotoPublicId(), ObjectUtils.emptyMap());
+            } catch (IOException ignored) {
+                // The conversation update must not be reversed by storage cleanup.
+            }
+        }
+    }
+
+    private void ensureCanMessage(Long firstId, Long secondId) {
+        ensureFriendship(firstId, secondId);
+        if (trustSafetyService.isBlockedEitherWay(firstId, secondId)) {
+            throw new IllegalArgumentException("Unblock this person before sending a message.");
+        }
+    }
+
+    private void ensureFriendship(Long firstId, Long secondId) {
         if (firstId.equals(secondId)) {
             throw new IllegalArgumentException("Conversation not available");
-        }
-        if (trustSafetyService.isBlockedEitherWay(firstId, secondId)) {
-            throw new IllegalArgumentException("This conversation is no longer available.");
         }
         long lower = Math.min(firstId, secondId);
         long higher = Math.max(firstId, secondId);

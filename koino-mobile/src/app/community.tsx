@@ -10,7 +10,7 @@ import { ErrorState, LoadingState } from '@/components/app/ScreenState';
 import { Avatar } from '@/components/community/Avatar';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import { VersePickerModal } from '@/components/community/VersePickerModal';
-import { addCommunityComment, blockCommunityUser, createCommunityPhotoPost, createCommunityPost, getBibleBooks, getCommunityPosts, getCurrentUser, reportCommunityPost } from '@/features/community/communityService';
+import { addCommunityComment, blockCommunityUser, createCommunityPhotoPost, createCommunityPost, deleteCommunityPost, getBibleBooks, getCommunityPosts, getCurrentUser, reportCommunityPost } from '@/features/community/communityService';
 import type { ReportReason } from '@/components/community/ReportModal';
 import type { BibleBook, CommunityPost, CommunityPostType, CommunityVerse, CurrentUser } from '@/features/community/types';
 import { router } from 'expo-router';
@@ -87,8 +87,13 @@ export default function CommunityScreen() {
   }
 
   async function blockUser(userId: number) {
-    try { await blockCommunityUser(userId); setPosts((current) => current?.filter((post) => post.author.userId !== userId) ?? null); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Utilizador bloqueado. O conteúdo foi ocultado.' : 'User blocked. Their content is now hidden.' }); return true; }
+    try { await blockCommunityUser(userId); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Utilizador bloqueado. Pode desbloqueá-lo na conversa.' : 'User blocked. You can unblock them from the conversation.' }); return true; }
     catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível bloquear este utilizador.' : 'Unable to block this user.' }); return false; }
+  }
+
+  async function deletePost(postId: number) {
+    try { await deleteCommunityPost(postId); setPosts((current) => current?.filter((post) => post.postId !== postId) ?? null); setToast({ id: Date.now(), tone: 'success', text: pt ? 'Publicação eliminada.' : 'Post deleted.' }); return true; }
+    catch (failure) { setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível eliminar a publicação.' : 'Unable to delete this post.' }); return false; }
   }
 
   return (
@@ -122,7 +127,7 @@ export default function CommunityScreen() {
             {filters.map((item) => <Pressable key={item.value} onPress={() => { setFilter(item.value); setPosts(null); }} style={[styles.filter, filter === item.value && styles.filterActive]}><Text style={[styles.filterText, filter === item.value && styles.filterTextActive]}>{item.label}</Text></Pressable>)}
           </ScrollView>
           <View style={styles.feed}>
-            {posts.length ? posts.map((post) => <CommunityPostCard key={post.postId} post={post} currentUserId={user.userId} commenting={commentingId === post.postId} onComment={addComment} onReport={reportPost} onBlock={blockUser} onAuthorPress={(userId) => router.push({ pathname: '/profile/[userId]', params: { userId: String(userId) } })} />) : <View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={35} color="#d68108" /><Text style={styles.emptyTitle}>{pt ? 'Comece a conversa' : 'Start the conversation'}</Text><Text style={styles.emptyText}>{pt ? 'Partilhe um versículo, foto ou pergunta.' : 'Share a verse, photo, or question with the community.'}</Text></View>}
+            {posts.length ? posts.map((post) => <CommunityPostCard key={post.postId} post={post} currentUserId={user.userId} commenting={commentingId === post.postId} onComment={addComment} onReport={reportPost} onBlock={blockUser} onDelete={deletePost} onAuthorPress={(userId) => router.push({ pathname: '/profile/[userId]', params: { userId: String(userId) } })} />) : <View style={styles.empty}><Ionicons name="chatbubble-ellipses-outline" size={35} color="#d68108" /><Text style={styles.emptyTitle}>{pt ? 'Comece a conversa' : 'Start the conversation'}</Text><Text style={styles.emptyText}>{pt ? 'Partilhe um versículo, foto ou pergunta.' : 'Share a verse, photo, or question with the community.'}</Text></View>}
           </View>
           {error ? <Pressable onPress={() => setError('')}><Text style={styles.error}>{error}</Text></Pressable> : null}
           <VersePickerModal visible={versePickerOpen} books={books} onClose={() => setVersePickerOpen(false)} onSelect={(selected) => { setVerse(selected); setMode('VERSE'); }} />

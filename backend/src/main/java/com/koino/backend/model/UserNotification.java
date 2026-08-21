@@ -27,6 +27,10 @@ public class UserNotification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "actor_id")
+    private User actor;
+
     @Column(nullable = false)
     private String title;
 

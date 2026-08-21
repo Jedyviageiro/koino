@@ -23,6 +23,7 @@ import com.koino.backend.model.User;
 import com.koino.backend.model.Verse;
 import com.koino.backend.repository.CommunityCommentRepository;
 import com.koino.backend.repository.CommunityPostRepository;
+import com.koino.backend.repository.ContentReportRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.repository.VerseRepository;
 import com.koino.backend.service.CommunityService;
@@ -117,6 +118,7 @@ class CommunityServiceTests {
 
         CommunityService service = new CommunityService(
             postRepository,
+            mock(ContentReportRepository.class),
             commentRepository,
             userRepository,
             verseRepository,

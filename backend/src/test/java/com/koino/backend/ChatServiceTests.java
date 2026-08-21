@@ -1,6 +1,7 @@
 package com.koino.backend;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -19,6 +20,7 @@ import com.koino.backend.model.Friendship;
 import com.koino.backend.model.FriendshipStatus;
 import com.koino.backend.model.User;
 import com.koino.backend.repository.ChatMessageRepository;
+import com.koino.backend.repository.ChatConversationDeletionRepository;
 import com.koino.backend.repository.FriendshipRepository;
 import com.koino.backend.repository.UserRepository;
 import com.koino.backend.service.ChatService;
@@ -44,7 +46,7 @@ class ChatServiceTests {
         assertThat(response.body()).isEqualTo("Hello");
         assertThat(response.deliveredAt()).isNull();
         assertThat(response.readAt()).isNull();
-        verify(fixture.notifications).createChatMessage(fixture.second, fixture.first, false);
+        verify(fixture.notifications).createChatMessage(fixture.second, fixture.first, "Hello", false);
     }
 
     @Test
@@ -84,8 +86,30 @@ class ChatServiceTests {
         assertThat(friends.get(0).lastSeenAt()).isNotNull();
     }
 
+    @Test
+    void senderCanDeleteMessageForEveryoneWithinFiveMinutes() {
+        Fixture fixture = new Fixture();
+        ChatMessage message = message(fixture.first, fixture.second, Instant.now().minusSeconds(120));
+        when(fixture.messages.findById(20L)).thenReturn(Optional.of(message));
+
+        fixture.service.deleteMessageForEveryone(1L, 20L);
+
+        verify(fixture.messages).delete(message);
+    }
+
+    @Test
+    void messageCannotBeDeletedForEveryoneAfterFiveMinutes() {
+        Fixture fixture = new Fixture();
+        ChatMessage message = message(fixture.first, fixture.second, Instant.now().minusSeconds(301));
+        when(fixture.messages.findById(21L)).thenReturn(Optional.of(message));
+
+        assertThatThrownBy(() -> fixture.service.deleteMessageForEveryone(1L, 21L))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
     private static final class Fixture {
         private final ChatMessageRepository messages = mock(ChatMessageRepository.class);
+        private final ChatConversationDeletionRepository deletions = mock(ChatConversationDeletionRepository.class);
         private final FriendshipRepository friendships = mock(FriendshipRepository.class);
         private final UserRepository users = mock(UserRepository.class);
         private final UserService userService = mock(UserService.class);
@@ -99,7 +123,7 @@ class ChatServiceTests {
             when(users.findById(1L)).thenReturn(Optional.of(first));
             when(users.findById(2L)).thenReturn(Optional.of(second));
             when(friendships.findByLowerUserIdAndHigherUserId(1L, 2L)).thenReturn(Optional.of(friendship));
-            service = new ChatService(messages, friendships, users, userService, mock(Cloudinary.class), notifications, mock(TrustSafetyService.class), mock(ContentModerationService.class));
+            service = new ChatService(messages, deletions, friendships, users, userService, mock(Cloudinary.class), notifications, mock(TrustSafetyService.class), mock(ContentModerationService.class));
         }
     }
 
@@ -110,6 +134,15 @@ class ChatServiceTests {
         user.setUsername(name.toLowerCase());
         user.setActive(true);
         return user;
+    }
+
+    private static ChatMessage message(User sender, User recipient, Instant sentAt) {
+        ChatMessage message = new ChatMessage();
+        message.setSender(sender);
+        message.setRecipient(recipient);
+        message.setBody("Message");
+        message.setSentAt(sentAt);
+        return message;
     }
 
     private static Friendship accepted(User first, User second) {

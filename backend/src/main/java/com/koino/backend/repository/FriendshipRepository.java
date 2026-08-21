@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.koino.backend.model.Friendship;
 import com.koino.backend.model.FriendshipStatus;
+import com.koino.backend.model.AccountStatus;
 
 public interface FriendshipRepository
     extends JpaRepository<Friendship, Long> {
@@ -37,5 +38,20 @@ public interface FriendshipRepository
         Long lowerUserId,
         FriendshipStatus higherStatus,
         Long higherUserId
+    );
+
+    @Query("""
+        select count(friendship) from Friendship friendship
+        where friendship.status = :status
+          and (friendship.requester.userId = :userId or friendship.addressee.userId = :userId)
+          and friendship.requester.active = true
+          and friendship.addressee.active = true
+          and friendship.requester.accountStatus <> :banned
+          and friendship.addressee.accountStatus <> :banned
+        """)
+    long countActiveForUser(
+        @Param("userId") Long userId,
+        @Param("status") FriendshipStatus status,
+        @Param("banned") AccountStatus banned
     );
 }

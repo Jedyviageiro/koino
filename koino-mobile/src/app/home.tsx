@@ -141,7 +141,7 @@ export default function HomeScreen() {
                   <View style={styles.chip}><Ionicons name="time-outline" size={19} color="#1d252d" /><Text style={styles.chipText}>{data.task.estimatedMinutes} {pt ? 'min de leitura' : 'min read'}</Text></View>
                   <View style={styles.chip}><Ionicons name="document-text-outline" size={18} color="#1d252d" /><Text style={styles.chipText}>{verseCount(data.task)} {pt ? 'versículos' : 'verses'}</Text></View>
                 </View>
-                <Pressable onPress={() => router.push('/reading')} style={styles.primaryButton}>
+                <Pressable onPress={() => router.push('/devotional')} style={styles.primaryButton}>
                   <Ionicons name="book-outline" size={22} color="#fff" />
                   <Text style={styles.primaryButtonText}>{pt ? (data.task.currentVerseIndex > 1 ? 'Continuar leitura' : 'Começar leitura') : (data.task.currentVerseIndex > 1 ? 'Continue Reading' : 'Start Reading')}</Text>
                 </Pressable>

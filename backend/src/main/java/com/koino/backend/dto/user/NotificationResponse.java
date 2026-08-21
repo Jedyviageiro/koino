@@ -8,6 +8,8 @@ public record NotificationResponse(
     String message,
     String type,
     String referenceId,
+    String actorName,
+    String actorProfilePictureUrl,
     boolean read,
     Instant createdAt
 ) {}

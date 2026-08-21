@@ -10,11 +10,13 @@ import { AppShell } from '@/components/app/AppShell';
 import { ErrorState, LoadingState } from '@/components/app/ScreenState';
 import { Avatar } from '@/components/community/Avatar';
 import { getAuthSession } from '@/features/auth/authStorage';
-import { getChatFriends, getChatTyping, getConversation, sendChatMessage, sendChatPhoto, setChatTyping } from '@/features/chat/chatService';
+import { deleteChatMessageForEveryone, getChatFriends, getChatTyping, getConversation, sendChatMessage, sendChatPhoto, setChatTyping } from '@/features/chat/chatService';
 import type { ChatFriend, ChatMessage } from '@/features/chat/types';
 import { useLanguage } from '@/features/localization/LanguageProvider';
 import { Toast, type ToastMessage } from '@/components/app/Toast';
 import { ImageViewerModal } from '@/components/app/ImageViewerModal';
+import { unblockCommunityUser } from '@/features/community/communityService';
+import { ActionSheet } from '@/components/app/ActionSheet';
 
 function messageTime(value: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(new Date(value));
@@ -76,6 +78,7 @@ export default function ConversationScreen() {
   const [error, setError] = useState('');
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
+  const [messageToDelete, setMessageToDelete] = useState<ChatMessage | null>(null);
 
   const load = useCallback(async () => {
     if (!Number.isFinite(friendId) || friendId <= 0) {
@@ -149,18 +152,42 @@ export default function ConversationScreen() {
     setPendingPhoto(asset);
   }
 
+  async function unblock() {
+    if (!friend?.blockedByMe) return;
+    try {
+      await unblockCommunityUser(friendId);
+      setFriend({ ...friend, blockedByMe: false });
+      setToast({ id: Date.now(), tone: 'success', text: pt ? 'Utilizador desbloqueado.' : 'User unblocked.' });
+    } catch (failure) {
+      setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível desbloquear.' : 'Unable to unblock this person.' });
+    }
+  }
+
+  async function deleteForEveryone() {
+    if (!messageToDelete) return;
+    const messageId = messageToDelete.messageId;
+    setMessageToDelete(null);
+    try {
+      await deleteChatMessageForEveryone(messageId);
+      setMessages((current) => current?.filter((message) => message.messageId !== messageId) ?? null);
+      setToast({ id: Date.now(), tone: 'success', text: pt ? 'Mensagem eliminada para todos.' : 'Message deleted for everyone.' });
+    } catch (failure) {
+      setToast({ id: Date.now(), tone: 'error', text: failure instanceof Error ? failure.message : pt ? 'Não foi possível eliminar a mensagem.' : 'Unable to delete the message.' });
+    }
+  }
+
   if (!messages && !error) return <AppShell active="community"><LoadingState label={pt ? 'A abrir conversa…' : 'Opening conversation…'} /></AppShell>;
   if (!messages && error) return <AppShell active="community"><ErrorState message={error} onRetry={load} /></AppShell>;
 
   return (
     <AppShell active="community">
-      <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
+      <KeyboardAvoidingView style={[styles.screen, (friend?.blockedByMe || friend?.blockedMe) && styles.blockedScreen]} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={0}>
         <View style={styles.header}>
           <Pressable accessibilityLabel={pt ? 'Voltar às conversas' : 'Back to chat list'} onPress={() => router.back()} style={styles.backButton}><Ionicons name="arrow-back" size={25} color="#637083" /></Pressable>
           <Pressable accessibilityLabel={pt ? 'Abrir perfil' : 'Open profile'} disabled={!friend || friend.active === false} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })}><Avatar name={friend?.fullname ?? 'Koino friend'} uri={friend?.profilePictureUrl} size={52} /></Pressable>
           <Pressable disabled={!friend || friend.active === false} onPress={() => router.push({ pathname: '/profile/[userId]', params: { userId: String(friendId) } })} style={styles.headerCopy}>
             <Text numberOfLines={1} style={styles.friendName}>{friend?.fullname ?? 'Koino friend'}</Text>
-            {friendTyping ? <TypingIndicator label={pt ? 'A escrever' : 'Typing'} /> : <Text style={[styles.presence, friend?.online && styles.online]}>{lastSeenText(friend, pt)}</Text>}
+            {friend?.blockedByMe ? <Text style={styles.blockedPresence}>{pt ? 'Utilizador bloqueado' : 'Blocked user'}</Text> : friend?.blockedMe ? <Text style={styles.blockedPresence}>{pt ? 'Mensagens indisponíveis' : 'Messaging unavailable'}</Text> : friendTyping ? <TypingIndicator label={pt ? 'A escrever' : 'Typing'} /> : <Text style={[styles.presence, friend?.online && styles.online]}>{lastSeenText(friend, pt)}</Text>}
           </Pressable>
         </View>
 
@@ -181,7 +208,7 @@ export default function ConversationScreen() {
                 <View style={[styles.messageRow, mine && styles.myMessageRow]}>
                   {!mine ? <Avatar name={friend?.fullname ?? 'Friend'} uri={friend?.profilePictureUrl} size={36} /> : null}
                   <View style={[styles.messageGroup, mine && styles.myMessageGroup]}>
-                    <View style={[styles.bubble, item.photoUrl && styles.photoBubble, mine ? styles.myBubble : styles.theirBubble]}>{item.photoUrl ? <Pressable accessibilityLabel={pt ? 'Abrir imagem' : 'Open image'} onPress={() => setViewingPhoto(item.photoUrl)}><Image source={{ uri: item.photoUrl }} style={styles.messagePhoto} contentFit="cover" transition={180} /></Pressable> : null}{item.body ? <Text style={[styles.messageBody, mine && styles.myMessageBody, item.photoUrl && styles.caption]}>{item.body}</Text> : null}</View>
+                    <Pressable accessibilityLabel={mine ? (pt ? 'A sua mensagem' : 'Your message') : undefined} disabled={!mine || Date.now() - new Date(item.sentAt).getTime() > 300000} delayLongPress={350} onLongPress={() => setMessageToDelete(item)} style={[styles.bubble, item.photoUrl && styles.photoBubble, mine ? styles.myBubble : styles.theirBubble]}>{item.photoUrl ? <Pressable accessibilityLabel={pt ? 'Abrir imagem' : 'Open image'} onPress={() => setViewingPhoto(item.photoUrl)}><Image source={{ uri: item.photoUrl }} style={styles.messagePhoto} contentFit="cover" transition={180} /></Pressable> : null}{item.body ? <Text style={[styles.messageBody, mine && styles.myMessageBody, item.photoUrl && styles.caption]}>{item.body}</Text> : null}</Pressable>
                     <View style={[styles.messageMeta, mine && styles.myMessageMeta]}><Text style={styles.messageTime}>{messageTime(item.sentAt, pt ? 'pt' : 'en')}</Text>{mine ? <Ionicons accessibilityLabel={item.readAt ? (pt ? 'Lida' : 'Read') : item.deliveredAt ? (pt ? 'Entregue' : 'Delivered') : (pt ? 'Enviada' : 'Sent')} name={item.readAt || item.deliveredAt ? 'checkmark-done' : 'checkmark'} size={17} color={item.readAt ? '#2c69f3' : '#8a94a3'} /> : null}</View>
                   </View>
                 </View>
@@ -191,13 +218,14 @@ export default function ConversationScreen() {
         />
 
         {pendingPhoto ? <View style={styles.photoPreview}><Image source={{ uri: pendingPhoto.uri }} style={styles.previewImage} contentFit="cover" /><View style={styles.previewCopy}><Text style={styles.previewTitle}>{pt ? 'Foto selecionada' : 'Photo selected'}</Text><Text style={styles.previewHint}>{pt ? 'Adicione uma legenda ou envie agora.' : 'Add a caption or send it now.'}</Text></View><Pressable accessibilityLabel={pt ? 'Remover foto' : 'Remove photo'} onPress={() => setPendingPhoto(null)} style={styles.removePreview}><Ionicons name="close" size={20} color="#344050" /></Pressable></View> : null}
-        {friend?.active === false ? <View style={styles.unavailable}><Ionicons name="lock-closed-outline" size={17} color="#788291" /><Text style={styles.unavailableText}>{pt ? 'Esta conta já não está disponível.' : 'This account is no longer available.'}</Text></View> : <View style={styles.composer}>
+        {friend?.active === false ? <View style={styles.unavailable}><Ionicons name="lock-closed-outline" size={17} color="#788291" /><Text style={styles.unavailableText}>{pt ? 'Esta conta já não está disponível.' : 'This account is no longer available.'}</Text></View> : friend?.blockedByMe ? <View style={styles.blockedBar}><View style={styles.blockedCopy}><Ionicons name="ban-outline" size={18} color="#687483" /><Text style={styles.unavailableText}>{pt ? 'Bloqueou este utilizador.' : 'You blocked this user.'}</Text></View><Pressable onPress={unblock} style={styles.unblockButton}><Text style={styles.unblockText}>{pt ? 'Desbloquear' : 'Unblock'}</Text></Pressable></View> : friend?.blockedMe ? <View style={styles.unavailable}><Ionicons name="lock-closed-outline" size={17} color="#788291" /><Text style={styles.unavailableText}>{pt ? 'Não é possível enviar mensagens nesta conversa.' : 'Messages are unavailable in this conversation.'}</Text></View> : <View style={styles.composer}>
           <Pressable accessibilityLabel={pt ? 'Anexar foto' : 'Attach photo'} disabled={sending} onPress={choosePhoto} style={styles.addButton}><Ionicons name="image-outline" size={21} color="#59677a" /></Pressable>
           <View style={styles.inputWrap}><TextInput value={draft} onChangeText={setDraft} onSubmitEditing={send} returnKeyType="send" placeholder={pt ? 'Escreva uma mensagem…' : 'Type a message…'} placeholderTextColor="#778294" multiline style={styles.input} /></View>
           <Pressable accessibilityLabel={pt ? 'Enviar mensagem' : 'Send message'} disabled={(!draft.trim() && !pendingPhoto) || sending} onPress={send} style={({ pressed }) => [styles.sendButton, ((!draft.trim() && !pendingPhoto) || sending) && styles.sendDisabled, pressed && styles.pressed]}><Ionicons name="send" size={21} color="#fff" /></Pressable>
         </View>}
         <Toast message={toast} duration={3000} onDismiss={() => setToast(null)} />
         <ImageViewerModal visible={Boolean(viewingPhoto)} uri={viewingPhoto} portuguese={pt} onClose={() => setViewingPhoto(null)} onSaved={() => setToast({ id: Date.now(), tone: 'success', text: pt ? 'Imagem guardada nas fotos.' : 'Image saved to photos.' })} onError={(text) => setToast({ id: Date.now(), tone: 'error', text })} />
+        <ActionSheet visible={Boolean(messageToDelete)} title={pt ? 'Opções da mensagem' : 'Message options'} subtitle={pt ? 'Pode eliminar esta mensagem para todos durante cinco minutos após o envio.' : 'You can delete this message for everyone within five minutes of sending it.'} cancelLabel={pt ? 'Cancelar' : 'Cancel'} onClose={() => setMessageToDelete(null)} actions={[{ key: 'delete-everyone', label: pt ? 'Eliminar para todos' : 'Delete for everyone', icon: 'trash-outline', destructive: true, onPress: () => { void deleteForEveryone(); } }]} />
       </KeyboardAvoidingView>
     </AppShell>
   );
@@ -205,9 +233,11 @@ export default function ConversationScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#fff' },
+  blockedScreen: { backgroundColor: '#f5f6f7' },
   header: { minHeight: 84, paddingHorizontal: 14, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eceef0', flexDirection: 'row', alignItems: 'center', gap: 10 },
   backButton: { width: 31, height: 48, alignItems: 'flex-start', justifyContent: 'center' },
   headerCopy: { flex: 1, minWidth: 0 }, friendName: { color: '#111820', fontSize: 18, fontWeight: '700' }, presence: { marginTop: 3, color: '#707b8d', fontSize: 13 }, online: { color: '#16934d', fontWeight: '600' }, typing: { color: '#2c69f3' }, typingRow: { minHeight: 20, flexDirection: 'row', alignItems: 'center', gap: 5 }, typingDots: { paddingTop: 3, flexDirection: 'row', gap: 3 }, typingDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#2c69f3' },
+  blockedPresence: { marginTop: 3, color: '#7a8491', fontSize: 12, fontWeight: '600' },
   messages: { paddingHorizontal: 18, paddingTop: 17, paddingBottom: 20 }, emptyMessages: { flexGrow: 1 }, dayLabel: { marginBottom: 25, color: '#738095', fontSize: 13, textAlign: 'center' },
   messageRow: { marginBottom: 17, flexDirection: 'row', alignItems: 'flex-end', gap: 10 }, myMessageRow: { justifyContent: 'flex-end' }, messageGroup: { maxWidth: '78%', alignItems: 'flex-start' }, myMessageGroup: { alignItems: 'flex-end' },
   bubble: { paddingHorizontal: 15, paddingVertical: 11, borderRadius: 19 }, photoBubble: { width: 230, overflow: 'hidden', padding: 4 }, theirBubble: { backgroundColor: '#f2f3f5', borderBottomLeftRadius: 5 }, myBubble: { backgroundColor: '#2b68f3', borderBottomRightRadius: 5 }, messagePhoto: { width: '100%', aspectRatio: 1.15, borderRadius: 15, backgroundColor: '#e8eaed' }, messageBody: { color: '#1e2b41', fontSize: 15, lineHeight: 22 }, myMessageBody: { color: '#fff' }, caption: { paddingHorizontal: 10, paddingTop: 8, paddingBottom: 5 },
@@ -219,4 +249,5 @@ const styles = StyleSheet.create({
   addButton: { width: 43, height: 43, borderWidth: 1, borderColor: '#dfe3e8', borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f7f8f9' }, inputWrap: { flex: 1, minHeight: 43, maxHeight: 104, paddingHorizontal: 15, borderWidth: 1, borderColor: '#cfd5dc', borderRadius: 23, justifyContent: 'center', backgroundColor: '#fff' }, input: { minHeight: 40, maxHeight: 92, paddingVertical: 9, color: '#17202b', fontSize: 14, textAlignVertical: 'center' },
   sendButton: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#2b69f4' }, sendDisabled: { opacity: 0.45 }, pressed: { opacity: 0.7 },
   unavailable: { minHeight: 62, paddingHorizontal: 18, borderTopWidth: 1, borderTopColor: '#eceef0', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#f7f8f9' }, unavailableText: { color: '#788291', fontSize: 12, fontWeight: '600' },
+  blockedBar: { minHeight: 68, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: '#dfe3e7', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, backgroundColor: '#eef0f2' }, blockedCopy: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }, unblockButton: { minHeight: 40, paddingHorizontal: 15, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: '#26313d' }, unblockText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

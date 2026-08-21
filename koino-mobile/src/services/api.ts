@@ -40,7 +40,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}) 
   } catch {
     const pt = getCurrentLanguage() === 'pt';
     throw new ApiError(
-      pt ? 'Parece que está sem ligação. Verifique a internet e tente novamente.' : 'You appear to be offline. Check your connection and try again.',
+      pt ? 'Não foi possível ligar ao Koino. Verifique a internet e tente novamente.' : 'We could not connect to Koino. Check your internet connection and try again.',
       0,
       null,
     );

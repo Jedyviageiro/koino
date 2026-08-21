@@ -13,9 +13,11 @@ import com.koino.backend.repository.UserNotificationRepository;
 @Service
 public class NotificationService {
     private final UserNotificationRepository notificationRepository;
+    private final DevicePushService pushService;
 
-    public NotificationService(UserNotificationRepository notificationRepository) {
+    public NotificationService(UserNotificationRepository notificationRepository, DevicePushService pushService) {
         this.notificationRepository = notificationRepository;
+        this.pushService = pushService;
     }
 
     @Transactional(readOnly = true)
@@ -62,7 +64,8 @@ public class NotificationService {
                 "Cresçam juntos na fé e encorajem-se mutuamente."
             ),
             "FRIEND_REQUEST",
-            friendshipId.toString()
+            friendshipId.toString(),
+            requester
         );
     }
 
@@ -83,16 +86,21 @@ public class NotificationService {
     }
 
     @Transactional
-    public UserNotification createChatMessage(User recipient, User sender, boolean photo) {
+    public UserNotification createChatMessage(User recipient, User sender, String preview, boolean photo) {
         boolean portuguese = isPortuguese(recipient);
+        String cleanPreview = preview == null ? "" : preview.trim().replaceAll("\\s+", " ");
+        if (cleanPreview.length() > 110) cleanPreview = cleanPreview.substring(0, 107) + "...";
+        String message = cleanPreview.isBlank()
+            ? (photo ? localized(portuguese, "Sent you a photo", "Enviou-lhe uma foto")
+                : localized(portuguese, "Sent you a message", "Enviou-lhe uma mensagem"))
+            : cleanPreview;
         return create(
             recipient,
-            localized(portuguese, "New message from " + sender.getFullname(), "Nova mensagem de " + sender.getFullname()),
-            photo
-                ? localized(portuguese, "Sent you a photo.", "Enviou-lhe uma foto.")
-                : localized(portuguese, "Open the conversation to reply.", "Abra a conversa para responder."),
+            sender.getFullname(),
+            message,
             "CHAT_MESSAGE",
-            sender.getUserId().toString()
+            sender.getUserId().toString(),
+            sender
         );
     }
 
@@ -129,14 +137,28 @@ public class NotificationService {
         String type,
         String referenceId
     ) {
+        return create(user, title, message, type, referenceId, null);
+    }
+
+    private UserNotification create(
+        User user,
+        String title,
+        String message,
+        String type,
+        String referenceId,
+        User actor
+    ) {
         UserNotification notification = new UserNotification();
         notification.setUser(user);
+        notification.setActor(actor);
         notification.setTitle(title);
         notification.setMessage(message);
         notification.setType(type);
         notification.setReferenceId(referenceId);
         notification.setRead(false);
-        return notificationRepository.save(notification);
+        UserNotification saved = notificationRepository.save(notification);
+        pushService.send(saved);
+        return saved;
     }
 
     @Transactional
@@ -186,6 +208,10 @@ public class NotificationService {
             notification.getMessage(),
             notification.getType(),
             notification.getReferenceId(),
+            notification.getActor() == null || !notification.getActor().isActive()
+                ? null : notification.getActor().getFullname(),
+            notification.getActor() == null || !notification.getActor().isActive()
+                ? null : notification.getActor().getProfilePictureUrl(),
             notification.isRead(),
             notification.getCreatedAt()
         );

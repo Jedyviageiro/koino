@@ -11,6 +11,16 @@ import type { Notification } from '@/features/app/types';
 import { useLanguage } from '@/features/localization/LanguageProvider';
 import { Toast, type ToastMessage } from '@/components/app/Toast';
 import { sendDeviceTestNotification } from '@/features/notifications/deviceNotifications';
+import { Avatar } from '@/components/community/Avatar';
+
+function notificationTime(value: string, pt: boolean) {
+  const date = new Date(value);
+  const elapsed = Date.now() - date.getTime();
+  if (elapsed < 60000) return pt ? 'Agora' : 'Now';
+  if (elapsed < 3600000) return `${Math.floor(elapsed / 60000)} min`;
+  if (elapsed < 86400000) return `${Math.floor(elapsed / 3600000)} h`;
+  return new Intl.DateTimeFormat(pt ? 'pt' : 'en', { month: 'short', day: 'numeric' }).format(date);
+}
 
 export default function NotificationsScreen() {
   const { language } = useLanguage(); const pt = language === 'pt';
@@ -72,8 +82,8 @@ export default function NotificationsScreen() {
           <Pressable onPress={testPhoneNotification} style={styles.testNotification}><MaterialCommunityIcons name="cellphone-message" size={20} color="#c87400" /><View style={styles.testCopy}><Text style={styles.testTitle}>{pt ? 'Testar no telemóvel' : 'Test on this phone'}</Text><Text style={styles.testHint}>{pt ? 'Mostrar uma notificação do sistema agora' : 'Show a system notification now'}</Text></View><MaterialCommunityIcons name="chevron-right" size={20} color="#7d8793" /></Pressable>
           {items.length ? items.map((item) => (
             <Pressable key={item.notificationId} onPress={() => read(item)} style={[styles.item, !item.read && styles.unread]}>
-              <View style={styles.icon}><MaterialCommunityIcons name={item.read ? 'bell-outline' : 'bell-ring-outline'} size={22} color="#d68108" /></View>
-              <View style={styles.copy}><Text style={styles.itemTitle}>{item.title}</Text><Text style={styles.message}>{item.message}</Text>{item.type === 'FRIEND_REQUEST' && item.referenceId ? <View style={styles.requestActions}><Pressable disabled={busyId === item.notificationId} onPress={(event) => { event.stopPropagation(); respond(item, true); }} style={styles.accept}><Text style={styles.acceptText}>{pt ? 'Aceitar' : 'Accept'}</Text></Pressable><Pressable disabled={busyId === item.notificationId} onPress={(event) => { event.stopPropagation(); respond(item, false); }} style={styles.decline}><Text style={styles.declineText}>{pt ? 'Recusar' : 'Decline'}</Text></Pressable></View> : null}</View>
+              {item.actorName ? <Avatar name={item.actorName} uri={item.actorProfilePictureUrl} size={46} /> : <View style={styles.icon}><MaterialCommunityIcons name={item.type === 'READING_REMINDER' ? 'book-open-page-variant-outline' : item.type === 'PLAN_READY' ? 'calendar-check-outline' : item.read ? 'bell-outline' : 'bell-ring-outline'} size={22} color="#d68108" /></View>}
+              <View style={styles.copy}><View style={styles.titleRow}><Text numberOfLines={1} style={styles.itemTitle}>{item.title}</Text><Text style={styles.itemTime}>{notificationTime(item.createdAt, pt)}</Text></View><Text numberOfLines={2} style={styles.message}>{item.message}</Text>{item.type === 'FRIEND_REQUEST' && item.referenceId ? <View style={styles.requestActions}><Pressable disabled={busyId === item.notificationId} onPress={(event) => { event.stopPropagation(); respond(item, true); }} style={styles.accept}><Text style={styles.acceptText}>{pt ? 'Aceitar' : 'Accept'}</Text></Pressable><Pressable disabled={busyId === item.notificationId} onPress={(event) => { event.stopPropagation(); respond(item, false); }} style={styles.decline}><Text style={styles.declineText}>{pt ? 'Recusar' : 'Decline'}</Text></Pressable></View> : null}</View>
               {!item.read ? <View style={styles.dot} /> : null}
             </Pressable>
           )) : (
@@ -99,7 +109,7 @@ const styles = StyleSheet.create({
   item: { minHeight: 86, padding: 14, borderWidth: 1, borderColor: '#e7e9eb', borderRadius: 14, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' },
   unread: { borderColor: '#efd7b4', backgroundColor: '#fff9f0' },
   icon: { width: 43, height: 43, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff3df' },
-  copy: { flex: 1, marginLeft: 12 }, itemTitle: { color: '#172029', fontSize: 14, fontWeight: '700' }, message: { marginTop: 4, color: '#697382', fontSize: 12, lineHeight: 17 },
+  copy: { flex: 1, marginLeft: 12 }, titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }, itemTitle: { flex: 1, color: '#172029', fontSize: 14, fontWeight: '700' }, itemTime: { color: '#8a929d', fontSize: 10 }, message: { marginTop: 4, color: '#697382', fontSize: 12, lineHeight: 17 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#ed9210' },
   empty: { paddingTop: 120, alignItems: 'center' }, emptyTitle: { marginTop: 15, fontSize: 18, fontWeight: '700' }, emptyText: { marginTop: 6, color: '#737c87', fontSize: 13 },
   inlineError: { color: '#5f6977', fontSize: 12, textAlign: 'center' },

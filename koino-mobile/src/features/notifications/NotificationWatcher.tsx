@@ -4,6 +4,8 @@ import { AppState } from 'react-native';
 import { Toast, type ToastMessage } from '@/components/app/Toast';
 import { getNotifications } from '@/features/app/appService';
 import { getAuthSession } from '@/features/auth/authStorage';
+import { listenForNotificationResponses, registerDevicePushToken } from './deviceNotifications';
+import { router } from 'expo-router';
 
 const POLL_INTERVAL_MS = 12_000;
 
@@ -11,6 +13,7 @@ export function NotificationWatcher() {
   const knownIds = useRef(new Set<number>());
   const running = useRef(false);
   const mounted = useRef(true);
+  const pushRegistered = useRef(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
 
   const check = useCallback(async () => {
@@ -18,6 +21,10 @@ export function NotificationWatcher() {
     running.current = true;
     try {
       if (!(await getAuthSession())) return;
+      if (!pushRegistered.current) {
+        pushRegistered.current = true;
+        void registerDevicePushToken().catch(() => { pushRegistered.current = false; });
+      }
       const notifications = await getNotifications();
       if (!mounted.current) return;
       const unseen = notifications
@@ -51,6 +58,15 @@ export function NotificationWatcher() {
       subscription.remove();
     };
   }, [check]);
+
+  useEffect(() => {
+    let dispose = () => {};
+    let active = true;
+    void listenForNotificationResponses((route) => router.push(route as never))
+      .then((cleanup) => { if (active) dispose = cleanup; else cleanup(); })
+      .catch(() => {});
+    return () => { active = false; dispose(); };
+  }, []);
 
   return <Toast message={toast} duration={4000} onDismiss={() => setToast(null)} />;
 }

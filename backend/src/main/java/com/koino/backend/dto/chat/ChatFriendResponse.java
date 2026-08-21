@@ -14,5 +14,7 @@ public record ChatFriendResponse(
     long unreadCount,
     boolean online,
     Instant lastSeenAt,
-    boolean active
+    boolean active,
+    boolean blockedByMe,
+    boolean blockedMe
 ) {}

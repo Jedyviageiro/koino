@@ -167,7 +167,12 @@ public class FriendshipService {
             userId,
             FriendshipStatus.ACCEPTED
         ).stream()
-            .filter(item -> !trustSafetyService.isBlockedEitherWay(userId, item.getRequester().getUserId().equals(userId) ? item.getAddressee().getUserId() : item.getRequester().getUserId()))
+            .filter(item -> {
+                User friend = item.getRequester().getUserId().equals(userId)
+                    ? item.getAddressee() : item.getRequester();
+                return friend.isActive()
+                    && friend.getAccountStatus() != AccountStatus.BANNED;
+            })
             .map(item -> toResponse(item, userId)).toList();
     }
 
@@ -259,13 +264,11 @@ public class FriendshipService {
             details == null ? null : details.getCountryCode(),
             relationship(viewerId, profileUser, friendship),
             friendship == null ? null : friendship.getFriendshipId(),
-            friendshipRepository
-                .countByStatusAndLowerUserIdOrStatusAndHigherUserId(
-                    FriendshipStatus.ACCEPTED,
-                    userId,
-                    FriendshipStatus.ACCEPTED,
-                    userId
-                ),
+            friendshipRepository.countActiveForUser(
+                userId,
+                FriendshipStatus.ACCEPTED,
+                AccountStatus.BANNED
+            ),
             communityPostRepository.countByAuthorUserId(userId),
             toPlan(
                 activePlan,

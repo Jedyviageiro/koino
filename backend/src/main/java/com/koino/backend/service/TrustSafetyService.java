@@ -102,6 +102,10 @@ public class TrustSafetyService {
             || blockRepository.existsByBlockerUserIdAndBlockedUserId(secondId, firstId);
     }
 
+    public boolean isBlockedBy(Long blockerId, Long blockedId) {
+        return blockRepository.existsByBlockerUserIdAndBlockedUserId(blockerId, blockedId);
+    }
+
     @Transactional(readOnly = true)
     public Set<Long> hiddenUserIds(Long userId) {
         Set<Long> result = new HashSet<>();
